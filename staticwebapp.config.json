@@ -1,0 +1,16 @@
+{
+  "routes": [
+    {
+      "route": "/hanamizuki",
+      "rewrite": "/hanamizuki/index.html"
+    },
+    {
+      "route": "/hanamizuki/*",
+      "rewrite": "/hanamizuki/index.html"
+    }
+  ],
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": ["/hanamizuki/*"]
+  }
+}
