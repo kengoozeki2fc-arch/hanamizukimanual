@@ -7,10 +7,18 @@
     {
       "route": "/hanamizuki/*",
       "rewrite": "/hanamizuki/index.html"
+    },
+    {
+      "route": "/nagaken",
+      "rewrite": "/nagaken/index.html"
+    },
+    {
+      "route": "/nagaken/*",
+      "rewrite": "/nagaken/index.html"
     }
   ],
   "navigationFallback": {
     "rewrite": "/index.html",
-    "exclude": ["/hanamizuki/*"]
+    "exclude": ["/hanamizuki/*", "/nagaken/*"]
   }
 }
