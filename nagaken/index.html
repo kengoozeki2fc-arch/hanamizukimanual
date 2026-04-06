@@ -308,6 +308,32 @@
     }
     .url-box a { color: #7dd3fc; }
 
+    /* ===== URLボタン ===== */
+    .url-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #1d4ed8;
+      color: #fff;
+      font-size: 15px;
+      font-weight: bold;
+      padding: 14px 24px;
+      border-radius: 8px;
+      margin: 12px 0;
+      text-decoration: none;
+      transition: background 0.2s;
+      cursor: pointer;
+    }
+    .url-btn:hover { background: #1e40af; }
+    .url-btn .btn-icon { font-size: 18px; }
+    .url-btn .btn-sub {
+      display: block;
+      font-size: 11px;
+      font-weight: normal;
+      opacity: 0.8;
+      margin-top: 2px;
+    }
+
     /* ===== トラブル対処テーブル ===== */
     .trouble-table {
       width: 100%;
@@ -478,7 +504,10 @@
     </div>
     <div class="section-body">
       <p>少人数（1〜2名）を登録する場合は、CSVを使わずに画面のテーブルに直接入力できます。</p>
-      <div class="url-box">https://face.gemba-ai.cloud/multiadd?clientId=1</div>
+      <a class="url-btn" href="https://face.gemba-ai.cloud/multiadd?clientId=1" target="_blank">
+        <span class="btn-icon">🔗</span>
+        <span>一括登録ページを開く<span class="btn-sub">face.gemba-ai.cloud/multiadd?clientId=1</span></span>
+      </a>
 
       <div class="step-list">
         <div class="step-card">
@@ -644,7 +673,10 @@
     </div>
     <div class="section-body">
       <p>ログイン不要でアクセスできます。ブラウザで以下のURLを開いてください。</p>
-      <div class="url-box">https://face.gemba-ai.cloud/multiadd?clientId=1</div>
+      <a class="url-btn" href="https://face.gemba-ai.cloud/multiadd?clientId=1" target="_blank">
+        <span class="btn-icon">🔗</span>
+        <span>一括登録ページを開く<span class="btn-sub">face.gemba-ai.cloud/multiadd?clientId=1</span></span>
+      </a>
 
       <div class="step-list">
         <div class="step-card">
