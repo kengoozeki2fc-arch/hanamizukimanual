@@ -11,10 +11,6 @@
     {
       "route": "/nagaken",
       "rewrite": "/nagaken/index.html"
-    },
-    {
-      "route": "/nagaken/*",
-      "rewrite": "/nagaken/index.html"
     }
   ],
   "navigationFallback": {
