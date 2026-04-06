@@ -6,637 +6,283 @@
 <title>はなみずき園 カメラシステム 先生向け操作ガイド</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif; background: #f7f9fc; color: #333; font-size: 15px; line-height: 1.7; }
 
-  body {
-    font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
-    background: #f7f9fc;
-    color: #333;
-    font-size: 15px;
-    line-height: 1.7;
-  }
+  .header { background: linear-gradient(135deg, #4db8a4, #3a9fd0); color: white; text-align: center; padding: 40px 20px 30px; }
+  .header .badge { display: inline-block; background: rgba(255,255,255,0.25); border-radius: 20px; padding: 4px 16px; font-size: 13px; margin-bottom: 12px; letter-spacing: 1px; }
+  .header h1 { font-size: 26px; font-weight: bold; margin-bottom: 8px; }
+  .header p { font-size: 14px; opacity: 0.9; }
 
-  /* ===== ヘッダー ===== */
-  .header {
-    background: linear-gradient(135deg, #4db8a4, #3a9fd0);
-    color: white;
-    text-align: center;
-    padding: 40px 20px 30px;
-  }
-  .header .badge {
-    display: inline-block;
-    background: rgba(255,255,255,0.25);
-    border-radius: 20px;
-    padding: 4px 16px;
-    font-size: 13px;
-    margin-bottom: 12px;
-    letter-spacing: 1px;
-  }
-  .header h1 {
-    font-size: 26px;
-    font-weight: bold;
-    margin-bottom: 8px;
-  }
-  .header p {
-    font-size: 14px;
-    opacity: 0.9;
-  }
+  .overview, .section { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+  .section { margin-top: 0; }
+  .section-h2 { font-size: 18px; color: #3a9fd0; margin-bottom: 16px; padding-left: 10px; border-left: 4px solid #3a9fd0; }
 
-  /* ===== カメラ概要カード ===== */
-  .overview {
-    max-width: 900px;
-    margin: 30px auto;
-    padding: 0 20px;
-  }
-  .overview h2 {
-    font-size: 18px;
-    color: #3a9fd0;
-    margin-bottom: 16px;
-    padding-left: 10px;
-    border-left: 4px solid #3a9fd0;
-  }
-  .camera-cards {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .camera-card {
-    flex: 1;
-    min-width: 200px;
-    background: white;
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    border-top: 4px solid var(--color);
-  }
-  .camera-card .icon { font-size: 36px; margin-bottom: 10px; }
-  .camera-card h3 { font-size: 15px; font-weight: bold; margin-bottom: 6px; color: var(--color); }
-  .camera-card p { font-size: 13px; color: #666; }
-  .camera-card .tag {
-    display: inline-block;
-    margin-top: 8px;
-    background: var(--color);
-    color: white;
-    border-radius: 10px;
-    padding: 2px 10px;
-    font-size: 11px;
-  }
+  .camera-cards { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; }
+  .camera-card { flex: 1; min-width: 180px; background: white; border-radius: 12px; padding: 18px 14px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-top: 4px solid var(--color); }
+  .camera-card .icon { font-size: 32px; margin-bottom: 8px; }
+  .camera-card h3 { font-size: 14px; font-weight: bold; margin-bottom: 4px; color: var(--color); }
+  .camera-card p { font-size: 12px; color: #666; }
+  .camera-card .tag { display: inline-block; margin-top: 6px; background: var(--color); color: white; border-radius: 10px; padding: 2px 10px; font-size: 11px; }
 
-  /* ===== セクション共通 ===== */
-  .section {
-    max-width: 900px;
-    margin: 30px auto;
-    padding: 0 20px;
-  }
-  .section-box {
-    background: white;
-    border-radius: 14px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
-    overflow: hidden;
-    margin-bottom: 30px;
-  }
-  .section-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px 24px;
-    color: white;
-    font-size: 17px;
-    font-weight: bold;
-  }
-  .section-header .num {
-    background: rgba(255,255,255,0.3);
-    border-radius: 50%;
-    width: 32px; height: 32px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 15px; font-weight: bold; flex-shrink: 0;
-  }
+  .system-image { width: 100%; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.1); margin-top: 16px; }
+
+  .section-box { background: white; border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.07); overflow: hidden; margin-bottom: 30px; }
+  .section-header { display: flex; align-items: center; gap: 12px; padding: 16px 24px; color: white; font-size: 17px; font-weight: bold; }
+  .section-header .num { background: rgba(255,255,255,0.3); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: bold; flex-shrink: 0; }
   .section-body { padding: 24px; }
 
-  /* ===== ステップ ===== */
   .steps { list-style: none; }
-  .steps li {
-    display: flex;
-    gap: 14px;
-    margin-bottom: 16px;
-    align-items: flex-start;
-  }
-  .steps li .step-num {
-    background: #e8f4fb;
-    color: #3a9fd0;
-    border-radius: 50%;
-    width: 28px; height: 28px;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: bold; font-size: 13px; flex-shrink: 0;
-    margin-top: 1px;
-  }
+  .steps li { display: flex; gap: 14px; margin-bottom: 16px; align-items: flex-start; }
+  .steps li .step-num { background: #e8f4fb; color: #3a9fd0; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; flex-shrink: 0; margin-top: 1px; }
   .steps li .step-text { flex: 1; }
   .steps li .step-text strong { display: block; margin-bottom: 2px; }
 
-  /* ===== スクショプレースホルダー ===== */
-  .screenshot-placeholder {
-    background: #f0f4f8;
-    border: 2px dashed #b0c4d8;
-    border-radius: 10px;
-    padding: 30px 20px;
-    text-align: center;
-    margin: 16px 0;
-    color: #7a93a8;
-  }
+  /* 実際のスクショ */
+  .screenshot-real { width: 100%; border-radius: 10px; border: 1px solid #dde4ea; box-shadow: 0 2px 10px rgba(0,0,0,0.08); margin: 14px 0; display: block; }
+  .screenshot-caption { font-size: 12px; color: #888; text-align: center; margin-top: -8px; margin-bottom: 14px; }
+
+  /* ダミープレースホルダー */
+  .screenshot-placeholder { background: #f0f4f8; border: 2px dashed #b0c4d8; border-radius: 10px; padding: 30px 20px; text-align: center; margin: 16px 0; color: #7a93a8; }
   .screenshot-placeholder .ph-icon { font-size: 32px; margin-bottom: 8px; }
   .screenshot-placeholder p { font-size: 13px; }
-  .screenshot-placeholder .ph-label {
-    display: inline-block;
-    background: #b0c4d8;
-    color: white;
-    border-radius: 6px;
-    padding: 2px 10px;
-    font-size: 11px;
-    margin-bottom: 8px;
-  }
+  .screenshot-placeholder .ph-label { display: inline-block; background: #b0c4d8; color: white; border-radius: 6px; padding: 2px 10px; font-size: 11px; margin-bottom: 8px; }
 
-  /* ===== アカウント情報ボックス ===== */
-  .account-box {
-    background: #fffbea;
-    border: 1.5px solid #f0d060;
-    border-radius: 10px;
-    padding: 16px 20px;
-    margin: 14px 0;
-  }
+  .account-box { background: #fffbea; border: 1.5px solid #f0d060; border-radius: 10px; padding: 16px 20px; margin: 14px 0; }
   .account-box table { width: 100%; border-collapse: collapse; }
-  .account-box td {
-    padding: 6px 10px;
-    font-size: 14px;
-  }
-  .account-box td:first-child {
-    color: #888;
-    font-size: 12px;
-    width: 90px;
-    white-space: nowrap;
-  }
-  .account-box td.val {
-    font-family: 'Courier New', monospace;
-    font-size: 14px;
-    font-weight: bold;
-    color: #333;
-    background: white;
-    border-radius: 6px;
-    padding: 4px 10px;
-  }
+  .account-box td { padding: 6px 10px; font-size: 14px; }
+  .account-box td:first-child { color: #888; font-size: 12px; width: 90px; white-space: nowrap; }
+  .account-box td.val { font-family: 'Courier New', monospace; font-size: 14px; font-weight: bold; color: #333; background: white; border-radius: 6px; padding: 4px 10px; }
 
-  /* ===== 注意・情報バナー ===== */
-  .info-banner {
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    background: #eaf6fb;
-    border-left: 4px solid #3a9fd0;
-    border-radius: 0 8px 8px 0;
-    padding: 12px 16px;
-    margin: 14px 0;
-    font-size: 14px;
-  }
+  .info-banner { display: flex; gap: 10px; align-items: flex-start; background: #eaf6fb; border-left: 4px solid #3a9fd0; border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 14px 0; font-size: 14px; }
   .info-banner.green { background: #eafaf1; border-color: #4db8a4; }
   .info-banner.orange { background: #fff8ea; border-color: #f0a030; }
   .info-banner .bi { font-size: 18px; flex-shrink: 0; }
 
-  /* ===== 自動撮影バッジ ===== */
-  .auto-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: #eafaf1;
-    border: 1.5px solid #4db8a4;
-    border-radius: 20px;
-    padding: 6px 16px;
-    color: #2e8a70;
-    font-size: 14px;
-    font-weight: bold;
-    margin: 10px 0;
-  }
+  .auto-badge { display: inline-flex; align-items: center; gap: 6px; background: #eafaf1; border: 1.5px solid #4db8a4; border-radius: 20px; padding: 6px 16px; color: #2e8a70; font-size: 14px; font-weight: bold; margin: 10px 0; }
 
-  /* ===== アカウント一覧テーブル ===== */
-  .account-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-  }
-  .account-table th {
-    background: #4db8a4;
-    color: white;
-    padding: 10px 14px;
-    text-align: left;
-    font-weight: bold;
-  }
-  .account-table td {
-    padding: 10px 14px;
-    border-bottom: 1px solid #e8eef3;
-  }
+  .account-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .account-table th { background: #4db8a4; color: white; padding: 10px 14px; text-align: left; font-weight: bold; }
+  .account-table td { padding: 10px 14px; border-bottom: 1px solid #e8eef3; }
   .account-table tr:nth-child(even) td { background: #f7fbfd; }
-  .account-table td.mono {
-    font-family: 'Courier New', monospace;
-    font-weight: bold;
-  }
+  .account-table td.mono { font-family: 'Courier New', monospace; font-weight: bold; }
 
-  /* ===== チェックリスト ===== */
   .checklist { list-style: none; }
-  .checklist li {
-    padding: 8px 0;
-    border-bottom: 1px solid #eee;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 14px;
-  }
-  .checklist li::before {
-    content: '☐';
-    font-size: 18px;
-    color: #3a9fd0;
-    flex-shrink: 0;
-  }
+  .checklist li { padding: 8px 0; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px; font-size: 14px; }
+  .checklist li::before { content: '☐'; font-size: 18px; color: #3a9fd0; flex-shrink: 0; }
 
-  /* ===== YouTubeリンクボタン ===== */
-  .youtube-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: #ff4444;
-    color: white;
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-size: 14px;
-    font-weight: bold;
-    text-decoration: none;
-    margin: 10px 0;
-  }
+  .youtube-btn { display: inline-flex; align-items: center; gap: 8px; background: #ff4444; color: white; border-radius: 8px; padding: 10px 20px; font-size: 14px; font-weight: bold; text-decoration: none; margin: 10px 0; }
 
-  /* ===== フッター ===== */
-  .footer {
-    text-align: center;
-    padding: 30px 20px;
-    font-size: 12px;
-    color: #aaa;
-  }
+  .footer { text-align: center; padding: 30px 20px; font-size: 12px; color: #aaa; }
 
-  /* ===== 印刷対応 ===== */
-  @media print {
-    body { background: white; font-size: 13px; }
-    .section-box { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; }
-    .camera-card { box-shadow: none; border: 1px solid #ddd; }
-  }
-
-  /* カラー変数 */
-  .c-safie  { --color: #e05050; }
   .c-ohayo  { --color: #f0a030; }
   .c-action { --color: #5060d0; }
-  .bg-safie  { background: #e05050; }
+  .c-kanri  { --color: #7b5ea7; }
+  .c-safie  { --color: #e05050; }
   .bg-ohayo  { background: #f0a030; }
   .bg-action { background: #5060d0; }
-  .bg-photo  { background: #4db8a4; }
-  .bg-app    { background: #7b5ea7; }
-  .bg-ai     { background: #3a9fd0; }
-  .bg-account{ background: #2e7d6f; }
-  .bg-trouble{ background: #888; }
+  .bg-kanri  { background: #7b5ea7; }
+  .bg-safie  { background: #e05050; }
+
+  @media print {
+    body { background: white; }
+    .section-box { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; }
+  }
 </style>
 </head>
 <body>
 
-<!-- ===== ヘッダー ===== -->
+<!-- ヘッダー -->
 <div class="header">
   <div class="badge">先生向け操作ガイド</div>
   <h1>📷 はなみずき園 カメラシステム</h1>
   <p>このガイドでは3種類のカメラシステムの使い方をわかりやすく説明します</p>
 </div>
 
-<!-- ===== システム概要 ===== -->
+<!-- システム全体像 -->
 <div class="overview">
-  <h2>システム全体像</h2>
+  <h2 class="section-h2">システム全体像</h2>
   <div class="camera-cards">
-    <div class="camera-card c-safie">
-      <div class="icon">📹</div>
-      <h3>動画カメラ（Safie）</h3>
-      <p>保育室のリアルタイム映像をスマホやPCで確認できます</p>
-      <span class="tag">ライブ配信</span>
-    </div>
     <div class="camera-card c-ohayo">
       <div class="icon">🌅</div>
-      <h3>おはようカメラ（iPad）</h3>
-      <p>「おはよう」の声で自動撮影。登園時の笑顔を記録します</p>
+      <h3>① おはようカメラ（iPad）</h3>
+      <p>「おはよう」の声で自動撮影。登園時の笑顔を記録</p>
       <span class="tag">自動撮影</span>
     </div>
     <div class="camera-card c-action">
-      <div class="icon">🎯</div>
-      <h3>アクションカメラ（Canon）</h3>
-      <p>顔・ポーズを認識してハンズフリーで自動撮影します</p>
+      <div class="icon">📸</div>
+      <h3>② Pickカメラ＋Androidスマフォ</h3>
+      <p>顔・ポーズを認識してハンズフリーで自動撮影</p>
       <span class="tag">自動撮影</span>
     </div>
+    <div class="camera-card c-kanri">
+      <div class="icon">🖥️</div>
+      <h3>③ 管理画面</h3>
+      <p>顔写真登録・撮影写真の確認・笑顔レポート出力</p>
+      <span class="tag">Web管理</span>
+    </div>
+    <div class="camera-card c-safie">
+      <div class="icon">📹</div>
+      <h3>④ 動画カメラ（Safie）</h3>
+      <p>保育室のリアルタイム映像をスマホ・PCで確認</p>
+      <span class="tag">ライブ配信</span>
+    </div>
   </div>
+
+  <img src="images/system-overview.png" alt="システム全体像" class="system-image">
 
   <div class="info-banner green" style="margin-top:20px;">
     <span class="bi">💡</span>
-    <span>撮影データは毎日1回、Power Automateによって自動的にAzureクラウドへ転送・保存されます。先生が転送作業をする必要はありません。</span>
+    <span>撮影データは毎日1回、自動的にAzureクラウドへ転送・保存されます。先生が転送作業をする必要はありません。</span>
   </div>
 </div>
 
-<!-- ===== ① 動画カメラ（Safie） ===== -->
+<!-- ① おはようカメラ -->
 <div class="section">
   <div class="section-box">
-    <div class="section-header bg-safie">
-      <div class="num">①</div>
-      <span>📹 動画カメラ（Safie）— リアルタイムで保育室を確認</span>
-    </div>
-    <div class="section-body">
-      <div class="info-banner">
-        <span class="bi">ℹ️</span>
-        <span>Safieはスマートフォン・PCのブラウザからアクセスできるリアルタイム動画配信サービスです。<br>配信時間：<strong>朝 8:00 〜 夜 20:00（予定）</strong></span>
-      </div>
-
-      <h4 style="margin: 18px 0 10px; color:#555;">ログイン手順</h4>
-      <ol class="steps">
-        <li>
-          <div class="step-num">1</div>
-          <div class="step-text">
-            <strong>Safieのログインページを開く</strong>
-            ブラウザで <code style="background:#f0f4f8; padding:2px 6px; border-radius:4px;">safie.link</code> にアクセスし、以下のアカウントでログインします。
-          </div>
-        </li>
-      </ol>
-
-      <div class="account-box">
-        <table>
-          <tr>
-            <td>アカウント</td>
-            <td class="val">kengoozeki@soumubucho.com</td>
-          </tr>
-          <tr>
-            <td>パスワード</td>
-            <td class="val">GWCkengo999</td>
-          </tr>
-        </table>
-      </div>
-
-      <div class="screenshot-placeholder">
-        <div class="ph-label">📸 スクリーンショット</div>
-        <div class="ph-icon">🖥️</div>
-        <p><strong>Safie ログイン画面</strong></p>
-        <p style="margin-top:4px;">実際の画面をここに挿入してください</p>
-      </div>
-
-      <ol class="steps">
-        <li>
-          <div class="step-num">2</div>
-          <div class="step-text">
-            <strong>カメラ映像を確認する</strong>
-            ログイン後、保育室のカメラ映像がリアルタイムで表示されます。
-          </div>
-        </li>
-      </ol>
-
-      <div class="screenshot-placeholder">
-        <div class="ph-label">📸 スクリーンショット</div>
-        <div class="ph-icon">📹</div>
-        <p><strong>Safie カメラ映像画面</strong></p>
-        <p style="margin-top:4px;">実際の画面をここに挿入してください</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== ② おはようカメラ ===== -->
-  <div class="section-box">
     <div class="section-header bg-ohayo">
-      <div class="num">②</div>
+      <div class="num">①</div>
       <span>🌅 おはようカメラ（iPad）— 登園時の笑顔を自動記録</span>
     </div>
     <div class="section-body">
-      <div class="auto-badge">
-        <span>✅</span> 先生の操作は不要！自動で撮影されます
-      </div>
-
-      <p style="margin: 14px 0;">園児が <strong>「おはよう」</strong> と声をかけると、iPadが音声を認識して自動でシャッターを切ります。毎朝の登園時の笑顔が自然な形で記録されます。</p>
-
+      <div class="auto-badge">✅ 先生の操作は不要！自動で撮影されます</div>
+      <p style="margin:14px 0;">園児が <strong>「おはよう」</strong> と声をかけると、iPadが音声を認識して自動でシャッターを切ります。毎朝の登園時の笑顔が自然な形で記録されます。</p>
       <div class="info-banner orange">
         <span class="bi">⚠️</span>
         <span>iPadの電源が入っていること・充電が十分なことを朝に確認してください。</span>
       </div>
-
-      <h4 style="margin: 18px 0 10px; color:#555;">仕組み</h4>
+      <h4 style="margin:18px 0 10px; color:#555;">仕組み</h4>
       <ol class="steps">
-        <li>
-          <div class="step-num">1</div>
-          <div class="step-text"><strong>園児が「おはよう」と声をかける</strong><br>iPadが音声を認識します</div>
-        </li>
-        <li>
-          <div class="step-num">2</div>
-          <div class="step-text"><strong>自動でシャッターが切れる</strong><br>先生が操作する必要はありません</div>
-        </li>
-        <li>
-          <div class="step-num">3</div>
-          <div class="step-text"><strong>PCを経由してAzureクラウドへ自動転送</strong><br>1日1回、夜間に自動でクラウドへ保存されます</div>
-        </li>
+        <li><div class="step-num">1</div><div class="step-text"><strong>園児が「おはよう」と声をかける</strong>iPadが音声を認識します</div></li>
+        <li><div class="step-num">2</div><div class="step-text"><strong>自動でシャッターが切れる</strong>先生が操作する必要はありません</div></li>
+        <li><div class="step-num">3</div><div class="step-text"><strong>Azureクラウドへ自動転送・保存</strong>撮影データは毎日1回、自動的にAzureクラウドへ転送・保存されます。先生が転送作業をする必要はありません。</div></li>
       </ol>
-    </div>
-  </div>
+      <hr style="border:none; border-top:1px solid #eee; margin:24px 0;">
 
-  <!-- ===== ③ アクションカメラ ===== -->
-  <div class="section-box">
-    <div class="section-header bg-action">
-      <div class="num">③</div>
-      <span>🎯 アクションカメラ（Canon）— 活動中の写真を自動撮影</span>
-    </div>
-    <div class="section-body">
-      <div class="auto-badge">
-        <span>✅</span> 先生の操作は不要！自動で撮影されます
-      </div>
-
-      <p style="margin: 14px 0;">カメラが顔やポーズを自動認識し、ハンズフリーで撮影します。先生は保育に集中できます。</p>
-
-      <ol class="steps">
-        <li>
-          <div class="step-num">1</div>
-          <div class="step-text"><strong>カメラが顔・ポーズを認識</strong><br>自動で最適なタイミングに撮影します</div>
-        </li>
-        <li>
-          <div class="step-num">2</div>
-          <div class="step-text"><strong>PCのピクチャーフォルダに一時保存</strong></div>
-        </li>
-        <li>
-          <div class="step-num">3</div>
-          <div class="step-text"><strong>1日1回、Azureクラウドへ自動同期</strong><br>Power Automateが日付フォルダを作成して保存します</div>
-        </li>
-      </ol>
-    </div>
-  </div>
-
-  <!-- ===== ④ 写真を見る ===== -->
-  <div class="section-box">
-    <div class="section-header bg-photo">
-      <div class="num">④</div>
-      <span>🖼️ 写真を見る（SharePoint写真置場）</span>
-    </div>
-    <div class="section-body">
-      <p style="margin-bottom:14px;">撮影された写真はSharePointの写真置場に保存されます。ここからダウンロードできます。</p>
-
-      <ol class="steps">
-        <li>
-          <div class="step-num">1</div>
-          <div class="step-text">
-            <strong>写真置場のページにアクセスする</strong>
-            ブラウザで <code style="background:#f0f4f8; padding:2px 6px; border-radius:4px;">childcamera-my.sharepoint.com</code> を開きます
-          </div>
-        </li>
-      </ol>
-
-      <div class="account-box">
-        <table>
-          <tr>
-            <td>アカウント</td>
-            <td class="val">hanamizuki@child-camera.com</td>
-          </tr>
-          <tr>
-            <td>パスワード</td>
-            <td class="val">2ndF@ctory</td>
-          </tr>
-        </table>
-      </div>
-
-      <div class="screenshot-placeholder">
-        <div class="ph-label">📸 スクリーンショット</div>
-        <div class="ph-icon">📁</div>
-        <p><strong>SharePoint 写真置場 ログイン・一覧画面</strong></p>
-        <p style="margin-top:4px;">実際の画面をここに挿入してください</p>
-      </div>
-
-      <ol class="steps" start="2">
-        <li>
-          <div class="step-num">2</div>
-          <div class="step-text">
-            <strong>日付フォルダから写真を選ぶ</strong>
-            撮影日ごとにフォルダが作成されています
-          </div>
-        </li>
-        <li>
-          <div class="step-num">3</div>
-          <div class="step-text">
-            <strong>ZIP形式でダウンロード</strong>
-            写真をまとめてZIPファイルとしてダウンロードできます
-          </div>
-        </li>
-      </ol>
-    </div>
-  </div>
-
-  <!-- ===== ⑤ 顔写真登録アプリ ===== -->
-  <div class="section-box">
-    <div class="section-header bg-app">
-      <div class="num">⑤</div>
-      <span>👤 顔写真を登録する（写真登録アプリ）— 最初だけ必要</span>
-    </div>
-    <div class="section-body">
-      <div class="info-banner">
-        <span class="bi">ℹ️</span>
-        <span>AIが「この子の写真だけを集める」ために、最初に園児・職員の顔写真を登録する必要があります。一度登録すれば、以降は自動で識別されます。</span>
-      </div>
-
-      <ol class="steps" style="margin-top:16px;">
-        <li>
-          <div class="step-num">1</div>
-          <div class="step-text">
-            <strong>写真登録アプリ（Power Apps）を開く</strong>
-            システム担当者から共有されたURLにアクセスします
-          </div>
-        </li>
-      </ol>
-
-      <div class="account-box">
-        <table>
-          <tr>
-            <td>アカウント</td>
-            <td class="val">hanamizuki@child-camera.com</td>
-          </tr>
-          <tr>
-            <td>パスワード</td>
-            <td class="val">2ndF@ctory</td>
-          </tr>
-        </table>
-      </div>
-
-      <div class="screenshot-placeholder">
-        <div class="ph-label">📸 スクリーンショット</div>
-        <div class="ph-icon">📲</div>
-        <p><strong>写真登録アプリ（Power Apps）トップ画面</strong></p>
-        <p style="margin-top:4px;">実際の画面をここに挿入してください</p>
-      </div>
-
-      <ol class="steps" start="2">
-        <li>
-          <div class="step-num">2</div>
-          <div class="step-text">
-            <strong>園児・職員の顔写真をアップロード</strong>
-            一人ひとりの写真を登録します。詳しい操作は動画をご覧ください。
-          </div>
-        </li>
-      </ol>
-
-      <div style="margin-top: 10px;">
-        <a class="youtube-btn" href="https://youtu.be/5C-SKXofrW0" target="_blank">
-          ▶ YouTube 操作説明動画を見る
+      <h4 style="color:#555; margin-bottom:12px;">📄 おはようカメラ 説明資料</h4>
+      <embed src="images/ohayo-camera.pdf" type="application/pdf" width="100%" height="600px" style="border-radius:10px; border:1px solid #dde4ea;">
+      <div style="margin-top:14px;">
+        <a href="images/ohayo-camera.pdf" download="おはようカメラ説明資料.pdf"
+           style="display:inline-flex; align-items:center; gap:8px; background:#4db8a4; color:white; border-radius:8px; padding:10px 20px; font-size:14px; font-weight:bold; text-decoration:none;">
+          ⬇ おはようカメラ説明資料をダウンロード（PDF）
         </a>
       </div>
     </div>
   </div>
 
-  <!-- ===== ⑥ 笑顔判定レポート ===== -->
+  <!-- ② Pickカメラ -->
   <div class="section-box">
-    <div class="section-header bg-ai">
-      <div class="num">⑥</div>
-      <span>😊 AI笑顔判定レポート（先生向け）</span>
+    <div class="section-header bg-action">
+      <div class="num">②</div>
+      <span>📸 Pickカメラ＋Androidスマフォ — 活動中の写真を自動撮影</span>
     </div>
     <div class="section-body">
-      <p style="margin-bottom:14px;">Azure Face APIが撮影した写真を分析し、園児の笑顔スコアを自動判定します。</p>
-
-      <div style="display:flex; gap:16px; flex-wrap:wrap; margin: 14px 0;">
-        <div style="flex:1; min-width:200px; background:#f0f9f5; border-radius:10px; padding:16px; text-align:center;">
-          <div style="font-size:30px; margin-bottom:8px;">📊</div>
-          <strong>先生向け</strong>
-          <p style="font-size:13px; margin-top:6px; color:#555;">笑顔判定の結果を<br>Excelレポートで確認・DL</p>
-        </div>
-        <div style="flex:1; min-width:200px; background:#f0f4fb; border-radius:10px; padding:16px; text-align:center;">
-          <div style="font-size:30px; margin-bottom:8px;">🗂️</div>
-          <strong>保護者向け</strong>
-          <p style="font-size:13px; margin-top:6px; color:#555;">顔認識で我が子の写真だけを<br>検索→ZIPで提供</p>
-        </div>
-      </div>
-
-      <div class="info-banner green">
-        <span class="bi">✅</span>
-        <span>レポートは日々の保育記録・発達支援の資料として活用できます。</span>
+      <div class="auto-badge">✅ 先生の操作は不要！自動で撮影されます</div>
+      <p style="margin:14px 0;">カメラが顔やポーズを自動認識し、ハンズフリーで撮影します。先生は保育に集中できます。</p>
+      <ol class="steps">
+        <li><div class="step-num">1</div><div class="step-text"><strong>カメラが顔・ポーズを認識</strong>自動で最適なタイミングに撮影します</div></li>
+        <li><div class="step-num">2</div><div class="step-text"><strong>Androidスマフォに一時保存</strong></div></li>
+        <li><div class="step-num">3</div><div class="step-text"><strong>Azureクラウドへ自動転送・保存</strong>撮影データは毎日1回、自動的にAzureクラウドへ転送・保存されます。先生が転送作業をする必要はありません。</div></li>
+      </ol>
+      <div class="screenshot-placeholder">
+        <div class="ph-label">📸 スクリーンショット</div>
+        <div class="ph-icon">📸</div>
+        <p><strong>Pickカメラ 動作画面</strong></p>
+        <p style="margin-top:4px;">実際の画面をここに挿入してください</p>
       </div>
     </div>
   </div>
 
-  <!-- ===== ⑦ アカウント情報まとめ ===== -->
+  <!-- ③ 管理画面 -->
   <div class="section-box">
-    <div class="section-header bg-account">
-      <div class="num">⑦</div>
-      <span>🔑 アカウント情報まとめ</span>
+    <div class="section-header bg-kanri">
+      <div class="num">③</div>
+      <span>🖥️ 管理画面 — 顔写真登録・写真確認・レポート出力</span>
+    </div>
+    <div class="section-body">
+      <h4 style="color:#555; margin-bottom:12px;">【顔写真を登録する】— 最初だけ必要</h4>
+      <div class="info-banner">
+        <span class="bi">ℹ️</span>
+        <span>AIが「この子の写真だけを集める」ために、最初に園児・職員の顔写真を登録する必要があります。一度登録すれば、以降は自動で識別されます。</span>
+      </div>
+      <ol class="steps" style="margin-top:14px;">
+        <li><div class="step-num">1</div><div class="step-text"><strong>写真登録アプリ（Power Apps）にログインする</strong></div></li>
+      </ol>
+      <div class="account-box">
+        <table>
+          <tr><td>アカウント</td><td class="val">hanamizuki@child-camera.com</td></tr>
+          <tr><td>パスワード</td><td class="val">2ndF@ctory</td></tr>
+        </table>
+      </div>
+      <div class="screenshot-placeholder">
+        <div class="ph-label">📸 スクリーンショット</div>
+        <div class="ph-icon">📲</div>
+        <p><strong>写真登録アプリ（Power Apps）画面</strong></p>
+        <p style="margin-top:4px;">実際の画面をここに挿入してください</p>
+      </div>
+      <ol class="steps" start="2">
+        <li><div class="step-num">2</div><div class="step-text"><strong>園児・職員の顔写真をアップロード</strong>詳しい操作は下の動画をご覧ください</div></li>
+      </ol>
+      <div style="margin:10px 0 24px;">
+        <a class="youtube-btn" href="https://youtu.be/5C-SKXofrW0" target="_blank">▶ YouTube 操作説明動画を見る</a>
+      </div>
+
+      <hr style="border:none; border-top:1px solid #eee; margin:24px 0;">
+
+      <h4 style="color:#555; margin-bottom:12px;">【写真を確認・ダウンロードする】</h4>
+      <ol class="steps">
+        <li><div class="step-num">1</div><div class="step-text"><strong>写真置場（SharePoint）にログインする</strong></div></li>
+      </ol>
+      <div class="account-box">
+        <table>
+          <tr><td>アカウント</td><td class="val">hanamizuki@child-camera.com</td></tr>
+          <tr><td>パスワード</td><td class="val">2ndF@ctory</td></tr>
+        </table>
+      </div>
+      <div class="screenshot-placeholder">
+        <div class="ph-label">📸 スクリーンショット</div>
+        <div class="ph-icon">📁</div>
+        <p><strong>SharePoint 写真置場 一覧画面</strong></p>
+        <p style="margin-top:4px;">実際の画面をここに挿入してください</p>
+      </div>
+      <ol class="steps" start="2">
+        <li><div class="step-num">2</div><div class="step-text"><strong>日付フォルダから写真を選ぶ</strong>撮影日ごとにフォルダが作成されています</div></li>
+        <li><div class="step-num">3</div><div class="step-text"><strong>ZIP形式でダウンロード</strong>写真をまとめてダウンロードできます</div></li>
+      </ol>
+
+      <hr style="border:none; border-top:1px solid #eee; margin:24px 0;">
+
+      <h4 style="color:#555; margin-bottom:12px;">【AI笑顔判定レポートを見る】</h4>
+      <div style="display:flex; gap:16px; flex-wrap:wrap; margin:14px 0;">
+        <div style="flex:1; min-width:180px; background:#f0f9f5; border-radius:10px; padding:16px; text-align:center;">
+          <div style="font-size:28px; margin-bottom:6px;">📊</div>
+          <strong>先生向け</strong>
+          <p style="font-size:13px; margin-top:6px; color:#555;">笑顔判定の結果を<br>Excelレポートで確認・DL</p>
+        </div>
+        <div style="flex:1; min-width:180px; background:#f0f4fb; border-radius:10px; padding:16px; text-align:center;">
+          <div style="font-size:28px; margin-bottom:6px;">🗂️</div>
+          <strong>保護者向け</strong>
+          <p style="font-size:13px; margin-top:6px; color:#555;">顔認識で我が子の写真を<br>ZIPでダウンロード提供</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- アカウント情報まとめ -->
+  <div class="section-box">
+    <div class="section-header" style="background:#2e7d6f;">
+      <div class="num">🔑</div>
+      <span>アカウント情報まとめ</span>
     </div>
     <div class="section-body">
       <div class="info-banner orange" style="margin-bottom:16px;">
         <span class="bi">⚠️</span>
         <span>パスワードは担当者以外に共有しないようにしてください。</span>
       </div>
-
       <table class="account-table">
-        <thead>
-          <tr>
-            <th>用途</th>
-            <th>アカウント</th>
-            <th>パスワード</th>
-          </tr>
-        </thead>
+        <thead><tr><th>用途</th><th>アカウント</th><th>パスワード</th></tr></thead>
         <tbody>
           <tr>
-            <td>📁 写真置場（SharePoint）<br>📲 写真登録アプリ（Power Apps）</td>
+            <td>📁 写真置場 / 📲 写真登録アプリ</td>
             <td class="mono">hanamizuki@child-camera.com</td>
             <td class="mono">2ndF@ctory</td>
           </tr>
@@ -655,19 +301,16 @@
     </div>
   </div>
 
-  <!-- ===== ⑧ 困ったときは ===== -->
+  <!-- 困ったときは -->
   <div class="section-box">
-    <div class="section-header bg-trouble">
-      <div class="num">⑧</div>
-      <span>🆘 困ったときは</span>
+    <div class="section-header" style="background:#888;">
+      <div class="num">🆘</div>
+      <span>困ったときは</span>
     </div>
     <div class="section-body">
       <div style="margin-bottom:16px;">
-        <a class="youtube-btn" href="https://youtu.be/5C-SKXofrW0" target="_blank">
-          ▶ YouTube 操作説明動画を見る
-        </a>
+        <a class="youtube-btn" href="https://youtu.be/5C-SKXofrW0" target="_blank">▶ YouTube 操作説明動画を見る</a>
       </div>
-
       <h4 style="color:#555; margin-bottom:10px;">よくあるトラブルチェックリスト</h4>
       <ul class="checklist">
         <li>カメラが映らない → PCの電源とネットワーク接続を確認する</li>
@@ -679,13 +322,67 @@
     </div>
   </div>
 
+  <!-- ④ 動画カメラ（Safie） -->
+  <div class="section-box">
+    <div class="section-header bg-safie">
+      <div class="num">④</div>
+      <span>📹 動画カメラ（Safie）— リアルタイムで保育室を確認</span>
+    </div>
+    <div class="section-body">
+      <div class="info-banner">
+        <span class="bi">ℹ️</span>
+        <span>Safieはスマートフォン・PCのブラウザからアクセスできるリアルタイム動画配信サービスです。配信時間：<strong>朝 8:00 〜 夜 20:00（予定）</strong></span>
+      </div>
+
+      <h4 style="margin:18px 0 10px; color:#555;">ログイン手順</h4>
+      <ol class="steps">
+        <li>
+          <div class="step-num">1</div>
+          <div class="step-text">
+            <strong>Safieのログインページを開く</strong>
+            ブラウザで <code style="background:#f0f4f8; padding:2px 6px; border-radius:4px;">safie.link</code> にアクセスし、メールアドレスとパスワードを入力して「ログイン」を押します
+          </div>
+        </li>
+      </ol>
+      <div class="account-box">
+        <table>
+          <tr><td>アカウント</td><td class="val">kengoozeki@soumubucho.com</td></tr>
+          <tr><td>パスワード</td><td class="val">GWCkengo999</td></tr>
+        </table>
+      </div>
+      <img src="images/safie-login.png" alt="Safie ログイン画面" class="screenshot-real">
+      <p class="screenshot-caption">▲ Safie ログイン画面</p>
+
+      <ol class="steps">
+        <li>
+          <div class="step-num">2</div>
+          <div class="step-text">
+            <strong>デバイス一覧からカメラを選ぶ</strong>
+            ログイン後、「デバイス一覧」が表示されます。カメラのサムネイルをクリックします
+          </div>
+        </li>
+      </ol>
+      <img src="images/safie-devices.png" alt="Safie デバイス一覧" class="screenshot-real">
+      <p class="screenshot-caption">▲ デバイス一覧画面（カメラをクリック）</p>
+
+      <ol class="steps">
+        <li>
+          <div class="step-num">3</div>
+          <div class="step-text">
+            <strong>リアルタイム映像を確認する</strong>
+            保育室のライブ映像が表示されます。右上の「LIVE」が緑色のときは配信中です
+          </div>
+        </li>
+      </ol>
+      <img src="images/safie-view.png" alt="Safie カメラ映像" class="screenshot-real">
+      <p class="screenshot-caption">▲ カメラ映像画面（LIVE配信中）</p>
+    </div>
+  </div>
 </div>
 
-<!-- ===== フッター ===== -->
 <div class="footer">
   <p>はなみずき園 カメラシステム 先生向け操作ガイド　|　作成：クラウドパワー株式会社</p>
   <p style="margin-top:4px;">ご不明点はシステム担当者までお問い合わせください</p>
 </div>
-
 </body>
 </html>
