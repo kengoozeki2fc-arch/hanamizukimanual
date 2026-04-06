@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>一括登録 操作手順書｜株式会社永賢組</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #222;
+      background: #f5f5f5;
+    }
+
+    /* ===== 表紙ヘッダー ===== */
+    .cover {
+      background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%);
+      color: #fff;
+      text-align: center;
+      padding: 60px 20px 50px;
+    }
+    .cover .label {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.5);
+      border-radius: 4px;
+      padding: 4px 16px;
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      margin-bottom: 18px;
+    }
+    .cover h1 {
+      font-size: clamp(22px, 4vw, 34px);
+      font-weight: 700;
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
+    .cover h1 span { display: block; font-size: 0.65em; font-weight: 400; opacity: 0.85; margin-top: 6px; }
+    .cover .meta {
+      margin-top: 24px;
+      font-size: 14px;
+      opacity: 0.85;
+    }
+
+    /* ===== 目次ナビ ===== */
+    .toc {
+      background: #fff;
+      border-bottom: 3px solid #2a6496;
+      padding: 20px 0;
+    }
+    .toc ul {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px;
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 16px;
+    }
+    .toc ul li a {
+      color: #2a6496;
+      text-decoration: none;
+      font-size: 13px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+    .toc ul li a:hover { background: #e8f0fa; }
+
+    /* ===== メインコンテンツ ===== */
+    main {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 0 16px 60px;
+    }
+
+    /* ===== セクション ===== */
+    section {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+    .section-header {
+      background: #1a3a5c;
+      color: #fff;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-header .ch {
+      font-size: 12px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 3px;
+      padding: 2px 8px;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+    .section-header h2 { font-size: 18px; font-weight: 700; }
+    .section-body { padding: 24px; }
+
+    /* ===== 登録方法比較テーブル ===== */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+    }
+    .compare-table th, .compare-table td {
+      border: 1px solid #d0d7e0;
+      padding: 10px 14px;
+      text-align: center;
+      vertical-align: middle;
+    }
+    .compare-table thead th {
+      background: #2a6496;
+      color: #fff;
+      font-weight: 600;
+    }
+    .compare-table thead th:first-child { background: #1a3a5c; }
+    .compare-table tbody tr:nth-child(odd) td { background: #f7faff; }
+    .compare-table tbody td:first-child { font-weight: 600; background: #f0f4f8; }
+
+    /* ===== 注意・ポイントボックス ===== */
+    .notice {
+      background: #fff8e1;
+      border-left: 4px solid #f59f00;
+      border-radius: 0 6px 6px 0;
+      padding: 12px 16px;
+      margin: 12px 0;
+      font-size: 14px;
+    }
+    .notice strong { color: #c77b00; }
+
+    .info {
+      background: #e8f0fa;
+      border-left: 4px solid #2a6496;
+      border-radius: 0 6px 6px 0;
+      padding: 12px 16px;
+      margin: 12px 0;
+      font-size: 14px;
+    }
+
+    .important {
+      background: #fdecea;
+      border: 1px solid #f5c6c0;
+      border-left: 4px solid #e53935;
+      border-radius: 0 6px 6px 0;
+      padding: 14px 18px;
+      margin: 16px 0;
+    }
+    .important .imp-title {
+      color: #c62828;
+      font-weight: 700;
+      margin-bottom: 8px;
+      font-size: 15px;
+    }
+
+    /* ===== 準備リスト ===== */
+    ul.checklist {
+      list-style: none;
+      margin: 10px 0;
+    }
+    ul.checklist li {
+      padding: 4px 0 4px 28px;
+      position: relative;
+    }
+    ul.checklist li::before {
+      content: "✔";
+      position: absolute;
+      left: 0;
+      color: #2a6496;
+      font-weight: 700;
+    }
+
+    /* ===== CSV列説明テーブル ===== */
+    .csv-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      margin: 16px 0;
+    }
+    .csv-table th {
+      background: #1a3a5c;
+      color: #fff;
+      padding: 8px 12px;
+      text-align: center;
+    }
+    .csv-table td {
+      border: 1px solid #d0d7e0;
+      padding: 8px 12px;
+      vertical-align: top;
+    }
+    .csv-table tr:nth-child(even) td { background: #f7faff; }
+    .csv-table td:first-child { text-align: center; width: 44px; font-weight: 600; color: #555; }
+    .csv-table td:nth-child(3) { text-align: center; width: 60px; }
+    .badge-req {
+      display: inline-block;
+      background: #e53935;
+      color: #fff;
+      border-radius: 3px;
+      padding: 1px 6px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .badge-opt {
+      display: inline-block;
+      background: #78909c;
+      color: #fff;
+      border-radius: 3px;
+      padding: 1px 6px;
+      font-size: 12px;
+    }
+
+    /* ===== 注意事項リスト ===== */
+    .rules-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 14px 0;
+    }
+    @media (max-width: 600px) { .rules-grid { grid-template-columns: 1fr; } }
+    .rule-card {
+      border: 1px solid #d0d7e0;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .rule-card .rule-title {
+      background: #2a6496;
+      color: #fff;
+      padding: 7px 12px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .rule-card .rule-body {
+      padding: 10px 12px;
+      font-size: 13px;
+      background: #f7faff;
+    }
+    .rule-card .rule-body p { margin-bottom: 4px; }
+    .rule-card .rule-body .ng { color: #c62828; font-size: 12px; }
+
+    /* ===== STEPカード ===== */
+    .step-list {
+      margin: 16px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .step-card {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      border: 1px solid #d0d7e0;
+      border-radius: 8px;
+      padding: 16px;
+      background: #fafcff;
+    }
+    .step-number {
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      background: #2a6496;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+    .step-number span { font-size: 20px; }
+    .step-content h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; color: #1a3a5c; }
+    .step-content ul {
+      list-style: none;
+      padding: 0;
+    }
+    .step-content ul li {
+      padding: 2px 0 2px 18px;
+      position: relative;
+      font-size: 14px;
+    }
+    .step-content ul li::before {
+      content: "▶";
+      position: absolute;
+      left: 0;
+      color: #2a6496;
+      font-size: 10px;
+      top: 5px;
+    }
+
+    /* ===== URL表示 ===== */
+    .url-box {
+      background: #1a3a5c;
+      color: #7dd3fc;
+      font-family: "Courier New", monospace;
+      font-size: 14px;
+      padding: 12px 18px;
+      border-radius: 6px;
+      margin: 12px 0;
+      word-break: break-all;
+    }
+    .url-box a { color: #7dd3fc; }
+
+    /* ===== トラブル対処テーブル ===== */
+    .trouble-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      margin: 12px 0;
+    }
+    .trouble-table th {
+      background: #1a3a5c;
+      color: #fff;
+      padding: 10px 14px;
+      text-align: left;
+    }
+    .trouble-table td {
+      border: 1px solid #d0d7e0;
+      padding: 10px 14px;
+      vertical-align: top;
+    }
+    .trouble-table tr:nth-child(even) td { background: #f7faff; }
+    .trouble-table td:first-child { font-weight: 600; color: #c62828; width: 40%; }
+
+    /* ===== お問い合わせ ===== */
+    .contact-box {
+      background: #e8f0fa;
+      border-radius: 8px;
+      padding: 20px 24px;
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .contact-item { font-size: 14px; }
+    .contact-item .label { font-weight: 700; color: #1a3a5c; font-size: 12px; margin-bottom: 4px; }
+
+    /* ===== フッター ===== */
+    footer {
+      text-align: center;
+      font-size: 12px;
+      color: #888;
+      padding: 20px;
+    }
+
+    /* 見出し */
+    h3.sub { font-size: 15px; color: #1a3a5c; margin: 20px 0 8px; border-bottom: 2px solid #d0d7e0; padding-bottom: 4px; }
+
+    p { margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+
+<!-- 表紙 -->
+<div class="cover">
+  <div class="label">建築現場の入退場管理システム</div>
+  <h1>一括登録 操作手順書<span>株式会社永賢組　現場事務担当者向け</span></h1>
+  <div class="meta">作成日：2026年4月　／　対象システム：face.gemba-ai.cloud</div>
+</div>
+
+<!-- 目次ナビ -->
+<nav class="toc">
+  <ul>
+    <li><a href="#ch1">第1章 はじめに</a></li>
+    <li><a href="#ch2">第2章 画面直接入力の操作手順</a></li>
+    <li><a href="#ch3">第3章 CSVファイルの作り方</a></li>
+    <li><a href="#ch4">第4章 CSV一括登録の操作手順</a></li>
+    <li><a href="#ch5">第5章 よくあるトラブルと対処法</a></li>
+    <li><a href="#ch6">第6章 お問い合わせ</a></li>
+  </ul>
+</nav>
+
+<main>
+
+  <!-- 第1章 -->
+  <section id="ch1">
+    <div class="section-header">
+      <span class="ch">第1章</span>
+      <h2>はじめに</h2>
+    </div>
+    <div class="section-body">
+      <p>本手順書は、建築現場の入退場管理システム「個人情報一括登録」機能の操作方法を、事務担当者向けに説明したものです。</p>
+
+      <h3 class="sub">登録方法は2種類あります</h3>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>CSV一括登録</th>
+            <th>画面直接入力</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>向いている場面</td>
+            <td>3名以上の一斉登録時</td>
+            <td>1〜2名の登録時</td>
+          </tr>
+          <tr>
+            <td>操作方法</td>
+            <td>CSVファイルをアップロードして保存</td>
+            <td>一括登録ページの表に直接入力して保存</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="info">本手順書では<strong>画面直接入力の手順（第2章）</strong>と<strong>CSV一括登録の手順（第4章）</strong>の順に説明します。</div>
+
+      <h3 class="sub">事前に準備するもの（CSV一括登録の場合）</h3>
+      <ul class="checklist">
+        <li>CSVテンプレートファイル（システム上の「CSVテンプレート」ボタンからダウンロード）</li>
+        <li>登録する作業員の情報（氏名・住所・緊急連絡先など）</li>
+        <li>Excelまたはスプレッドシートアプリ（CSVを編集するため）</li>
+      </ul>
+
+      <div class="notice"><strong>※ 資格者証写真・顔写真はCSV登録不可。</strong><br>
+      初回ログイン時（現場での新規入場時または事前の個人登録時）に個別登録ページで登録してください。</div>
+    </div>
+  </section>
+
+  <!-- 第2章 -->
+  <section id="ch2">
+    <div class="section-header">
+      <span class="ch">第2章</span>
+      <h2>画面直接入力の操作手順</h2>
+    </div>
+    <div class="section-body">
+      <p>少人数（1〜2名）を登録する場合は、CSVを使わずに画面のテーブルに直接入力できます。</p>
+      <div class="url-box">https://face.gemba-ai.cloud/multiadd?clientId=1</div>
+
+      <div class="step-list">
+        <div class="step-card">
+          <div class="step-number">STEP<span>1</span></div>
+          <div class="step-content">
+            <h3>一括登録ページを開く</h3>
+            <ul>
+              <li>ブラウザで上記URLを開く</li>
+            </ul>
+          </div>
+        </div>
+
+        <div style="margin: 4px 0 8px; text-align:center;">
+          <img src="screen_nyutaijo.png" alt="個人情報一括登録画面" style="max-width:100%; border:1px solid #d0d7e0; border-radius:6px; box-shadow:0 2px 8px rgba(0,0,0,0.12);">
+          <p style="font-size:12px; color:#666; margin-top:6px;">▲ 一括登録ページの画面例（「＋ 新しいアイテムを追加」で行を増やせます）</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">STEP<span>2</span></div>
+          <div class="step-content">
+            <h3>テーブルに直接入力する</h3>
+            <ul>
+              <li>画面の表（テーブル）の各項目欄に直接入力する</li>
+              <li>氏名・フリガナ・生年月日・性別・住所など順番に入力する</li>
+              <li>2名以上登録する場合は「＋ 新しいアイテムを追加」をクリックして行を追加する</li>
+            </ul>
+            <div class="notice" style="margin-top:10px;"><strong>※ 複数人の登録も可能です。</strong>ただし入力中にエラーや画面の操作ミスでデータが消えることがあります。<br>数名ごとにこまめに「保存」ボタンを押して、登録内容を確実に保存してください。</div>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">STEP<span>3</span></div>
+          <div class="step-content">
+            <h3>「保存」ボタンをクリックする</h3>
+            <ul>
+              <li>入力内容を確認したら画面中央の「保存」ボタンをクリック</li>
+              <li>登録完了のメッセージが表示されれば完了</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="important">
+        <div class="imp-title">【重要】資格者証写真・顔写真と初回ログインについて</div>
+        <p>① 資格者証写真・顔写真は、画面直接入力・CSV一括登録のいずれの方法でも登録できません。<br>
+        　以下のタイミングで個別登録ページ（/shokai/touroku）から登録してください。</p>
+        <ul class="checklist" style="margin: 6px 0 10px 12px;">
+          <li>現場での新規入場時（初回ログイン時）</li>
+          <li>事前に個人登録する場合</li>
+        </ul>
+        <p>② 初回ログイン時に「電話番号入力画面」が表示されます。<br>
+        　携帯電話をお持ちでない作業員の方は、入力せずそのまま「確認」をクリックしてスキップできます。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 第3章 -->
+  <section id="ch3">
+    <div class="section-header">
+      <span class="ch">第3章</span>
+      <h2>CSVファイルの作り方</h2>
+    </div>
+    <div class="section-body">
+
+      <h3 class="sub">CSVテンプレートのダウンロード</h3>
+      <p>一括登録ページ左上の「↓ CSVテンプレート」ボタンをクリックするとテンプレートをダウンロードできます。</p>
+      <div class="notice">
+        <strong>※ テンプレートの1行目（ヘッダー行）は絶対に削除・変更しないでください。</strong><br>
+        ※ Excelで開いて編集し、保存時に必ず「CSV UTF-8（コンマ区切り）」形式を選んでください。
+      </div>
+
+      <h3 class="sub">入力項目の説明</h3>
+      <p>2行目以降に、1名につき1行で入力します。</p>
+      <p style="font-size:13px; color:#555;">
+        <span class="badge-req">◎ 必須</span>&nbsp;&nbsp;
+        <span class="badge-opt">○ 任意</span>　（空欄でも登録可）
+      </p>
+      <table class="csv-table">
+        <thead>
+          <tr>
+            <th>列</th>
+            <th>項目名</th>
+            <th>必須</th>
+            <th>入力例・注意事項</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>氏名</td><td><span class="badge-req">◎</span></td><td>山田太郎</td></tr>
+          <tr><td>2</td><td>フリガナ</td><td><span class="badge-req">◎</span></td><td>ヤマダタロウ（全角カタカナ）</td></tr>
+          <tr><td>3</td><td>生年月日</td><td><span class="badge-req">◎</span></td><td>1985/04/01（yyyy/mm/dd形式）</td></tr>
+          <tr><td>4</td><td>性別</td><td><span class="badge-req">◎</span></td><td>男　または　女</td></tr>
+          <tr><td>5</td><td>郵便番号</td><td><span class="badge-req">◎</span></td><td>123-4567（ハイフンあり）</td></tr>
+          <tr><td>6</td><td>住所</td><td><span class="badge-req">◎</span></td><td>大阪府大阪市○○区…（都道府県から）</td></tr>
+          <tr><td>7</td><td>電話番号</td><td><span class="badge-req">◎</span></td><td>090-1234-5678</td></tr>
+          <tr><td>8</td><td>緊急連絡先電話番号</td><td><span class="badge-req">◎</span></td><td>06-1234-5678</td></tr>
+          <tr><td>9</td><td>緊急連絡先氏名</td><td><span class="badge-req">◎</span></td><td>山田花子</td></tr>
+          <tr><td>10</td><td>緊急連絡先続柄</td><td><span class="badge-req">◎</span></td><td>妻　父　母　など</td></tr>
+          <tr><td>11</td><td>一人親方ですか？</td><td><span class="badge-req">◎</span></td><td>はい　または　いいえ（デフォルト：いいえ）</td></tr>
+          <tr><td>12</td><td>外国の方ですか？</td><td><span class="badge-req">◎</span></td><td>はい　または　いいえ（デフォルト：いいえ）</td></tr>
+          <tr><td>13</td><td>技能実習生ですか？</td><td><span class="badge-opt">○</span></td><td>空欄でも可</td></tr>
+          <tr><td>14</td><td>労災に特別加入していますか？</td><td><span class="badge-req">◎</span></td><td>はい　または　いいえ（デフォルト：いいえ）</td></tr>
+          <tr><td>15</td><td>保険加入金額</td><td><span class="badge-opt">○</span></td><td>1000000（数字のみ、円マーク・カンマ不要）</td></tr>
+          <tr><td>16</td><td>所属取引先</td><td><span class="badge-req">◎</span></td><td>○○工業株式会社</td></tr>
+          <tr><td>17</td><td>血液型</td><td><span class="badge-opt">○</span></td><td>A　B　O　AB　のいずれか</td></tr>
+          <tr><td>18</td><td>直近の健康診断日</td><td><span class="badge-opt">○</span></td><td>2025/10/01（yyyy/mm/dd形式）</td></tr>
+        </tbody>
+      </table>
+
+      <h3 class="sub">入力時の注意事項</h3>
+      <div class="rules-grid">
+        <div class="rule-card">
+          <div class="rule-title">日付の書式</div>
+          <div class="rule-body">
+            <p>必ず「yyyy/mm/dd」形式で入力</p>
+            <p>例：<strong>1985/04/01</strong></p>
+            <p>月・日は必ず2桁で入力（4月1日 → 04/01）</p>
+            <p class="ng">✕「R7.4.1」「85/4/1」などはエラーになります</p>
+          </div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-title">「はい・いいえ」の入力</div>
+          <div class="rule-body">
+            <p>「はい」または「いいえ」をそのまま入力</p>
+            <p>デフォルトは「いいえ」、該当者は「はい」と入力</p>
+            <p class="ng">✕「○」「×」「yes」「YES」は使用不可</p>
+          </div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-title">ファイルの保存形式</div>
+          <div class="rule-body">
+            <p>Excelで編集後、必ず以下の形式で保存：</p>
+            <p><strong>「CSV UTF-8（コンマ区切り）」</strong></p>
+            <p>「名前をつけて保存」→ファイル形式で選択</p>
+          </div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-title">ヘッダー行について</div>
+          <div class="rule-body">
+            <p>1行目のヘッダー行は<strong>絶対に変更・削除しない</strong></p>
+            <p>2行目以降に入力する</p>
+            <p class="ng">✕ 変更するとエラーまたは誤登録の原因に</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 第4章 -->
+  <section id="ch4">
+    <div class="section-header">
+      <span class="ch">第4章</span>
+      <h2>CSV一括登録の操作手順</h2>
+    </div>
+    <div class="section-body">
+      <p>ログイン不要でアクセスできます。ブラウザで以下のURLを開いてください。</p>
+      <div class="url-box">https://face.gemba-ai.cloud/multiadd?clientId=1</div>
+
+      <div class="step-list">
+        <div class="step-card">
+          <div class="step-number">STEP<span>1</span></div>
+          <div class="step-content">
+            <h3>一括登録ページを開く</h3>
+            <ul>
+              <li>ブラウザのアドレスバーに上記URLを入力してEnterを押す</li>
+              <li>「個人情報一括登録」画面が表示されることを確認する</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">STEP<span>2</span></div>
+          <div class="step-content">
+            <h3>「↓ CSVテンプレート」ボタンでテンプレートをダウンロードする</h3>
+            <ul>
+              <li>ページ左上の「↓ CSVテンプレート」ボタンをクリック</li>
+              <li>ダウンロードされたCSVファイルをExcelで開く</li>
+              <li>2行目以降に作業員情報を入力し「CSV UTF-8（コンマ区切り）」形式で保存する</li>
+              <li>入力方法の詳細は第3章を参照</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">STEP<span>3</span></div>
+          <div class="step-content">
+            <h3>「↑ CSVアップロード」ボタンでファイルを読み込む</h3>
+            <ul>
+              <li>ページ左上の「↑ CSVアップロード」ボタンをクリック</li>
+              <li>作成したCSVファイルを選択して「開く」をクリック</li>
+              <li>画面のテーブルに作業員情報が一覧表示されることを確認する</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">STEP<span>4</span></div>
+          <div class="step-content">
+            <h3>内容を確認して「保存」する</h3>
+            <ul>
+              <li>テーブルに表示された氏名・所属取引先などの内容を目視で確認する</li>
+              <li>問題なければ画面中央の「保存」ボタンをクリック</li>
+              <li>登録完了のメッセージが表示されれば完了</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="important">
+        <div class="imp-title">【重要】資格者証写真・顔写真と初回ログインについて</div>
+        <p>① 資格者証写真・顔写真は、画面直接入力・CSV一括登録のいずれの方法でも登録できません。<br>
+        　以下のタイミングで個別登録ページ（/shokai/touroku）から登録してください。</p>
+        <ul class="checklist" style="margin: 6px 0 10px 12px;">
+          <li>現場での新規入場時（初回ログイン時）</li>
+          <li>事前に個人登録する場合</li>
+        </ul>
+        <p>② 初回ログイン時に「電話番号入力画面」が表示されます。<br>
+        　携帯電話をお持ちでない作業員の方は、入力せずそのまま「確認」をクリックしてスキップできます。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 第5章 -->
+  <section id="ch5">
+    <div class="section-header">
+      <span class="ch">第5章</span>
+      <h2>よくあるトラブルと対処法</h2>
+    </div>
+    <div class="section-body">
+      <table class="trouble-table">
+        <thead>
+          <tr>
+            <th>トラブル内容</th>
+            <th>対処法</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>CSVアップロードしてもテーブルに何も表示されない</td>
+            <td>ファイル形式を確認してください。ExcelでCSV UTF-8形式で保存し直してください。</td>
+          </tr>
+          <tr>
+            <td>文字化けしている</td>
+            <td>保存時の文字コードをUTF-8に変更してください。<br>Excel「名前をつけて保存」→「CSV UTF-8（コンマ区切り）」を選択。</td>
+          </tr>
+          <tr>
+            <td>エラーが出て保存できない</td>
+            <td>エラー行の入力内容を確認してください。<br>・日付の書式（yyyy/mm/dd）<br>・はい/いいえの表記<br>・必須項目の空欄がないか</td>
+          </tr>
+          <tr>
+            <td>ヘッダー行が作業員として登録されてしまった</td>
+            <td>1行目を削除または変更した可能性があります。元のテンプレートからやり直してください。</td>
+          </tr>
+          <tr>
+            <td>初回ログイン時に電話番号を求められる</td>
+            <td>携帯電話をお持ちでない方は、入力せずそのまま「確認」をクリックするとスキップできます。</td>
+          </tr>
+          <tr>
+            <td>登録後に情報を修正したい</td>
+            <td>トップページから対象者を検索し、個別登録ページで修正してください。</td>
+          </tr>
+          <tr>
+            <td>資格者証・顔写真を登録したい</td>
+            <td>個別登録ページ（/shokai/touroku）から対象者を開き、写真をアップロードしてください。</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 第6章 -->
+  <section id="ch6">
+    <div class="section-header">
+      <span class="ch">第6章</span>
+      <h2>お問い合わせ</h2>
+    </div>
+    <div class="section-body">
+      <p>システムの操作に関するご不明点は、下記までご連絡ください。</p>
+      <div class="contact-box">
+        <div class="contact-item">
+          <div class="label">担当</div>
+          <div>システム管理担当者</div>
+        </div>
+        <div class="contact-item">
+          <div class="label">連絡先</div>
+          <div>—</div>
+        </div>
+        <div class="contact-item">
+          <div class="label">受付時間</div>
+          <div>平日 8:00〜17:00</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  株式会社永賢組　入退場管理システム　一括登録 操作手順書　／　2026年4月作成
+</footer>
+
+</body>
+</html>
