@@ -5,8 +5,10 @@
       "rewrite": "/hanamizuki/index.html"
     },
     {
-      "route": "/hanamizuki/*",
-      "rewrite": "/hanamizuki/index.html"
+      "route": "/hanamizuki/images/*",
+      "headers": {
+        "Cache-Control": "public, max-age=86400"
+      }
     },
     {
       "route": "/nagaken",
@@ -15,6 +17,18 @@
   ],
   "navigationFallback": {
     "rewrite": "/index.html",
-    "exclude": ["/hanamizuki/*", "/nagaken/*"]
+    "exclude": [
+      "/hanamizuki/images/*.png",
+      "/hanamizuki/images/*.jpg",
+      "/hanamizuki/images/*.pdf",
+      "/hanamizuki/*.html",
+      "/nagaken/images/*.png",
+      "/nagaken/images/*.jpg",
+      "/nagaken/*.html",
+      "/*.png",
+      "/*.jpg",
+      "/*.pdf",
+      "/*.html"
+    ]
   }
 }
