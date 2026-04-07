@@ -84,16 +84,28 @@
   .bg-kanri  { background: #7b5ea7; }
   .bg-safie  { background: #e05050; }
 
+  /* カメラカードのリンク化 */
+  a.camera-card { text-decoration: none; color: inherit; transition: transform 0.15s, box-shadow 0.15s; }
+  a.camera-card:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0,0,0,0.12); }
+
+  /* 上に戻るリンク */
+  .back-to-top { display: block; text-align: right; margin-top: 20px; font-size: 13px; color: #3a9fd0; text-decoration: none; }
+  .back-to-top:hover { text-decoration: underline; }
+
+  /* セクションへのアンカージャンプ時の余白 */
+  .section-box { scroll-margin-top: 20px; }
+
   @media print {
     body { background: white; }
     .section-box { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; }
+    .back-to-top { display: none; }
   }
 </style>
 </head>
 <body>
 
 <!-- ヘッダー -->
-<div class="header">
+<div class="header" id="top">
   <div class="badge">先生向け操作ガイド</div>
   <h1>📷 はなみずき園 カメラシステム</h1>
   <p>このガイドでは3種類のカメラシステムの使い方をわかりやすく説明します</p>
@@ -103,30 +115,30 @@
 <div class="overview">
   <h2 class="section-h2">システム全体像</h2>
   <div class="camera-cards">
-    <div class="camera-card c-ohayo">
+    <a href="#section-ohayo" class="camera-card c-ohayo">
       <div class="icon">🌅</div>
       <h3>① おはようカメラ（iPad）</h3>
       <p>「おはよう」の声で自動撮影。登園時の笑顔を記録</p>
       <span class="tag">自動撮影</span>
-    </div>
-    <div class="camera-card c-action">
+    </a>
+    <a href="#section-pick" class="camera-card c-action">
       <div class="icon">📸</div>
       <h3>② 自動追尾カメラ</h3>
       <p>顔・ポーズを認識してハンズフリーで自動撮影</p>
       <span class="tag">自動撮影</span>
-    </div>
-    <div class="camera-card c-kanri">
+    </a>
+    <a href="#section-kanri" class="camera-card c-kanri">
       <div class="icon">🖥️</div>
       <h3>③ 管理画面</h3>
       <p>顔写真登録・撮影写真の確認・笑顔レポート出力</p>
       <span class="tag">Web管理</span>
-    </div>
-    <div class="camera-card c-safie">
+    </a>
+    <a href="#section-safie" class="camera-card c-safie">
       <div class="icon">📹</div>
       <h3>⑤ 動画カメラ（Safie）</h3>
       <p>保育室のリアルタイム映像をスマホ・PCで確認</p>
       <span class="tag">ライブ配信</span>
-    </div>
+    </a>
   </div>
 
   <img src="images/system-overview.jpg" alt="システム全体像" class="system-image">
@@ -139,7 +151,7 @@
 
 <!-- ① おはようカメラ -->
 <div class="section">
-  <div class="section-box">
+  <div class="section-box" id="section-ohayo">
     <div class="section-header bg-ohayo">
       <div class="num">①</div>
       <span>🌅 おはようカメラ（iPad）— 登園時の笑顔を自動記録</span>
@@ -169,12 +181,13 @@
           ⬇ おはようカメラ説明資料をダウンロード（PDF）
         </a>
       </div>
+      <a href="#top" class="back-to-top">▲ 上に戻る</a>
     </div>
   </div>
 
 
   <!-- ② 自動追尾カメラ -->
-  <div class="section-box">
+  <div class="section-box" id="section-pick">
     <div class="section-header bg-action">
       <div class="num">②</div>
       <span>📸 自動追尾カメラ — 活動中の写真を自動撮影</span>
@@ -191,11 +204,12 @@
         <li><div class="step-num">2</div><div class="step-text"><strong>自動追尾カメラに一時保存</strong></div></li>
         <li><div class="step-num">3</div><div class="step-text"><strong>Azureクラウドへ自動転送・保存</strong>撮影データは毎日1回、自動的にAzureクラウドへ転送・保存されます。先生が転送作業をする必要はありません。</div></li>
       </ol>
+      <a href="#top" class="back-to-top">▲ 上に戻る</a>
     </div>
   </div>
 
   <!-- ③ 管理画面 -->
-  <div class="section-box">
+  <div class="section-box" id="section-kanri">
     <div class="section-header bg-kanri">
       <div class="num">③</div>
       <span>🖥️ 管理画面 — 顔写真登録・写真確認・レポート出力</span>
@@ -290,11 +304,12 @@
       <img src="images/teacher-smile-report-mail.png" alt="笑顔スコアレポートメール" class="screenshot-real">
       <p class="screenshot-caption">▲ 笑顔スコアレポートメール（リンクをクリックしてExcelレポートをダウンロード）</p>
 
+      <a href="#top" class="back-to-top">▲ 上に戻る</a>
     </div>
   </div>
 
 
-  <div class="section-box" style="margin-bottom:30px;">
+  <div class="section-box" id="section-check" style="margin-bottom:30px;">
     <div class="section-header bg-ohayo">
       <div class="num">④</div>
       <span>🔧 たまに確認ください！</span>
@@ -320,11 +335,12 @@
           </div>
         </li>
       </ol>
+      <a href="#top" class="back-to-top">▲ 上に戻る</a>
     </div>
   </div>
 
   <!-- 困ったときは -->
-  <div class="section-box">
+  <div class="section-box" id="section-help">
     <div class="section-header" style="background:#888;">
       <div class="num">🆘</div>
       <span>困ったときは</span>
@@ -341,11 +357,12 @@
         <li>おはようカメラが反応しない → iPadの充電と音声設定を確認する</li>
         <li>上記で解決しない → システム担当者に連絡する</li>
       </ul>
+      <a href="#top" class="back-to-top">▲ 上に戻る</a>
     </div>
   </div>
 
-  <!-- ④ 動画カメラ（Safie） -->
-  <div class="section-box">
+  <!-- ⑤ 動画カメラ（Safie） -->
+  <div class="section-box" id="section-safie">
     <div class="section-header bg-safie">
       <div class="num">⑤</div>
       <span>📹 動画カメラ（Safie）— リアルタイムで保育室を確認</span>
@@ -406,6 +423,7 @@
       </ol>
       <img src="images/safie-view.png" alt="Safie カメラ映像" class="screenshot-real">
       <p class="screenshot-caption">▲ カメラ映像画面（LIVE配信中）</p>
+      <a href="#top" class="back-to-top">▲ 上に戻る</a>
     </div>
   </div>
 </div>
