@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step3 テナント専用SPOサイト構築 | 新企業登録マニュアル</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Step 3 / 9 — テナント専用SPOサイト構築</h1>
+  <div class="subtitle">新企業専用のSharePointサイトを作成</div>
+</header>
+
+<main>
+  <div class="breadcrumb"><a href="index.html">🏠 TOP</a> &gt; Step3 SPOサイト構築</div>
+
+  <div class="card">
+    <h2>🎯 このステップのゴール</h2>
+    <p>新テナント用の<strong>専用SharePointサイト</strong>を作成します。このサイトには、テナント固有のマスタリスト（現場・協力業者・社員など）が配置されます。</p>
+    <p>永賢組の場合は <code>constructionInfo</code> ＝「建築現場情報登録（CP作成）」サイトに該当します。</p>
+  </div>
+
+  <div class="card">
+    <h2>🛠 サイト作成手順</h2>
+
+    <h3>1. SPO管理センターからサイト作成</h3>
+    <ol>
+      <li><code>https://nagaken-admin.sharepoint.com/</code> にアクセス</li>
+      <li>「アクティブなサイト」→「+ 作成」</li>
+      <li>「<strong>チームサイト</strong>」を選択（Microsoft 365グループ作成あり）</li>
+      <li>サイト情報を入力
+        <table>
+          <tr><th>項目</th><th>値</th></tr>
+          <tr><td>サイト名</td><td>例: 建築現場情報登録_九州永賢組</td></tr>
+          <tr><td>サイトアドレス</td><td>例: <code>constructionInfoKyushu</code></td></tr>
+          <tr><td>サイトの説明</td><td>九州永賢組専用 入退場管理マスタ</td></tr>
+          <tr><td>プライバシー設定</td><td><strong>プライベート</strong></td></tr>
+          <tr><td>言語</td><td>日本語</td></tr>
+          <tr><td>タイムゾーン</td><td>(UTC+09:00) 大阪、札幌、東京</td></tr>
+        </table>
+      </li>
+      <li>所有者にクラウドパワー社管理者＋テナント管理者を指定</li>
+      <li>「次へ」→ メンバー追加 → 「完了」</li>
+    </ol>
+
+    <h3>2. 完成したサイトURLを控える</h3>
+    <p>例: <code>https://nagaken.sharepoint.com/sites/constructionInfoKyushu/</code></p>
+
+    <div class="alert alert-info">
+      <strong>💡 命名規則の推奨</strong><br>
+      サイトアドレスは <code>constructionInfo + 企業略称</code> で統一すると管理しやすいです。<br>
+      例: 永賢組 = <code>constructionInfo</code>、九州永賢組 = <code>constructionInfoKyushu</code>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🔄 契約先マスタの更新（Step2の続き）</h2>
+    <p>サイトが作成できたら、Step2で登録した契約先マスタレコードに戻り、<strong>サイトコレクションURL</strong>を実URLに更新します。</p>
+    <ol>
+      <li><code>https://nagaken.sharepoint.com/sites/Facerecognition1/Lists/L1/AllItems.aspx</code> を開く</li>
+      <li>該当の契約企業レコードを選択 → 編集</li>
+      <li><strong>サイトコレクションURL</strong> 列に新サイトのURLを貼り付け</li>
+      <li>保存</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>👥 アクセス権限の整理</h2>
+    <table>
+      <tr><th>役割</th><th>権限</th><th>付与する人</th></tr>
+      <tr><td>所有者（フルコントロール）</td><td>サイト管理・リスト追加・権限変更</td><td>クラウドパワー社管理者・テナントシステム管理者</td></tr>
+      <tr><td>メンバー（編集）</td><td>リストの追加・編集・削除</td><td>テナント本社管理者・現場管理者</td></tr>
+      <tr><td>閲覧者（読み取り）</td><td>参照のみ</td><td>必要に応じて</td></tr>
+    </table>
+
+    <div class="alert alert-warn">
+      <strong>⚠️ 権限の最小化原則</strong><br>
+      テナント間でデータが見えないよう、各テナントサイトには<strong>該当テナントの社員のみ</strong>を所有者・メンバーとして追加してください。
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>✅ 完了チェックリスト</h2>
+    <ul class="checklist">
+      <li>SPOチームサイトが作成できた</li>
+      <li>サイトURLを契約先マスタに反映した</li>
+      <li>所有者・メンバーが正しく設定されている</li>
+      <li>プライベートグループになっている</li>
+      <li>他テナントから見えないことを確認した</li>
+    </ul>
+  </div>
+
+  <div class="nav-bar">
+    <a href="step02-client-master.html" class="nav-btn">← 前へ：契約先マスタ登録</a>
+    <a href="index.html" class="nav-btn home">🏠 TOPに戻る</a>
+    <a href="step04-master-lists.html" class="nav-btn">次へ：マスタリスト作成 →</a>
+  </div>
+</main>
+
+<footer>&copy; 2026 CloudPower, Inc. / 永賢組入退場管理システム</footer>
+</body>
+</html>

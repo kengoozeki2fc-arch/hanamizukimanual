@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step9 本番運用開始 | 新企業登録マニュアル</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Step 9 / 9 — 本番運用開始</h1>
+  <div class="subtitle">本番現場での運用開始、監視・サポート体制の確立</div>
+</header>
+
+<main>
+  <div class="breadcrumb"><a href="index.html">🏠 TOP</a> &gt; Step9 本番運用開始</div>
+
+  <div class="card">
+    <h2>🎯 このステップのゴール</h2>
+    <p>テスト完了後、いよいよテナント企業の<strong>本番運用</strong>を開始します。クラウドパワー社は伴走型サポートを提供し、初週は手厚くフォローします。</p>
+  </div>
+
+  <div class="card">
+    <h2>🚀 本番開始日の作業</h2>
+    <ol>
+      <li><strong>開始時刻前</strong>:
+        <ul>
+          <li>テストデータが残っていないか最終確認</li>
+          <li>NFC台紙が現場に正しく掲示されているか現地確認</li>
+          <li>テナント管理者に開始連絡</li>
+          <li>監視ダッシュボード（Application Insights / Grafana等）を立ち上げ</li>
+        </ul>
+      </li>
+      <li><strong>開始時刻</strong>:
+        <ul>
+          <li>テナント管理者・現場担当者に「運用開始しました」連絡</li>
+          <li>初回の入場記録が入ることを確認</li>
+        </ul>
+      </li>
+      <li><strong>開始当日中</strong>:
+        <ul>
+          <li>入場/退場記録が正常に蓄積されているか確認</li>
+          <li>顔認証エラー件数を確認</li>
+          <li>未退場者アラートが19時に動作することを確認</li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>📞 サポート体制</h2>
+    <table>
+      <tr><th>期間</th><th>サポート内容</th></tr>
+      <tr><td>初日〜1週間</td><td>クラウドパワー社員が現地常駐 or リアルタイム対応</td></tr>
+      <tr><td>2週間〜1ヶ月</td><td>毎日チェックイン・週次定例</td></tr>
+      <tr><td>1ヶ月以降</td><td>通常サポート（メール・電話・チケット）</td></tr>
+    </table>
+
+    <h3>緊急時連絡先</h3>
+    <ul>
+      <li>クラウドパワー サポート: <code>support@cloudpower.example.jp</code></li>
+      <li>緊急電話: 080-XXXX-XXXX（担当者番号）</li>
+      <li>システム障害情報: <code>https://status.gemba-ai.cloud/</code>（あれば）</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>📊 監視・運用項目</h2>
+    <table>
+      <tr><th>項目</th><th>監視先</th><th>頻度</th></tr>
+      <tr><td>Azure SQL の稼働状況</td><td>Azure Portal</td><td>常時</td></tr>
+      <tr><td>face.gemba-ai.cloud のレスポンス</td><td>Application Insights</td><td>常時</td></tr>
+      <tr><td>SPO API のスロットリング</td><td>Graph API ログ</td><td>日次</td></tr>
+      <tr><td>顔認証エラー率</td><td>アプリログ</td><td>日次</td></tr>
+      <tr><td>未退場者アラート発火</td><td>Teams/メールログ</td><td>毎日19時以降</td></tr>
+      <tr><td>業者別出面表配信</td><td>メール送信ログ</td><td>毎月5日</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>📈 運用開始後のKPI</h2>
+    <p>本番開始から1ヶ月後の振り返りで、以下の指標を確認します。</p>
+    <ul>
+      <li><strong>登録率</strong>: 想定作業員数のうち事前登録を完了した人数</li>
+      <li><strong>NFC利用率</strong>: 入場者のうちNFCで打刻した割合（紙台帳代替がうまく機能しているか）</li>
+      <li><strong>顔認証成功率</strong>: 認証エラーが少ないか</li>
+      <li><strong>未退場アラート件数</strong>: 多いほど現場の運用が雑、改善余地</li>
+      <li><strong>名簿出力回数</strong>: 機能が活用されているか</li>
+      <li><strong>サポート問い合わせ件数</strong>: 1ヶ月後に減少傾向にあること</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>🎓 テナント側教育</h2>
+    <ul class="checklist">
+      <li>システム管理者向けトレーニング実施済み</li>
+      <li>本社管理者向けトレーニング実施済み</li>
+      <li>現場管理者向けトレーニング実施済み</li>
+      <li>協力業者代表者向け案内送付済み</li>
+      <li>現場での朝礼で作業員に周知済み</li>
+      <li>FAQ集を共有済み</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>📝 引き渡し物リスト</h2>
+    <ul>
+      <li>本マニュアル（新企業登録編）</li>
+      <li>管理者操作マニュアル</li>
+      <li>作業員クイックリファレンス</li>
+      <li>NFC台紙データ（編集可能なWord/PDF）</li>
+      <li>事前登録案内チラシ</li>
+      <li>QRコード画像</li>
+      <li>緊急時連絡先一覧</li>
+      <li>SLA / 利用規約</li>
+    </ul>
+  </div>
+
+  <div class="alert alert-success">
+    <strong>🎉 おめでとうございます！</strong><br>
+    新企業のテナント追加が完了しました。本番運用開始後も、定期的に状況をモニタリングし、テナントとの関係構築を続けてください。
+  </div>
+
+  <div class="nav-bar">
+    <a href="step08-uat.html" class="nav-btn">← 前へ：テスト・受入確認</a>
+    <a href="index.html" class="nav-btn home">🏠 TOPに戻る</a>
+    <a class="nav-btn disabled">次へ →</a>
+  </div>
+</main>
+
+<footer>&copy; 2026 CloudPower, Inc. / 永賢組入退場管理システム</footer>
+</body>
+</html>

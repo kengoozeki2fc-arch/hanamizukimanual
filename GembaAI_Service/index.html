@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>新企業登録マニュアル | 入退場管理システム</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>建築現場の入退場管理システム</h1>
+  <div class="subtitle">新企業（テナント）登録マニュアル v1.0</div>
+</header>
+
+<main>
+  <div class="card">
+    <h2>このマニュアルについて</h2>
+    <p>顔認証ベースの建築現場入退場管理システムに、<strong>新しい企業（テナント）を追加する</strong>ための初期登録手順をまとめたマニュアルです。</p>
+    <p>システムは <strong>マルチテナント構成</strong> で、1つの基盤に複数の建設会社を収容できます。新規企業を迎える際は、契約締結 → SPO サイト構築 → 各種マスタ投入 → NFC タグ準備 → テスト → 本番運用 の流れで進めます。</p>
+
+    <div class="alert alert-info">
+      <strong>📌 想定読者</strong><br>
+      クラウドパワー社 システム管理者・導入担当者
+    </div>
+
+    <div class="alert alert-warn">
+      <strong>⚠️ 前提条件</strong>
+      <ul style="margin: 0.5rem 0 0 0;">
+        <li>Microsoft 365 テナント（<code>nagaken.sharepoint.com</code>）の管理者権限</li>
+        <li>Azure SQL Database <code>sqldb-nagaken</code> へのアクセス権</li>
+        <li>face.gemba-ai.cloud アプリのデプロイ権限</li>
+        <li>NFC タグ発行ツール</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📋 メニュー</h2>
+    <p>各ステップをクリックして詳細手順を確認してください。<strong>順番通り</strong>に進めることを推奨します。</p>
+
+    <div class="menu-grid">
+
+      <a href="step01-hearing.html" class="menu-item">
+        <div><span class="step-number">1</span><span class="step-title">事前ヒアリング</span></div>
+        <div class="step-desc">契約条件・利用規模・認証方式を確認し、契約内容を確定</div>
+      </a>
+
+      <a href="step02-client-master.html" class="menu-item">
+        <div><span class="step-number">2</span><span class="step-title">契約先マスタ登録</span><span class="tag tag-spo">SPO</span></div>
+        <div class="step-desc">顔認証利用会社管理サイトに新テナントを登録</div>
+      </a>
+
+      <a href="step03-spo-site.html" class="menu-item">
+        <div><span class="step-number">3</span><span class="step-title">テナント専用SPOサイト構築</span><span class="tag tag-spo">SPO</span></div>
+        <div class="step-desc">新企業専用のSharePointサイトを作成し、必要なリストを準備</div>
+      </a>
+
+      <a href="step04-master-lists.html" class="menu-item">
+        <div><span class="step-number">4</span><span class="step-title">マスタリスト作成</span><span class="tag tag-spo">SPO</span></div>
+        <div class="step-desc">8種類のSPOリストを必要な列定義で作成</div>
+      </a>
+
+      <a href="step05-initial-data.html" class="menu-item">
+        <div><span class="step-number">5</span><span class="step-title">初期データ投入</span><span class="tag tag-spo">SPO</span></div>
+        <div class="step-desc">社員・協力業者・現場・施工体制・危険作業マスタなどを投入</div>
+      </a>
+
+      <a href="step06-nfc-setup.html" class="menu-item">
+        <div><span class="step-number">6</span><span class="step-title">NFCタグ準備・登録</span><span class="tag tag-app">SQL</span></div>
+        <div class="step-desc">NFCタグ発行・TagMaster登録・現場との紐付け</div>
+      </a>
+
+      <a href="step07-materials.html" class="menu-item">
+        <div><span class="step-number">7</span><span class="step-title">配布物・台紙準備</span><span class="tag tag-manual">配布</span></div>
+        <div class="step-desc">NFC台紙・案内チラシ・操作ガイドをテナント向けにカスタマイズ</div>
+      </a>
+
+      <a href="step08-uat.html" class="menu-item">
+        <div><span class="step-number">8</span><span class="step-title">テスト・受入確認</span><span class="tag tag-app">UAT</span></div>
+        <div class="step-desc">テスト現場で全機能を疎通確認、ユーザー受入テスト実施</div>
+      </a>
+
+      <a href="step09-golive.html" class="menu-item">
+        <div><span class="step-number">9</span><span class="step-title">本番運用開始</span><span class="tag tag-cs">CS</span></div>
+        <div class="step-desc">本番現場での運用開始、監視・サポート体制の確立</div>
+      </a>
+
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🗺 全体フロー</h2>
+    <div class="flow-diagram">[Step1] 事前ヒアリング
+        ↓
+[Step2] 契約先マスタ登録（顔認証利用会社管理サイト）
+        ↓
+[Step3] テナント専用SPOサイト構築
+        ↓
+[Step4] マスタリスト作成（8種類）
+        ↓
+[Step5] 初期データ投入 ─┬─ 社員マスタ
+                       ├─ 協力業者マスタ
+                       ├─ 現場マスタ
+                       ├─ 現場協力業者紐付け（施工体制ツリー）
+                       ├─ 社員資格マスタ／社員実績
+                       └─ 危険作業マスタ／危険回避策マスタ
+        ↓
+[Step6] NFCタグ準備・登録（TagMaster / OnsiteTagRelation）
+        ↓
+[Step7] 配布物・台紙準備（NFC台紙・チラシ・操作ガイド）
+        ↓
+[Step8] テスト・受入確認（テスト現場で疎通）
+        ↓
+[Step9] 本番運用開始</div>
+  </div>
+
+  <div class="card">
+    <h2>🏗 システム構成（参考）</h2>
+    <table>
+      <tr><th>レイヤー</th><th>サービス</th><th>役割</th></tr>
+      <tr><td>フロントエンド</td><td><code>face.gemba-ai.cloud</code></td><td>Webアプリ（管理画面 + NFC打刻 + 個人情報登録）</td></tr>
+      <tr><td>認証</td><td>Microsoft Entra ID</td><td>SSO（管理者向け）／顔認証＋NFC＋電話番号（作業員向け）</td></tr>
+      <tr><td>マスタDB</td><td>SharePoint Online</td><td>契約先・現場・協力業者・社員・危険作業マスタ等</td></tr>
+      <tr><td>トランザクションDB</td><td>Azure SQL <code>sqldb-nagaken</code></td><td>個人情報・顔写真・入退場・KY活動・新規入場・タグログ等</td></tr>
+    </table>
+  </div>
+</main>
+
+<footer>
+  &copy; 2026 CloudPower, Inc. / 永賢組入退場管理システム<br>
+  最終更新: 2026-04-09
+</footer>
+</body>
+</html>

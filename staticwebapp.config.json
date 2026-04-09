@@ -13,6 +13,14 @@
     {
       "route": "/nagaken",
       "rewrite": "/nagaken/index.html"
+    },
+    {
+      "route": "/GembaAI_Service",
+      "rewrite": "/GembaAI_Service/index.html"
+    },
+    {
+      "route": "/GembaAI_Service/",
+      "rewrite": "/GembaAI_Service/index.html"
     }
   ],
   "navigationFallback": {
@@ -25,6 +33,8 @@
       "/nagaken/images/*.png",
       "/nagaken/images/*.jpg",
       "/nagaken/*.html",
+      "/GembaAI_Service/*.html",
+      "/GembaAI_Service/*.css",
       "/*.png",
       "/*.jpg",
       "/*.pdf",

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step5 初期データ投入 | 新企業登録マニュアル</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Step 5 / 9 — 初期データ投入</h1>
+  <div class="subtitle">社員・協力業者・現場・施工体制・マスタ類を投入</div>
+</header>
+
+<main>
+  <div class="breadcrumb"><a href="index.html">🏠 TOP</a> &gt; Step5 初期データ投入</div>
+
+  <div class="card">
+    <h2>🎯 このステップのゴール</h2>
+    <p>Step4で作成した8リストに、運用に必要な<strong>初期データ</strong>を投入します。投入順序が重要です（参照関係があるため）。</p>
+  </div>
+
+  <div class="card">
+    <h2>📊 投入順序</h2>
+    <div class="flow-diagram">[1] 社員資格マスタ        ← 参照されるマスタを先に
+[2] 社員マスタ            ← 社員資格IDを参照
+[3] 危険作業マスタ        ← KY活動の選択肢
+[4] 危険回避策マスタ      ← 危険作業IDを参照
+[5] 協力業者マスタ        ← 業者情報
+[6] 現場マスタ            ← 現場情報
+[7] 現場協力業者紐付け    ← 現場ID×業者IDで施工体制構築
+[8] 社員実績              ← 社員ID×現場IDで現場履歴</div>
+  </div>
+
+  <div class="card">
+    <h2>🛠 各リストの投入手順</h2>
+
+    <h3>1. 社員資格マスタ</h3>
+    <p>テナントが扱う資格名称を一覧で投入します。</p>
+    <pre><code>例:
+・一級建築施工管理技士
+・一級建築施工管理技士補
+・二級建築施工管理技士
+・一級建築士 / 二級建築士 / 木造建築士
+・監理技術者
+・一級土木施工管理技士</code></pre>
+
+    <h3>2. 社員マスタ</h3>
+    <p>テナントの社員情報を投入します。<strong>権限ロール</strong>の設定が重要です。</p>
+    <table>
+      <tr><th>権限ロール</th><th>用途</th></tr>
+      <tr><td>システム管理者</td><td>マスタ全権・テナント設定変更可</td></tr>
+      <tr><td>本社管理者</td><td>全現場の閲覧・名簿出力</td></tr>
+      <tr><td>現場管理者</td><td>担当現場のみ管理</td></tr>
+    </table>
+    <p><strong>大関さん本人</strong>を「システム管理者」として登録するパターンが標準です。</p>
+
+    <h3>3-4. 危険作業マスタ・危険回避策マスタ</h3>
+    <p>KY活動で選択肢として表示される作業と回避策を投入します。永賢組のものをひな型にして、テナント業種に合わせてカスタマイズしてください。</p>
+
+    <h3>5. 協力業者マスタ</h3>
+    <p>テナントが取引する協力業者を投入します。<strong>建設業許可番号・各種保険加入状況</strong>を必ず確認します。</p>
+    <div class="alert alert-warn">
+      <strong>⚠️ 1社が複数階層で参画する場合</strong><br>
+      同じ会社が「1次請」「2次請」両方で出てくる場合は、別レコードとして登録します（例: 「○○建設『1次請』」「○○建設『2次請』」）。これは設計上の制約です。
+    </div>
+
+    <h3>6. 現場マスタ</h3>
+    <p>初期登録対象の現場を投入します。<strong>現場名称・所長名・工期・略称ローマ字</strong>は必須です。</p>
+    <pre><code>例:
+現場名称: (仮称)○○マンション新築工事
+所長名: ○○ ○○
+工期(自): 2026-05-01
+工期(至): 2027-12-31
+略称ローマ字: MARUMARU</code></pre>
+
+    <h3>7. 現場協力業者紐付け</h3>
+    <p>各現場の<strong>施工体制ツリー</strong>を構築します。1次請から順に登録していきます。</p>
+    <pre><code>例: 現場「(仮称)○○マンション」
+─ 1次: 株式会社サンエイ（階層1、上位なし）
+　└ 2次: 東昌基設備株式会社（階層2、上位=サンエイ）
+　　└ 3次: 株式会社□□（階層3、上位=東昌基設備）</code></pre>
+
+    <h3>8. 社員実績</h3>
+    <p>各社員の現場担当履歴を投入します。新規企業の場合、現時点で関わっている現場のみで構いません。</p>
+  </div>
+
+  <div class="card">
+    <h2>🔄 一括投入のテクニック</h2>
+    <h3>SharePointのグリッドビュー編集</h3>
+    <ol>
+      <li>リスト画面で「<strong>グリッドビューで編集</strong>」をクリック</li>
+      <li>Excelからコピー＆ペーストで一括入力</li>
+      <li>「終了」で保存</li>
+    </ol>
+
+    <h3>Power Automate or PowerShell でCSV取込</h3>
+    <p>大量データの場合は、PnP PowerShellやPower Automateで自動投入するのが効率的です。スクリプトはクラウドパワー社内ナレッジに準備があるはず（要確認）。</p>
+  </div>
+
+  <div class="card">
+    <h2>👤 顔写真・個人情報の登録</h2>
+    <p>作業員（職人さん）の個人情報・顔写真は、<strong>このステップでは投入しません</strong>。代わりに、Step6でNFCタグを準備した後、Step7のチラシで案内し、各作業員自身に登録してもらいます。</p>
+    <p>登録URL: <code>https://face.gemba-ai.cloud/site-entry?ClientID={ClientID}</code></p>
+  </div>
+
+  <div class="card">
+    <h2>✅ 完了チェックリスト</h2>
+    <ul class="checklist">
+      <li>社員資格マスタが投入された</li>
+      <li>社員マスタにシステム管理者・本社管理者・現場管理者が登録された</li>
+      <li>危険作業／危険回避策マスタが投入された</li>
+      <li>協力業者マスタが投入された</li>
+      <li>現場マスタが <code>NumberOfOnsites</code> 以下の数で投入された</li>
+      <li>現場協力業者紐付けで施工体制ツリーが組まれた</li>
+      <li>社員実績で社員と現場が紐付いた</li>
+    </ul>
+  </div>
+
+  <div class="nav-bar">
+    <a href="step04-master-lists.html" class="nav-btn">← 前へ：マスタリスト作成</a>
+    <a href="index.html" class="nav-btn home">🏠 TOPに戻る</a>
+    <a href="step06-nfc-setup.html" class="nav-btn">次へ：NFCタグ準備 →</a>
+  </div>
+</main>
+
+<footer>&copy; 2026 CloudPower, Inc. / 永賢組入退場管理システム</footer>
+</body>
+</html>

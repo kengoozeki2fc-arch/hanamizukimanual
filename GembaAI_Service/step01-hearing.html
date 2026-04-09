@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step1 事前ヒアリング | 新企業登録マニュアル</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Step 1 / 9 — 事前ヒアリング</h1>
+  <div class="subtitle">契約条件・利用規模・認証方式の確認</div>
+</header>
+
+<main>
+  <div class="breadcrumb"><a href="index.html">🏠 TOP</a> &gt; Step1 事前ヒアリング</div>
+
+  <div class="card">
+    <h2>🎯 このステップのゴール</h2>
+    <p>新規企業を契約・登録する前に必要な情報をヒアリングし、<strong>テナント設定値を確定</strong>します。<br>ここで収集した情報は <strong>Step2 契約先マスタ登録</strong> でそのまま使います。</p>
+  </div>
+
+  <div class="card">
+    <h2>📝 ヒアリング項目</h2>
+
+    <h3>1. 基本情報</h3>
+    <table>
+      <tr><th>項目</th><th>説明</th><th>例</th></tr>
+      <tr><td>契約企業名称</td><td>正式社名</td><td>株式会社永賢組</td></tr>
+      <tr><td>請求先郵便番号</td><td>請求書送付先</td><td>460-0000</td></tr>
+      <tr><td>請求先住所</td><td>請求書送付先</td><td>愛知県名古屋市中区...</td></tr>
+      <tr><td>請求先部署名</td><td>経理部など</td><td>総務部</td></tr>
+      <tr><td>請求先担当者名</td><td>請求書宛名</td><td>○○ ○○</td></tr>
+    </table>
+
+    <h3>2. 契約条件</h3>
+    <table>
+      <tr><th>項目</th><th>説明</th><th>備考</th></tr>
+      <tr><td>現場利用数</td><td>同時並行で利用する現場の上限</td><td>例: 10件</td></tr>
+      <tr><td>利用開始日</td><td>サービス提供開始日</td><td>YYYY-MM-DD</td></tr>
+      <tr><td>利用終了日</td><td>契約終了日</td><td>YYYY-MM-DD</td></tr>
+      <tr><td>現場単価</td><td>現場あたりの月額または年額</td><td>NUMBER 円</td></tr>
+      <tr><td>請求書締日</td><td>毎月の締日</td><td>例: 末日（31）</td></tr>
+    </table>
+
+    <h3>3. システム設定</h3>
+    <table>
+      <tr><th>項目</th><th>選択肢</th><th>説明</th></tr>
+      <tr><td>ユーザー定義</td><td>SSO / LIST</td><td>社員認証をEntra ID SSOにするか、SPOリスト管理にするか</td></tr>
+      <tr><td>システムテーマ</td><td>カラーコード</td><td>テナント別UIテーマ（任意）</td></tr>
+      <tr><td>システムタイトル</td><td>表示名</td><td>例: 「○○組 入退場管理」</td></tr>
+      <tr><td>システムロゴ</td><td>画像ファイル</td><td>PNG/SVG（任意）</td></tr>
+    </table>
+
+    <h3>4. 利用想定</h3>
+    <ul>
+      <li>初期登録対象の<strong>現場一覧</strong>（名称・所長・工期）</li>
+      <li>初期登録対象の<strong>協力業者リスト</strong>（会社名・代表者・許可番号）</li>
+      <li>初期登録対象の<strong>社員リスト</strong>（氏名・メール・権限）</li>
+      <li>BYOD（作業員私物スマホ）利用可否 → 不可なら現場用タブレット手配</li>
+      <li>NFCタグ必要数（現場数 × 6機能 = 最低必要枚数）</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>✅ ヒアリング完了チェックリスト</h2>
+    <ul class="checklist">
+      <li>基本情報5項目が埋まっている</li>
+      <li>契約条件5項目が埋まっている</li>
+      <li>SSO/LIST のいずれかが決定している</li>
+      <li>初期登録対象の現場・協力業者・社員リストが入手済</li>
+      <li>BYOD可否が確認済み（不可ならタブレット見積に進む）</li>
+      <li>NFCタグ必要数が概算できる</li>
+      <li>顔認証用の顔写真撮影方針が決まっている</li>
+    </ul>
+  </div>
+
+  <div class="alert alert-warn">
+    <strong>⚠️ 注意</strong><br>
+    顔認証は<strong>個人情報</strong>（生体情報）を扱うため、契約書に<strong>個人情報保護条項</strong>が必要です。法務確認を必ず通してください。
+  </div>
+
+  <div class="alert alert-info">
+    <strong>💡 ヒント</strong><br>
+    現場利用数は将来拡張も見据えて、<strong>初期+1〜2件</strong>の余裕を持って設定するとよいです。<code>NumberOfOnsites</code> を超える現場登録時はアラートが出ます。
+  </div>
+
+  <div class="nav-bar">
+    <a class="nav-btn disabled">← 前へ</a>
+    <a href="index.html" class="nav-btn home">🏠 TOPに戻る</a>
+    <a href="step02-client-master.html" class="nav-btn">次へ：契約先マスタ登録 →</a>
+  </div>
+</main>
+
+<footer>&copy; 2026 CloudPower, Inc. / 永賢組入退場管理システム</footer>
+</body>
+</html>

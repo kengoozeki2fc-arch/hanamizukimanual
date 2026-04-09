@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step4 マスタリスト作成 | 新企業登録マニュアル</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Step 4 / 9 — マスタリスト作成</h1>
+  <div class="subtitle">8種類のSPOリストを必要な列定義で作成</div>
+</header>
+
+<main>
+  <div class="breadcrumb"><a href="index.html">🏠 TOP</a> &gt; Step4 マスタリスト作成</div>
+
+  <div class="card">
+    <h2>🎯 このステップのゴール</h2>
+    <p>Step3で作成したテナント専用SPOサイトに、運用に必要な<strong>8種類のSharePointリスト</strong>を作成します。リストの<strong>列定義は永賢組サイトと完全一致</strong>させる必要があります。</p>
+
+    <div class="alert alert-info">
+      <strong>💡 効率化のヒント</strong><br>
+      既存の永賢組サイト（<code>constructionInfo</code>）からリストを<strong>テンプレートとしてエクスポート</strong>して、新サイトにインポートする方法が最も確実かつ高速です。
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📋 作成するリスト一覧</h2>
+    <table>
+      <tr><th>#</th><th>リスト名（表示）</th><th>物理名</th><th>主な用途</th></tr>
+      <tr><td>1</td><td>現場</td><td>OnSiteMaster</td><td>現場マスタ</td></tr>
+      <tr><td>2</td><td>協力業者</td><td>PartnerMaster</td><td>協力業者マスタ</td></tr>
+      <tr><td>3</td><td>現場協力業者紐付け</td><td>OnsitePartnerRelation</td><td>施工体制ツリー</td></tr>
+      <tr><td>4</td><td>社員</td><td>EmployeeMaster</td><td>テナント社員</td></tr>
+      <tr><td>5</td><td>社員資格</td><td>EmployeeQualificationMaster</td><td>社員資格マスタ</td></tr>
+      <tr><td>6</td><td>社員実績</td><td>EmployeeAchievement</td><td>社員の現場履歴</td></tr>
+      <tr><td>7</td><td>危険作業</td><td>RiskyWorkMaster</td><td>KY活動の危険作業マスタ</td></tr>
+      <tr><td>8</td><td>危険回避策</td><td>RiskAvoidanceMaster</td><td>危険作業に紐づく回避策</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>🛠 作成手順（推奨：テンプレートコピー方式）</h2>
+
+    <h3>方法A：テンプレート複製（推奨）</h3>
+    <ol>
+      <li>永賢組サイト（<code>constructionInfo</code>）の各リストを開く</li>
+      <li>「歯車アイコン」→「リストの設定」→「<strong>リストをテンプレートとして保存</strong>」</li>
+      <li>テンプレート名を入力し、「<strong>コンテンツを含める</strong>」のチェックを<strong>外す</strong>（マスタデータは持ち込まない）</li>
+      <li>新サイトの「サイトコンテンツ」→「+ 新規」→「アプリ」→ 保存したテンプレートを選択</li>
+      <li>8リスト分繰り返す</li>
+    </ol>
+
+    <h3>方法B：手動作成（フォールバック）</h3>
+    <p>テンプレート機能が無効化されている場合は、各リストを手動で作成し、列定義を1つずつ追加します。<strong>DB定義書.xlsx</strong>（<code>03_詳細設計</code>）の各シートを参照してください。</p>
+  </div>
+
+  <div class="card">
+    <h2>📐 主要リストの列定義（参考）</h2>
+
+    <h3>1. 現場（OnSiteMaster）</h3>
+    <table>
+      <tr><th>列名</th><th>型</th></tr>
+      <tr><td>現場名称（Title）</td><td>1行テキスト</td></tr>
+      <tr><td>所長名</td><td>1行テキスト</td></tr>
+      <tr><td>工期（自）/（至）</td><td>日付と時刻</td></tr>
+      <tr><td>労災保険番号</td><td>数値</td></tr>
+      <tr><td>36協定提出済 / 事業所設置届 / 足場支保工 / 型枠支保工</td><td>はい/いいえ</td></tr>
+      <tr><td>略称ローマ字</td><td>1行テキスト</td></tr>
+    </table>
+
+    <h3>2. 協力業者（PartnerMaster）</h3>
+    <p>会社名/郵便番号/住所/代表電話/代表者名/担当者名/部署/役職/携帯/メール/建設業許可番号/業種/各種保険加入/契約形態/初期紹介会社</p>
+
+    <h3>3. 現場協力業者紐付け（OnsitePartnerRelation）</h3>
+    <p>現場ID/協力業者ID/<strong>上位現場協力業者紐付けID（自己参照）</strong>/階層/協力業者担当作業 → 1次〜N次の施工体制ツリーを表現</p>
+
+    <h3>4. 社員（EmployeeMaster）</h3>
+    <p>氏名/メール/生年月日/権限ロール（現場/本社/システム）/携帯/<strong>社員資格ID 1〜3（3スロット固定）</strong>/監理技術者番号/CPD実績</p>
+
+    <h3>5〜8</h3>
+    <p>社員資格マスタ・社員実績・危険作業マスタ・危険回避策マスタは比較的シンプル。詳細はDB定義書参照。</p>
+  </div>
+
+  <div class="card">
+    <h2>🔗 リストURLの確認</h2>
+    <p>作成完了後、以下のURLパターンでアクセスできることを確認します。</p>
+    <pre><code>https://nagaken.sharepoint.com/sites/{サイトアドレス}/Lists/OnSiteMaster/AllItems.aspx
+https://nagaken.sharepoint.com/sites/{サイトアドレス}/Lists/PartnerMaster/AllItems.aspx
+https://nagaken.sharepoint.com/sites/{サイトアドレス}/Lists/OnsitePartnerRelation/AllItems.aspx
+... 以下8リスト分</code></pre>
+  </div>
+
+  <div class="alert alert-danger">
+    <strong>🚫 列名は絶対に変更しない</strong><br>
+    アプリ側（face.gemba-ai.cloud）は<strong>物理列名</strong>でデータを読み書きします。日本語表示名は変えてもOKですが、<strong>内部名（物理名）は永賢組と完全一致</strong>させてください。
+  </div>
+
+  <div class="card">
+    <h2>✅ 完了チェックリスト</h2>
+    <ul class="checklist">
+      <li>8リストすべてが新サイトに作成された</li>
+      <li>各リストの列定義が永賢組と一致している（特に内部名）</li>
+      <li>各リストのURLにアクセスでき、空リストとして表示される</li>
+      <li>左ナビメニューに8リストが並んでいる</li>
+    </ul>
+  </div>
+
+  <div class="nav-bar">
+    <a href="step03-spo-site.html" class="nav-btn">← 前へ：SPOサイト構築</a>
+    <a href="index.html" class="nav-btn home">🏠 TOPに戻る</a>
+    <a href="step05-initial-data.html" class="nav-btn">次へ：初期データ投入 →</a>
+  </div>
+</main>
+
+<footer>&copy; 2026 CloudPower, Inc. / 永賢組入退場管理システム</footer>
+</body>
+</html>

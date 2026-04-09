@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step2 契約先マスタ登録 | 新企業登録マニュアル</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Step 2 / 9 — 契約先マスタ登録</h1>
+  <div class="subtitle">顔認証利用会社管理サイトに新テナントを登録</div>
+</header>
+
+<main>
+  <div class="breadcrumb"><a href="index.html">🏠 TOP</a> &gt; Step2 契約先マスタ登録</div>
+
+  <div class="card">
+    <h2>🎯 このステップのゴール</h2>
+    <p>マルチテナントの親リスト「<strong>契約先マスタ</strong>」に新企業のレコードを追加し、<code>ClientID</code>を払い出します。<br>この <code>ClientID</code> は以降の全ステップで利用する重要な番号です。</p>
+  </div>
+
+  <div class="card">
+    <h2>📍 アクセス先</h2>
+    <p><strong>SharePoint Online</strong> の以下サイトを開きます。</p>
+    <table>
+      <tr><th>項目</th><th>値</th></tr>
+      <tr><td>サイト名</td><td>顔認証利用会社管理サイト</td></tr>
+      <tr><td>URL</td><td><code>https://nagaken.sharepoint.com/sites/Facerecognition1/</code></td></tr>
+      <tr><td>リスト名</td><td>契約先マスタ（物理: <code>ClientMaster</code> / SPO ID: <code>L1</code>）</td></tr>
+      <tr><td>リストURL</td><td><code>/sites/Facerecognition1/Lists/L1/AllItems.aspx</code></td></tr>
+    </table>
+
+    <div class="alert alert-warn">
+      <strong>⚠️ アクセス権限</strong><br>
+      このサイトは<strong>クラウドパワー社のシステム管理者のみ</strong>がアクセス可能です。一般のテナントユーザーには公開しません。
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🛠 登録手順</h2>
+    <ol>
+      <li>上記URLでサイトにアクセス</li>
+      <li>左メニューから「<strong>契約先マスタ</strong>」を選択</li>
+      <li>画面上部の「<strong>+ 新しいアイテムを追加</strong>」をクリック</li>
+      <li>以下の項目を入力（Step1で収集した情報を使用）</li>
+    </ol>
+
+    <h3>入力項目</h3>
+    <table>
+      <tr><th>列名</th><th>必須</th><th>例</th><th>備考</th></tr>
+      <tr><td>契約企業名称（Title）</td><td>✓</td><td>株式会社九州永賢組</td><td>正式社名</td></tr>
+      <tr><td>現場利用数（NumberOfOnsites）</td><td></td><td>5</td><td>同時並行の上限</td></tr>
+      <tr><td>利用開始日（StartDate）</td><td></td><td>2026-05-01</td><td></td></tr>
+      <tr><td>利用終了日（EndDate）</td><td></td><td>2028-04-30</td><td></td></tr>
+      <tr><td>システムテーマ</td><td></td><td>#0e4a8a</td><td>カラーコード（任意）</td></tr>
+      <tr><td>システムタイトル</td><td></td><td>九州永賢組 入退場管理</td><td>画面ヘッダ表示用</td></tr>
+      <tr><td>システムロゴパス</td><td></td><td>/logos/kyushu.png</td><td>ロゴ画像のURL</td></tr>
+      <tr><td>サイトコレクションURL</td><td>★</td><td><span style="font-size:0.85em">https://nagaken.sharepoint.com/sites/constructionInfoKyushu</span></td><td><strong>Step3で作成するサイトのURL</strong>を後で入力</td></tr>
+      <tr><td>ユーザー定義（UserType）</td><td></td><td>SSO</td><td>SSO/LIST のいずれか</td></tr>
+      <tr><td>エンドポイントURL</td><td></td><td>https://graph.microsoft.com/v1.0/...</td><td>Graph API or 連携先</td></tr>
+      <tr><td>現場単価</td><td></td><td>30000</td><td>円（請求計算用）</td></tr>
+      <tr><td>請求書締日</td><td></td><td>31</td><td>毎月の締日（dd）</td></tr>
+      <tr><td>請求先郵便番号</td><td></td><td>460-0000</td><td></td></tr>
+      <tr><td>請求先住所</td><td></td><td>愛知県名古屋市...</td><td></td></tr>
+      <tr><td>請求先部署名</td><td></td><td>総務部</td><td></td></tr>
+      <tr><td>請求先担当者名</td><td></td><td>○○ ○○</td><td></td></tr>
+    </table>
+
+    <ol start="5">
+      <li>「<strong>保存</strong>」をクリック</li>
+      <li>登録完了後、自動採番された <code>ClientID</code> を控える</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>📋 ClientID メモ</h2>
+    <p>登録された <code>ClientID</code> は以降の手順で頻繁に使うので、必ず控えておきます。</p>
+    <pre><code>新規企業: 株式会社九州永賢組
+ClientID: ___
+登録日: ___
+担当: ___</code></pre>
+  </div>
+
+  <div class="alert alert-info">
+    <strong>💡 サイトコレクションURLは後で更新</strong><br>
+    Step3でテナント専用サイトを構築した後、その実URLでこのレコードを更新します。最初はダミーで保存してOKです。
+  </div>
+
+  <div class="alert alert-danger">
+    <strong>🚫 やってはいけないこと</strong>
+    <ul style="margin: 0.5rem 0 0 0;">
+      <li>同名テナントを重複登録しない（ClientIDが重複・データ汚染の原因）</li>
+      <li>テスト用にレコードを作って削除しない（IDENTITYが歯抜けになる）</li>
+      <li>本番稼働中の他テナントのレコードを編集しない</li>
+    </ul>
+  </div>
+
+  <div class="nav-bar">
+    <a href="step01-hearing.html" class="nav-btn">← 前へ：事前ヒアリング</a>
+    <a href="index.html" class="nav-btn home">🏠 TOPに戻る</a>
+    <a href="step03-spo-site.html" class="nav-btn">次へ：SPOサイト構築 →</a>
+  </div>
+</main>
+
+<footer>&copy; 2026 CloudPower, Inc. / 永賢組入退場管理システム</footer>
+</body>
+</html>

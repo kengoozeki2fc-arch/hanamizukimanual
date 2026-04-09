@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step7 配布物・台紙準備 | 新企業登録マニュアル</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Step 7 / 9 — 配布物・台紙準備</h1>
+  <div class="subtitle">NFC台紙・案内チラシ・操作ガイドのカスタマイズ</div>
+</header>
+
+<main>
+  <div class="breadcrumb"><a href="index.html">🏠 TOP</a> &gt; Step7 配布物準備</div>
+
+  <div class="card">
+    <h2>🎯 このステップのゴール</h2>
+    <p>テナント企業の社員・作業員・協力業者向けに配布する印刷物・PDFを準備します。永賢組のテンプレートをひな型として、テナント情報に差し替えます。</p>
+  </div>
+
+  <div class="card">
+    <h2>📄 準備する配布物</h2>
+    <table>
+      <tr><th>#</th><th>名前</th><th>配布対象</th><th>原本</th></tr>
+      <tr><td>1</td><td>NFC台紙（6種）</td><td>各現場掲示用</td><td><code>付属の書類/株式会社永賢組テスト現場NFCの台紙.docx</code></td></tr>
+      <tr><td>2</td><td>事前登録のお願い</td><td>協力業者・作業員</td><td><code>付属の書類/作業員さん事前登録のお願い.docx</code></td></tr>
+      <tr><td>3</td><td>新規入場者の登録項目ガイド</td><td>新規入場時の作業員</td><td><code>付属の書類/新規入場者の登録項目.docx</code></td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>🛠 NFC台紙のカスタマイズ</h2>
+    <ol>
+      <li>原本Word（永賢組テスト現場版）を開く</li>
+      <li>以下を差し替え:
+        <ul>
+          <li>「<strong>株式会社永賢組</strong>」→ テナント企業名</li>
+          <li>「<strong>顔認証テスト工事</strong>」→ 実際の現場名</li>
+          <li>NFCタグ画像 → 各タグのQRコード（オプション）</li>
+        </ul>
+      </li>
+      <li>6種類分（入場/退場/新規入場/KY/安全会議/新規教育）作成</li>
+      <li>A4で印刷、ラミネート加工</li>
+      <li>現場の各エリア（入口、KY場所、教育場所）に貼り付け</li>
+    </ol>
+
+    <div class="alert alert-info">
+      <strong>💡 デザイン強化のオプション</strong><br>
+      Wordベースのままだと素朴なので、本番展開時はCanvaやIllustratorでデザインリフレッシュすると印象が良くなります。
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📨 事前登録案内チラシのカスタマイズ</h2>
+    <ol>
+      <li>原本Word「作業員さん事前登録のお願い.docx」を開く</li>
+      <li>差し替え箇所:
+        <ul>
+          <li>「<strong>株式会社永賢組</strong>」→ テナント企業名</li>
+          <li>「<strong>(仮称)ささしまライブマンション新築工事</strong>」→ 現場名</li>
+          <li>登録URL: <code>https://face.gemba-ai.cloud/site-entry?ClientID={ClientID}</code></li>
+          <li>QRコード画像を新URLで再生成</li>
+        </ul>
+      </li>
+      <li>PDF化</li>
+      <li>協力業者代表メールに添付して配布</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>📘 新規入場者の登録項目ガイド</h2>
+    <p>このガイドは、入力項目の説明を吹き出しで載せたものです。<strong>原則として差し替え不要</strong>です（汎用的な内容のため）。</p>
+    <p>テナント固有の項目を追加した場合のみ、説明を追記してください。</p>
+  </div>
+
+  <div class="card">
+    <h2>📦 追加で準備推奨の配布物</h2>
+    <table>
+      <tr><th>名前</th><th>用途</th></tr>
+      <tr><td>管理者向け操作マニュアル</td><td>現場管理機能・名簿出力・未退場対応の説明</td></tr>
+      <tr><td>作業員向けクイックリファレンス</td><td>1日の流れ（入場→KY→退場）</td></tr>
+      <tr><td>協力業者代表者向け案内</td><td>業者登録〜作業員追加までのフロー</td></tr>
+      <tr><td>NFC使い方ポスター（大判）</td><td>スマホかざし方・トラブル時連絡先</td></tr>
+      <tr><td>顔認証エラー時のフローチャート</td><td>タブレット代替手順</td></tr>
+      <tr><td>NFC不具合時の手動記録用紙</td><td>紙台帳バックアップ</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>✅ 完了チェックリスト</h2>
+    <ul class="checklist">
+      <li>NFC台紙6種をテナント情報で作成・印刷した</li>
+      <li>NFC台紙を現場各所に掲示した</li>
+      <li>事前登録案内チラシをテナント情報で更新・PDF化した</li>
+      <li>QRコードをテナントの ClientID で再生成した</li>
+      <li>協力業者代表に案内チラシを配布した</li>
+      <li>新規入場者ガイドを現場に置いた／PDFで共有した</li>
+    </ul>
+  </div>
+
+  <div class="nav-bar">
+    <a href="step06-nfc-setup.html" class="nav-btn">← 前へ：NFCタグ準備</a>
+    <a href="index.html" class="nav-btn home">🏠 TOPに戻る</a>
+    <a href="step08-uat.html" class="nav-btn">次へ：テスト・受入確認 →</a>
+  </div>
+</main>
+
+<footer>&copy; 2026 CloudPower, Inc. / 永賢組入退場管理システム</footer>
+</body>
+</html>

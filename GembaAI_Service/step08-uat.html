@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step8 テスト・受入確認 | 新企業登録マニュアル</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Step 8 / 9 — テスト・受入確認</h1>
+  <div class="subtitle">テスト現場で全機能を疎通確認、ユーザー受入テスト</div>
+</header>
+
+<main>
+  <div class="breadcrumb"><a href="index.html">🏠 TOP</a> &gt; Step8 テスト・受入確認</div>
+
+  <div class="card">
+    <h2>🎯 このステップのゴール</h2>
+    <p>本番運用開始前に、<strong>テスト現場</strong>で全機能を一通り動かして問題がないことを確認します。テナント側の管理者にも実際に触ってもらい、受入テスト（UAT）として承認を得ます。</p>
+  </div>
+
+  <div class="card">
+    <h2>🧪 テストシナリオ</h2>
+
+    <h3>A. 管理者シナリオ</h3>
+    <ol>
+      <li>管理画面（<code>face.gemba-ai.cloud/?clientId={ClientID}</code>）にアクセス</li>
+      <li>Microsoft 365 SSOでログイン</li>
+      <li>左メニューから「現場」「協力業者」「社員」が表示されることを確認</li>
+      <li>SPOリストにジャンプして編集可能なことを確認</li>
+      <li>入退場一覧・新規入場一覧・KY活動一覧を表示</li>
+      <li>協力業者別作業員一覧で名簿出力・メール送信</li>
+    </ol>
+
+    <h3>B. 作業員シナリオ（事前登録）</h3>
+    <ol>
+      <li>事前登録URL <code>face.gemba-ai.cloud/site-entry?ClientID={ClientID}</code> にアクセス</li>
+      <li>個人情報を入力</li>
+      <li>顔写真を撮影・登録</li>
+      <li>登録完了通知の受信確認</li>
+    </ol>
+
+    <h3>C. 作業員シナリオ（NFC打刻）</h3>
+    <ol>
+      <li>テスト現場のNFC台紙（新規入場）にスマホをタッチ</li>
+      <li>顔認証 → 当日情報入力（体調・血圧・体温・署名・送り出し教育受講日）</li>
+      <li>新規入場登録</li>
+      <li>新規教育NFCにタッチして教育完了フラグセット</li>
+      <li>通常入場NFC → 入場記録</li>
+      <li>KY活動NFC → KY実施</li>
+      <li>安全会議NFC → 参加記録</li>
+      <li>退場NFC → 退場記録</li>
+    </ol>
+
+    <h3>D. バッチ処理シナリオ</h3>
+    <ol>
+      <li>19時に未退場者がいる状態を作る</li>
+      <li>未退場者アラートメール／Teams通知が届くことを確認</li>
+      <li>翌月5日に業者別出面表が自動送信されることを確認（タイミング次第で別途確認）</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>🔍 確認すべき項目</h2>
+    <table>
+      <tr><th>カテゴリ</th><th>確認項目</th></tr>
+      <tr><td>マルチテナント分離</td><td>他テナントのデータが見えないこと</td></tr>
+      <tr><td>権限制御</td><td>現場管理者は自現場のみ閲覧できること</td></tr>
+      <tr><td>顔認証精度</td><td>登録者がスムーズに通る／未登録者が拒否される</td></tr>
+      <tr><td>NFC応答速度</td><td>タッチから画面表示まで2秒以内</td></tr>
+      <tr><td>BYOD動作</td><td>iOS Safari / Android Chrome 両方で動くこと</td></tr>
+      <tr><td>タブレット代替</td><td>BYOD不可時の現場タブレットで打刻できること</td></tr>
+      <tr><td>名簿出力</td><td>協力業者別名簿が正しく印刷できること</td></tr>
+      <tr><td>メール送信</td><td>登録時メール・名簿メール・アラートメールが届くこと</td></tr>
+      <tr><td>個人情報の保護</td><td>キャッシュ非保持・暗号化が効いていること</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>🐛 不具合発生時の対応</h2>
+    <ol>
+      <li>事象を画面キャプチャ＋手順で記録</li>
+      <li>クラウドパワー側の課題管理（GitHub Issues / Backlog）に起票</li>
+      <li>緊急度を判定（致命/重大/軽微）</li>
+      <li>致命・重大は本番開始前に修正必須</li>
+      <li>軽微は本番開始後に対応でも可（テナント合意の上）</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>📝 受入テスト（UAT）承認</h2>
+    <p>テナント管理者に以下を確認してもらい、書面 or メールで承認を得ます。</p>
+    <ul class="checklist">
+      <li>全機能を一通り操作した</li>
+      <li>マスタデータが正しく登録されている</li>
+      <li>画面表示・帳票出力に違和感がない</li>
+      <li>運用フローについて理解した</li>
+      <li>本番運用開始日に合意した</li>
+    </ul>
+  </div>
+
+  <div class="alert alert-warn">
+    <strong>⚠️ 本番開始前に必ず削除すること</strong>
+    <ul style="margin: 0.5rem 0 0 0;">
+      <li>テスト用の入場・退場記録</li>
+      <li>テスト用の作業員登録</li>
+      <li>テスト用のKY活動記録</li>
+      <li>テスト現場（保留する場合は明確に表示名を分ける）</li>
+    </ul>
+  </div>
+
+  <div class="nav-bar">
+    <a href="step07-materials.html" class="nav-btn">← 前へ：配布物・台紙準備</a>
+    <a href="index.html" class="nav-btn home">🏠 TOPに戻る</a>
+    <a href="step09-golive.html" class="nav-btn">次へ：本番運用開始 →</a>
+  </div>
+</main>
+
+<footer>&copy; 2026 CloudPower, Inc. / 永賢組入退場管理システム</footer>
+</body>
+</html>

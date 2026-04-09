@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step6 NFCタグ準備・登録 | 新企業登録マニュアル</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Step 6 / 9 — NFCタグ準備・登録</h1>
+  <div class="subtitle">NFCタグ発行・TagMaster登録・現場との紐付け</div>
+</header>
+
+<main>
+  <div class="breadcrumb"><a href="index.html">🏠 TOP</a> &gt; Step6 NFCタグ準備</div>
+
+  <div class="card">
+    <h2>🎯 このステップのゴール</h2>
+    <p>各現場で使用する<strong>物理NFCタグ</strong>を準備し、Azure SQL の <code>TagMaster</code> と <code>OnsiteTagRelation</code> に登録します。1現場あたり最大6種類のタグが必要です。</p>
+  </div>
+
+  <div class="card">
+    <h2>📦 必要なNFCタグ数</h2>
+    <p><strong>1現場あたり6機能 × 現場数 = 必要タグ枚数</strong></p>
+    <table>
+      <tr><th>#</th><th>機能</th><th>mode値</th><th>用途</th></tr>
+      <tr><td>1</td><td>新規入場</td><td><code>new-entry</code></td><td>初回入場時の登録</td></tr>
+      <tr><td>2</td><td>新規教育完了</td><td><code>tech</code></td><td>新規入場者教育受講記録</td></tr>
+      <tr><td>3</td><td>通常入場</td><td><code>entry</code></td><td>毎日の出社打刻</td></tr>
+      <tr><td>4</td><td>退場</td><td><code>exit</code></td><td>毎日の退社打刻</td></tr>
+      <tr><td>5</td><td>KY活動</td><td><code>kyactivity</code></td><td>KY活動実施記録</td></tr>
+      <tr><td>6</td><td>安全会議参加</td><td><code>safety-reg</code></td><td>安全会議参加署名代替</td></tr>
+    </table>
+
+    <div class="alert alert-info">
+      <strong>💡 タグの選定</strong><br>
+      推奨は<strong>NTAG424 DNA</strong>（暗号化機能付き、リプレイ攻撃対策あり）。<code>cmac</code> と <code>piccdata</code> の動的生成に対応している必要があります。
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🛠 NFCタグ書き込み</h2>
+    <h3>1. タグ発行</h3>
+    <ol>
+      <li>NTAG424タグを必要数調達</li>
+      <li>専用書き込みツール（NXP TagWriterなど）でURLを書き込み</li>
+      <li>書き込むURL形式:
+        <pre><code>https://face.gemba-ai.cloud/nfc-entry?cmac={動的}&piccdata={動的}&mode={機能}&ClientID={ClientID}</code></pre>
+      </li>
+    </ol>
+    <p><strong>注意</strong>: <code>cmac</code> と <code>piccdata</code> はNTAG424の機能でタッチごとに動的生成されます。タグ自体には<strong>テンプレートURL</strong>を書き込み、動的部分はチップが自動付与します。</p>
+
+    <h3>2. タグ視認用ID（DisplayID）の決定</h3>
+    <p>物理タグに人間が読める番号を貼り付けます（例: <code>KY001</code>, <code>EN042</code> など）。台帳管理用です。</p>
+  </div>
+
+  <div class="card">
+    <h2>🗄 Azure SQL への登録</h2>
+
+    <h3>TagMaster テーブル</h3>
+    <p>発行した全タグを <code>TagMaster</code> に登録します。</p>
+    <pre><code>INSERT INTO dbo.TagMaster
+  (TagId, ClientID, TagName, TagType, DisplayID, Author, Created)
+VALUES
+  ('5F9364F253CE5FFE', 2, '新規入場_(仮称)○○マンション', 'new-entry', 'NE001', 1, GETDATE()),
+  ('A1B2C3D4E5F60718', 2, '通常入場_(仮称)○○マンション', 'entry',     'EN001', 1, GETDATE()),
+  ('B2C3D4E5F6071829', 2, '退場_(仮称)○○マンション',    'exit',      'EX001', 1, GETDATE()),
+  ('C3D4E5F60718293A', 2, 'KY_(仮称)○○マンション',      'kyactivity','KY001', 1, GETDATE()),
+  ('D4E5F60718293A4B', 2, '教育_(仮称)○○マンション',    'tech',      'TC001', 1, GETDATE()),
+  ('E5F60718293A4B5C', 2, '安全会議_(仮称)○○マンション', 'safety-reg','SF001', 1, GETDATE());</code></pre>
+
+    <h3>OnsiteTagRelation テーブル</h3>
+    <p>各タグを<strong>現場と紐付け</strong>します。</p>
+    <pre><code>INSERT INTO dbo.OnsiteTagRelation
+  (ClientID, OnsiteID, TagId, Author, Created)
+VALUES
+  (2, 5, '5F9364F253CE5FFE', 1, GETDATE()),  -- 新規入場
+  (2, 5, 'A1B2C3D4E5F60718', 1, GETDATE()),  -- 通常入場
+  (2, 5, 'B2C3D4E5F6071829', 1, GETDATE()),  -- 退場
+  (2, 5, 'C3D4E5F60718293A', 1, GETDATE()),  -- KY
+  (2, 5, 'D4E5F60718293A4B', 1, GETDATE()),  -- 教育
+  (2, 5, 'E5F60718293A4B5C', 1, GETDATE()); -- 安全会議</code></pre>
+    <p><code>OnsiteID</code> は SPO の現場マスタの ID と一致させます。</p>
+  </div>
+
+  <div class="card">
+    <h2>🔍 登録確認</h2>
+    <ol>
+      <li>テストスマホでNFCタグをタッチ</li>
+      <li>face.gemba-ai.cloud のNFC打刻画面が表示されれば成功</li>
+      <li>顔認証 → 個人情報未登録ならエラー、登録済みなら次画面へ</li>
+    </ol>
+
+    <div class="alert alert-warn">
+      <strong>⚠️ HTTPS必須</strong><br>
+      NFCタグからの遷移はHTTPSのみ。スマホブラウザでもセキュアコンテキストが必要です。
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>✅ 完了チェックリスト</h2>
+    <ul class="checklist">
+      <li>必要数のNTAG424タグを調達した</li>
+      <li>各タグにテンプレートURLを書き込んだ</li>
+      <li>TagMasterに全タグを登録した</li>
+      <li>OnsiteTagRelationで現場×タグを紐付けた</li>
+      <li>テストスマホで実際にタッチして応答確認した</li>
+      <li>視認用ID（DisplayID）が物理タグに貼られている</li>
+    </ul>
+  </div>
+
+  <div class="nav-bar">
+    <a href="step05-initial-data.html" class="nav-btn">← 前へ：初期データ投入</a>
+    <a href="index.html" class="nav-btn home">🏠 TOPに戻る</a>
+    <a href="step07-materials.html" class="nav-btn">次へ：配布物・台紙準備 →</a>
+  </div>
+</main>
+
+<footer>&copy; 2026 CloudPower, Inc. / 永賢組入退場管理システム</footer>
+</body>
+</html>
