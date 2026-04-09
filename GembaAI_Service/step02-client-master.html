@@ -66,12 +66,6 @@
       <tr><td>請求先担当者名</td><td><code>BillingContactName</code></td><td>1行テキスト</td><td></td><td>○○ ○○</td></tr>
     </table>
 
-    <div class="alert alert-warn">
-      <strong>⚠️ 設計書と実装の差分</strong><br>
-      設計書（DB定義書）に記載の <code>SystemTheme</code> / <code>SystemTitle</code> / <code>SystemLogoPath</code>（テナント別ホワイトラベル設定）は<strong>現状の実装にはまだ存在しません</strong>。テナント別UIテーマ機能は将来拡張です。<br>
-      また、<code>field_14</code>〜<code>field_17</code>（テキスト型の更新者/登録者）が実装独自に存在します。基本的に空欄でOK（Author/Editor列が自動設定されるため）。
-    </div>
-
     <ol start="5">
       <li>「<strong>保存</strong>」をクリック</li>
       <li>登録完了後、自動採番された <code>ClientID</code> を控える</li>

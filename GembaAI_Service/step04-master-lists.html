@@ -21,9 +21,30 @@
     <p>Step3で作成したテナント専用SPOサイトに、運用に必要な<strong>8種類のSharePointリスト</strong>を作成します。リストの<strong>列定義は永賢組サイト（constructioninfo）と完全一致</strong>させる必要があります。</p>
 
     <div class="alert alert-info">
-      <strong>💡 効率化のヒント</strong><br>
-      永賢組サイトの各リストを<strong>テンプレートとしてエクスポート</strong>して新サイトにインポートする方法が最も確実かつ高速です。<br>
-      手動で作成する場合は、本ページの全項目表を参照してください（実装ベース＝Microsoft Graphで取得した正確な定義）。
+      <strong>💡 効率化のヒント：自動プロビジョニングスクリプト</strong><br>
+      <p style="margin: 0.6rem 0;">8リストを<strong>1コマンドで一括作成</strong>するPowerShellスクリプトを用意しています。永賢組サイト(constructioninfo)からMicrosoft Graph APIで取得した実装ベースの正確な列定義を埋め込み済み。Lookup列・選択肢・必須フラグもすべて自動設定されます。</p>
+      <p style="margin: 0.6rem 0;">
+        <a href="templates/provision-gembaai-lists.ps1" download class="download-btn">
+          ⬇️ サイトテンプレートDL（provision-gembaai-lists.ps1）
+        </a>
+      </p>
+      <details style="margin-top: 0.8rem;">
+        <summary style="cursor:pointer; font-weight:600;">▶ 実行方法（クリックして展開）</summary>
+        <ol style="margin-top: 0.5rem;">
+          <li>PowerShell 7+ をインストール</li>
+          <li>PnP.PowerShell モジュールをインストール:
+            <pre><code>Install-Module -Name PnP.PowerShell -Scope CurrentUser -Force</code></pre>
+          </li>
+          <li>新規テナント用のSPOサイトを Step3 で先に作成しておく</li>
+          <li>スクリプトを実行（対話ログイン）:
+            <pre><code>pwsh -File ./provision-gembaai-lists.ps1 -SiteUrl "https://nagaken.sharepoint.com/sites/constructioninfoXxxx"</code></pre>
+          </li>
+          <li>初回はEntra IDの認証画面が開く。<strong>サイトの所有者(フルコントロール)権限を持つアカウント</strong>でログイン</li>
+          <li>8リストの作成完了まで約30秒〜1分</li>
+        </ol>
+        <p>※ スクリプトは冪等（idempotent）です。既存リストはスキップされるため、再実行しても安全。</p>
+      </details>
+      <p style="margin-top: 0.8rem; font-size: 0.85rem; color: var(--muted);">手動で作成する場合は、本ページの全項目表を参照してください（同じ実装ベースの正確な定義です）。</p>
     </div>
   </div>
 
@@ -63,10 +84,6 @@
       <tr><td>略称ローマ字</td><td><code>Abbreviation</code></td><td>1行テキスト(255)</td><td></td><td>例: SASASHIMA</td></tr>
     </table>
     <p>※ 監査列（ID/Created/Modified/Author/Editor）はSharePointが自動で持つので明示作成不要</p>
-    <div class="alert alert-warn">
-      <strong>⚠️ 設計書との差分</strong><br>
-      DB定義書には <code>36AgreementSubmission</code>（36協定提出済）があるが、<strong>現状の実装には存在しない</strong>。必要なら追加してください。
-    </div>
   </div>
 
   <div class="card">
