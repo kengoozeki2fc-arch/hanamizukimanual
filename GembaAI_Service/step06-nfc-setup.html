@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Step6 NFCタグ準備・登録 | 新企業登録マニュアル</title>
+<title>Step6 NFCタグ準備・現場紐付け | 新企業登録マニュアル</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header>
-  <h1>Step 6 / 9 — NFCタグ準備・登録</h1>
-  <div class="subtitle">NFCタグ発行・TagMaster登録・現場との紐付け</div>
+  <h1>Step 6 / 9 — NFCタグ準備・現場紐付け</h1>
+  <div class="subtitle">物理タグの調達 ＋ 現場NFCタグ紐付け画面での登録</div>
 </header>
 
 <main>
@@ -17,14 +17,18 @@
 
   <div class="card">
     <h2>🎯 このステップのゴール</h2>
-    <p>各現場で使用する<strong>物理NFCタグ</strong>を準備し、Azure SQL の <code>TagMaster</code> と <code>OnsiteTagRelation</code> に登録します。1現場あたり最大6種類のタグが必要です。</p>
+    <p>各現場で使用する<strong>物理NFCタグ</strong>を準備し、<strong>face.gemba-ai.cloud の管理画面から手動で現場と紐付けます</strong>。1現場あたり最大6種類のタグが必要です。</p>
+    <div class="alert alert-info">
+      <strong>💡 SQL直叩きは不要</strong><br>
+      DBへの登録は管理画面が裏でやってくれます。クラウドパワー社の運用担当者は <strong>face.gemba-ai.cloud/onsitenfctag</strong> 画面でGUI操作するだけでOK。
+    </div>
   </div>
 
   <div class="card">
     <h2>📦 必要なNFCタグ数</h2>
-    <p><strong>1現場あたり6機能 × 現場数 = 必要タグ枚数</strong></p>
+    <p><strong>1現場あたり最大6機能 × 現場数 = 必要タグ枚数</strong></p>
     <table>
-      <tr><th>#</th><th>機能</th><th>mode値</th><th>用途</th></tr>
+      <tr><th>#</th><th>機能</th><th>タグ種別 (TagType)</th><th>用途</th></tr>
       <tr><td>1</td><td>新規入場</td><td><code>new-entry</code></td><td>初回入場時の登録</td></tr>
       <tr><td>2</td><td>新規教育完了</td><td><code>tech</code></td><td>新規入場者教育受講記録</td></tr>
       <tr><td>3</td><td>通常入場</td><td><code>entry</code></td><td>毎日の出社打刻</td></tr>
@@ -35,60 +39,81 @@
 
     <div class="alert alert-info">
       <strong>💡 タグの選定</strong><br>
-      推奨は<strong>NTAG424 DNA</strong>（暗号化機能付き、リプレイ攻撃対策あり）。<code>cmac</code> と <code>piccdata</code> の動的生成に対応している必要があります。
+      推奨は<strong>NTAG424 DNA</strong>（暗号化機能付き、リプレイ攻撃対策あり）。<code>cmac</code> と <code>piccdata</code> の動的生成に対応している必要があります。書き込むテンプレートURLは:
+      <pre style="margin-top:0.5rem"><code>https://face.gemba-ai.cloud/nfc-entry?cmac={動的}&amp;piccdata={動的}&amp;mode={機能}&amp;ClientID={ClientID}</code></pre>
     </div>
   </div>
 
   <div class="card">
-    <h2>🛠 NFCタグ書き込み</h2>
-    <h3>1. タグ発行</h3>
+    <h2>🛠 NFCタグの物理準備</h2>
     <ol>
-      <li>NTAG424タグを必要数調達</li>
-      <li>専用書き込みツール（NXP TagWriterなど）でURLを書き込み</li>
-      <li>書き込むURL形式:
-        <pre><code>https://face.gemba-ai.cloud/nfc-entry?cmac={動的}&piccdata={動的}&mode={機能}&ClientID={ClientID}</code></pre>
+      <li>NTAG424タグを必要数調達（現場数 × 6種類）</li>
+      <li>専用書き込みツール（NXP TagWriter等）でテンプレートURLを書き込み</li>
+      <li>物理タグに人間が読める<strong>掲示用ID</strong>のラベルを貼る
+        <ul>
+          <li>命名規則例: <code>NGK-0001</code>（現場略称＋連番）</li>
+          <li>奇数番=入場系、偶数番=KY系 など、運用に合わせて</li>
+        </ul>
       </li>
+      <li>タグの物理ID（14桁のHEX）を控える（後で管理画面に入力する）</li>
     </ol>
-    <p><strong>注意</strong>: <code>cmac</code> と <code>piccdata</code> はNTAG424の機能でタッチごとに動的生成されます。タグ自体には<strong>テンプレートURL</strong>を書き込み、動的部分はチップが自動付与します。</p>
-
-    <h3>2. タグ視認用ID（DisplayID）の決定</h3>
-    <p>物理タグに人間が読める番号を貼り付けます（例: <code>KY001</code>, <code>EN042</code> など）。台帳管理用です。</p>
   </div>
 
   <div class="card">
-    <h2>🗄 Azure SQL への登録</h2>
+    <h2>🌐 現場NFCタグ紐付け画面で登録</h2>
 
-    <h3>TagMaster テーブル</h3>
-    <p>発行した全タグを <code>TagMaster</code> に登録します。</p>
-    <pre><code>INSERT INTO dbo.TagMaster
-  (TagId, ClientID, TagName, TagType, DisplayID, Author, Created)
-VALUES
-  ('5F9364F253CE5FFE', 2, '新規入場_(仮称)○○マンション', 'new-entry', 'NE001', 1, GETDATE()),
-  ('A1B2C3D4E5F60718', 2, '通常入場_(仮称)○○マンション', 'entry',     'EN001', 1, GETDATE()),
-  ('B2C3D4E5F6071829', 2, '退場_(仮称)○○マンション',    'exit',      'EX001', 1, GETDATE()),
-  ('C3D4E5F60718293A', 2, 'KY_(仮称)○○マンション',      'kyactivity','KY001', 1, GETDATE()),
-  ('D4E5F60718293A4B', 2, '教育_(仮称)○○マンション',    'tech',      'TC001', 1, GETDATE()),
-  ('E5F60718293A4B5C', 2, '安全会議_(仮称)○○マンション', 'safety-reg','SF001', 1, GETDATE());</code></pre>
+    <h3>アクセス先</h3>
+    <table>
+      <tr><th>項目</th><th>値</th></tr>
+      <tr><td>URL</td><td><code>https://face.gemba-ai.cloud/onsitenfctag</code></td></tr>
+      <tr><td>画面名</td><td>現場NFCタグ紐付け一覧</td></tr>
+      <tr><td>左サイドメニュー</td><td>「現場NFCタグ紐付け」</td></tr>
+    </table>
 
-    <h3>OnsiteTagRelation テーブル</h3>
-    <p>各タグを<strong>現場と紐付け</strong>します。</p>
-    <pre><code>INSERT INTO dbo.OnsiteTagRelation
-  (ClientID, OnsiteID, TagId, Author, Created)
-VALUES
-  (2, 5, '5F9364F253CE5FFE', 1, GETDATE()),  -- 新規入場
-  (2, 5, 'A1B2C3D4E5F60718', 1, GETDATE()),  -- 通常入場
-  (2, 5, 'B2C3D4E5F6071829', 1, GETDATE()),  -- 退場
-  (2, 5, 'C3D4E5F60718293A', 1, GETDATE()),  -- KY
-  (2, 5, 'D4E5F60718293A4B', 1, GETDATE()),  -- 教育
-  (2, 5, 'E5F60718293A4B5C', 1, GETDATE()); -- 安全会議</code></pre>
-    <p><code>OnsiteID</code> は SPO の現場マスタの ID と一致させます。</p>
+    <h3>登録手順</h3>
+    <ol>
+      <li>管理画面にM365 SSOでログイン</li>
+      <li>左メニュー「<strong>現場NFCタグ紐付け</strong>」を選択</li>
+      <li>画面上部のドロップダウンで対象の<strong>現場を選択</strong>（例: (仮称)ささしまライブマンション新築工事）</li>
+      <li>「<strong>+ 新しいアイテムを追加</strong>」ボタンをクリック</li>
+      <li>以下の項目を入力</li>
+    </ol>
+
+    <h3>入力項目</h3>
+    <table>
+      <tr><th>項目</th><th>説明</th><th>例</th></tr>
+      <tr><td>タグID</td><td>NTAG424の物理ID（14桁HEX）</td><td><code>04501a927e7580</code></td></tr>
+      <tr><td>現場名称</td><td>選択中の現場（自動入力）</td><td>(仮称)ささしまライブマンション新築工事</td></tr>
+      <tr><td>タグ名</td><td>機能識別の名前</td><td>new-entry</td></tr>
+      <tr><td>タグ種別</td><td>6種類から選択</td><td>new-entry / entry / exit / kyactivity / tech / safety-reg</td></tr>
+      <tr><td>掲示用ID</td><td>物理ラベルと同じID</td><td>NGK-0001</td></tr>
+    </table>
+
+    <ol start="6">
+      <li>「保存」をクリック</li>
+      <li>1現場あたり最大6種類分（6機能）を繰り返し登録</li>
+    </ol>
+
+    <div class="alert alert-info">
+      <strong>💡 永賢組の登録例（参考）</strong><br>
+      ささしまライブマンション現場では、6種類のタグが <code>NGK-0001</code> 〜 <code>NGK-0011</code>（奇数番）で登録されています。
+      <ul style="margin: 0.5rem 0 0 0;">
+        <li>NGK-0001 → new-entry</li>
+        <li>NGK-0003 → entry</li>
+        <li>NGK-0005 → tech</li>
+        <li>NGK-0007 → exit</li>
+        <li>NGK-0009 → kyactivity</li>
+        <li>NGK-0011 → safety-reg</li>
+      </ul>
+    </div>
   </div>
 
   <div class="card">
     <h2>🔍 登録確認</h2>
     <ol>
-      <li>テストスマホでNFCタグをタッチ</li>
-      <li>face.gemba-ai.cloud のNFC打刻画面が表示されれば成功</li>
+      <li>登録した一覧画面に6行が表示されることを確認</li>
+      <li>テストスマホで実際にNFCタグをタッチ</li>
+      <li><code>face.gemba-ai.cloud/nfc-entry?...</code> に遷移し、対応する画面（KY活動・新規入場・通常入場など）が表示されれば成功</li>
       <li>顔認証 → 個人情報未登録ならエラー、登録済みなら次画面へ</li>
     </ol>
 
@@ -99,14 +124,24 @@ VALUES
   </div>
 
   <div class="card">
+    <h2>🔧 内部仕様（参考）</h2>
+    <p>管理画面で登録すると、以下の2つのテーブルにレコードが作成されます（運用担当者は意識不要）。</p>
+    <ul>
+      <li><strong>TagMaster</strong> (Azure SQL): タグID/契約先ID/タグ名/タグ種別/掲示用ID</li>
+      <li><strong>OnsiteTagRelation</strong> (SPO List): 契約先ID/現場ID/タグID</li>
+    </ul>
+    <p>また、<strong>TagTouchLog</strong> テーブルでタッチ回数（Counter）を管理し、<strong>NTAG424のリプレイ攻撃対策</strong>を行っています。</p>
+  </div>
+
+  <div class="card">
     <h2>✅ 完了チェックリスト</h2>
     <ul class="checklist">
       <li>必要数のNTAG424タグを調達した</li>
       <li>各タグにテンプレートURLを書き込んだ</li>
-      <li>TagMasterに全タグを登録した</li>
-      <li>OnsiteTagRelationで現場×タグを紐付けた</li>
+      <li>物理タグに掲示用IDラベルを貼った</li>
+      <li><code>face.gemba-ai.cloud/onsitenfctag</code> で各現場×6機能のレコードを登録した</li>
       <li>テストスマホで実際にタッチして応答確認した</li>
-      <li>視認用ID（DisplayID）が物理タグに貼られている</li>
+      <li>6種類すべての機能（新規入場/教育/入場/退場/KY/安全会議）の遷移を確認した</li>
     </ul>
   </div>
 

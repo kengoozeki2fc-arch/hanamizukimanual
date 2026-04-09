@@ -58,11 +58,37 @@
     <h3>3-4. 危険作業マスタ・危険回避策マスタ</h3>
     <p>KY活動で選択肢として表示される作業と回避策を投入します。永賢組のものをひな型にして、テナント業種に合わせてカスタマイズしてください。</p>
 
-    <h3>5. 協力業者マスタ</h3>
-    <p>テナントが取引する協力業者を投入します。<strong>建設業許可番号・各種保険加入状況</strong>を必ず確認します。</p>
+    <h3>5. 協力業者マスタ（PartnerMaster）</h3>
+    <p>テナントが取引する協力業者を投入します。<strong>建設業許可番号・建設業許可業種・各種保険加入状況</strong>を必ず確認します。</p>
+
+    <h4>列定義（実装ベース）</h4>
+    <table>
+      <tr><th>表示名</th><th>内部名</th><th>型</th><th>選択肢</th></tr>
+      <tr><td>協力業者名称</td><td><code>Title</code></td><td>1行テキスト ✓必須</td><td></td></tr>
+      <tr><td>郵便番号</td><td><code>PostCode</code></td><td>1行テキスト</td><td></td></tr>
+      <tr><td>住所</td><td><code>Address</code></td><td>1行テキスト</td><td></td></tr>
+      <tr><td>代表電話番号</td><td><code>MainPhoneNumber</code></td><td>1行テキスト</td><td></td></tr>
+      <tr><td>代表者名</td><td><code>RepresentativeName</code></td><td>1行テキスト</td><td></td></tr>
+      <tr><td>担当者名 / 部署 / 役職 / 携帯 / メール</td><td><code>PersonInChargeName</code> 等</td><td>1行テキスト×5</td><td></td></tr>
+      <tr><td>建設業許可番号</td><td><code>ConstructionLicenseNumber</code></td><td>1行テキスト</td><td></td></tr>
+      <tr><td>建設業許可業種</td><td><code>ConstructionLicenseType</code></td><td>選択肢（複数可）</td><td>29業種チェックボックス</td></tr>
+      <tr><td>契約形態</td><td><code>ContractType</code></td><td>選択肢</td><td><strong>直契約 / 再下請</strong></td></tr>
+      <tr><td>初期紹介会社</td><td><code>IntroductionCompany</code></td><td>1行テキスト</td><td></td></tr>
+      <tr><td>健康保険</td><td><code>HealthInsurance</code></td><td>選択肢</td><td>健康保険組合 / 協会けんぽ / 建設国保 / 国民健康保険</td></tr>
+      <tr><td>年金保険</td><td><code>PensionInsurance</code></td><td>選択肢</td><td>厚生年金 / 国民年金</td></tr>
+      <tr><td>雇用保険</td><td><code>EmploymentInsurance</code></td><td>選択肢</td><td>加入 / 日雇保険</td></tr>
+      <tr><td>建設業退職金共済制度</td><td><code>KentaikyoSystem</code></td><td>選択肢</td><td>有 / 無</td></tr>
+      <tr><td>中小企業退職金共済制度</td><td><code>SMBtaikyoSystem</code></td><td>選択肢</td><td>有 / 無</td></tr>
+    </table>
+
     <div class="alert alert-warn">
       <strong>⚠️ 1社が複数階層で参画する場合</strong><br>
       同じ会社が「1次請」「2次請」両方で出てくる場合は、別レコードとして登録します（例: 「○○建設『1次請』」「○○建設『2次請』」）。これは設計上の制約です。
+    </div>
+
+    <div class="alert alert-info">
+      <strong>💡 設計書との差分</strong><br>
+      DB定義書には記載がないが、実装には<strong>5種類の保険関連選択肢列</strong>（健康保険・年金保険・雇用保険・建退共・中退共）が追加されています。法令対応で後付けされたもので、新テナントでもそのまま使えます。
     </div>
 
     <h3>6. 現場マスタ</h3>
