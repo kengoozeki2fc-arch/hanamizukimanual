@@ -327,3 +327,50 @@ footer {
   white-space: pre;
   overflow-x: auto;
 }
+
+.download-btn {
+  display: inline-block;
+  background: linear-gradient(135deg, #2e7d32 0%, #43a047 100%);
+  color: white;
+  text-decoration: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 8px rgba(46,125,50,0.25);
+  transition: all 0.2s;
+  border: none;
+}
+
+.download-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(46,125,50,0.35);
+  background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+  color: white;
+}
+
+.contact-card {
+  background: #e3f2fd;
+  border-left: 4px solid #1976d2;
+  padding: 1.2rem 1.5rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+
+.contact-card a.teams-btn {
+  display: inline-block;
+  background: #5059c9;
+  color: white;
+  text-decoration: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  transition: background 0.2s;
+}
+
+.contact-card a.teams-btn:hover {
+  background: #3b4287;
+  color: white;
+}

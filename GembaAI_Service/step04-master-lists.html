@@ -10,7 +10,7 @@
 <body>
 <header>
   <h1>Step 4 / 9 — マスタリスト作成</h1>
-  <div class="subtitle">8種類のSPOリストを必要な列定義で作成</div>
+  <div class="subtitle">8種類のSPOリストを必要な列定義で作成（実装ベース全項目）</div>
 </header>
 
 <main>
@@ -18,91 +18,228 @@
 
   <div class="card">
     <h2>🎯 このステップのゴール</h2>
-    <p>Step3で作成したテナント専用SPOサイトに、運用に必要な<strong>8種類のSharePointリスト</strong>を作成します。リストの<strong>列定義は永賢組サイトと完全一致</strong>させる必要があります。</p>
+    <p>Step3で作成したテナント専用SPOサイトに、運用に必要な<strong>8種類のSharePointリスト</strong>を作成します。リストの<strong>列定義は永賢組サイト（constructioninfo）と完全一致</strong>させる必要があります。</p>
 
     <div class="alert alert-info">
       <strong>💡 効率化のヒント</strong><br>
-      既存の永賢組サイト（<code>constructionInfo</code>）からリストを<strong>テンプレートとしてエクスポート</strong>して、新サイトにインポートする方法が最も確実かつ高速です。
+      永賢組サイトの各リストを<strong>テンプレートとしてエクスポート</strong>して新サイトにインポートする方法が最も確実かつ高速です。<br>
+      手動で作成する場合は、本ページの全項目表を参照してください（実装ベース＝Microsoft Graphで取得した正確な定義）。
     </div>
   </div>
 
   <div class="card">
     <h2>📋 作成するリスト一覧</h2>
     <table>
-      <tr><th>#</th><th>リスト名（表示）</th><th>物理名</th><th>主な用途</th></tr>
-      <tr><td>1</td><td>現場</td><td>OnSiteMaster</td><td>現場マスタ</td></tr>
-      <tr><td>2</td><td>協力業者</td><td>PartnerMaster</td><td>協力業者マスタ</td></tr>
-      <tr><td>3</td><td>現場協力業者紐付け</td><td>OnsitePartnerRelation</td><td>施工体制ツリー</td></tr>
-      <tr><td>4</td><td>社員</td><td>EmployeeMaster</td><td>テナント社員</td></tr>
-      <tr><td>5</td><td>社員資格</td><td>EmployeeQualificationMaster</td><td>社員資格マスタ</td></tr>
-      <tr><td>6</td><td>社員実績</td><td>EmployeeAchievement</td><td>社員の現場履歴</td></tr>
-      <tr><td>7</td><td>危険作業</td><td>RiskyWorkMaster</td><td>KY活動の危険作業マスタ</td></tr>
-      <tr><td>8</td><td>危険回避策</td><td>RiskAvoidanceMaster</td><td>危険作業に紐づく回避策</td></tr>
+      <tr><th>#</th><th>表示名</th><th>物理リスト名</th><th>主な用途</th></tr>
+      <tr><td>1</td><td>現場</td><td><code>OnsiteMaster</code></td><td>現場マスタ</td></tr>
+      <tr><td>2</td><td>協力業者</td><td><code>PartnerMaster</code></td><td>協力業者マスタ</td></tr>
+      <tr><td>3</td><td>現場協力業者紐付け</td><td><code>OnsitePartnerRelation</code></td><td>施工体制ツリー（自己参照）</td></tr>
+      <tr><td>4</td><td>社員</td><td><code>EmployeeMaster</code></td><td>テナント社員</td></tr>
+      <tr><td>5</td><td>社員資格</td><td><code>EmployeeQualificationMaster</code></td><td>社員資格マスタ</td></tr>
+      <tr><td>6</td><td>社員実績</td><td><code>EmployeeAchievement</code></td><td>社員の現場履歴</td></tr>
+      <tr><td>7</td><td>危険作業</td><td><code>RiskyWorkMaster</code></td><td>KY活動の危険作業マスタ</td></tr>
+      <tr><td>8</td><td>危険回避策</td><td><code>RiskAvoidanceMaster</code></td><td>危険作業に紐づく回避策</td></tr>
     </table>
+
+    <div class="alert alert-warn">
+      <strong>⚠️ 内部名は絶対に変更しない</strong><br>
+      アプリ側（face.gemba-ai.cloud）は<strong>物理列名（内部名）</strong>でデータを読み書きします。日本語表示名は変更可ですが、<strong>内部名は永賢組と完全一致</strong>させてください。
+    </div>
   </div>
 
   <div class="card">
-    <h2>🛠 作成手順（推奨：テンプレートコピー方式）</h2>
-
-    <h3>方法A：テンプレート複製（推奨）</h3>
-    <ol>
-      <li>永賢組サイト（<code>constructionInfo</code>）の各リストを開く</li>
-      <li>「歯車アイコン」→「リストの設定」→「<strong>リストをテンプレートとして保存</strong>」</li>
-      <li>テンプレート名を入力し、「<strong>コンテンツを含める</strong>」のチェックを<strong>外す</strong>（マスタデータは持ち込まない）</li>
-      <li>新サイトの「サイトコンテンツ」→「+ 新規」→「アプリ」→ 保存したテンプレートを選択</li>
-      <li>8リスト分繰り返す</li>
-    </ol>
-
-    <h3>方法B：手動作成（フォールバック）</h3>
-    <p>テンプレート機能が無効化されている場合は、各リストを手動で作成し、列定義を1つずつ追加します。<strong>DB定義書.xlsx</strong>（<code>03_詳細設計</code>）の各シートを参照してください。</p>
-  </div>
-
-  <div class="card">
-    <h2>📐 主要リストの列定義（参考）</h2>
-
-    <h3>1. 現場（OnSiteMaster）</h3>
+    <h2>1️⃣ 現場（OnsiteMaster）</h2>
+    <p>現場の基本情報を管理するマスタ。</p>
     <table>
-      <tr><th>列名</th><th>型</th></tr>
-      <tr><td>現場名称（Title）</td><td>1行テキスト</td></tr>
-      <tr><td>所長名</td><td>1行テキスト</td></tr>
-      <tr><td>工期（自）/（至）</td><td>日付と時刻</td></tr>
-      <tr><td>労災保険番号</td><td>数値</td></tr>
-      <tr><td>36協定提出済 / 事業所設置届 / 足場支保工 / 型枠支保工</td><td>はい/いいえ</td></tr>
-      <tr><td>略称ローマ字</td><td>1行テキスト</td></tr>
+      <tr><th>表示名</th><th>内部名</th><th>型</th><th>必須</th><th>備考</th></tr>
+      <tr><td>現場名称</td><td><code>Title</code></td><td>1行テキスト(255)</td><td>✓</td><td>例: (仮称)○○マンション新築工事</td></tr>
+      <tr><td>所長名</td><td><code>ChiefName</code></td><td>1行テキスト(255)</td><td></td><td></td></tr>
+      <tr><td>工期（自）</td><td><code>ConstructionStartDate</code></td><td>日付（dateOnly）</td><td></td><td></td></tr>
+      <tr><td>工期（至）</td><td><code>ConstructionEndDate</code></td><td>日付（dateOnly）</td><td></td><td></td></tr>
+      <tr><td>労災保険番号</td><td><code>InsuranceNumber</code></td><td>数値（14桁固定）</td><td></td><td>min=max=14</td></tr>
+      <tr><td>事業所の設置届提出済</td><td><code>OfficeEstablishmentSubmission</code></td><td>はい/いいえ</td><td></td><td></td></tr>
+      <tr><td>足場支保工提出済</td><td><code>ScaffoldingSubmission</code></td><td>はい/いいえ</td><td></td><td></td></tr>
+      <tr><td>型枠支保工提出済</td><td><code>FalseworkSubmission</code></td><td>はい/いいえ</td><td></td><td></td></tr>
+      <tr><td>略称ローマ字</td><td><code>Abbreviation</code></td><td>1行テキスト(255)</td><td></td><td>例: SASASHIMA</td></tr>
+    </table>
+    <p>※ 監査列（ID/Created/Modified/Author/Editor）はSharePointが自動で持つので明示作成不要</p>
+    <div class="alert alert-warn">
+      <strong>⚠️ 設計書との差分</strong><br>
+      DB定義書には <code>36AgreementSubmission</code>（36協定提出済）があるが、<strong>現状の実装には存在しない</strong>。必要なら追加してください。
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>2️⃣ 協力業者（PartnerMaster）</h2>
+    <p>協力業者の会社情報・許可情報・保険加入情報を管理するマスタ。</p>
+    <table>
+      <tr><th>表示名</th><th>内部名</th><th>型</th><th>必須</th><th>選択肢</th></tr>
+      <tr><td>協力業者名称</td><td><code>Title</code></td><td>1行テキスト(255)</td><td>✓</td><td></td></tr>
+      <tr><td>郵便番号</td><td><code>PostCode</code></td><td>1行テキスト(255)</td><td></td><td></td></tr>
+      <tr><td>住所</td><td><code>Address</code></td><td>1行テキスト(255)</td><td></td><td></td></tr>
+      <tr><td>代表電話番号</td><td><code>MainPhoneNumber</code></td><td>1行テキスト(255)</td><td></td><td></td></tr>
+      <tr><td>代表者名</td><td><code>RepresentativeName</code></td><td>1行テキスト(255)</td><td></td><td></td></tr>
+      <tr><td>担当者名</td><td><code>PersonInChargeName</code></td><td>1行テキスト(255)</td><td></td><td></td></tr>
+      <tr><td>担当者部署</td><td><code>DepartmentInCharge</code></td><td>1行テキスト(255)</td><td></td><td></td></tr>
+      <tr><td>担当者役職</td><td><code>PersonInChargePosition</code></td><td>1行テキスト(255)</td><td></td><td></td></tr>
+      <tr><td>担当者携帯番号</td><td><code>PersonInChargeMobileNumber</code></td><td>1行テキスト(255)</td><td></td><td></td></tr>
+      <tr><td>担当者メールアドレス</td><td><code>PersonInChargeEmailAddress</code></td><td>1行テキスト(255)</td><td></td><td></td></tr>
+      <tr><td>建設業許可番号</td><td><code>ConstructionLicenseNumber</code></td><td>1行テキスト(255)</td><td></td><td></td></tr>
+      <tr><td>建設業許可業種</td><td><code>ConstructionLicenseType</code></td><td>選択肢（複数可・チェックボックス）</td><td></td><td>29業種：土木一式工事 / 建築一式工事 / 大工工事 / 左官工事 / とび・土工・コンクリート工事 / 石工事 / 屋根工事 / 電気工事 / 管工事 / タイル・れんが・ブロック工事 / 鋼構造物工事 / 鉄筋工事 / 舗装工事 / しゅんせつ工事 / 板金工事 / ガラス工事 / 塗装工事 / 防水工事 / 内装仕上工事 / 機械器具設置工事 / 熱絶縁工事 / 電気通信工事 / 造園工事 / さく井工事 / 建具工事 / 水道施設工事 / 消防施設工事 / 清掃施設工事 / 解体工事</td></tr>
+      <tr><td>契約形態</td><td><code>ContractType</code></td><td>選択肢（ラジオ）</td><td></td><td>直契約 / 再下請</td></tr>
+      <tr><td>初期紹介会社</td><td><code>IntroductionCompany</code></td><td>1行テキスト(255)</td><td></td><td></td></tr>
+      <tr><td>健康保険</td><td><code>HealthInsurance</code></td><td>選択肢（ラジオ）</td><td></td><td>健康保険組合 / 協会けんぽ / 建設国保 / 国民健康保険</td></tr>
+      <tr><td>年金保険</td><td><code>PensionInsurance</code></td><td>選択肢（ラジオ）</td><td></td><td>厚生年金 / 国民年金</td></tr>
+      <tr><td>雇用保険</td><td><code>EmploymentInsurance</code></td><td>選択肢（ラジオ）</td><td></td><td>加入 / 日雇保険</td></tr>
+      <tr><td>建設業退職金共済制度</td><td><code>KentaikyoSystem</code></td><td>選択肢（ラジオ）</td><td></td><td>有 / 無</td></tr>
+      <tr><td>中小企業退職金共済制度</td><td><code>SMBtaikyoSystem</code></td><td>選択肢（ラジオ）</td><td></td><td>有 / 無</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>3️⃣ 現場協力業者紐付け（OnsitePartnerRelation）</h2>
+    <p>現場×協力業者の紐付け＋施工体制ツリー（自己参照で1次〜N次を表現）。</p>
+    <table>
+      <tr><th>表示名</th><th>内部名</th><th>型</th><th>必須</th><th>備考</th></tr>
+      <tr><td>タイトル</td><td><code>Title</code></td><td>1行テキスト(255)</td><td></td><td>任意ラベル</td></tr>
+      <tr><td>現場</td><td><code>OnsiteID</code></td><td><strong>Lookup → 現場(OnsiteMaster)</strong></td><td>✓</td><td>columnName: Title</td></tr>
+      <tr><td>協力業者</td><td><code>PartnerID</code></td><td><strong>Lookup → 協力業者(PartnerMaster)</strong></td><td>✓</td><td>columnName: Title</td></tr>
+      <tr><td>上位協力業者</td><td><code>ParentOnsitePartnerID</code></td><td><strong>Lookup → 自分自身(OnsitePartnerRelation)</strong></td><td></td><td>自己参照で施工体制ツリー</td></tr>
+      <tr><td>階層</td><td><code>Hierarchy</code></td><td>数値</td><td></td><td>1=1次請、2=2次請、…</td></tr>
+      <tr><td>協力業者担当作業</td><td><code>PartnerWork</code></td><td>選択肢</td><td></td><td><strong>37工種</strong>（後述）</td></tr>
     </table>
 
-    <h3>2. 協力業者（PartnerMaster）</h3>
-    <p>会社名/郵便番号/住所/代表電話/代表者名/担当者名/部署/役職/携帯/メール/建設業許可番号/業種/各種保険加入/契約形態/初期紹介会社</p>
+    <h3>PartnerWork の37工種</h3>
+    <p><code>直接仮設工事 / 土工事 / 山留・乗入構台工事 / 杭地業工事 / コンクリート工事 / 型枠工事 / 鉄筋工事 / 鉄骨工事 / 組積工事 / 防水工事 / 石工事 / タイル工事 / 木工事 / 屋根工事 / 外壁工事 / 金属工事 / 左官工事 / 木製建具工事 / 金属製建具工事 / ガラス工事 / 塗装工事 / 内装工事 / 住設工事 / 家具工事 / 断熱・耐火被覆工事 / パーテーション工事 / サイン工事 / 外構工事 / 造園工事 / EV工事 / 電気設備工事 / 給排水設備工事 / 空調換気設備工事 / ガス設備工事 / 解体工事 / 雑工事 / その他設備工事</code></p>
 
-    <h3>3. 現場協力業者紐付け（OnsitePartnerRelation）</h3>
-    <p>現場ID/協力業者ID/<strong>上位現場協力業者紐付けID（自己参照）</strong>/階層/協力業者担当作業 → 1次〜N次の施工体制ツリーを表現</p>
+    <div class="alert alert-info">
+      <strong>💡 Lookup列の作成順序</strong><br>
+      このリストは <strong>OnsiteMaster と PartnerMaster の作成後</strong> に作成してください。Lookup列は参照先リストが先に存在する必要があります。
+    </div>
+  </div>
 
-    <h3>4. 社員（EmployeeMaster）</h3>
-    <p>氏名/メール/生年月日/権限ロール（現場/本社/システム）/携帯/<strong>社員資格ID 1〜3（3スロット固定）</strong>/監理技術者番号/CPD実績</p>
+  <div class="card">
+    <h2>4️⃣ 社員（EmployeeMaster）</h2>
+    <p>テナント社員の基本情報・権限・資格情報。資格は3スロット固定実装。</p>
+    <table>
+      <tr><th>表示名</th><th>内部名</th><th>型</th><th>必須</th><th>選択肢/備考</th></tr>
+      <tr><td>氏名</td><td><code>Title</code></td><td>1行テキスト(255)</td><td>✓</td><td></td></tr>
+      <tr><td>メールアドレス</td><td><code>MailAddress</code></td><td>1行テキスト(255)</td><td></td><td></td></tr>
+      <tr><td>生年月日</td><td><code>BirthDate</code></td><td>日付（dateOnly）</td><td></td><td></td></tr>
+      <tr><td>権限ロール</td><td><code>Role</code></td><td>選択肢</td><td></td><td><strong>現場管理者 / 本社管理者 / システム管理者</strong></td></tr>
+      <tr><td>携帯電話番号</td><td><code>MobileNumber</code></td><td>1行テキスト(255)</td><td></td><td></td></tr>
+      <tr><td>社員資格ID1</td><td><code>QualificationID1</code></td><td>Lookup → 社員資格</td><td></td><td></td></tr>
+      <tr><td>資格者番号1</td><td><code>QualifiedPersonNumber1</code></td><td>1行テキスト(255)</td><td></td><td></td></tr>
+      <tr><td>資格期限1</td><td><code>QualificationDeadline1</code></td><td>日付（dateOnly）</td><td></td><td></td></tr>
+      <tr><td>社員資格ID2</td><td><code>QualificationID2</code></td><td>Lookup → 社員資格</td><td></td><td></td></tr>
+      <tr><td>資格者番号2</td><td><code>QualifiedPersonNumber2</code></td><td>1行テキスト(255)</td><td></td><td></td></tr>
+      <tr><td>資格期限2</td><td><code>QualificationDeadline2</code></td><td>日付（dateOnly）</td><td></td><td></td></tr>
+      <tr><td>社員資格ID3</td><td><code>QualificationID3</code></td><td>Lookup → 社員資格</td><td></td><td></td></tr>
+      <tr><td>資格者番号3</td><td><code>QualifiedPersonNumber3</code></td><td>1行テキスト(255)</td><td></td><td></td></tr>
+      <tr><td>資格期限3</td><td><code>QualificationDeadline3</code></td><td>日付（dateOnly）</td><td></td><td></td></tr>
+      <tr><td>監理技術者番号</td><td><code>ConstructionManagerNumber</code></td><td>数値（11桁固定）</td><td></td><td>min=max=11</td></tr>
+      <tr><td>更新期限</td><td><code>ConstructionManagerDeadline</code></td><td>日付（dateOnly）</td><td></td><td>監理技術者の更新期限</td></tr>
+      <tr><td>CPD実績</td><td><code>CPDAchievements</code></td><td>複数行テキスト（plain・6行）</td><td></td><td>継続的職能開発の記録</td></tr>
+    </table>
 
-    <h3>5〜8</h3>
-    <p>社員資格マスタ・社員実績・危険作業マスタ・危険回避策マスタは比較的シンプル。詳細はDB定義書参照。</p>
+    <div class="alert alert-warn">
+      <strong>⚠️ 資格は3スロット固定</strong><br>
+      4個以上の資格を持つ社員は、<strong>主要な3つだけ</strong>を入力します。設計上の制約です。CPD実績欄に補足記載することも可能。
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>5️⃣ 社員資格（EmployeeQualificationMaster）</h2>
+    <p>社員資格名のマスタ（シンプルなマスタテーブル）。</p>
+    <table>
+      <tr><th>表示名</th><th>内部名</th><th>型</th><th>必須</th><th>備考</th></tr>
+      <tr><td>資格名称</td><td><code>Title</code></td><td>1行テキスト(255)</td><td>✓</td><td>例: 一級建築施工管理技士</td></tr>
+    </table>
+    <p><strong>永賢組での登録例</strong>：一級建築施工管理技士、一級建築施工管理技士補、二級建築施工管理技士、二級建築施工管理技士補、一級建築士、二級建築士、木造建築士、監理技術者、一級土木施工管理技士</p>
+  </div>
+
+  <div class="card">
+    <h2>6️⃣ 社員実績（EmployeeAchievement）</h2>
+    <p>社員と現場の紐付け＋担当工事を管理する実績テーブル。</p>
+    <table>
+      <tr><th>表示名</th><th>内部名</th><th>型</th><th>必須</th><th>備考</th></tr>
+      <tr><td>タイトル</td><td><code>Title</code></td><td>1行テキスト(255)</td><td></td><td>任意ラベル</td></tr>
+      <tr><td>社員</td><td><code>EmployeeID</code></td><td><strong>Lookup → 社員(EmployeeMaster)</strong></td><td>✓</td><td></td></tr>
+      <tr><td>現場</td><td><code>OnsiteID</code></td><td><strong>Lookup → 現場(OnsiteMaster)</strong></td><td>✓</td><td></td></tr>
+      <tr><td>所属期間（自）</td><td><code>AssignmentStartDate</code></td><td>日付（dateOnly）</td><td></td><td></td></tr>
+      <tr><td>所属期間（至）</td><td><code>AssignmentEndDate</code></td><td>日付（dateOnly）</td><td></td><td></td></tr>
+      <tr><td>担当工事</td><td><code>ConstructionWorkInCharge</code></td><td>選択肢</td><td></td><td>OnsitePartnerRelation の PartnerWork と<strong>同じ37工種</strong></td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>7️⃣ 危険作業（RiskyWorkMaster）</h2>
+    <p>KY活動で選択する危険作業のマスタ（シンプルテーブル）。</p>
+    <table>
+      <tr><th>表示名</th><th>内部名</th><th>型</th><th>必須</th><th>備考</th></tr>
+      <tr><td>危険作業</td><td><code>Title</code></td><td>1行テキスト(255)</td><td>✓</td><td>例: 材料荷降ろしの時につり荷が落下して人に当る</td></tr>
+    </table>
+    <p><strong>永賢組での登録例</strong>：材料荷降ろし時のつり荷落下、高所作業・手作業による資材取扱、水辺作業、危険化学物質取扱、閉鎖空間立入、高所運搬作業、電気工事、溶接・切断、重機操作 など</p>
+  </div>
+
+  <div class="card">
+    <h2>8️⃣ 危険回避策（RiskAvoidanceMaster）</h2>
+    <p>危険作業に対する回避策（1対多）。</p>
+    <table>
+      <tr><th>表示名</th><th>内部名</th><th>型</th><th>必須</th><th>備考</th></tr>
+      <tr><td>危険回避策</td><td><code>Title</code></td><td>1行テキスト(255)</td><td>✓</td><td>例: 苫で合図しつつ荷囲下の人払いをする</td></tr>
+      <tr><td>危険作業</td><td><code>RiskyWorkID</code></td><td><strong>Lookup → 危険作業(RiskyWorkMaster)</strong></td><td>✓</td><td>columnName: Title</td></tr>
+    </table>
+
+    <div class="alert alert-info">
+      <strong>💡 1つの危険作業に複数の回避策</strong><br>
+      RiskAvoidanceMaster の各レコードは1つの危険作業を参照します。1つの危険作業に対して複数の回避策が登録される構造（1対多）。
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📐 リスト作成順序（依存関係）</h2>
+    <p>Lookup列を持つリストは参照先リストが先に存在する必要があるため、以下の順序で作成してください。</p>
+    <div class="flow-diagram">[1] 現場 (OnsiteMaster)              ← 何も参照しない
+[2] 協力業者 (PartnerMaster)         ← 何も参照しない
+[3] 社員資格 (EmployeeQualificationMaster) ← 何も参照しない
+[4] 危険作業 (RiskyWorkMaster)       ← 何も参照しない
+        ↓
+[5] 現場協力業者紐付け (OnsitePartnerRelation)
+    ├─ Lookup → OnsiteMaster
+    ├─ Lookup → PartnerMaster
+    └─ Lookup → 自分自身（自己参照）
+        ↓
+[6] 社員 (EmployeeMaster)
+    └─ Lookup × 3 → EmployeeQualificationMaster
+        ↓
+[7] 社員実績 (EmployeeAchievement)
+    ├─ Lookup → EmployeeMaster
+    └─ Lookup → OnsiteMaster
+        ↓
+[8] 危険回避策 (RiskAvoidanceMaster)
+    └─ Lookup → RiskyWorkMaster</div>
   </div>
 
   <div class="card">
     <h2>🔗 リストURLの確認</h2>
-    <p>作成完了後、以下のURLパターンでアクセスできることを確認します。</p>
-    <pre><code>https://nagaken.sharepoint.com/sites/{サイトアドレス}/Lists/OnSiteMaster/AllItems.aspx
+    <pre><code>https://nagaken.sharepoint.com/sites/{サイトアドレス}/Lists/OnsiteMaster/AllItems.aspx
 https://nagaken.sharepoint.com/sites/{サイトアドレス}/Lists/PartnerMaster/AllItems.aspx
 https://nagaken.sharepoint.com/sites/{サイトアドレス}/Lists/OnsitePartnerRelation/AllItems.aspx
-... 以下8リスト分</code></pre>
-  </div>
-
-  <div class="alert alert-danger">
-    <strong>🚫 列名は絶対に変更しない</strong><br>
-    アプリ側（face.gemba-ai.cloud）は<strong>物理列名</strong>でデータを読み書きします。日本語表示名は変えてもOKですが、<strong>内部名（物理名）は永賢組と完全一致</strong>させてください。
+https://nagaken.sharepoint.com/sites/{サイトアドレス}/Lists/EmployeeMaster/AllItems.aspx
+https://nagaken.sharepoint.com/sites/{サイトアドレス}/Lists/EmployeeQualificationMaster/AllItems.aspx
+https://nagaken.sharepoint.com/sites/{サイトアドレス}/Lists/EmployeeAchievement/AllItems.aspx
+https://nagaken.sharepoint.com/sites/{サイトアドレス}/Lists/RiskyWorkMaster/AllItems.aspx
+https://nagaken.sharepoint.com/sites/{サイトアドレス}/Lists/RiskAvoidanceMaster/AllItems.aspx</code></pre>
   </div>
 
   <div class="card">
     <h2>✅ 完了チェックリスト</h2>
     <ul class="checklist">
       <li>8リストすべてが新サイトに作成された</li>
-      <li>各リストの列定義が永賢組と一致している（特に内部名）</li>
+      <li>各リストの<strong>内部名</strong>が永賢組と完全一致している</li>
+      <li>Lookup列がすべて正しい参照先を指している</li>
+      <li>選択肢列のオプションが永賢組と一致している（PartnerWork 37工種、Role 3区分、保険系 等）</li>
       <li>各リストのURLにアクセスでき、空リストとして表示される</li>
       <li>左ナビメニューに8リストが並んでいる</li>
     </ul>
