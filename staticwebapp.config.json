@@ -17,10 +17,6 @@
     {
       "route": "/GembaAI_Service",
       "rewrite": "/GembaAI_Service/index.html"
-    },
-    {
-      "route": "/GembaAI_Service/",
-      "rewrite": "/GembaAI_Service/index.html"
     }
   ],
   "navigationFallback": {
