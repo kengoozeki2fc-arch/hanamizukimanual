@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<base href="/gemba-academy/">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>共通事項｜現場監督アカデミー</title>
+<link rel="stylesheet" href="style.css">
+<script defer src="fallback.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <h1>共通事項</h1>
+  <p>ログイン手順・招待登録・よくある質問</p>
+</header>
+<div class="breadcrumb"><a href="index.html">ホーム</a> / 共通事項</div>
+
+<main>
+  <nav class="role-nav">
+    <a href="index.html">ホーム</a>
+    <a href="role-member.html">利用者</a>
+    <a href="role-corporate.html">企業管理者</a>
+    <a href="role-sysadmin.html">システム管理者</a>
+    <a class="current" href="common.html">共通事項</a>
+  </nav>
+
+  <section id="login">
+    <h2>ログイン手順（全ロール共通）</h2>
+    <p>現場監督アカデミーでは、メールアドレスに届く<strong>6桁の認証コード（OTP）</strong>でログインします。パスワードの記憶は不要です。</p>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p><a href="https://academy.kensetsu-total.support" target="_blank">academy.kensetsu-total.support</a> にアクセスします。ログイン画面が表示されます。</p>
+        <div class="screenshot"><img src="images/login-top.png" alt="ログイン画面（メールアドレス入力）"><div class="caption">ログイン画面：メールアドレス入力欄と「現場監督くん」キャラクター</div></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>登録済みのメールアドレスを入力し、<span class="btn-sample">認証コードを送信</span>をクリックします。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <p>数秒以内にメールが届きます。本文に記載された<strong>6桁の認証コード</strong>を入力し、<span class="btn-sample">ログイン</span>をクリックします。</p>
+        <div class="screenshot"><img src="images/login-otp.png" alt="認証コード入力画面"><div class="caption">認証コード入力画面（有効期限30分）</div></div>
+        <div class="note">認証コードの有効期限は<strong>30分</strong>です。期限切れの場合は、もう一度メールアドレスを入力して再送信してください。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <p>ログイン成功後、ロールに応じた画面に自動的に移動します。</p>
+        <table>
+          <tr><th>ロール</th><th>ログイン後の画面</th></tr>
+          <tr><td><span class="badge badge-member">会員</span></td><td>ダッシュボード（学習コンテンツ一覧）</td></tr>
+          <tr><td><span class="badge badge-corporate">企業管理者</span></td><td>企業ダッシュボード（社員進捗一覧）</td></tr>
+          <tr><td><span class="badge badge-sysadmin">システム管理者</span></td><td>管理画面</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <h3>システム管理者の追加認証</h3>
+    <p>システム管理者は、OTP認証に加えて<strong>管理者パスワード</strong>の入力が必要です（2要素認証）。認証コード入力時にパスワード欄が自動表示されます。</p>
+    <div class="screenshot"><img src="images/login-admin-pw.png" alt="システム管理者パスワード入力"><div class="caption">システム管理者のみ：認証コード＋パスワードの2要素</div></div>
+  </section>
+
+  <section id="invite">
+    <h2>招待から初回登録までの流れ</h2>
+    <p>新しい会員は、システム管理者からの<strong>招待メール</strong>を受け取ってから登録を行います。</p>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>システム管理者から届いた招待メールの<strong>登録リンク</strong>をクリックします。</p>
+        <div class="screenshot"><img src="images/invite-mail.png" alt="招待メール"><div class="caption">招待メール（登録リンク付き）</div></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>招待登録ページが開きます。<strong>表示名</strong>（本名またはニックネーム）を入力し、<span class="btn-sample">登録する</span>をクリックします。</p>
+        <div class="screenshot"><img src="images/invite-register.png" alt="招待登録画面"><div class="caption">招待登録画面：表示名の入力</div></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <p>登録完了後、ダッシュボードに自動的に移動します。次回以降は通常のOTPログインで利用できます。</p>
+      </div>
+    </div>
+    <div class="warn">招待リンクの有効期限は<strong>7日間</strong>です。期限切れの場合はシステム管理者に再招待を依頼してください。</div>
+  </section>
+
+  <section id="header">
+    <h2>画面ヘッダーの見方</h2>
+    <p>ログイン後、すべての画面の上部に以下の情報が表示されます。</p>
+    <table>
+      <tr><th>表示</th><th>説明</th></tr>
+      <tr><td>会社名</td><td>所属している企業名</td></tr>
+      <tr><td>氏名</td><td>登録時に入力した表示名</td></tr>
+      <tr><td>ロール</td><td>会員 / 企業管理者 / システム管理者</td></tr>
+      <tr><td>管理画面へ</td><td>企業管理者・システム管理者のみ表示。クリックで管理画面に移動</td></tr>
+    </table>
+    <div class="screenshot"><img src="images/header-info.png" alt="ヘッダー情報"><div class="caption">ダッシュボードヘッダー：会社名・氏名・ロール・キャラクター表示</div></div>
+  </section>
+
+  <section id="faq">
+    <h2>よくある質問</h2>
+
+    <h3>Q. 認証コードのメールが届かない</h3>
+    <p>迷惑メールフォルダを確認してください。送信元は <code>noreply@kokorocare.business</code> です。それでも届かない場合は、メールアドレスの入力ミスか、まだ会員登録が完了していない可能性があります。システム管理者にお問い合わせください。</p>
+
+    <h3>Q. 認証コードの有効期限が切れた</h3>
+    <p>ログイン画面でもう一度メールアドレスを入力し、<span class="btn-sample">認証コードを送信</span>をクリックすると新しいコードが届きます。</p>
+
+    <h3>Q. スマートフォンでも使える？</h3>
+    <p>はい。iOS Safari・Android Chrome に対応しています。ただし管理画面はPC推奨です。</p>
+
+    <h3>Q. 動画が再生されない</h3>
+    <p>YouTubeの動画を利用しているため、YouTube へのアクセスが許可されているネットワーク環境が必要です。企業のファイアウォールで制限されている場合は、IT管理者にご相談ください。</p>
+
+    <h3>Q. 視聴記録が反映されない</h3>
+    <p>動画のリンクをクリックした時点で自動記録されます。同じ動画を2回クリックしても、記録は1回分です。ページを再読み込みすると最新の進捗が表示されます。</p>
+
+    <h3>Q. AIアシスタントが回答してくれない</h3>
+    <p>AIアシスタントは建設業の知識ベースをもとに回答します。初回利用時にMicrosoftアカウントでのサインインが必要な場合があります。ポップアップブロッカーを無効にしてお試しください。</p>
+  </section>
+</main>
+
+<footer>
+  &copy; 建設業トータルサポート / <a href="index.html">マニュアルTOPへ</a>
+</footer>
+</body>
+</html>

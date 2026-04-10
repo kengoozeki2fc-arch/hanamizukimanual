@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<base href="/gemba-academy/">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>システム管理者向けマニュアル｜現場監督アカデミー</title>
+<link rel="stylesheet" href="style.css">
+<script defer src="fallback.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <h1>システム管理者向け操作マニュアル</h1>
+  <p>企業管理・会員管理・招待・リスト設定・進捗確認の全機能</p>
+</header>
+<div class="breadcrumb"><a href="index.html">ホーム</a> / システム管理者</div>
+
+<main>
+  <nav class="role-nav">
+    <a href="index.html">ホーム</a>
+    <a href="role-member.html">利用者</a>
+    <a href="role-corporate.html">企業管理者</a>
+    <a class="current" href="role-sysadmin.html">システム管理者</a>
+    <a href="common.html">共通事項</a>
+  </nav>
+
+  <section>
+    <h2>システム管理者の役割</h2>
+    <p>システム管理者は現場監督アカデミーの全機能にアクセスできる最上位ロールです。企業・会員の管理、学習コンテンツの表示設定、全社員の進捗確認を担当します。</p>
+    <table>
+      <tr><th>機能</th><th>説明</th></tr>
+      <tr><td>企業管理</td><td>企業の追加・削除</td></tr>
+      <tr><td>会員一覧</td><td>全企業のメンバーを一覧表示・削除</td></tr>
+      <tr><td>招待管理</td><td>新規メンバーへの招待メール送信・再招待・取り止め</td></tr>
+      <tr><td>リスト設定</td><td>学習コンテンツの表示/非表示・表示順の変更</td></tr>
+      <tr><td>社員進捗</td><td>企業別に全メンバーの視聴進捗を確認</td></tr>
+      <tr><td>コンテンツ閲覧</td><td>会員と同じダッシュボード・動画視聴が可能</td></tr>
+    </table>
+    <div class="danger">
+      システム管理者の権限は非常に強力です。企業や会員の削除は<strong>元に戻せません</strong>。操作前に必ず確認ダイアログの内容をお読みください。
+    </div>
+  </section>
+
+  <section>
+    <h2>管理画面の構成</h2>
+    <p>ログイン後、<strong>サイドバー付きの管理画面</strong>（/admin）が表示されます。左メニューから各機能に切り替えます。</p>
+    <div class="screenshot"><img src="images/admin-overview.png" alt="管理画面全体"><div class="caption">管理画面：左サイドバー（空色）＋メインエリア</div></div>
+
+    <h3>サイドバーのメニュー</h3>
+    <table>
+      <tr><th>メニュー</th><th>機能</th></tr>
+      <tr><td>企業管理</td><td>企業の追加・削除・一覧</td></tr>
+      <tr><td>会員一覧</td><td>全メンバーの表示・削除</td></tr>
+      <tr><td>招待</td><td>招待メール送信・未登録招待一覧</td></tr>
+      <tr><td>リスト設定</td><td>学習コンテンツの表示/非表示・順序変更</td></tr>
+      <tr><td>社員進捗</td><td>企業別の進捗確認</td></tr>
+    </table>
+  </section>
+
+  <!-- 利用シーン1：企業管理 -->
+  <section>
+    <h2>企業管理</h2>
+    <div class="scene">
+      <div class="scene-title">利用シーン：新規契約企業の登録</div>
+      <p>新しくアカデミー契約を開始した企業を登録し、その後に企業のメンバーを招待する</p>
+    </div>
+
+    <div class="screenshot"><img src="images/admin-companies.png" alt="企業管理画面"><div class="caption">企業管理：企業一覧テーブル＋追加フォーム</div></div>
+
+    <h3>企業を追加する</h3>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>サイドバーの<strong>「企業管理」</strong>をクリックします。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>画面上部の入力欄に<strong>企業名</strong>を入力し、<span class="btn-sample">追加</span>をクリックします。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <p>確認ダイアログが表示されます。<strong>OK</strong>をクリックすると企業が登録されます。</p>
+      </div>
+    </div>
+
+    <h3>企業を削除する</h3>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>削除したい企業の行にある<span class="btn-sample red">削除</span>ボタンをクリックします。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>確認ダイアログが表示されます。<strong>OK</strong>をクリックすると削除されます。</p>
+      </div>
+    </div>
+    <div class="danger">企業を削除すると、その企業に所属するメンバーや招待情報も無効になります。削除前に必ず関係者に確認してください。</div>
+  </section>
+
+  <!-- 利用シーン2：会員管理 -->
+  <section>
+    <h2>会員一覧</h2>
+    <div class="scene">
+      <div class="scene-title">利用シーン：退職者のアカウント削除</div>
+      <p>退職した社員のアカウントを会員一覧から探して削除する</p>
+    </div>
+
+    <p>全企業のメンバーが一覧表示されます。所属企業・ロール・状態が確認できます。</p>
+    <div class="screenshot"><img src="images/admin-members.png" alt="会員一覧画面"><div class="caption">会員一覧：全メンバーテーブル（企業名・ロール・状態）</div></div>
+
+    <h3>テーブルの見方</h3>
+    <table>
+      <tr><th>列</th><th>説明</th></tr>
+      <tr><td>氏名</td><td>会員登録時に入力した表示名</td></tr>
+      <tr><td>メールアドレス</td><td>OTPログインに使用するメールアドレス</td></tr>
+      <tr><td>企業</td><td>所属企業名</td></tr>
+      <tr><td>ロール</td><td>会員 / 企業管理者 / システム管理者</td></tr>
+      <tr><td>状態</td><td>有効 / 無効</td></tr>
+      <tr><td>操作</td><td>削除ボタン</td></tr>
+    </table>
+
+    <h3>会員を削除する</h3>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>削除したい会員の行にある<span class="btn-sample red">削除</span>ボタンをクリックします。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>確認ダイアログが表示されます。<strong>OK</strong>をクリックすると削除されます。</p>
+      </div>
+    </div>
+    <div class="warn">削除した会員の視聴記録は残りますが、ログインできなくなります。再度登録する場合は新規招待が必要です。</div>
+  </section>
+
+  <!-- 利用シーン3：招待管理 -->
+  <section>
+    <h2>招待管理</h2>
+    <div class="scene">
+      <div class="scene-title">利用シーン：新入社員をアカデミーに招待</div>
+      <p>新しく入社したメンバーのメールアドレスを入力し、所属企業とロールを選んで招待メールを送信する</p>
+    </div>
+
+    <div class="screenshot"><img src="images/admin-invite.png" alt="招待管理画面"><div class="caption">招待管理：招待フォーム＋未登録招待一覧</div></div>
+
+    <h3>新規メンバーを招待する</h3>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>サイドバーの<strong>「招待」</strong>をクリックします。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>以下を入力します。</p>
+        <table>
+          <tr><th>項目</th><th>説明</th></tr>
+          <tr><td>メールアドレス</td><td>招待する方のメールアドレス</td></tr>
+          <tr><td>企業</td><td>所属企業をドロップダウンから選択</td></tr>
+          <tr><td>ロール</td><td>「会員」または「企業管理者」を選択</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <p><span class="btn-sample">招待メールを送信</span>をクリックします。招待メールが送信され、画面に<strong>招待URL</strong>も表示されます。</p>
+      </div>
+    </div>
+    <div class="note">
+      招待URLを直接コピーして、メール以外の方法（LINEやTeamsなど）で共有することもできます。
+    </div>
+
+    <h3>未登録の招待一覧</h3>
+    <p>まだ登録を完了していない招待が一覧表示されます。各招待に対して以下の操作が可能です。</p>
+    <table>
+      <tr><th>操作</th><th>説明</th></tr>
+      <tr><td><span class="btn-sample orange">再招待</span></td><td>招待トークンを更新し、有効期限を7日延長してメールを再送信</td></tr>
+      <tr><td><span class="btn-sample red">取り止め</span></td><td>招待を無効化する</td></tr>
+    </table>
+    <div class="screenshot"><img src="images/admin-invite-list.png" alt="未登録招待一覧"><div class="caption">未登録招待一覧：メールアドレス・企業・有効期限・操作ボタン</div></div>
+
+    <div class="warn">招待リンクの有効期限は<strong>7日間</strong>です。期限切れの招待には「期限切れ」と表示されます。再招待ボタンで延長できます。</div>
+  </section>
+
+  <!-- 利用シーン4：リスト設定 -->
+  <section>
+    <h2>リスト設定</h2>
+    <div class="scene">
+      <div class="scene-title">利用シーン：新しいコンテンツカテゴリを公開</div>
+      <p>SharePointに新しい学習リストを作成した後、リスト設定で「表示」に切り替え、表示順を調整してダッシュボードに公開する</p>
+    </div>
+
+    <p>SharePoint Onlineに登録されている学習リスト（カテゴリ）の<strong>表示/非表示</strong>と<strong>表示順</strong>を管理します。</p>
+    <div class="screenshot"><img src="images/admin-lists.png" alt="リスト設定画面"><div class="caption">リスト設定：表示トグル＋上下矢印で順序変更</div></div>
+
+    <h3>リストの表示/非表示を切り替える</h3>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>サイドバーの<strong>「リスト設定」</strong>をクリックします。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>各リストの右側にある<strong>表示/非表示トグル</strong>をクリックして切り替えます。</p>
+      </div>
+    </div>
+    <div class="note">非表示にしたリストは、会員のダッシュボードに表示されなくなります。視聴記録は保持されます。</div>
+
+    <h3>表示順を変更する</h3>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>各リストの<strong>上矢印（↑）/下矢印（↓）</strong>ボタンをクリックして、表示順を入れ替えます。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>変更は自動的に保存されます。ダッシュボードに即座に反映されます。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 利用シーン5：社員進捗 -->
+  <section>
+    <h2>社員進捗（全企業横断）</h2>
+    <div class="scene">
+      <div class="scene-title">利用シーン：月次レポート作成</div>
+      <p>企業ごとにメンバーの進捗を確認し、アカデミーの利用状況を月次レポートにまとめる</p>
+    </div>
+
+    <p>企業を選択して、その企業のメンバー全員の視聴進捗を確認できます。</p>
+    <div class="screenshot"><img src="images/admin-progress.png" alt="社員進捗画面"><div class="caption">社員進捗：企業選択ドロップダウン＋メンバーカード＋マトリクス</div></div>
+
+    <h3>進捗を確認する</h3>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>サイドバーの<strong>「社員進捗」</strong>をクリックします。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>画面上部の<strong>企業選択ドロップダウン</strong>から確認したい企業を選択します。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <p>選択した企業のメンバーが<strong>カード形式</strong>で表示されます。カードをクリックすると詳細が展開されます。</p>
+      </div>
+    </div>
+
+    <div class="note">
+      企業管理者の進捗画面と同じ形式（MemberProgressコンポーネント）で表示されますが、システム管理者は<strong>全企業を切り替えて閲覧</strong>できる点が異なります。
+    </div>
+
+    <p>進捗の見方については <a href="role-corporate.html">企業管理者マニュアル</a> もご参照ください。</p>
+  </section>
+
+  <!-- 初期セットアップ -->
+  <section>
+    <h2>初期セットアップ手順</h2>
+    <p>新しくアカデミーを開始する際の初期設定手順です。</p>
+    <table>
+      <tr><th>順序</th><th>作業</th><th>メニュー</th></tr>
+      <tr><td>1</td><td>企業を登録する</td><td>企業管理</td></tr>
+      <tr><td>2</td><td>SharePointにコンテンツを準備する</td><td>（SharePoint Online）</td></tr>
+      <tr><td>3</td><td>リスト設定で表示するリストを選択・順序を設定</td><td>リスト設定</td></tr>
+      <tr><td>4</td><td>企業管理者を招待する</td><td>招待（ロール：企業管理者）</td></tr>
+      <tr><td>5</td><td>一般会員を招待する</td><td>招待（ロール：会員）</td></tr>
+    </table>
+    <div class="note">
+      <strong>コンテンツの追加・編集</strong>はSharePoint Onlineのリストで直接行います。リストにアイテムを追加すると、ダッシュボードに自動的に反映されます。
+    </div>
+  </section>
+
+  <!-- 運用上の注意 -->
+  <section>
+    <h2>運用上の注意</h2>
+    <ul>
+      <li>システム管理者アカウントは <code>kengoozeki@kensetsu-total.support</code> で固定です。OTP＋パスワードの2要素で保護されています。</li>
+      <li>管理画面はPC推奨です（横スクロール対応済みですが、小画面では操作しづらい場合があります）。</li>
+      <li>企業・会員の削除は元に戻せません。必ず確認ダイアログの内容をお読みください。</li>
+      <li>SharePointリストのシステムリスト（内部管理用）は自動的に除外されるため、リスト設定には表示されません。</li>
+      <li>メールの送信元は <code>noreply@kokorocare.business</code> です。受信者に迷惑メールフィルタの確認を案内してください。</li>
+    </ul>
+  </section>
+</main>
+
+<footer>
+  &copy; 建設業トータルサポート / <a href="index.html">マニュアルTOPへ</a>
+</footer>
+</body>
+</html>

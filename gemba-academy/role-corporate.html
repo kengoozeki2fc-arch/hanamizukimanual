@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<base href="/gemba-academy/">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>企業管理者向けマニュアル｜現場監督アカデミー</title>
+<link rel="stylesheet" href="style.css">
+<script defer src="fallback.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <h1>企業管理者向け操作マニュアル</h1>
+  <p>自社メンバーの学習進捗管理・コンテンツ閲覧</p>
+</header>
+<div class="breadcrumb"><a href="index.html">ホーム</a> / 企業管理者</div>
+
+<main>
+  <nav class="role-nav">
+    <a href="index.html">ホーム</a>
+    <a href="role-member.html">利用者</a>
+    <a class="current" href="role-corporate.html">企業管理者</a>
+    <a href="role-sysadmin.html">システム管理者</a>
+    <a href="common.html">共通事項</a>
+  </nav>
+
+  <section>
+    <h2>企業管理者の役割</h2>
+    <p>企業管理者は、自社に所属するメンバー（会員）の<strong>学習進捗を確認</strong>できるロールです。会員のすべての機能（コンテンツ閲覧・AIアシスタント）に加えて、企業ダッシュボードが利用できます。</p>
+    <table>
+      <tr><th>機能</th><th>説明</th></tr>
+      <tr><td>自社メンバー進捗一覧</td><td>自社に所属する全会員の視聴進捗をカード形式で表示</td></tr>
+      <tr><td>リスト別進捗テーブル</td><td>メンバー×リストの進捗をマトリクステーブルで確認</td></tr>
+      <tr><td>コンテンツ閲覧</td><td>会員と同じダッシュボード・動画視聴が可能</td></tr>
+      <tr><td>AIアシスタント</td><td>会員と同じAIアシスタントが利用可能</td></tr>
+    </table>
+    <div class="note">
+      企業管理者は<strong>自社のメンバーのみ</strong>閲覧可能です。他社のデータにはアクセスできません。
+    </div>
+  </section>
+
+  <!-- 利用シーン1：社員の進捗確認 -->
+  <section>
+    <h2>企業ダッシュボード</h2>
+    <div class="scene">
+      <div class="scene-title">利用シーン：月次の学習状況レビュー</div>
+      <p>月末に企業ダッシュボードを開き、自社メンバー全員の進捗を確認。進捗が遅れているメンバーには声がけして学習を促す</p>
+    </div>
+
+    <p>ログイン後に表示される企業ダッシュボードで、自社メンバーの学習進捗を一目で確認できます。</p>
+    <div class="screenshot"><img src="images/corporate-dashboard.png" alt="企業ダッシュボード"><div class="caption">企業ダッシュボード：自社メンバー進捗一覧</div></div>
+
+    <h3>画面の見方</h3>
+    <table>
+      <tr><th>要素</th><th>説明</th></tr>
+      <tr><td>メンバーカード</td><td>各メンバーの名前・メールアドレス・総合進捗率（%）を表示</td></tr>
+      <tr><td>総合進捗率</td><td>全リストの視聴済み合計 / 全コンテンツ合計 のパーセンテージ</td></tr>
+      <tr><td>折りたたみ（アコーディオン）</td><td>カードをクリックすると、リスト別の詳細進捗が展開表示される</td></tr>
+    </table>
+  </section>
+
+  <!-- 利用シーン2：個別メンバーの詳細確認 -->
+  <section>
+    <h2>メンバーの詳細進捗を確認する</h2>
+    <div class="scene">
+      <div class="scene-title">利用シーン：特定メンバーのフォロー</div>
+      <p>新入社員の鈴木さんがどのカテゴリまで進んでいるかを確認し、次に学ぶべきコンテンツをアドバイスする</p>
+    </div>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>企業ダッシュボードで、確認したいメンバーの<strong>カードをクリック</strong>します。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>カードが展開され、<strong>リスト別の進捗</strong>が表示されます。</p>
+        <div class="screenshot"><img src="images/corporate-member-detail.png" alt="メンバー詳細進捗"><div class="caption">メンバーカード展開：リスト別の視聴件数とプログレスバー</div></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <p>各リストの進捗バーで視聴状況を確認します。</p>
+        <table>
+          <tr><th>表示</th><th>意味</th></tr>
+          <tr><td>緑バー（100%）</td><td>全動画視聴済み</td></tr>
+          <tr><td>オレンジバー（1〜99%）</td><td>学習途中</td></tr>
+          <tr><td>グレーバー（0%）</td><td>未着手</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 利用シーン3：マトリクステーブル -->
+  <section>
+    <h2>リスト別進捗テーブル（マトリクス表示）</h2>
+    <div class="scene">
+      <div class="scene-title">利用シーン：チーム全体の弱点を発見</div>
+      <p>テーブル表示でメンバー全員の進捗を横断的に確認。特定のカテゴリだけ全員が未着手なら、チームとして重点学習テーマに設定</p>
+    </div>
+
+    <p>カード表示の下部に、メンバー×リストの<strong>マトリクステーブル</strong>が表示されます。</p>
+    <div class="screenshot"><img src="images/corporate-matrix.png" alt="進捗マトリクステーブル"><div class="caption">マトリクステーブル：行=メンバー、列=リスト、セル=進捗率</div></div>
+
+    <h3>テーブルの見方</h3>
+    <table>
+      <tr><th>要素</th><th>説明</th></tr>
+      <tr><td>行（縦）</td><td>自社の各メンバー</td></tr>
+      <tr><td>列（横）</td><td>各学習リスト（カテゴリ）</td></tr>
+      <tr><td>セル</td><td>「視聴済み件数 / 全件数」＋ミニプログレスバー</td></tr>
+    </table>
+    <div class="note">テーブルが横に長い場合は、横スクロールで全リストを確認できます。</div>
+  </section>
+
+  <!-- コンテンツ閲覧 -->
+  <section>
+    <h2>コンテンツ閲覧・AIアシスタント</h2>
+    <p>企業管理者は会員と同じダッシュボード・コンテンツ閲覧・AIアシスタントも利用できます。</p>
+    <p>詳しい操作方法は <a href="role-member.html">利用者（会員）マニュアル</a> をご覧ください。</p>
+
+    <h3>ダッシュボードへの切替</h3>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>企業ダッシュボードのヘッダーにある<strong>「学習コンテンツ」</strong>リンク、またはサイドバーの「ダッシュボード」をクリックします。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>会員と同じダッシュボード画面が開き、自分自身の学習を行えます。</p>
+      </div>
+    </div>
+
+    <h3>企業ダッシュボードに戻る</h3>
+    <p>ダッシュボードのヘッダーにある<span class="btn-sample">管理画面へ</span>ボタンをクリックすると、企業ダッシュボードに戻ります。</p>
+  </section>
+</main>
+
+<footer>
+  &copy; 建設業トータルサポート / <a href="index.html">マニュアルTOPへ</a>
+</footer>
+</body>
+</html>

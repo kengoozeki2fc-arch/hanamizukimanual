@@ -31,6 +31,36 @@
       "headers": {
         "Cache-Control": "public, max-age=86400"
       }
+    },
+    {
+      "route": "/kokorocare",
+      "rewrite": "/kokorocare/index.html"
+    },
+    {
+      "route": "/kokorocare/images/*",
+      "headers": {
+        "Cache-Control": "public, max-age=86400"
+      }
+    },
+    {
+      "route": "/gemba-academy",
+      "rewrite": "/gemba-academy/index.html"
+    },
+    {
+      "route": "/gemba-academy/images/*",
+      "headers": {
+        "Cache-Control": "public, max-age=86400"
+      }
+    },
+    {
+      "route": "/invoice-receipt",
+      "rewrite": "/invoice-receipt/index.html"
+    },
+    {
+      "route": "/invoice-receipt/images/*",
+      "headers": {
+        "Cache-Control": "public, max-age=86400"
+      }
     }
   ],
   "navigationFallback": {
@@ -51,7 +81,17 @@
       "/kensetsu-invoice/*.js",
       "/kensetsu-invoice/images/*.png",
       "/kensetsu-invoice/images/*.jpg",
+      "/kokorocare/*.html",
+      "/kokorocare/*.css",
+      "/kokorocare/*.js",
+      "/kokorocare/images/*.png",
+      "/kokorocare/images/*.jpg",
       "/kyuyo/*.html",
+      "/gemba-academy/*.html",
+      "/gemba-academy/*.css",
+      "/gemba-academy/*.js",
+      "/gemba-academy/images/*.png",
+      "/gemba-academy/images/*.jpg",
       "/*.png",
       "/*.jpg",
       "/*.pdf",
