@@ -18,8 +18,13 @@
 
   <div class="card">
     <h2>🎯 このステップのゴール</h2>
-    <p>新テナント用の<strong>専用SharePointサイト</strong>を作成します。このサイトには、テナント固有のマスタリスト（現場・協力業者・社員など）が配置されます。</p>
-    <p>永賢組の場合は <code>constructionInfo</code> ＝「建築現場情報登録（CP作成）」サイトに該当します。</p>
+    <p>新テナント用に <strong>2つのSharePointサイト</strong> を作成します。</p>
+    <table>
+      <tr><th>サイト</th><th>用途</th><th>例（九州永賢組）</th></tr>
+      <tr><td><strong>テナント運用サイト</strong>（顔認証用）</td><td>8マスタリスト配置（Step4で作成）</td><td><code>kyushu-nagaken-face</code></td></tr>
+      <tr><td><strong>現場サイト</strong></td><td>現場の図面・書類・施工体制台帳等のドキュメント管理</td><td><code>tokushikan</code></td></tr>
+    </table>
+    <p>永賢組本体の場合は <code>constructionInfo</code>（テナント運用）がこれに該当します。</p>
   </div>
 
   <div class="card">
@@ -56,12 +61,55 @@
   </div>
 
   <div class="card">
-    <h2>🔄 契約先マスタの更新（Step2の続き）</h2>
-    <p>サイトが作成できたら、Step2で登録した契約先マスタレコードに戻り、<strong>サイトコレクションURL</strong>を実URLに更新します。</p>
+    <h2>🏗 現場サイトの作成</h2>
+    <p>テナント運用サイトとは別に、<strong>現場ごとのドキュメント管理用サイト</strong>を作成します。</p>
+
+    <h3>1. サイト作成</h3>
+    <p>テナント運用サイトと同じ手順（上記）で、現場名をサイト名にして作成します。</p>
+    <table>
+      <tr><th>項目</th><th>値</th></tr>
+      <tr><td>サイト名</td><td>例: （仮称）特別養護老人ホーム篤志館新築工事</td></tr>
+      <tr><td>サイトアドレス</td><td>例: <code>tokushikan</code></td></tr>
+      <tr><td>サイトの説明</td><td>篤志館新築工事 現場ドキュメント管理</td></tr>
+      <tr><td>プライバシー設定</td><td><strong>プライベート</strong></td></tr>
+    </table>
+
+    <h3>2. ひな形フォルダの配置</h3>
+    <p>作成した現場サイトのドキュメントライブラリに、<strong>現場用フォルダ構成のひな形</strong>をアップロードします。</p>
     <ol>
-      <li><code>https://nagaken.sharepoint.com/sites/Facerecognition1/Lists/L1/AllItems.aspx</code> を開く</li>
+      <li>ひな形フォルダ <code>〇〇〇〇新築工事（ひな形）</code> を OneDrive またはローカルから取得
+        <pre><code>永賢フォルダ構成/舘さんから/〇〇〇〇新築工事（ひな形）</code></pre>
+      </li>
+      <li>現場サイトの「<strong>ドキュメント → General</strong>」フォルダを開く
+        <pre><code>https://nagaken.sharepoint.com/sites/{現場サイト}/Shared Documents/General</code></pre>
+      </li>
+      <li>ひな形フォルダをドラッグ＆ドロップでアップロード</li>
+      <li>フォルダ名を実際の現場名にリネーム（例: <code>篤志館新築工事</code>）</li>
+    </ol>
+
+    <div class="alert alert-info">
+      <strong>💡 ひな形の中身</strong><br>
+      ひな形フォルダには現場で必要な標準的なサブフォルダ構成（図面・施工計画・安全書類・写真 等）が含まれています。<br>
+      現場ごとにこのひな形をコピーして使うことで、フォルダ構成が統一されます。
+    </div>
+
+    <div class="alert alert-warn">
+      <strong>⚠️ テナント運用サイトと現場サイトは別物</strong><br>
+      <ul style="margin: 0.5rem 0 0 0;">
+        <li><strong>テナント運用サイト</strong>（例: <code>kyushu-nagaken-face</code>）→ 8マスタリスト → face.gemba-ai.cloud が参照</li>
+        <li><strong>現場サイト</strong>（例: <code>tokushikan</code>）→ ドキュメント管理 → 社員がブラウザで直接アクセス</li>
+      </ul>
+      <p style="margin-top: 0.5rem;">契約先マスタの <code>SiteCollectionURL</code> にはテナント運用サイトのURLを登録します（現場サイトではありません）。</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🔄 契約先マスタの更新（Step2の続き）</h2>
+    <p><strong>テナント運用サイト</strong>が作成できたら、Step2で登録した契約先マスタレコードに戻り、<strong>サイトコレクションURL</strong>を実URLに更新します。</p>
+    <ol>
+      <li><code>https://nagaken.sharepoint.com/sites/Facerecognition/Lists/List/AllItems.aspx</code> を開く</li>
       <li>該当の契約企業レコードを選択 → 編集</li>
-      <li><strong>サイトコレクションURL</strong> 列に新サイトのURLを貼り付け</li>
+      <li><strong>サイトコレクションURL</strong> 列にテナント運用サイトのURLを貼り付け（現場サイトではない）</li>
       <li>保存</li>
     </ol>
   </div>
@@ -84,9 +132,11 @@
   <div class="card">
     <h2>✅ 完了チェックリスト</h2>
     <ul class="checklist">
-      <li>SPOチームサイトが作成できた</li>
-      <li>サイトURLを契約先マスタに反映した</li>
-      <li>所有者・メンバーが正しく設定されている</li>
+      <li>テナント運用サイト（顔認証用）が作成できた</li>
+      <li>現場サイト（ドキュメント管理用）が作成できた</li>
+      <li>現場サイトにひな形フォルダをアップロードした</li>
+      <li>テナント運用サイトのURLを契約先マスタに反映した</li>
+      <li>両サイトの所有者・メンバーが正しく設定されている</li>
       <li>プライベートグループになっている</li>
       <li>他テナントから見えないことを確認した</li>
     </ul>
