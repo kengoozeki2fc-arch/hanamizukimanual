@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<base href="/kensetsu-invoice/">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>部門管理者向けマニュアル｜建設現場請求書受付システム</title>
+<link rel="stylesheet" href="style.css">
+<script defer src="fallback.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <h1>部門管理者（部長）向け操作マニュアル</h1>
+  <p>所長から申請された請求書を現場×月単位で一括承認する手順</p>
+</header>
+<div class="breadcrumb"><a href="index.html">ホーム</a> / 部門管理者</div>
+
+<main>
+  <nav class="role-nav">
+    <a href="index.html">ホーム</a>
+    <a href="role-vendor.html">取引先</a>
+    <a href="role-shocho.html">所長</a>
+    <a class="current" href="role-department.html">部門管理者</a>
+    <a href="role-executive.html">役員</a>
+    <a href="role-somu.html">総務管理者</a>
+    <a href="role-sysadmin.html">システム管理者</a>
+    <a href="common.html">共通事項</a>
+  </nav>
+
+  <section>
+    <h2>部門管理者の役割</h2>
+    <p>部門管理者（部長）は、<strong>所長から申請された現場×月単位の請求書</strong>をまとめて確認し、一括で承認または否認します。システム全体で部門管理者は<strong>1名のみ</strong>設定できます（システム管理者が設定）。</p>
+    <div class="note">
+      所長のように1件ずつ明細入力するのではなく、<strong>現場×月の単位</strong>で一括承認するのが部門管理者の操作です。
+    </div>
+  </section>
+
+  <section>
+    <h2>Step 1. ログイン</h2>
+    <p><code>/admin/login</code> からメールアドレス＋パスワード＋OTPでログインします（<a href="common.html#login-admin">2段階認証の詳細</a>）。</p>
+    <div class="screenshot"><img src="images/admin-login-step1.png" alt="管理者ログイン"><div class="caption">管理者ログイン</div></div>
+  </section>
+
+  <section>
+    <h2>Step 2. 月別承認進捗 → 申請案件を確認</h2>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>ログイン後、左メニュー<strong>「月別承認進捗」</strong>をクリック。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>上部の<strong>対象月</strong>セレクタで審査する月を選択します。</p>
+        <div class="screenshot"><img src="images/dept-approvals-list.png" alt="部長 月別承認進捗"><div class="caption">月別承認進捗：部長ビュー</div></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <p>ステージが <span class="badge badge-dept">部長審査中</span> になっているカードが、所長から上がってきた審査対象です。<span class="btn-sample outline">承認詳細</span>ボタンをクリックして詳細画面を開きます。</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Step 3. 承認詳細画面で一括処理</h2>
+    <div class="screenshot"><img src="images/dept-approval-detail.png" alt="承認詳細（部長）"><div class="caption">承認詳細画面</div></div>
+    <p>承認詳細画面には以下が表示されます。</p>
+    <ul>
+      <li>現場名・対象月・現在ステータス</li>
+      <li>請求書件数・税抜合計・税込合計（10%）</li>
+      <li>請求書一覧テーブル（連番／取引先／件名／税抜金額／承認状態／後から追加）</li>
+    </ul>
+
+    <h3>一括承認する場合</h3>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>請求書一覧を精査し、問題がなければ<span class="btn-sample approve">一括承認する</span>をクリック。ステージが <span class="badge badge-exec">役員審査中</span> に変わり、役員にメール通知が飛びます。</p>
+      </div>
+    </div>
+
+    <h3>一括否認する場合</h3>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p><span class="btn-sample reject">否認する</span>をクリックすると否認理由の入力エリアが開きます。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>否認理由を<strong>必ず記入</strong>し（所長に通知されます）、<span class="btn-sample reject">否認を確定する</span>をクリック。ステージが <span class="badge badge-shocho">所長承認中</span> に戻り、所長宛にメールが送信されます。</p>
+        <div class="screenshot"><img src="images/dept-reject.png" alt="部長否認"><div class="caption">否認理由の入力エリア</div></div>
+      </div>
+    </div>
+    <div class="danger">
+      一括操作のため、<strong>1件でも問題があれば月全体を否認</strong>することになります。個別修正が必要な場合も、否認コメントに「〇件目の××を修正してほしい」など具体的に記載してください。
+    </div>
+  </section>
+
+  <section>
+    <h2>請求書の一覧閲覧（任意）</h2>
+    <p>左メニュー<strong>「請求書一覧」</strong>から、全現場・全ステータスの請求書を個別に確認することもできます（閲覧のみ）。CSVダウンロード機能もあります。</p>
+  </section>
+
+  <section>
+    <h2>よくある質問</h2>
+    <h3>Q. 月別承認進捗に何も表示されない</h3>
+    <p>所長がまだ「部長へ申請」を押していません。所長の進捗を確認してください。</p>
+    <h3>Q. 承認ボタンが表示されない</h3>
+    <p>ステージが <span class="badge badge-dept">部長審査中</span> でない場合（例：まだ所長承認中、既に役員審査中）、部長の操作対象外のため承認ボタンは表示されません。</p>
+  </section>
+</main>
+
+<footer>
+  © クラウドパワー株式会社 / <a href="index.html">マニュアルTOPへ</a>
+</footer>
+</body>
+</html>

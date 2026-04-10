@@ -17,6 +17,16 @@
     {
       "route": "/GembaAI_Service",
       "rewrite": "/GembaAI_Service/index.html"
+    },
+    {
+      "route": "/kensetsu-invoice",
+      "rewrite": "/kensetsu-invoice/index.html"
+    },
+    {
+      "route": "/kensetsu-invoice/images/*",
+      "headers": {
+        "Cache-Control": "public, max-age=86400"
+      }
     }
   ],
   "navigationFallback": {
@@ -31,6 +41,11 @@
       "/nagaken/*.html",
       "/GembaAI_Service/*.html",
       "/GembaAI_Service/*.css",
+      "/kensetsu-invoice/*.html",
+      "/kensetsu-invoice/*.css",
+      "/kensetsu-invoice/*.js",
+      "/kensetsu-invoice/images/*.png",
+      "/kensetsu-invoice/images/*.jpg",
       "/*.png",
       "/*.jpg",
       "/*.pdf",

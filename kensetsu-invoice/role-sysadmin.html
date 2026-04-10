@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<base href="/kensetsu-invoice/">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>システム管理者向けマニュアル｜建設現場請求書受付システム</title>
+<link rel="stylesheet" href="style.css">
+<script defer src="fallback.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <h1>システム管理者向け操作マニュアル</h1>
+  <p>ユーザ管理・承認者設定・パスワードリセット等の最上位権限運用</p>
+</header>
+<div class="breadcrumb"><a href="index.html">ホーム</a> / システム管理者</div>
+
+<main>
+  <nav class="role-nav">
+    <a href="index.html">ホーム</a>
+    <a href="role-vendor.html">取引先</a>
+    <a href="role-shocho.html">所長</a>
+    <a href="role-department.html">部門管理者</a>
+    <a href="role-executive.html">役員</a>
+    <a href="role-somu.html">総務管理者</a>
+    <a class="current" href="role-sysadmin.html">システム管理者</a>
+    <a href="common.html">共通事項</a>
+  </nav>
+
+  <section>
+    <h2>システム管理者の役割</h2>
+    <p>システム管理者は全機能にアクセスできる最上位ロールです。総務管理者の全権限に加えて、以下を担当します。</p>
+    <ul>
+      <li>内部ユーザ（所長・部門管理者・役員・総務・システム管理者）の追加／編集／削除</li>
+      <li>内部ユーザへの招待メール送信・パスワードリセット</li>
+      <li>部門管理者・役員の指名（ロール4・5の中から1名ずつ）</li>
+      <li>全ステージ（所長・部長・役員）の承認操作を代行可能</li>
+    </ul>
+    <div class="danger">
+      システム管理者の権限は非常に強力です。複数人で運用する場合は、<strong>誰がいつ何を変更したか</strong>を別途記録することを推奨します。
+    </div>
+  </section>
+
+  <section>
+    <h2>初期セットアップ手順</h2>
+    <p>システム導入直後に1度だけ実行する初期設定です。順序が重要です。</p>
+    <table>
+      <tr><th>順序</th><th>作業</th><th>担当画面</th></tr>
+      <tr><td>1</td><td>自分自身のパスワード変更</td><td>パスワード変更</td></tr>
+      <tr><td>2</td><td>工種マスタを投入</td><td>工種マスタ</td></tr>
+      <tr><td>3</td><td>消費税率を登録</td><td>消費税率</td></tr>
+      <tr><td>4</td><td>所長・部長・役員・総務の内部ユーザを追加</td><td>ユーザ管理</td></tr>
+      <tr><td>5</td><td>現場マスタを追加し、所長を割当</td><td>現場設定</td></tr>
+      <tr><td>6</td><td>部門管理者・役員を指名（ロール4・5から）</td><td>部門管理者設定</td></tr>
+      <tr><td>7</td><td>取引先を招待</td><td>取引先招待</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>ユーザ管理</h2>
+    <p>内部ユーザの追加・編集・削除・パスワードリセット・招待メール再送を行います。</p>
+    <div class="screenshot"><img src="images/sys-users.png" alt="ユーザ管理画面"><div class="caption">ユーザ管理画面</div></div>
+
+    <h3>新規ユーザ追加</h3>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body"><p>画面右上<span class="btn-sample">＋ 追加</span>をクリック。</p></div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>氏名・メールアドレス・ロールを入力。ロールは以下から選択：</p>
+        <ul>
+          <li>1 システム管理者</li>
+          <li>2 総務管理者</li>
+          <li>3 所長</li>
+          <li>4 部門管理者</li>
+          <li>5 役員</li>
+        </ul>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body"><p><span class="btn-sample">追加・招待メール送信</span>をクリック。招待メールには初期パスワードとログインリンクが含まれます。</p></div>
+    </div>
+
+    <h3>ユーザ編集</h3>
+    <p>各行の<span class="btn-sample outline">編集</span>で、氏名・ロール・状態（有効／無効）を変更できます。メールアドレスは変更できません（削除後に追加し直してください）。</p>
+
+    <h3>パスワードリセット</h3>
+    <p>パスワードを忘れたユーザから依頼があった場合、該当行の<span class="btn-sample" style="background:#f0fff4;color:#276749;border:1px solid #c6f6d5">PW</span>ボタンをクリック。モーダルが開くので、新しいパスワードを入力して<span class="btn-sample">設定する</span>。</p>
+    <div class="screenshot"><img src="images/sys-reset-pw.png" alt="パスワードリセットモーダル"><div class="caption">パスワードリセット</div></div>
+    <div class="warn">8文字以上必須。リセット後は本人に口頭・別チャネルで通知し、本人が初回ログイン後に自身でパスワード変更するよう案内してください。</div>
+
+    <h3>招待メール再送</h3>
+    <p>まだ本人がログインしていない場合、<span class="btn-sample" style="background:#fffff0;color:#d69e2e;border:1px solid #f6e05e">再送</span>ボタンで招待メールを再送信できます。</p>
+
+    <h3>ユーザ削除</h3>
+    <p><span class="btn-sample" style="background:#fff5f5;color:#e53e3e;border:1px solid #fed7d7">削除</span>ボタン。確認ダイアログが表示されます。</p>
+  </section>
+
+  <section>
+    <h2>部門管理者・役員設定</h2>
+    <p>承認フローの部門管理者（部長）と役員を指名します。システム全体でそれぞれ1名ずつです。</p>
+    <div class="screenshot"><img src="images/sys-dept-exec.png" alt="部門管理者・役員設定"><div class="caption">部門管理者・役員設定画面</div></div>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body"><p>左メニュー<strong>「部門管理者設定」</strong>または「役員設定」をクリック（どちらも同一ページに統合）。</p></div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body"><p>「部門管理者（承認ロール4）」セクションでロール4ユーザを選択し<span class="btn-sample">設定する</span>。</p></div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body"><p>同様に「役員（承認ロール5）」セクションでロール5ユーザを選択し<span class="btn-sample">設定する</span>。</p></div>
+    </div>
+    <div class="note">
+      選択肢に表示されるのは <strong>各ロール（4 or 5）かつ有効状態</strong> のユーザのみです。選択肢が空の場合は、先に<a href="#" onclick="event.preventDefault();document.querySelector('h2').scrollIntoView()">ユーザ管理</a>で該当ロールのユーザを追加してください。
+    </div>
+  </section>
+
+  <section>
+    <h2>所長・部長・役員の承認を代行する</h2>
+    <p>システム管理者は全ステージの承認操作が可能です。業務停滞を避けるために代行が必要な場合に使用します。</p>
+    <ul>
+      <li><strong>所長承認代行</strong>：<a href="role-shocho.html">所長マニュアル</a>参照。請求書詳細→明細入力→承認</li>
+      <li><strong>部長承認代行</strong>：<a href="role-department.html">部門管理者マニュアル</a>参照。月別承認進捗→承認詳細→一括承認</li>
+      <li><strong>役員承認代行</strong>：<a href="role-executive.html">役員マニュアル</a>参照。同上</li>
+    </ul>
+    <div class="danger">代行した承認も通常承認と同じく記録・通知されます。必ず事前に関係者と合意の上で実施してください。</div>
+  </section>
+
+  <section>
+    <h2>運用上の注意</h2>
+    <ul>
+      <li>初期管理者アカウント（システム導入時に設定）は<strong>1つしかない</strong>ため、削除や無効化は絶対に行わないでください。</li>
+      <li>システム管理者自身のパスワードは定期的に変更し、他者と共有しないでください。</li>
+      <li>取引先データ・承認履歴はAzure SQL Databaseに保存されています。本システムからのデータエクスポートは「請求書一覧」のCSVエクスポートのみです。</li>
+    </ul>
+  </section>
+</main>
+
+<footer>
+  © クラウドパワー株式会社 / <a href="index.html">マニュアルTOPへ</a>
+</footer>
+</body>
+</html>

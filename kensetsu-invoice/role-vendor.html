@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<base href="/kensetsu-invoice/">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>取引先向けマニュアル｜建設現場請求書受付システム</title>
+<link rel="stylesheet" href="style.css">
+<script defer src="fallback.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <h1>取引先向け操作マニュアル</h1>
+  <p>請求書を提出する業者さま向けの手順書</p>
+</header>
+<div class="breadcrumb"><a href="index.html">ホーム</a> / 取引先</div>
+
+<main>
+  <nav class="role-nav">
+    <a href="index.html">ホーム</a>
+    <a class="current" href="role-vendor.html">取引先</a>
+    <a href="role-shocho.html">所長</a>
+    <a href="role-department.html">部門管理者</a>
+    <a href="role-executive.html">役員</a>
+    <a href="role-somu.html">総務管理者</a>
+    <a href="role-sysadmin.html">システム管理者</a>
+    <a href="common.html">共通事項</a>
+  </nav>
+
+  <section>
+    <h2>全体の流れ</h2>
+    <ol>
+      <li>総務から招待メールを受け取る</li>
+      <li>ログイン（メール＋OTP）</li>
+      <li>初回のみ：業者情報を登録</li>
+      <li>請求書を登録（毎月）</li>
+      <li>承認状況の把握・差戻し対応</li>
+      <li>必要に応じて：問合せ／担当者変更</li>
+    </ol>
+    <div class="note">
+      <strong>1社1名のご登録</strong>となります。複数担当で受信したい場合は、御社内のメーリングリスト（グループメール）をご登録ください。
+    </div>
+  </section>
+
+  <section>
+    <h2>Step 1. 招待メール → ログイン</h2>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>総務から届く<strong>招待メール</strong>の「ログインはこちら」リンクをクリックします。メール内のリンクにはメールアドレスと現場コードが含まれています。</p>
+        <div class="screenshot"><img src="images/vendor-invite-mail.png" alt="招待メール"><div class="caption">招待メールのサンプル</div></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>リンクを開くと自動的に認証コードが送信されます。メールで受信した6桁の数字を入力して<span class="btn-sample">ログイン</span>をクリック。</p>
+        <div class="screenshot"><img src="images/vendor-login-otp.png" alt="取引先OTP入力画面"><div class="caption">ログイン画面（OTP）</div></div>
+      </div>
+    </div>
+    <div class="warn">
+      認証コードの有効期限は<strong>30分</strong>です。期限切れの場合は「認証コードを再送する」ボタンから再発行してください。
+    </div>
+  </section>
+
+  <section>
+    <h2>Step 2. 初回登録（業者情報）</h2>
+    <p>初めてのログインでは、業者登録フォームが表示されます。以下の項目を入力してください。</p>
+    <div class="screenshot"><img src="images/vendor-register.png" alt="業者登録画面"><div class="caption">業者登録フォーム</div></div>
+    <table>
+      <tr><th>セクション</th><th>項目</th><th>備考</th></tr>
+      <tr><td rowspan="4">会社情報</td><td>会社名 <span style="color:#e53e3e">*</span></td><td>必須</td></tr>
+      <tr><td>担当者名 <span style="color:#e53e3e">*</span></td><td>必須</td></tr>
+      <tr><td>役職</td><td>任意</td></tr>
+      <tr><td>メールアドレス</td><td>招待メールのアドレス（変更不可）</td></tr>
+      <tr><td rowspan="2">インボイス情報</td><td>インボイス番号</td><td><code>T</code> + 数字13桁。登録がない場合は「インボイス番号なし」にチェック</td></tr>
+      <tr><td>（チェック）インボイス番号なし</td><td>免税事業者等の場合</td></tr>
+      <tr><td>Web</td><td>WebサイトURL</td><td>任意</td></tr>
+      <tr><td rowspan="5">振込先口座</td><td>銀行名 <span style="color:#e53e3e">*</span></td><td>必須</td></tr>
+      <tr><td>支店名 <span style="color:#e53e3e">*</span></td><td>必須</td></tr>
+      <tr><td>口座種別 <span style="color:#e53e3e">*</span></td><td>普通／当座</td></tr>
+      <tr><td>口座番号 <span style="color:#e53e3e">*</span></td><td>7桁の数字</td></tr>
+      <tr><td>口座名義 <span style="color:#e53e3e">*</span></td><td>カタカナ（例：カブシキガイシャマルマル）</td></tr>
+    </table>
+    <p>入力後、<span class="btn-sample">登録する</span>をクリック。以降は請求書登録画面に直接入れます。</p>
+  </section>
+
+  <section>
+    <h2>Step 3. 請求書の登録</h2>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>画面上部の<strong>対象月</strong>を選択します（当月または先月のみ選択可）。</p>
+        <div class="screenshot"><img src="images/vendor-invoice-top.png" alt="請求書登録トップ"><div class="caption">請求書登録画面</div></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>「請求書 1」ブロックに以下を入力します。</p>
+        <ul>
+          <li><strong>件名</strong>（例：○○工事 9月分）</li>
+          <li><strong>税抜金額（円）</strong>：半角数字。入力すると税込金額（10%）が自動表示されます</li>
+          <li><strong>請求書ファイル</strong>：PDF・Excel・Word・画像（PNG／JPG）に対応</li>
+        </ul>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <p>同じ月に複数の請求書がある場合は<span class="btn-sample outline">＋ 別の請求書を追加</span>をクリックして行を増やせます。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <p>全て入力できたら<span class="btn-sample">請求書を提出する</span>をクリック。「受付しました」と表示されれば完了です。</p>
+        <div class="screenshot"><img src="images/vendor-invoice-success.png" alt="提出完了画面"><div class="caption">提出完了画面</div></div>
+      </div>
+    </div>
+    <div class="warn">
+      所長が既に「部長へ申請」した後に追加提出した請求書には自動的に<strong>「後から追加」</strong>マークが付きます。この場合でも提出は可能ですが、所長が別途受付承認を行う必要があります。
+    </div>
+  </section>
+
+  <section>
+    <h2>Step 4. お問い合わせ</h2>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>請求書登録画面の下部<span class="btn-sample outline">お問い合わせ</span>リンクをクリック。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>件名と本文を入力し<span class="btn-sample">送信する</span>。総務側で受付し、必要に応じて担当者から連絡があります。</p>
+        <div class="screenshot"><img src="images/vendor-inquiry.png" alt="お問い合わせ画面"><div class="caption">お問い合わせ入力画面</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Step 5. 担当者変更</h2>
+    <p>退職・部署異動などで担当者が変わる場合は、この画面から引継ぎを行います。会社情報・振込口座・インボイス情報はそのまま引き継がれます。</p>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>請求書登録画面下部の<span class="btn-sample outline">担当者変更</span>リンクをクリック。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>新しい担当者の <strong>メールアドレス</strong> と <strong>お名前</strong> を入力し<span class="btn-sample">担当者を変更する</span>。</p>
+        <div class="screenshot"><img src="images/vendor-change-contact.png" alt="担当者変更画面"><div class="caption">担当者変更画面</div></div>
+      </div>
+    </div>
+    <div class="note">変更後は次回ログインから新しいメールアドレスへOTPが送信されます。旧担当者のアドレスは使えなくなります。</div>
+  </section>
+
+  <section>
+    <h2>差し戻し（所長否認）の場合</h2>
+    <p>所長が内容を否認した場合、登録メールアドレスに<strong>否認コメント付きのメール</strong>が届きます。コメント内容を確認し、同じ対象月で改めて請求書を再登録してください。</p>
+    <div class="danger">
+      同一の対象月で再提出する際は、古いファイルが残らないよう<strong>修正版のファイル</strong>を必ず選択してください。
+    </div>
+  </section>
+</main>
+
+<footer>
+  © クラウドパワー株式会社 / <a href="index.html">マニュアルTOPへ</a>
+</footer>
+</body>
+</html>

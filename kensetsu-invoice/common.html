@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<base href="/kensetsu-invoice/">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>共通事項｜建設現場請求書受付システム</title>
+<link rel="stylesheet" href="style.css">
+<script defer src="fallback.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <h1>共通事項</h1>
+  <p>ログイン手順・ステータス定義・よくある質問</p>
+</header>
+<div class="breadcrumb"><a href="index.html">ホーム</a> / 共通事項</div>
+
+<main>
+  <nav class="role-nav">
+    <a href="index.html">ホーム</a>
+    <a href="role-vendor.html">取引先</a>
+    <a href="role-shocho.html">所長</a>
+    <a href="role-department.html">部門管理者</a>
+    <a href="role-executive.html">役員</a>
+    <a href="role-somu.html">総務管理者</a>
+    <a href="role-sysadmin.html">システム管理者</a>
+    <a class="current" href="common.html">共通事項</a>
+  </nav>
+
+  <section id="login-vendor">
+    <h2>取引先のログイン（OTPのみ）</h2>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>総務から届いた招待メールの<strong>ログインリンク</strong>をクリックします。メールアドレスはURLに埋め込まれているため入力不要です。</p>
+        <div class="screenshot"><img src="images/vendor-invite-mail.png" alt="招待メール"><div class="caption">取引先への招待メール</div></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>自動的に6桁の認証コードが登録メールアドレスへ送信されます（有効期限30分）。メールを確認し、コードを入力して<span class="btn-sample">ログイン</span>をクリックします。</p>
+        <div class="screenshot"><img src="images/vendor-login-otp.png" alt="取引先OTP入力画面"><div class="caption">取引先ログイン：OTP入力画面</div></div>
+      </div>
+    </div>
+    <div class="note">
+      初回ログイン時は、自動的に<strong>業者登録フォーム</strong>に遷移します。会社情報・インボイス番号・振込先口座などを入力して登録を完了してください。2回目以降は請求書登録画面に直接入ります。
+    </div>
+  </section>
+
+  <section id="login-admin">
+    <h2>管理者のログイン（2段階認証）</h2>
+    <p>所長・部門管理者・役員・総務管理者・システム管理者は、<code>/admin/login</code> からログインします。</p>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>メールアドレスとパスワードを入力し、<span class="btn-sample">次へ（認証コードを送信）</span>をクリック。</p>
+        <div class="screenshot"><img src="images/admin-login-step1.png" alt="管理者ログイン Step1"><div class="caption">管理者ログイン：メール＋パスワード</div></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>登録メールアドレスに届いた6桁のコードを入力し、<span class="btn-sample">ログイン</span>。</p>
+        <div class="screenshot"><img src="images/admin-login-step2.png" alt="管理者ログイン Step2"><div class="caption">管理者ログイン：OTP入力（2段階認証）</div></div>
+      </div>
+    </div>
+    <div class="warn">初期パスワードでログイン後は、必ず左メニュー下部の<strong>「パスワード変更」</strong>から8文字以上のパスワードに変更してください。</div>
+  </section>
+
+  <section id="status">
+    <h2>承認ステータス一覧</h2>
+    <table>
+      <tr><th>ステータス</th><th>説明</th><th>次の操作者</th></tr>
+      <tr><td><span class="badge badge-submitted">提出済</span></td><td>取引先が請求書を登録した直後。明細未入力。</td><td>所長</td></tr>
+      <tr><td><span class="badge badge-shocho">所長承認済</span></td><td>所長が明細入力＋承認した状態。現場全体ではまだ「部長へ申請」していない可能性あり。</td><td>所長（申請ボタン）</td></tr>
+      <tr><td><span class="badge badge-reject">所長否認</span></td><td>所長が否認した状態。コメントが取引先へメール通知される。</td><td>取引先（再提出）</td></tr>
+      <tr><td><span class="badge badge-dept">部長承認済</span></td><td>部門管理者が一括承認した状態。</td><td>役員</td></tr>
+      <tr><td><span class="badge badge-complete">最終承認済</span></td><td>役員が承認し編集ロックされた状態。</td><td>—</td></tr>
+    </table>
+    <h3>「後から追加」マークとは？</h3>
+    <p>所長が「部長へ申請」した後に、取引先が同じ対象月の請求書を追加登録した場合、その請求書には <strong>後から追加</strong> のマークが付きます。所長は通常の承認に加えて<span class="btn-sample late">受付承認（後から追加）</span>ボタンで受付を行えます。</p>
+  </section>
+
+  <section id="faq">
+    <h2>よくある質問</h2>
+    <h3>Q. 認証コード（OTP）のメールが届かない</h3>
+    <p>迷惑メールフォルダを確認してください。それでも届かない場合は、メールアドレスの入力ミス、もしくは取引先管理に登録されていない可能性があります。所長または総務までご連絡ください。</p>
+
+    <h3>Q. パスワードを忘れた（管理者）</h3>
+    <p>システム管理者に依頼し、<strong>ユーザ管理</strong>画面から<span class="btn-sample" style="background:#276749">PW</span>ボタンでパスワードリセットを実施してもらいます。</p>
+
+    <h3>Q. 提出した請求書を差し替えたい</h3>
+    <p>取引先からは直接削除／差し替えはできません。所長に依頼し、所長から否認してもらってください。否認後に同じ対象月で再提出できます。</p>
+
+    <h3>Q. 明細の合計が請求金額と合わないと承認できない</h3>
+    <p>工種ごとの税抜金額を入力したら、合計が請求書の税抜金額と<strong>1円単位で一致</strong>する必要があります。一致するまで<span class="btn-sample">明細を保存</span>はできても<span class="btn-sample approve">承認する</span>ボタンは有効になりません。</p>
+  </section>
+</main>
+
+<footer>
+  © クラウドパワー株式会社 / <a href="index.html">マニュアルTOPへ</a>
+</footer>
+</body>
+</html>

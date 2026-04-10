@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<base href="/kensetsu-invoice/">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>総務管理者向けマニュアル｜建設現場請求書受付システム</title>
+<link rel="stylesheet" href="style.css">
+<script defer src="fallback.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <h1>総務管理者向け操作マニュアル</h1>
+  <p>現場・工種・消費税率・取引先・お問い合わせのマスタ運用</p>
+</header>
+<div class="breadcrumb"><a href="index.html">ホーム</a> / 総務管理者</div>
+
+<main>
+  <nav class="role-nav">
+    <a href="index.html">ホーム</a>
+    <a href="role-vendor.html">取引先</a>
+    <a href="role-shocho.html">所長</a>
+    <a href="role-department.html">部門管理者</a>
+    <a href="role-executive.html">役員</a>
+    <a class="current" href="role-somu.html">総務管理者</a>
+    <a href="role-sysadmin.html">システム管理者</a>
+    <a href="common.html">共通事項</a>
+  </nav>
+
+  <section>
+    <h2>総務管理者の役割</h2>
+    <p>総務管理者は日々のマスタ運用と取引先管理を担当します。承認フロー自体には介入しませんが、<strong>工種マスタ・現場マスタ・消費税率・取引先招待・お問い合わせ対応</strong>など、システムが正常に動くための運用全般を行います。</p>
+    <p>利用できるメニュー：月別承認進捗（閲覧）／請求書一覧／取引先管理／取引先招待／お問い合わせ／現場設定／工種マスタ／消費税率</p>
+  </section>
+
+  <section id="invite">
+    <h2>取引先招待</h2>
+    <p>新規取引先を招待するには、メールアドレスと現場を指定して招待メールを送信します。</p>
+    <div class="screenshot"><img src="images/somu-vendor-invite.png" alt="取引先招待画面"><div class="caption">取引先招待画面</div></div>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>左メニュー<strong>「取引先招待」</strong>をクリック。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>「新規招待」セクションで <strong>現場</strong> を選択し、取引先の <strong>メールアドレス</strong> を入力。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <p><span class="btn-sample">招待メールを送信</span>をクリック。取引先にはワンクリックでログインできるURLが送られます。</p>
+      </div>
+    </div>
+
+    <h3>一括リマインドメール</h3>
+    <p>月次の請求書提出を促すリマインドを送る機能です。「一括リマインドメール」セクションで、現場を選択（空欄で全現場）して<span class="btn-sample" style="background:#744210">一括メール送信</span>をクリックします。</p>
+    <div class="warn">全取引先への一括送信になるため、誤送信に注意してください。確認ダイアログが表示されます。</div>
+  </section>
+
+  <section>
+    <h2>取引先管理</h2>
+    <p>登録済みの取引先情報（会社名・口座・インボイス番号・担当者等）の確認と編集、招待の取消、個別リマインドメール送信ができます。</p>
+    <div class="screenshot"><img src="images/somu-vendors.png" alt="取引先管理"><div class="caption">取引先管理画面</div></div>
+    <ul>
+      <li><span class="btn-sample outline">編集</span>：会社情報・口座・インボイス番号などを修正</li>
+      <li><span class="btn-sample" style="background:#fffff0;color:#d69e2e;border:1px solid #f6e05e">メール</span>：個別リマインドメール送信</li>
+      <li><span class="btn-sample" style="background:#fff5f5;color:#e53e3e;border:1px solid #fed7d7">招待取消</span>：未登録の招待を取り消し</li>
+    </ul>
+    <div class="note">登録状態：<span class="badge badge-dept">登録済</span>＝業者登録完了／<span class="badge" style="background:#feebc8;color:#744210">招待済</span>＝招待メール送信済だが未登録</div>
+  </section>
+
+  <section>
+    <h2>現場設定</h2>
+    <p>現場（受注側会社）マスタの追加・編集・削除を行います。</p>
+    <div class="screenshot"><img src="images/somu-receiving.png" alt="現場設定画面"><div class="caption">現場設定画面</div></div>
+    <table>
+      <tr><th>項目</th><th>説明</th></tr>
+      <tr><td>現場コード <span style="color:#e53e3e">*</span></td><td>現場を識別するコード（例：C01）</td></tr>
+      <tr><td>現場名 <span style="color:#e53e3e">*</span></td><td>取引先・所長向けに表示される現場名称</td></tr>
+      <tr><td>送信元メール</td><td>この現場からのメール送信元アドレス</td></tr>
+      <tr><td>管理者通知メール</td><td>承認完了時などに通知を受け取るアドレス</td></tr>
+      <tr><td>SPOフォルダURL</td><td>請求書ファイルを保存するSharePointフォルダURL</td></tr>
+      <tr><td>所長</td><td>この現場を担当する所長（ロール3ユーザから選択）</td></tr>
+    </table>
+    <div class="warn">所長を設定しないと、その現場の請求書が所長に表示されません。</div>
+  </section>
+
+  <section>
+    <h2>工種マスタ</h2>
+    <p>所長が請求書の明細入力で使用する工種コードと工種名を管理します。</p>
+    <div class="screenshot"><img src="images/somu-tax-categories.png" alt="工種マスタ"><div class="caption">工種マスタ画面</div></div>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body"><p><span class="btn-sample">＋ 追加</span>をクリック。</p></div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body"><p>工種コード（例：01）と工種名（例：土工）を入力し<span class="btn-sample">追加</span>。</p></div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body"><p>既存工種は<span class="btn-sample outline">編集</span>／<span class="btn-sample" style="background:#fff5f5;color:#e53e3e;border:1px solid #fed7d7">削除</span>で変更可能。</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>消費税率マスタ</h2>
+    <p>税率（%）と適用開始日を設定します。将来の税率変更に備えて新しい率を追加登録できます。</p>
+    <div class="screenshot"><img src="images/somu-tax-rates.png" alt="消費税率マスタ"><div class="caption">消費税率マスタ画面</div></div>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body"><p><span class="btn-sample">＋ 追加</span>をクリック。</p></div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body"><p>税率（例：10）と適用開始日を入力し<span class="btn-sample">追加</span>。</p></div>
+    </div>
+    <div class="note">税率は内部的には小数（0.10）で保存されますが、画面上はパーセント表記で入力できます。</div>
+  </section>
+
+  <section>
+    <h2>お問い合わせ対応</h2>
+    <p>取引先から送信されたお問い合わせの閲覧とステータス管理を行います。</p>
+    <div class="screenshot"><img src="images/somu-inquiries.png" alt="お問い合わせ一覧"><div class="caption">お問い合わせ一覧画面</div></div>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body"><p>左メニュー<strong>「お問い合わせ」</strong>をクリック。ステータス・現場でフィルタ可能。</p></div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body"><p>一覧の各行をクリックすると本文が展開されます。内容を確認し、必要に応じて取引先に個別連絡。</p></div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <p>対応状況に応じてステータスを変更：
+          <span class="badge badge-reject">未対応</span>
+          <span class="badge" style="background:#feebc8;color:#744210">対応中</span>
+          <span class="badge badge-complete">対応済</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>請求書一覧・CSV出力</h2>
+    <p>左メニュー<strong>「請求書一覧」</strong>から全現場の請求書を閲覧できます。現場・対象月でフィルタし、<span class="btn-sample">CSV</span>ボタンで一覧をExcel用CSVとしてダウンロード可能です。経理・会計ソフトへの取込に利用できます。</p>
+  </section>
+</main>
+
+<footer>
+  © クラウドパワー株式会社 / <a href="index.html">マニュアルTOPへ</a>
+</footer>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<base href="/kensetsu-invoice/">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>役員向けマニュアル｜建設現場請求書受付システム</title>
+<link rel="stylesheet" href="style.css">
+<script defer src="fallback.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <h1>役員向け操作マニュアル</h1>
+  <p>最終承認者として月単位で請求書を決裁する手順</p>
+</header>
+<div class="breadcrumb"><a href="index.html">ホーム</a> / 役員</div>
+
+<main>
+  <nav class="role-nav">
+    <a href="index.html">ホーム</a>
+    <a href="role-vendor.html">取引先</a>
+    <a href="role-shocho.html">所長</a>
+    <a href="role-department.html">部門管理者</a>
+    <a class="current" href="role-executive.html">役員</a>
+    <a href="role-somu.html">総務管理者</a>
+    <a href="role-sysadmin.html">システム管理者</a>
+    <a href="common.html">共通事項</a>
+  </nav>
+
+  <section>
+    <h2>役員の役割</h2>
+    <p>役員は承認フローの<strong>最終決裁者</strong>です。部門管理者（部長）が承認した現場×月単位の請求書をまとめて確認し、承認または否認します。役員承認で対象月の請求書が<strong>完全ロック</strong>され、以降の編集は不可となります。</p>
+    <div class="note">システム全体で役員は<strong>1名のみ</strong>設定できます（システム管理者が設定）。</div>
+  </section>
+
+  <section>
+    <h2>Step 1. ログイン</h2>
+    <p><code>/admin/login</code> からメール＋パスワード＋OTPでログインします（<a href="common.html#login-admin">詳細</a>）。</p>
+  </section>
+
+  <section>
+    <h2>Step 2. 月別承認進捗を開く</h2>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>左メニュー<strong>「月別承認進捗」</strong>をクリックし、対象月を選択。</p>
+        <div class="screenshot"><img src="images/exec-approvals-list.png" alt="役員 月別承認進捗"><div class="caption">月別承認進捗：役員ビュー</div></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>ステージが <span class="badge badge-exec">役員審査中</span> のカードが審査対象です。<span class="btn-sample outline">承認詳細</span>で詳細画面を開きます。</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Step 3. 承認詳細で最終決裁</h2>
+    <div class="screenshot"><img src="images/exec-approval-detail.png" alt="役員承認詳細"><div class="caption">役員の承認詳細画面</div></div>
+    <p>画面上部に現場・対象月・請求書件数・税抜／税込合計が表示されます。下部の請求書一覧で各行を確認してください。</p>
+
+    <h3>承認する場合</h3>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>内容に問題がなければ<span class="btn-sample approve">一括承認する</span>をクリック。ステージが <span class="badge badge-complete">承認完了</span> に変わり、総務管理者および関係者にメール通知が送信されます。<strong>以降、対象月の請求書は編集・差戻し不可になります</strong>。</p>
+      </div>
+    </div>
+
+    <h3>否認する場合</h3>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p><span class="btn-sample reject">否認する</span>をクリックし、否認理由を入力して<span class="btn-sample reject">否認を確定する</span>。ステージが <span class="badge badge-dept">部長審査中</span> に戻り、部門管理者にメール通知が飛びます。</p>
+      </div>
+    </div>
+    <div class="danger">
+      役員承認は<strong>不可逆操作</strong>です。承認後の取消はできません。必ず内容を確認してから承認ボタンをクリックしてください。
+    </div>
+  </section>
+
+  <section>
+    <h2>補足：請求書一覧での個別確認</h2>
+    <p>左メニュー<strong>「請求書一覧」</strong>から、現場・対象月で絞り込んで個別の請求書を閲覧できます。CSV出力も可能です。</p>
+  </section>
+</main>
+
+<footer>
+  © クラウドパワー株式会社 / <a href="index.html">マニュアルTOPへ</a>
+</footer>
+</body>
+</html>

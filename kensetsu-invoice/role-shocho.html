@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<base href="/kensetsu-invoice/">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>所長向けマニュアル｜建設現場請求書受付システム</title>
+<link rel="stylesheet" href="style.css">
+<script defer src="fallback.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <h1>所長向け操作マニュアル</h1>
+  <p>現場の請求書を1件ずつ承認し、月単位で部長へ申請する手順</p>
+</header>
+<div class="breadcrumb"><a href="index.html">ホーム</a> / 所長</div>
+
+<main>
+  <nav class="role-nav">
+    <a href="index.html">ホーム</a>
+    <a href="role-vendor.html">取引先</a>
+    <a class="current" href="role-shocho.html">所長</a>
+    <a href="role-department.html">部門管理者</a>
+    <a href="role-executive.html">役員</a>
+    <a href="role-somu.html">総務管理者</a>
+    <a href="role-sysadmin.html">システム管理者</a>
+    <a href="common.html">共通事項</a>
+  </nav>
+
+  <section>
+    <h2>所長の役割</h2>
+    <p>所長は <strong>自分が担当する現場</strong> の請求書について、内容を確認のうえ <strong>1件ずつ工種明細を入力</strong> し、承認／否認を行います。全件処理が終わったら、月単位で部長へ一括申請します。</p>
+    <div class="note">
+      所長は総務が現場マスタに設定した現場のみ閲覧できます。他の現場の請求書は自動的にフィルタされます。
+    </div>
+  </section>
+
+  <section>
+    <h2>Step 1. ログイン</h2>
+    <p>管理画面URL <code>https://kensetsu-invoice.soumubucho.com/admin/login</code> にアクセスし、メールアドレス＋パスワード＋OTPでログインします（<a href="common.html#login-admin">詳細</a>）。</p>
+    <div class="screenshot"><img src="images/admin-login-step1.png" alt="管理者ログイン"><div class="caption">管理者ログイン画面</div></div>
+  </section>
+
+  <section>
+    <h2>Step 2. 請求書一覧で未承認を確認</h2>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>左メニューの<strong>「請求書一覧」</strong>をクリック。自分の現場の請求書のみが一覧表示されます。</p>
+        <div class="screenshot"><img src="images/shocho-invoice-list.png" alt="請求書一覧（所長）"><div class="caption">所長ビュー：自分の現場のみ表示</div></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>画面上部の<strong>対象月</strong>セレクタで処理したい月を指定します。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <p>承認状態が <span class="badge badge-submitted">提出済</span> の行を探し、右端の<span class="btn-sample outline">詳細</span>ボタンで1件ずつ開きます。</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Step 3. 請求書詳細 → 工種明細入力</h2>
+    <div class="screenshot"><img src="images/shocho-invoice-detail.png" alt="請求書詳細画面"><div class="caption">請求書詳細：明細入力エリア</div></div>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p><strong>「請求書ファイルを開く」</strong>リンクをクリックし、実物の請求書内容を確認します（PDF/Excel/Word等）。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>「工種明細」エリアで <strong>工種コード</strong> を選択し、対応する <strong>税抜金額</strong> を入力します。複数工種にまたがる場合は<span class="btn-sample outline">＋ 明細追加</span>で行を増やします。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <p>入力欄の上にある案内文で <strong>明細合計 ／ 請求金額</strong> をリアルタイム確認できます。</p>
+        <div class="warn">明細合計が請求金額と<strong>1円単位で一致</strong>しないと、承認ボタンは押せません。必ず合致させてください。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <p>入力し終わったら<span class="btn-sample">明細を保存</span>をクリック。保存されれば「明細を保存しました」と表示されます。</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Step 4. 承認または否認</h2>
+    <h3>承認する場合</h3>
+    <p><span class="btn-sample approve">承認する</span>をクリック。ステータスが <span class="badge badge-shocho">所長承認済</span> に変わります。</p>
+
+    <h3>否認する場合</h3>
+    <p><span class="btn-sample reject">否認する</span>をクリックし、表示される入力欄に<strong>否認理由</strong>を記入して<span class="btn-sample reject">否認を確定する</span>をクリック。取引先に否認コメント付きのメールが自動送信されます。</p>
+    <div class="screenshot"><img src="images/shocho-reject-comment.png" alt="否認コメント入力"><div class="caption">否認理由の入力</div></div>
+
+    <h3>「後から追加」請求書の受付承認</h3>
+    <p>既に部長へ申請した月に、取引先が追加で提出した請求書には<span class="btn-sample late">受付承認（後から追加）</span>ボタンが表示されます。通常承認のあとに、このボタンで受付を行ってください。</p>
+  </section>
+
+  <section>
+    <h2>Step 5. 月別承認進捗 → 部長へ申請</h2>
+    <p>その月の請求書をすべて承認／否認し終わったら、次は「月単位で部長に一括申請」します。</p>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>左メニュー（または上部URL）<strong>「月別承認進捗」</strong>を開きます。自分が担当する現場のカードのみ表示されます。</p>
+        <div class="screenshot"><img src="images/shocho-approvals.png" alt="月別承認進捗（所長）"><div class="caption">月別承認進捗画面</div></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>ステージが <span class="badge badge-shocho">所長承認中</span> になっているカードには<span class="btn-sample">部長へ申請</span>ボタンが表示されます。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <p>請求書件数・税抜合計・所長承認済件数を確認し、問題なければ<span class="btn-sample">部長へ申請</span>をクリック。部門管理者にメール通知が飛びます。</p>
+      </div>
+    </div>
+    <div class="note">申請後、同じ月の請求書を取引先が追加提出すると、「後から追加」マーク付きで別途届きます。その都度、上記Step 3〜4を繰り返してください。</div>
+  </section>
+
+  <section>
+    <h2>差し戻し（部長／役員否認）の対応</h2>
+    <p>部門管理者または役員から月単位で差し戻された場合、<strong>所長宛に否認コメント付きメール</strong>が届きます。月別承認進捗のカードに否認コメントが表示されるので、対象の請求書を個別に修正または取引先に再提出を依頼してから、再度「部長へ申請」してください。</p>
+  </section>
+
+  <section>
+    <h2>補足：取引先管理・招待・お問い合わせ</h2>
+    <p>所長も下記メニューを利用できます。</p>
+    <ul>
+      <li><strong>取引先管理</strong>：自分の現場の取引先情報を確認・編集</li>
+      <li><strong>取引先招待</strong>：新規取引先を招待（<a href="role-somu.html#invite">詳細は総務ページ</a>）</li>
+      <li><strong>お問い合わせ</strong>：取引先からの問合せを閲覧・ステータス更新</li>
+    </ul>
+  </section>
+</main>
+
+<footer>
+  © クラウドパワー株式会社 / <a href="index.html">マニュアルTOPへ</a>
+</footer>
+</body>
+</html>

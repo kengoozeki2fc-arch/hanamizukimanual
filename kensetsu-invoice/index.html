@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<base href="/kensetsu-invoice/">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>建設現場請求書受付システム 操作マニュアル</title>
+<link rel="stylesheet" href="style.css">
+<script defer src="fallback.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <h1>建設現場請求書受付システム 操作マニュアル</h1>
+  <p>役割別の操作手順・承認フローをまとめた実務マニュアル</p>
+</header>
+<div class="breadcrumb">ホーム</div>
+
+<main>
+  <section>
+    <h2>このマニュアルについて</h2>
+    <p>建設現場請求書受付システム（kensetsu-invoice）は、取引先からの請求書をWeb上で受付し、所長 → 部門管理者 → 役員 の3段階で承認する業務システムです。本マニュアルは6つの役割ごとに操作手順をまとめています。</p>
+    <div class="note">
+      <strong>本番URL:</strong> <code>https://kensetsu-invoice.soumubucho.com</code>（管理者: <code>/admin/login</code>、取引先: <code>/login</code>）
+    </div>
+  </section>
+
+  <section>
+    <h2>承認フロー全体図</h2>
+    <div class="screenshot">
+      <span class="placeholder-label">[ フロー図 ]</span>
+      <span class="placeholder-desc">取引先提出 → 所長承認＋工種明細入力 → 部長へ申請 → 部門管理者一括承認 → 役員一括承認 → 完全ロック</span>
+    </div>
+    <table>
+      <tr><th>ステージ</th><th>担当</th><th>操作</th></tr>
+      <tr><td><span class="badge badge-submitted">提出済</span></td><td>取引先</td><td>請求書ファイル・件名・税抜金額を登録</td></tr>
+      <tr><td><span class="badge badge-shocho">所長承認中</span></td><td>所長</td><td>1件ずつ工種明細を入力→承認／否認。全件終わったら「部長へ申請」</td></tr>
+      <tr><td><span class="badge badge-dept">部長審査中</span></td><td>部門管理者</td><td>現場×月単位でまとめて承認／否認</td></tr>
+      <tr><td><span class="badge badge-exec">役員審査中</span></td><td>役員</td><td>現場×月単位でまとめて承認／否認</td></tr>
+      <tr><td><span class="badge badge-complete">承認完了</span></td><td>—</td><td>編集ロック・アーカイブ</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>役割別マニュアル</h2>
+    <p>ご自身の役割のカードをクリックしてください。</p>
+    <div class="role-grid">
+      <a class="role-card role-vendor" href="role-vendor.html">
+        <span class="role-label">外部</span>
+        <h3>取引先</h3>
+        <p>請求書を提出する業者さま向け。登録 → ログイン → 請求書提出 → 問合せ・担当者変更</p>
+      </a>
+      <a class="role-card role-shocho" href="role-shocho.html">
+        <span class="role-label">ロール 3</span>
+        <h3>所長</h3>
+        <p>自分の現場の請求書を1件ずつ承認。工種明細を入力して「部長へ申請」</p>
+      </a>
+      <a class="role-card role-dept" href="role-department.html">
+        <span class="role-label">ロール 4</span>
+        <h3>部門管理者（部長）</h3>
+        <p>所長から上がってきた請求書を現場×月単位で一括承認／否認</p>
+      </a>
+      <a class="role-card role-exec" href="role-executive.html">
+        <span class="role-label">ロール 5</span>
+        <h3>役員</h3>
+        <p>部長承認済の案件を最終承認。役員承認で編集ロック</p>
+      </a>
+      <a class="role-card role-somu" href="role-somu.html">
+        <span class="role-label">ロール 2</span>
+        <h3>総務管理者</h3>
+        <p>現場・工種・消費税率・取引先・お問い合わせを管理</p>
+      </a>
+      <a class="role-card role-sys" href="role-sysadmin.html">
+        <span class="role-label">ロール 1</span>
+        <h3>システム管理者</h3>
+        <p>全機能 + ユーザ管理・部門管理者／役員設定・パスワードリセット</p>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <h2>共通事項</h2>
+    <ul>
+      <li><a href="common.html">ログイン手順（2段階認証・OTP）</a></li>
+      <li><a href="common.html#status">承認ステータスの一覧</a></li>
+      <li><a href="common.html#faq">よくある質問</a></li>
+    </ul>
+    <div class="warn">
+      <strong>動作環境:</strong> Google Chrome / Microsoft Edge 最新版推奨。スマートフォン（iOS Safari・Android Chrome）からも利用可能です。
+    </div>
+  </section>
+</main>
+
+<footer>
+  © クラウドパワー株式会社 / 建設現場請求書受付システム 操作マニュアル
+</footer>
+</body>
+</html>

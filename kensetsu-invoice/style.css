@@ -1,0 +1,99 @@
+/* 建設現場請求書受付システム 操作マニュアル 共通スタイル */
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; font-family: -apple-system, "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif; color: #1a202c; background: #f0f4f8; line-height: 1.7; }
+a { color: #2b6cb0; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ヘッダー */
+.site-header { background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 100%); color: #fff; padding: 24px 32px; }
+.site-header h1 { margin: 0 0 4px; font-size: 22px; font-weight: 700; }
+.site-header p { margin: 0; font-size: 14px; color: #bee3f8; }
+.site-header a { color: #bee3f8; }
+
+/* パンくず */
+.breadcrumb { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 10px 32px; font-size: 13px; color: #4a5568; }
+.breadcrumb a { color: #2b6cb0; }
+
+/* メイン */
+main { max-width: 900px; margin: 0 auto; padding: 32px 24px 80px; }
+
+/* ロール別カード（TOP） */
+.role-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 24px; }
+.role-card { display: block; background: #fff; border: 1px solid #e2e8f0; border-left: 5px solid #2b6cb0; border-radius: 10px; padding: 20px 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: all 0.15s; }
+.role-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.12); transform: translateY(-2px); text-decoration: none; }
+.role-card .role-label { font-size: 12px; color: #718096; font-weight: 600; letter-spacing: 0.05em; }
+.role-card h3 { margin: 4px 0 8px; color: #1a365d; font-size: 18px; }
+.role-card p { margin: 0; font-size: 13px; color: #4a5568; }
+.role-card.role-vendor { border-left-color: #38a169; }
+.role-card.role-shocho { border-left-color: #d69e2e; }
+.role-card.role-dept { border-left-color: #3182ce; }
+.role-card.role-exec { border-left-color: #805ad5; }
+.role-card.role-somu { border-left-color: #dd6b20; }
+.role-card.role-sys { border-left-color: #e53e3e; }
+
+/* セクション */
+section { background: #fff; border-radius: 10px; padding: 28px 32px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+section h2 { color: #1a365d; border-bottom: 3px solid #2b6cb0; padding-bottom: 8px; margin-top: 0; font-size: 20px; }
+section h3 { color: #2c5282; margin-top: 28px; font-size: 16px; padding-left: 10px; border-left: 4px solid #2b6cb0; }
+section h4 { color: #2d3748; font-size: 14px; margin-top: 20px; margin-bottom: 8px; }
+
+/* ステップ番号 */
+.step { display: flex; gap: 14px; margin-bottom: 20px; align-items: flex-start; }
+.step-num { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; background: #2b6cb0; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; }
+.step-body { flex: 1; min-width: 0; }
+.step-body p { margin: 0 0 8px; }
+
+/* スクショプレースホルダ */
+.screenshot { background: #f7fafc; border: 2px dashed #cbd5e0; border-radius: 8px; padding: 40px 20px; text-align: center; margin: 12px 0; color: #718096; font-size: 13px; }
+.screenshot::before { content: "📷 "; }
+.screenshot img { max-width: 100%; height: auto; border-radius: 6px; display: block; margin: 0 auto; }
+.screenshot img + .caption { margin-top: 8px; font-size: 12px; color: #718096; }
+.screenshot .placeholder-label { display: block; font-weight: 600; color: #4a5568; margin-bottom: 4px; }
+.screenshot .placeholder-desc { font-size: 12px; }
+.placeholder-box { display: block; padding: 30px 16px; color: #718096; }
+.placeholder-box .placeholder-label { display: block; font-weight: 600; color: #4a5568; margin-bottom: 4px; }
+.placeholder-box .placeholder-desc { font-size: 12px; display: block; }
+
+/* 注意・情報ブロック */
+.note { background: #ebf8ff; border-left: 4px solid #3182ce; padding: 12px 16px; border-radius: 6px; margin: 12px 0; font-size: 14px; }
+.warn { background: #fffbeb; border-left: 4px solid #d69e2e; padding: 12px 16px; border-radius: 6px; margin: 12px 0; font-size: 14px; }
+.danger { background: #fff5f5; border-left: 4px solid #e53e3e; padding: 12px 16px; border-radius: 6px; margin: 12px 0; font-size: 14px; }
+
+/* テーブル */
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+table th { background: #2b6cb0; color: #fff; padding: 10px 12px; text-align: left; font-weight: 600; }
+table td { padding: 9px 12px; border-bottom: 1px solid #e2e8f0; }
+table tr:nth-child(even) td { background: #f7fafc; }
+
+/* バッジ */
+.badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; margin-right: 4px; }
+.badge-submitted { background: #e2e8f0; color: #4a5568; }
+.badge-shocho { background: #bee3f8; color: #2c5282; }
+.badge-dept { background: #c6f6d5; color: #276749; }
+.badge-exec { background: #e9d8fd; color: #553c9a; }
+.badge-complete { background: #276749; color: #fff; }
+.badge-reject { background: #fed7d7; color: #c53030; }
+
+/* ボタン風表示 */
+.btn-sample { display: inline-block; padding: 4px 12px; background: #2b6cb0; color: #fff; border-radius: 4px; font-size: 13px; font-weight: 600; }
+.btn-sample.approve { background: #2f855a; }
+.btn-sample.reject { background: #e53e3e; }
+.btn-sample.late { background: #d69e2e; }
+.btn-sample.outline { background: #fff; color: #2b6cb0; border: 1px solid #2b6cb0; }
+
+/* フッター */
+footer { text-align: center; padding: 24px; font-size: 12px; color: #718096; }
+footer a { color: #4a5568; }
+
+/* ナビ（上部リンク） */
+.role-nav { display: flex; flex-wrap: wrap; gap: 8px; background: #fff; padding: 10px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; border: 1px solid #e2e8f0; }
+.role-nav a { padding: 4px 12px; border-radius: 6px; color: #2b6cb0; }
+.role-nav a:hover { background: #ebf8ff; text-decoration: none; }
+.role-nav a.current { background: #2b6cb0; color: #fff; font-weight: 700; }
+
+/* モバイル */
+@media (max-width: 640px) {
+  .site-header { padding: 20px 16px; }
+  main { padding: 20px 12px 60px; }
+  section { padding: 20px 16px; }
+}
