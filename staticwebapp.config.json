@@ -19,6 +19,10 @@
       "rewrite": "/GembaAI_Service/index.html"
     },
     {
+      "route": "/kyuyo",
+      "rewrite": "/kyuyo/index.html"
+    },
+    {
       "route": "/kensetsu-invoice",
       "rewrite": "/kensetsu-invoice/index.html"
     },
@@ -47,6 +51,7 @@
       "/kensetsu-invoice/*.js",
       "/kensetsu-invoice/images/*.png",
       "/kensetsu-invoice/images/*.jpg",
+      "/kyuyo/*.html",
       "/*.png",
       "/*.jpg",
       "/*.pdf",

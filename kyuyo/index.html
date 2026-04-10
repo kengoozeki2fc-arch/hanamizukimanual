@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>振込チェッカー 操作マニュアル</title>
+  <base href="/kyuyo/">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', sans-serif; background: #f8f9fa; color: #333; line-height: 1.7; }
+    .container { max-width: 860px; margin: 0 auto; padding: 24px 16px 60px; }
+    h1 { font-size: 28px; margin-bottom: 8px; color: #111; }
+    h2 { font-size: 22px; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 3px solid #2563eb; color: #1e40af; }
+    h3 { font-size: 17px; margin: 24px 0 8px; color: #374151; }
+    p, li { font-size: 15px; margin-bottom: 8px; }
+    ul, ol { padding-left: 24px; margin-bottom: 16px; }
+    .subtitle { font-size: 14px; color: #6b7280; margin-bottom: 32px; }
+    .info-box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 16px; margin: 16px 0; font-size: 14px; }
+    .warn-box { background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 16px; margin: 16px 0; font-size: 14px; }
+    .danger-box { background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; padding: 16px; margin: 16px 0; font-size: 14px; }
+    .step { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin: 20px 0; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+    .step-num { display: inline-block; background: #2563eb; color: #fff; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-size: 14px; font-weight: bold; margin-right: 8px; }
+    .step-title { font-size: 17px; font-weight: bold; margin-bottom: 12px; }
+    .screen { background: #1e293b; border-radius: 8px; overflow: hidden; margin: 16px 0; font-size: 13px; }
+    .screen-bar { background: #334155; padding: 6px 12px; color: #94a3b8; font-size: 12px; }
+    .screen-body { padding: 16px; color: #e2e8f0; }
+    .screen-body .label { color: #94a3b8; }
+    .screen-body .value { color: #fff; font-weight: bold; }
+    .screen-body .btn { display: inline-block; background: #2563eb; color: #fff; padding: 4px 12px; border-radius: 4px; font-size: 12px; margin: 2px 4px 2px 0; }
+    .screen-body .btn-green { background: #059669; }
+    .screen-body .btn-red { background: #dc2626; }
+    .screen-body .btn-outline { background: transparent; border: 1px solid #64748b; color: #e2e8f0; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+    th, td { border: 1px solid #d1d5db; padding: 8px 12px; text-align: left; }
+    th { background: #f3f4f6; font-weight: 600; }
+    .tag { display: inline-block; font-size: 11px; padding: 2px 6px; border-radius: 3px; }
+    .tag-blue { background: #dbeafe; color: #1d4ed8; }
+    .tag-green { background: #d1fae5; color: #065f46; }
+    .tag-red { background: #fee2e2; color: #991b1b; }
+    .tag-amber { background: #fef3c7; color: #92400e; }
+    code { background: #f1f5f9; padding: 2px 6px; border-radius: 3px; font-size: 13px; font-family: 'SF Mono', Consolas, monospace; }
+    .toc { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px 24px; margin: 24px 0; }
+    .toc ul { list-style: none; padding-left: 0; }
+    .toc li { margin: 6px 0; }
+    .toc a { color: #2563eb; text-decoration: none; font-size: 14px; }
+    .toc a:hover { text-decoration: underline; }
+    .mockup { background: #fff; border: 2px solid #e5e7eb; border-radius: 12px; overflow: hidden; margin: 16px 0; }
+    .mockup-nav { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 12px 16px; display: flex; align-items: center; gap: 16px; font-size: 14px; }
+    .mockup-nav b { color: #111; }
+    .mockup-nav a { color: #1d4ed8; text-decoration: none; font-size: 13px; }
+    .mockup-body { padding: 20px; }
+    .mockup-card { display: inline-block; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; margin: 4px; min-width: 120px; }
+    .mockup-card.green { background: #ecfdf5; border-color: #a7f3d0; }
+    .mockup-card.blue { background: #eff6ff; border-color: #bfdbfe; }
+    .mockup-card.red { background: #fef2f2; border-color: #fca5a5; }
+    .mockup-card.amber { background: #fffbeb; border-color: #fde68a; }
+    .mockup-card .c-label { font-size: 11px; color: #6b7280; }
+    .mockup-card .c-value { font-size: 18px; font-weight: bold; }
+    .mockup-card .c-sub { font-size: 11px; color: #374151; font-family: monospace; }
+    .mockup-table { width: 100%; font-size: 13px; border-collapse: collapse; }
+    .mockup-table th { background: #f9fafb; text-align: left; padding: 8px; border-bottom: 1px solid #e5e7eb; font-weight: 600; color: #374151; }
+    .mockup-table td { padding: 8px; border-bottom: 1px solid #f3f4f6; }
+    .mockup-table .changed { background: #fef2f2; }
+    .footer { text-align: center; margin-top: 48px; padding: 16px; color: #9ca3af; font-size: 12px; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <h1>振込チェッカー 操作マニュアル</h1>
+  <p class="subtitle">全銀データ取込 → 口座変更検知 → 振込結果消込 Webアプリ</p>
+
+  <div class="toc">
+    <b>目次</b>
+    <ul>
+      <li><a href="#overview">1. 概要</a></li>
+      <li><a href="#login">2. ログイン</a></li>
+      <li><a href="#upload">3. 全銀データの取込</a></li>
+      <li><a href="#detail">4. バッチ明細の見方</a></li>
+      <li><a href="#edit-delete">5. 支給日の編集 / バッチ削除</a></li>
+      <li><a href="#copy-done-memo">6. 金額コピー / 完了 / メモ</a></li>
+      <li><a href="#reconcile">7. 振込結果の消込（漏れチェック）</a></li>
+      <li><a href="#account-change">8. 口座変更の検知</a></li>
+      <li><a href="#faq">9. よくある質問</a></li>
+    </ul>
+  </div>
+
+  <!-- ===== 1. 概要 ===== -->
+  <h2 id="overview">1. 概要</h2>
+  <p>振込チェッカーは、<b>全銀フォーマット（給与振込・総合振込）</b>のデータを取り込んで、以下の作業を効率化するツールです。</p>
+  <ul>
+    <li>全銀ファイル(.txt)から <b>銀行名/支店名/口座番号/氏名/金額</b> を自動抽出</li>
+    <li>前回バッチと比較して <b>口座が変わった人を赤色で警告</b></li>
+    <li>金額の <b>ワンクリックコピー</b> と <b>完了チェック</b></li>
+    <li>振込実行後、銀行明細をアップして <b>漏れがないか消込チェック</b></li>
+  </ul>
+
+  <div class="info-box">
+    <b>対応会社:</b> 2FC / GWC / BNP の3社<br>
+    <b>支給日:</b> 毎月10日前後組 / 毎月27日組 を日付で管理
+  </div>
+
+  <!-- ===== 2. ログイン ===== -->
+  <h2 id="login">2. ログイン</h2>
+  <div class="step">
+    <div class="step-title"><span class="step-num">1</span>URLにアクセス</div>
+    <p>ブラウザで以下を開きます:</p>
+    <p><code>https://furikomi-checker.azurewebsites.net</code></p>
+    <p>→ ログイン画面が表示されます。</p>
+
+    <div class="mockup">
+      <div class="mockup-body" style="max-width:360px;margin:0 auto;text-align:center;">
+        <div style="border:1px solid #e5e7eb;border-radius:8px;padding:24px;background:#fff;">
+          <div style="font-size:18px;font-weight:bold;margin-bottom:16px;">振込チェッカー ログイン</div>
+          <div style="text-align:left;margin-bottom:12px;">
+            <div style="font-size:12px;color:#374151;">ID</div>
+            <div style="border:1px solid #d1d5db;border-radius:4px;padding:8px;background:#f9fafb;font-size:14px;color:#6b7280;">ozeki</div>
+          </div>
+          <div style="text-align:left;margin-bottom:16px;">
+            <div style="font-size:12px;color:#374151;">パスワード</div>
+            <div style="border:1px solid #d1d5db;border-radius:4px;padding:8px;background:#f9fafb;font-size:14px;color:#6b7280;">••••••••</div>
+          </div>
+          <div style="background:#2563eb;color:#fff;padding:8px;border-radius:4px;font-size:14px;cursor:pointer;">ログイン</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-title"><span class="step-num">2</span>ID / パスワードを入力</div>
+    <table>
+      <tr><th>ID</th><td><code>ozeki</code></td></tr>
+      <tr><th>パスワード</th><td>管理者から共有されたパスワード</td></tr>
+    </table>
+    <p>「ログイン」ボタンを押すと <b>ダッシュボード（バッチ一覧）</b> に移動します。</p>
+  </div>
+
+  <!-- ===== 3. 取込 ===== -->
+  <h2 id="upload">3. 全銀データの取込</h2>
+
+  <div class="step">
+    <div class="step-title"><span class="step-num">1</span>「+ 新規取込」ボタンを押す</div>
+    <p>ダッシュボード右上、または上部ナビの「新規取込」をクリックします。</p>
+
+    <div class="mockup">
+      <div class="mockup-nav">
+        <b>振込チェッカー</b>
+        <a>新規取込</a>
+        <span style="margin-left:auto;font-size:12px;color:#6b7280;">ozeki</span>
+      </div>
+      <div class="mockup-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <span style="font-size:20px;font-weight:bold;">バッチ一覧</span>
+          <span class="btn" style="background:#2563eb;color:#fff;padding:8px 16px;border-radius:4px;font-size:14px;">+ 新規取込</span>
+        </div>
+        <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:4px;padding:24px;text-align:center;color:#9ca3af;font-size:14px;">
+          まだバッチがありません
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-title"><span class="step-num">2</span>会社・支給日・ファイルを選択</div>
+    <div class="mockup">
+      <div class="mockup-body" style="max-width:480px;">
+        <div style="font-size:18px;font-weight:bold;margin-bottom:16px;">全銀データ新規取込</div>
+        <div style="border:1px solid #e5e7eb;border-radius:8px;padding:20px;background:#fff;">
+          <div style="margin-bottom:12px;">
+            <div style="font-size:12px;color:#374151;">会社</div>
+            <div style="border:1px solid #d1d5db;border-radius:4px;padding:8px;font-size:14px;">
+              <select style="border:none;background:none;width:100%;font-size:14px;">
+                <option>2FC</option><option selected>GWC</option><option>BNP</option>
+              </select>
+            </div>
+          </div>
+          <div style="margin-bottom:12px;">
+            <div style="font-size:12px;color:#374151;">支給日</div>
+            <div style="border:1px solid #d1d5db;border-radius:4px;padding:8px;font-size:14px;">2026-04-10</div>
+          </div>
+          <div style="margin-bottom:16px;">
+            <div style="font-size:12px;color:#374151;">全銀ファイル (.txt)</div>
+            <div style="border:1px solid #d1d5db;border-radius:4px;padding:8px;font-size:14px;color:#6b7280;">GWC様_kyuyo_fb_data_2026_04_10.txt</div>
+            <div style="font-size:11px;color:#9ca3af;margin-top:4px;">Shift_JIS / UTF-8 どちらでもOK</div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <div style="flex:1;background:#2563eb;color:#fff;padding:8px;border-radius:4px;text-align:center;font-size:14px;">取込</div>
+            <div style="padding:8px 16px;border:1px solid #d1d5db;border-radius:4px;font-size:14px;">キャンセル</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <table>
+      <tr><th>会社</th><td><b>2FC / GWC / BNP</b> からプルダウン選択</td></tr>
+      <tr><th>支給日</th><td>給与の支給日を入力（例: 2026-04-10）</td></tr>
+      <tr><th>全銀ファイル</th><td>銀行から取得した <code>.txt</code> ファイルを選択。Shift_JIS / UTF-8 / 改行あり・なしの全パターン自動対応</td></tr>
+    </table>
+  </div>
+
+  <div class="step">
+    <div class="step-title"><span class="step-num">3</span>「取込」ボタンを押す</div>
+    <p>全銀データが解析され、以下が自動で行われます:</p>
+    <ul>
+      <li>各レコードから <b>銀行名/支店名/種別/口座番号/氏名/金額</b> を抽出</li>
+      <li>氏名を半角カナ→ひらがなに正規化して <b>あいうえお順</b> にソート</li>
+      <li>同じ会社の前回バッチがあれば、氏名キーで照合して <b>口座変更を自動検知</b></li>
+    </ul>
+    <p>→ 取込が完了すると自動でバッチ明細画面に遷移します。</p>
+  </div>
+
+  <!-- ===== 4. 明細画面 ===== -->
+  <h2 id="detail">4. バッチ明細の見方</h2>
+
+  <div class="step">
+    <div class="step-title">集計カード</div>
+    <p>画面上部に5枚の集計カードが並びます:</p>
+
+    <div class="mockup">
+      <div class="mockup-body" style="display:flex;flex-wrap:wrap;gap:8px;">
+        <div class="mockup-card">
+          <div class="c-label">全件</div><div class="c-value">59件</div><div class="c-sub">¥3,739,718</div>
+        </div>
+        <div class="mockup-card green">
+          <div class="c-label">完了済</div><div class="c-value">0件</div><div class="c-sub">¥0</div>
+        </div>
+        <div class="mockup-card blue">
+          <div class="c-label">未完了</div><div class="c-value">59件</div><div class="c-sub">¥3,739,718</div>
+        </div>
+        <div class="mockup-card red">
+          <div class="c-label">口座変更</div><div class="c-value">0件</div><div class="c-sub">¥0</div>
+        </div>
+        <div class="mockup-card amber">
+          <div class="c-label">消込済</div><div class="c-value">0件</div><div class="c-sub">¥0</div>
+        </div>
+      </div>
+    </div>
+
+    <table>
+      <tr><th>カード</th><th>意味</th></tr>
+      <tr><td><span class="tag tag-blue">全件</span></td><td>全レコードの件数と合計金額（全銀トレーラと一致するはず）</td></tr>
+      <tr><td><span class="tag tag-green">完了済</span></td><td>「完了」ボタンを押した件数と金額</td></tr>
+      <tr><td><span class="tag tag-blue">未完了</span></td><td>まだ完了していない件数と金額</td></tr>
+      <tr><td><span class="tag tag-red">口座変更</span></td><td>前回バッチから口座情報が変わった件数と金額</td></tr>
+      <tr><td><span class="tag tag-amber">消込済</span></td><td>銀行明細と照合済みの件数と金額</td></tr>
+    </table>
+  </div>
+
+  <div class="step">
+    <div class="step-title">明細テーブル</div>
+    <p>一覧は <b>氏名のあいうえお順</b> で並びます。フィルタボタンで絞り込みできます:</p>
+    <p>
+      <span class="tag tag-blue">全件</span>
+      <span class="tag">未完了のみ</span>
+      <span class="tag">口座変更のみ</span>
+      <span class="tag">未消込のみ</span>
+    </p>
+
+    <div class="mockup">
+      <div class="mockup-body" style="overflow-x:auto;">
+        <table class="mockup-table">
+          <thead>
+            <tr><th>#</th><th>氏名</th><th>銀行/支店</th><th>種別</th><th>口座番号</th><th style="text-align:right;">金額</th><th>操作</th><th>メモ</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color:#9ca3af;">1</td>
+              <td><b>アサノ サチコ</b> <span style="color:#059669;font-size:11px;">✓消込</span></td>
+              <td>ミツイスミトモ / フチユウ</td><td>普通</td><td>0628123</td>
+              <td style="text-align:right;font-family:monospace;">¥29,667</td>
+              <td><span class="btn btn-outline" style="font-size:11px;padding:2px 8px;">📋</span> <span class="btn btn-green" style="font-size:11px;padding:2px 8px;">完了</span></td>
+              <td style="font-size:12px;color:#9ca3af;">メモ...</td>
+            </tr>
+            <tr class="changed">
+              <td style="color:#9ca3af;">2</td>
+              <td><b>アツミ サヤカ</b></td>
+              <td>ミツビシUFJ / シンサイバシ<br><span style="font-size:11px;color:#b91c1c;">前回: ミズホ/フチユウ 普通 0398490</span></td>
+              <td>普通</td><td>0512345</td>
+              <td style="text-align:right;font-family:monospace;">¥9,202</td>
+              <td><span class="btn btn-outline" style="font-size:11px;padding:2px 8px;">📋</span> <span class="btn btn-green" style="font-size:11px;padding:2px 8px;">完了</span></td>
+              <td style="font-size:12px;color:#9ca3af;"></td>
+            </tr>
+            <tr style="background:#f9fafb;color:#9ca3af;">
+              <td>3</td>
+              <td><b>クボタ トキオ</b> <span style="color:#059669;font-size:11px;">✓消込</span></td>
+              <td>ミズホ / イナギチユウオウ</td><td>普通</td><td>1371249</td>
+              <td style="text-align:right;font-family:monospace;">¥287,801</td>
+              <td><span class="btn btn-outline" style="font-size:11px;padding:2px 8px;">📋</span> <span class="btn" style="font-size:11px;padding:2px 8px;background:#d1d5db;color:#6b7280;">取消</span></td>
+              <td style="font-size:12px;">確認済み</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr style="font-weight:bold;background:#f3f4f6;border-top:2px solid #d1d5db;">
+              <td colspan="5" style="text-align:right;">表示中合計 (3件)</td>
+              <td style="text-align:right;font-family:monospace;">¥326,670</td>
+              <td colspan="2"></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+    <table>
+      <tr><th>表示</th><th>意味</th></tr>
+      <tr><td>白背景</td><td>通常の行</td></tr>
+      <tr><td style="background:#fef2f2;">赤背景</td><td>前回バッチから <b>口座が変わった</b> 行。前回の口座情報が下に小さく表示されます</td></tr>
+      <tr><td style="background:#f9fafb;color:#9ca3af;">灰色・薄文字</td><td>「完了」済みの行</td></tr>
+      <tr><td><span style="color:#059669;font-size:12px;">✓消込</span></td><td>振込結果の消込が完了している行</td></tr>
+    </table>
+  </div>
+
+  <!-- ===== 5. 編集・削除 ===== -->
+  <h2 id="edit-delete">5. 支給日の編集 / バッチ削除</h2>
+
+  <div class="step">
+    <div class="step-title"><span class="step-num">1</span>支給日・会社の変更</div>
+    <p>明細画面の見出し横にある <b>「編集」</b> リンクをクリックすると、会社と支給日をインライン編集できます。</p>
+    <p>変更したら「保存」、やめたいなら「キャンセル」を押します。</p>
+    <div class="info-box">
+      支給日を変更すると、消込の日付照合にも影響します。正しい日付に設定してください。
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-title"><span class="step-num">2</span>バッチの削除</div>
+    <p>見出し横の <b>「削除」</b> リンクをクリックすると、確認ダイアログが出ます。</p>
+    <div class="danger-box">
+      削除するとバッチと全明細データが完全に消えます。元に戻せません。<br>
+      テストデータの削除や、間違えて取り込んだ場合に使ってください。
+    </div>
+  </div>
+
+  <!-- ===== 6. コピー/完了/メモ ===== -->
+  <h2 id="copy-done-memo">6. 金額コピー / 完了 / メモ</h2>
+
+  <div class="step">
+    <div class="step-title">各行の操作</div>
+    <table>
+      <tr>
+        <th style="width:100px;">📋 コピー</th>
+        <td>金額の数字をクリップボードにコピーします。<br>ネットバンキングの振込画面に貼り付けるときに便利です。<br>コピー成功すると一瞬 ✓ に変わります。</td>
+      </tr>
+      <tr>
+        <th>✅ 完了</th>
+        <td>振込作業が終わった行にチェックを入れます。<br>行がグレーアウトし、集計カードの「完了済」に反映されます。<br>もう一度押すと取消できます。</td>
+      </tr>
+      <tr>
+        <th>📝 メモ</th>
+        <td>自由にメモを残せます（例: 「退職者」「保留」「翌月に回す」など）。<br>入力後にフォーカスを外すと自動保存されます。</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ===== 7. 消込 ===== -->
+  <h2 id="reconcile">7. 振込結果の消込（漏れチェック）</h2>
+
+  <div class="warn-box">
+    <b>重要:</b> 消込は <b>振込を実行した後</b> に行う確認作業です。<br>
+    まだ振り込んでいない状態でやると、0件マッチ（=全員漏れ）として正しく表示されます。
+  </div>
+
+  <div class="step">
+    <div class="step-title"><span class="step-num">1</span>銀行明細をダウンロード</div>
+    <p>振込を実行した後、銀行のネットバンキングから <b>取引明細（Excel / .xlsx）</b> をダウンロードします。</p>
+    <p>必要な列:</p>
+    <table>
+      <tr><th>列</th><th>内容</th><th>例</th></tr>
+      <tr><td>日付</td><td>取引日</td><td>2026/04/10</td></tr>
+      <tr><td>金額</td><td>マイナス = 出金</td><td>-3739718</td></tr>
+      <tr><td>摘要/ご利用先</td><td>振込先の名前</td><td>ﾌﾘｺﾐ ｸﾎﾞﾀ ﾄｷｵ</td></tr>
+    </table>
+  </div>
+
+  <div class="step">
+    <div class="step-title"><span class="step-num">2</span>「振込結果消込」ボタンを押す</div>
+    <p>明細画面右上の <b>「振込結果消込」</b> ボタンから消込画面に移動します。</p>
+  </div>
+
+  <div class="step">
+    <div class="step-title"><span class="step-num">3</span>銀行明細ファイルを選択して「消込実行」</div>
+    <p>システムが以下の順序で照合します:</p>
+    <ol>
+      <li><b>支給日と一致する日付の出金行</b>だけを抽出</li>
+      <li><b>一括振込チェック:</b> 出金行の中に全銀合計金額（例: ¥3,739,718）と等しい1行があれば → <span class="tag tag-green">全件消込</span>（一括振込パターン）</li>
+      <li><b>個別チェック:</b> 一括ヒットしなかった場合、各出金行の摘要欄に氏名カナが含まれるか確認 → 含まれていれば <span class="tag tag-green">該当者のみ消込</span></li>
+    </ol>
+  </div>
+
+  <div class="step">
+    <div class="step-title"><span class="step-num">4</span>結果を確認</div>
+    <p>消込結果が2ブロックで表示されます:</p>
+    <table>
+      <tr><td><span class="tag tag-green">✅ 消込済</span></td><td>銀行明細で振込が確認できた人</td></tr>
+      <tr><td><span class="tag tag-red">❗ 漏れ</span></td><td>銀行明細に出金記録がない人 → <b>要確認！</b></td></tr>
+    </table>
+
+    <div class="warn-box">
+      <b>漏れがある場合:</b> 振込が実行されていない可能性があります。<br>
+      銀行の処理ステータスを確認してください。
+    </div>
+  </div>
+
+  <!-- ===== 8. 口座変更 ===== -->
+  <h2 id="account-change">8. 口座変更の検知</h2>
+  <p>同じ会社で2回目以降のバッチを取り込むと、前回バッチの氏名と自動照合されます。</p>
+  <p>同じ名前なのに <b>銀行コード/支店コード/口座番号/種別</b> のいずれかが変わっていた場合:</p>
+  <ul>
+    <li>該当行が <b style="color:#dc2626;">赤背景</b> になります</li>
+    <li>銀行/支店欄の下に <b>前回の口座情報</b> が小さく表示されます</li>
+    <li>集計カードの「口座変更」にカウントされます</li>
+  </ul>
+  <div class="info-box">
+    口座変更があった場合は、振込先を間違えないよう必ず <b>本人に確認</b> してから振込してください。
+  </div>
+
+  <!-- ===== 9. FAQ ===== -->
+  <h2 id="faq">9. よくある質問</h2>
+
+  <div class="step">
+    <h3>Q. 全銀ファイルの文字コードは？</h3>
+    <p>A. <b>Shift_JIS / UTF-8 どちらでも自動判定</b> します。改行あり・なし（120byte固定長ブロック）も両対応です。</p>
+  </div>
+
+  <div class="step">
+    <h3>Q. 同じ支給日で再取込したい場合は？</h3>
+    <p>A. 古いバッチを「削除」してから新しいファイルを取り込んでください。同じ日に複数バッチを作ることも可能ですが、口座変更検知の比較対象が複雑になります。</p>
+  </div>
+
+  <div class="step">
+    <h3>Q. 同姓同名の人がいる場合は？</h3>
+    <p>A. 現在は <b>氏名カナ(ひらがな正規化)のみ</b> で同一人物を判定しています。完全に同名の人がいる場合、口座変更検知が誤動作する可能性があります。メモ欄に注記してください。</p>
+  </div>
+
+  <div class="step">
+    <h3>Q. 消込で0件ヒットになる</h3>
+    <p>A. 以下を確認してください:</p>
+    <ul>
+      <li>銀行明細の <b>日付列の値</b> がバッチの支給日と完全一致しているか（年/月/日）</li>
+      <li>まだ <b>振込を実行していない</b> 場合は0件で正常です</li>
+      <li>銀行によっては振込日と明細の計上日が1日ずれる場合があります → 支給日を「編集」で合わせてから再消込</li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <h3>Q. パスワードを変更したい</h3>
+    <p>A. 管理者に依頼してください。Azure App Service の環境変数 <code>ADMIN_PASSWORD_HASH</code> を更新します。</p>
+  </div>
+
+  <div class="footer">
+    振込チェッカー 操作マニュアル v1.0<br>
+    &copy; 2026 クラウドパワー株式会社
+  </div>
+
+</div>
+</body>
+</html>
