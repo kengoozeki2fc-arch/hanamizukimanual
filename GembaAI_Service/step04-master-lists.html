@@ -21,7 +21,27 @@
     <p>Step3で作成したテナント専用SPOサイトに、運用に必要な<strong>8種類のSharePointリスト</strong>を作成します。リストの<strong>列定義は永賢組サイト（constructioninfo）と完全一致</strong>させる必要があります。</p>
 
     <div class="alert alert-info">
-      <strong>💡 効率化のヒント：自動プロビジョニングスクリプト</strong><br>
+      <strong>💡 効率化のヒント①：永賢組サイトからCSVスキーマエクスポート</strong><br>
+      <p style="margin: 0.6rem 0;">永賢組サイト(constructioninfo)の各リストで「<strong>リスト設定 → Excelにエクスポート</strong>」または SharePoint の ExportToCSV 機能を使うと、CSV の先頭に <code>ListSchema={...}</code> という行が含まれます。ここに <strong>全フィールドの完全な SchemaXml</strong> が JSON で埋め込まれているので、これをそのまま PnP.PowerShell の <code>Add-PnPFieldFromXml</code> に渡すと <strong>IMEMode / Indexed / EnforceUniqueValues / Min・Max / Lookup参照先</strong> など細かい属性まで完全再現できます。</p>
+      <p style="margin: 0.6rem 0;">この方法で九州永賢組の `現場` リスト作成時に「36協定提出済 (<code>_x0033_6AgreementSubmission</code>)」の数字先頭エンコードや「労災保険番号 Min=Max=14」等の細部まで正確に復元できました。</p>
+    </div>
+
+    <div class="alert alert-warn">
+      <strong>⚠️ デフォルトビューへの列追加を忘れずに</strong><br>
+      <p style="margin: 0.6rem 0;"><code>Add-PnPFieldFromXml</code> でリストに列を追加しても、<strong>「すべてのアイテム」ビューには自動では表示されません</strong>。列はリスト内部には存在していますがUIで見えない状態になります。</p>
+      <p style="margin: 0.6rem 0;">リスト作成後、必ず以下のコマンドでビューに列を追加してください（<code>Add-PnPViewField</code> cmdlet は PnP.PowerShell 3.x では<strong>存在しないので注意</strong>）:</p>
+      <pre style="margin: 0.5rem 0"><code>$view = Get-PnPView -List "現場" | Where-Object { $_.DefaultView -eq $true }
+Set-PnPView -List "現場" -Identity $view.Id -Fields @(
+    "LinkTitle","ChiefName","ConstructionStartDate","ConstructionEndDate",
+    "InsuranceNumber","_x0033_6AgreementSubmission",
+    "OfficeEstablishmentSubmission","ScaffoldingSubmission",
+    "FalseworkSubmission","Abbreviation"
+)</code></pre>
+      <p style="margin: 0.6rem 0;">※ <code>Set-PnPView -Fields</code> は既存ビューの列リストを<strong>全置換</strong>します。Title 相当は <code>LinkTitle</code> を指定。</p>
+    </div>
+
+    <div class="alert alert-info">
+      <strong>💡 効率化のヒント②：自動プロビジョニングスクリプト</strong><br>
       <p style="margin: 0.6rem 0;">8リストを<strong>1コマンドで一括作成</strong>するPowerShellスクリプトを用意しています。永賢組サイト(constructioninfo)からMicrosoft Graph APIで取得した実装ベースの正確な列定義を埋め込み済み。Lookup列・選択肢・必須フラグもすべて自動設定されます。</p>
       <p style="margin: 0.6rem 0;">
         <a href="templates/provision-gembaai-lists.ps1" download class="download-btn">
@@ -73,11 +93,12 @@
     <p>現場の基本情報を管理するマスタ。</p>
     <table>
       <tr><th>表示名</th><th>内部名</th><th>型</th><th>必須</th><th>備考</th></tr>
-      <tr><td>現場名称</td><td><code>Title</code></td><td>1行テキスト(255)</td><td>✓</td><td>例: (仮称)○○マンション新築工事</td></tr>
+      <tr><td>現場名称</td><td><code>Title</code></td><td>1行テキスト(255)</td><td>✓</td><td>EnforceUniqueValues=TRUE / Indexed=TRUE</td></tr>
       <tr><td>所長名</td><td><code>ChiefName</code></td><td>1行テキスト(255)</td><td></td><td></td></tr>
       <tr><td>工期（自）</td><td><code>ConstructionStartDate</code></td><td>日付（dateOnly）</td><td></td><td></td></tr>
       <tr><td>工期（至）</td><td><code>ConstructionEndDate</code></td><td>日付（dateOnly）</td><td></td><td></td></tr>
       <tr><td>労災保険番号</td><td><code>InsuranceNumber</code></td><td>数値（14桁固定）</td><td></td><td>min=max=14</td></tr>
+      <tr><td>36協定提出済</td><td><code>_x0033_6AgreementSubmission</code></td><td>はい/いいえ</td><td></td><td>※内部名は SharePoint の数値先頭エンコード（36→_x0033_6）</td></tr>
       <tr><td>事業所の設置届提出済</td><td><code>OfficeEstablishmentSubmission</code></td><td>はい/いいえ</td><td></td><td></td></tr>
       <tr><td>足場支保工提出済</td><td><code>ScaffoldingSubmission</code></td><td>はい/いいえ</td><td></td><td></td></tr>
       <tr><td>型枠支保工提出済</td><td><code>FalseworkSubmission</code></td><td>はい/いいえ</td><td></td><td></td></tr>

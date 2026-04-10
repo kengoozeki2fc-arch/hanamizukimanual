@@ -198,6 +198,54 @@ $null = Add-OrSkipList -Title "危険回避策" -Url "Lists/RiskAvoidanceMaster"
 Set-PnPField -List "RiskAvoidanceMaster" -Identity "Title" -Values @{ Title = "危険回避策" } -ErrorAction SilentlyContinue
 Add-LookupFieldByListName -List "RiskAvoidanceMaster" -InternalName "RiskyWorkID" -DisplayName "危険作業" -LookupListUrl "Lists/RiskyWorkMaster" -Required $true
 
+# ========== デフォルトビュー更新 ==========
+# Add-PnPFieldFromXml で追加した列はデフォルトビューに自動追加されないので、
+# 各リストの「すべてのアイテム」ビューに手動で追加する
+# 注意: Add-PnPViewField cmdlet は PnP.PowerShell 3.x には存在しない
+#       → Set-PnPView -Fields で全置換する
+Write-Host "`n========== デフォルトビュー更新 ==========" -ForegroundColor Cyan
+
+function Update-DefaultView {
+    param([string]$ListTitle, [string[]]$Fields)
+    try {
+        $view = Get-PnPView -List $ListTitle | Where-Object { $_.DefaultView -eq $true } | Select-Object -First 1
+        if ($view) {
+            Set-PnPView -List $ListTitle -Identity $view.Id -Fields $Fields -ErrorAction Stop
+            Write-Host "  ✅ $ListTitle : ビューに$($Fields.Count)列を表示" -ForegroundColor Green
+        }
+    } catch {
+        Write-Host "  ❌ $ListTitle : $($_.Exception.Message)" -ForegroundColor Red
+    }
+}
+
+Update-DefaultView -ListTitle "現場" -Fields @(
+    "LinkTitle","ChiefName","ConstructionStartDate","ConstructionEndDate",
+    "InsuranceNumber","OfficeEstablishmentSubmission","ScaffoldingSubmission",
+    "FalseworkSubmission","Abbreviation"
+)
+Update-DefaultView -ListTitle "協力業者" -Fields @(
+    "LinkTitle","PostCode","Address","MainPhoneNumber","RepresentativeName",
+    "PersonInChargeName","ConstructionLicenseNumber","ConstructionLicenseType",
+    "ContractType","HealthInsurance","PensionInsurance","EmploymentInsurance",
+    "KentaikyoSystem","SMBtaikyoSystem"
+)
+Update-DefaultView -ListTitle "社員資格" -Fields @("LinkTitle")
+Update-DefaultView -ListTitle "危険作業" -Fields @("LinkTitle")
+Update-DefaultView -ListTitle "現場協力業者紐付け" -Fields @(
+    "LinkTitle","OnsiteID","PartnerID","ParentOnsitePartnerID","Hierarchy","PartnerWork"
+)
+Update-DefaultView -ListTitle "社員" -Fields @(
+    "LinkTitle","MailAddress","Role","MobileNumber",
+    "QualificationID1","QualifiedPersonNumber1","QualificationDeadline1",
+    "QualificationID2","QualifiedPersonNumber2","QualificationDeadline2",
+    "QualificationID3","QualifiedPersonNumber3","QualificationDeadline3",
+    "ConstructionManagerNumber","ConstructionManagerDeadline","CPDAchievements"
+)
+Update-DefaultView -ListTitle "社員実績" -Fields @(
+    "LinkTitle","EmployeeID","OnsiteID","AssignmentStartDate","AssignmentEndDate","ConstructionWorkInCharge"
+)
+Update-DefaultView -ListTitle "危険回避策" -Fields @("LinkTitle","RiskyWorkID")
+
 # ========== 完了 ==========
 Write-Host "`n✅ All 8 lists provisioned successfully!" -ForegroundColor Green
 Write-Host "  確認URL: $SiteUrl/_layouts/15/viewlsts.aspx"
