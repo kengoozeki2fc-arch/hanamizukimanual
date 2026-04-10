@@ -236,6 +236,49 @@ Set-PnPView -List "現場" -Identity $view.Id -Fields @(
   </div>
 
   <div class="card">
+    <h2>🔗 Lookup列 完全リファレンス</h2>
+    <p>8リストには合計 <strong>9つのLookup列</strong> があり、4つの親リストから6つの被参照リストへ参照しています。Lookup列を作る順序を間違えると参照先未作成エラーになるので、このリファレンスを参考に依存関係を確認してください。</p>
+
+    <h3>Lookup列一覧（4リスト・9列）</h3>
+    <table>
+      <tr><th>親リスト</th><th>列内部名</th><th>表示名</th><th>参照先リスト</th><th>必須</th><th>備考</th></tr>
+      <tr><td rowspan="3"><strong>現場協力業者紐付け</strong><br>(OnsitePartnerRelation)</td><td><code>OnsiteID</code></td><td>現場</td><td>現場 (OnsiteMaster)</td><td>✓</td><td></td></tr>
+      <tr><td><code>PartnerID</code></td><td>協力業者</td><td>協力業者 (PartnerMaster)</td><td>✓</td><td></td></tr>
+      <tr><td><code>ParentOnsitePartnerID</code></td><td>上位協力業者</td><td><strong>自分自身</strong> (OnsitePartnerRelation)</td><td></td><td>★ 自己参照（施工体制ツリー）</td></tr>
+      <tr><td rowspan="3"><strong>社員</strong><br>(EmployeeMaster)</td><td><code>QualificationID1</code></td><td>社員資格ID1</td><td>社員資格 (EmployeeQualificationMaster)</td><td></td><td>3スロットの1つ目</td></tr>
+      <tr><td><code>QualificationID2</code></td><td>社員資格ID2</td><td>社員資格 (EmployeeQualificationMaster)</td><td></td><td>3スロットの2つ目</td></tr>
+      <tr><td><code>QualificationID3</code></td><td>社員資格ID3</td><td>社員資格 (EmployeeQualificationMaster)</td><td></td><td>3スロットの3つ目</td></tr>
+      <tr><td rowspan="2"><strong>社員実績</strong><br>(EmployeeAchievement)</td><td><code>EmployeeID</code></td><td>社員</td><td>社員 (EmployeeMaster)</td><td>✓</td><td></td></tr>
+      <tr><td><code>OnsiteID</code></td><td>現場</td><td>現場 (OnsiteMaster)</td><td>✓</td><td></td></tr>
+      <tr><td><strong>危険回避策</strong><br>(RiskAvoidanceMaster)</td><td><code>RiskyWorkID</code></td><td>危険作業</td><td>危険作業 (RiskyWorkMaster)</td><td>✓</td><td></td></tr>
+    </table>
+
+    <h3>被参照リスト別サマリ</h3>
+    <table>
+      <tr><th>被参照リスト</th><th>参照元</th><th>参照数</th></tr>
+      <tr><td>現場 (OnsiteMaster)</td><td>現場協力業者紐付け / 社員実績</td><td>2</td></tr>
+      <tr><td>協力業者 (PartnerMaster)</td><td>現場協力業者紐付け</td><td>1</td></tr>
+      <tr><td>現場協力業者紐付け (OnsitePartnerRelation)</td><td>自分自身（自己参照）</td><td>1</td></tr>
+      <tr><td>社員 (EmployeeMaster)</td><td>社員実績</td><td>1</td></tr>
+      <tr><td>社員資格 (EmployeeQualificationMaster)</td><td>社員（3スロット）</td><td>3</td></tr>
+      <tr><td>危険作業 (RiskyWorkMaster)</td><td>危険回避策</td><td>1</td></tr>
+    </table>
+
+    <div class="alert alert-info">
+      <strong>💡 Lookup列の追加方法（PnP.PowerShell）</strong><br>
+      Lookup列は SchemaXml で <code>List="{listGuid}"</code> 属性を指定して追加します:
+      <pre style="margin-top:0.5rem"><code>$xml = "&lt;Field Type='Lookup' DisplayName='現場' Name='OnsiteID' StaticName='OnsiteID' Required='TRUE' List='{$onsiteListId}' ShowField='Title' /&gt;"
+Add-PnPFieldFromXml -List "現場協力業者紐付け" -FieldXml $xml</code></pre>
+      自己参照の場合は、<strong>リスト作成後に自分自身のIDを取得</strong>して同じ要領で追加します。
+    </div>
+
+    <div class="alert alert-warn">
+      <strong>⚠️ Lookup列のデータ投入時はID解決が必要</strong><br>
+      CSVのデータには表示名（例: "齊藤 武"）が入っていますが、SP内部では参照先リストの<strong>アイテムID（数値）</strong>が必要です。投入前に参照先リストから <code>{Title: ID}</code> マップを作っておき、表示名→IDで解決してから <code>Add-PnPListItem</code> に渡します。詳細は Step5 参照。
+    </div>
+  </div>
+
+  <div class="card">
     <h2>📐 リスト作成順序（依存関係）</h2>
     <p>Lookup列を持つリストは参照先リストが先に存在する必要があるため、以下の順序で作成してください。</p>
     <div class="flow-diagram">[1] 現場 (OnsiteMaster)              ← 何も参照しない
