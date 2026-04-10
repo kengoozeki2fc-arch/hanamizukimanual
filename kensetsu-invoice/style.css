@@ -81,6 +81,11 @@ table tr:nth-child(even) td { background: #f7fafc; }
 .btn-sample.late { background: #d69e2e; }
 .btn-sample.outline { background: #fff; color: #2b6cb0; border: 1px solid #2b6cb0; }
 
+/* フロー図SVG */
+.flow-svg { width: 100%; height: auto; max-width: 1000px; display: block; margin: 16px auto; }
+.flow-legend { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; font-size: 12px; color: #718096; margin-top: 8px; }
+.flow-legend .swatch { display: inline-block; width: 14px; height: 14px; border-radius: 3px; vertical-align: middle; margin-right: 4px; }
+
 /* フッター */
 footer { text-align: center; padding: 24px; font-size: 12px; color: #718096; }
 footer a { color: #4a5568; }

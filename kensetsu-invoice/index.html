@@ -30,9 +30,75 @@
 
   <section>
     <h2>承認フロー全体図</h2>
-    <div class="screenshot">
-      <span class="placeholder-label">[ フロー図 ]</span>
-      <span class="placeholder-desc">取引先提出 → 所長承認＋工種明細入力 → 部長へ申請 → 部門管理者一括承認 → 役員一括承認 → 完全ロック</span>
+    <svg class="flow-svg" viewBox="0 0 1000 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="承認フロー図">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#4a5568"/>
+        </marker>
+        <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#e53e3e"/>
+        </marker>
+      </defs>
+
+      <!-- Box 1: 取引先提出 -->
+      <rect x="20" y="60" width="160" height="120" rx="10" fill="#f0fff4" stroke="#38a169" stroke-width="2"/>
+      <text x="100" y="92" text-anchor="middle" font-size="11" fill="#718096" font-weight="600">取引先</text>
+      <text x="100" y="122" text-anchor="middle" font-size="15" fill="#276749" font-weight="700">提出済</text>
+      <text x="100" y="150" text-anchor="middle" font-size="11" fill="#4a5568">請求書ファイル</text>
+      <text x="100" y="166" text-anchor="middle" font-size="11" fill="#4a5568">件名・税抜金額</text>
+
+      <line x1="182" y1="120" x2="218" y2="120" stroke="#4a5568" stroke-width="2" marker-end="url(#arrow)"/>
+      <text x="200" y="110" text-anchor="middle" font-size="10" fill="#718096">登録</text>
+
+      <!-- Box 2: 所長 -->
+      <rect x="220" y="60" width="160" height="120" rx="10" fill="#fffbeb" stroke="#d69e2e" stroke-width="2"/>
+      <text x="300" y="92" text-anchor="middle" font-size="11" fill="#718096" font-weight="600">所長</text>
+      <text x="300" y="122" text-anchor="middle" font-size="15" fill="#975a16" font-weight="700">所長承認中</text>
+      <text x="300" y="150" text-anchor="middle" font-size="11" fill="#4a5568">1件ずつ明細入力</text>
+      <text x="300" y="166" text-anchor="middle" font-size="11" fill="#4a5568">→ 承認／否認</text>
+
+      <line x1="382" y1="120" x2="418" y2="120" stroke="#4a5568" stroke-width="2" marker-end="url(#arrow)"/>
+      <text x="400" y="110" text-anchor="middle" font-size="10" fill="#718096">部長へ申請</text>
+
+      <!-- Box 3: 部門管理者 -->
+      <rect x="420" y="60" width="160" height="120" rx="10" fill="#ebf8ff" stroke="#3182ce" stroke-width="2"/>
+      <text x="500" y="92" text-anchor="middle" font-size="11" fill="#718096" font-weight="600">部門管理者</text>
+      <text x="500" y="122" text-anchor="middle" font-size="15" fill="#2c5282" font-weight="700">部長審査中</text>
+      <text x="500" y="150" text-anchor="middle" font-size="11" fill="#4a5568">現場×月単位で</text>
+      <text x="500" y="166" text-anchor="middle" font-size="11" fill="#4a5568">一括承認／否認</text>
+
+      <line x1="582" y1="120" x2="618" y2="120" stroke="#4a5568" stroke-width="2" marker-end="url(#arrow)"/>
+      <text x="600" y="110" text-anchor="middle" font-size="10" fill="#718096">一括承認</text>
+
+      <!-- Box 4: 役員 -->
+      <rect x="620" y="60" width="160" height="120" rx="10" fill="#faf5ff" stroke="#805ad5" stroke-width="2"/>
+      <text x="700" y="92" text-anchor="middle" font-size="11" fill="#718096" font-weight="600">役員</text>
+      <text x="700" y="122" text-anchor="middle" font-size="15" fill="#553c9a" font-weight="700">役員審査中</text>
+      <text x="700" y="150" text-anchor="middle" font-size="11" fill="#4a5568">最終承認</text>
+      <text x="700" y="166" text-anchor="middle" font-size="11" fill="#4a5568">一括承認／否認</text>
+
+      <line x1="782" y1="120" x2="818" y2="120" stroke="#4a5568" stroke-width="2" marker-end="url(#arrow)"/>
+      <text x="800" y="110" text-anchor="middle" font-size="10" fill="#718096">最終承認</text>
+
+      <!-- Box 5: 完全ロック -->
+      <rect x="820" y="60" width="160" height="120" rx="10" fill="#276749" stroke="#22543d" stroke-width="2"/>
+      <text x="900" y="92" text-anchor="middle" font-size="11" fill="#c6f6d5" font-weight="600">システム</text>
+      <text x="900" y="122" text-anchor="middle" font-size="15" fill="#ffffff" font-weight="700">承認完了</text>
+      <text x="900" y="150" text-anchor="middle" font-size="11" fill="#c6f6d5">🔒 編集ロック</text>
+      <text x="900" y="166" text-anchor="middle" font-size="11" fill="#c6f6d5">アーカイブ</text>
+
+      <!-- 否認時の差戻し線（破線） -->
+      <path d="M 700 180 Q 700 235 500 235 Q 300 235 300 235" fill="none" stroke="#e53e3e" stroke-width="1.5" stroke-dasharray="5,4"/>
+      <path d="M 500 180 L 500 235" fill="none" stroke="#e53e3e" stroke-width="1.5" stroke-dasharray="5,4"/>
+      <path d="M 300 235 L 300 182" fill="none" stroke="#e53e3e" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arrow-red)"/>
+      <text x="500" y="255" text-anchor="middle" font-size="11" fill="#e53e3e" font-weight="600">否認時は前段階へ差戻し（取引先・所長・部門管理者にメール通知）</text>
+    </svg>
+    <div class="flow-legend">
+      <span><span class="swatch" style="background:#f0fff4;border:1px solid #38a169"></span>取引先</span>
+      <span><span class="swatch" style="background:#fffbeb;border:1px solid #d69e2e"></span>所長</span>
+      <span><span class="swatch" style="background:#ebf8ff;border:1px solid #3182ce"></span>部門管理者</span>
+      <span><span class="swatch" style="background:#faf5ff;border:1px solid #805ad5"></span>役員</span>
+      <span><span class="swatch" style="background:#276749"></span>承認完了（ロック）</span>
     </div>
     <table>
       <tr><th>ステージ</th><th>担当</th><th>操作</th></tr>
