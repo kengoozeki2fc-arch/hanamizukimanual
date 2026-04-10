@@ -114,13 +114,37 @@
 
   <div class="card">
     <h2>🔄 一括投入のテクニック</h2>
-    <h3>SharePointのグリッドビュー編集</h3>
+
+    <h3>方法A: SharePointのグリッドビュー編集（手動）</h3>
     <ol>
       <li>リスト画面で「<strong>グリッドビューで編集</strong>」をクリック</li>
       <li>Excelからコピー＆ペーストで一括入力</li>
       <li>「終了」で保存</li>
     </ol>
 
+    <h3>方法B: 永賢組サイトのCSVエクスポート → PnP.PowerShellで自動投入（推奨）</h3>
+    <p>永賢組サイト(constructioninfo)の各リストで「<strong>Excelにエクスポート</strong>」または ExportToCSV を実行すると、CSVには <strong>ListSchema={...}（先頭行）+ データ行</strong> の両方が含まれます。Pythonでデータ部を抽出して PnP.PowerShell に流せば、スキーマ作成と同時にデータ投入も自動化できます。</p>
+
+    <p style="margin: 0.6rem 0;"><strong>仕組み</strong>:</p>
+    <ol>
+      <li>CSV をパースして <code>{"items": [{"Title": "..."}, ...]}</code> 形式の JSON に変換</li>
+      <li>PnP.PowerShell で <code>Add-PnPListItem -List "リスト名" -Values @{...}</code> を各行に対して実行</li>
+    </ol>
+
+    <p style="margin: 0.6rem 0;"><strong>サンプルコード（PowerShell）</strong>:</p>
+    <pre><code>$schema = Get-Content "schema.json" -Raw | ConvertFrom-Json
+foreach ($item in $schema.items) {
+    $values = @{}
+    foreach ($prop in $item.PSObject.Properties) {
+        $values[$prop.Name] = $prop.Value
+    }
+    Add-PnPListItem -List "社員資格" -Values $values
+}</code></pre>
+
+    <div class="alert alert-info">
+      <strong>💡 シンプルなマスタ系（社員資格・危険作業）に最適</strong><br>
+      Title列だけのシンプルなマスタリストはこの方法で1分で投入完了。Lookup を含む複雑なリスト（社員実績・OnsitePartnerRelation等）は、参照先リストの内部 ID 解決が必要なので、手動 or 拡張スクリプトで対応します。
+    </div>
   </div>
 
   <div class="card">
