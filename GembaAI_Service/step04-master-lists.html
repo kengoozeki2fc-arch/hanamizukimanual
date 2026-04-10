@@ -69,6 +69,15 @@ Set-PnPView -List "現場" -Identity $view.Id -Fields @(
   </div>
 
   <div class="card">
+    <h2>🖼 完成イメージ</h2>
+    <p>九州永賢組（顔認証用）テナントで実際にこのワークフローを実行した結果、左ナビに8リストが並びます:</p>
+    <figure class="list-screenshot">
+      <img src="screenshots/00_site_home.png" alt="kyushu-nagaken-face サイトTOP">
+      <figcaption>「九州永賢組（顔認証用）」サイト TOP — 左ナビに作成した8リスト全てが並んでいる</figcaption>
+    </figure>
+  </div>
+
+  <div class="card">
     <h2>📋 作成するリスト一覧</h2>
     <table>
       <tr><th>#</th><th>表示名</th><th>物理リスト名</th><th>主な用途</th></tr>
@@ -91,6 +100,10 @@ Set-PnPView -List "現場" -Identity $view.Id -Fields @(
   <div class="card">
     <h2>1️⃣ 現場（OnsiteMaster）</h2>
     <p>現場の基本情報を管理するマスタ。</p>
+    <figure class="list-screenshot">
+      <img src="screenshots/01_OnsiteMaster.png" alt="現場リスト 完成画面">
+      <figcaption>九州永賢組 (kyushu-nagaken-face) サイトでの実際の表示</figcaption>
+    </figure>
     <table>
       <tr><th>表示名</th><th>内部名</th><th>型</th><th>必須</th><th>備考</th></tr>
       <tr><td>現場名称</td><td><code>Title</code></td><td>1行テキスト(255)</td><td>✓</td><td>EnforceUniqueValues=TRUE / Indexed=TRUE</td></tr>
@@ -110,6 +123,10 @@ Set-PnPView -List "現場" -Identity $view.Id -Fields @(
   <div class="card">
     <h2>2️⃣ 協力業者（PartnerMaster）</h2>
     <p>協力業者の会社情報・許可情報・保険加入情報を管理するマスタ。</p>
+    <figure class="list-screenshot">
+      <img src="screenshots/02_PartnerMaster.png" alt="協力業者リスト 完成画面">
+      <figcaption>九州永賢組サイトでの実際の表示（19列のカスタム列が並ぶ）</figcaption>
+    </figure>
     <table>
       <tr><th>表示名</th><th>内部名</th><th>型</th><th>必須</th><th>選択肢</th></tr>
       <tr><td>協力業者名称</td><td><code>Title</code></td><td>1行テキスト(255)</td><td>✓</td><td></td></tr>
@@ -137,6 +154,10 @@ Set-PnPView -List "現場" -Identity $view.Id -Fields @(
   <div class="card">
     <h2>3️⃣ 現場協力業者紐付け（OnsitePartnerRelation）</h2>
     <p>現場×協力業者の紐付け＋施工体制ツリー（自己参照で1次〜N次を表現）。</p>
+    <figure class="list-screenshot">
+      <img src="screenshots/03_OnsitePartnerRelation.png" alt="現場協力業者紐付けリスト 完成画面">
+      <figcaption>Lookup列3つ（現場/協力業者/上位協力業者の自己参照）</figcaption>
+    </figure>
     <table>
       <tr><th>表示名</th><th>内部名</th><th>型</th><th>必須</th><th>備考</th></tr>
       <tr><td>タイトル</td><td><code>Title</code></td><td>1行テキスト(255)</td><td></td><td>任意ラベル</td></tr>
@@ -159,6 +180,10 @@ Set-PnPView -List "現場" -Identity $view.Id -Fields @(
   <div class="card">
     <h2>4️⃣ 社員（EmployeeMaster）</h2>
     <p>テナント社員の基本情報・権限・資格情報。資格は3スロット固定実装。</p>
+    <figure class="list-screenshot">
+      <img src="screenshots/07_EmployeeMaster.png" alt="社員リスト 完成画面">
+      <figcaption>20件投入済み・Lookup×3（社員資格3スロット）+ MultiChoice（権限ロール）</figcaption>
+    </figure>
     <table>
       <tr><th>表示名</th><th>内部名</th><th>型</th><th>必須</th><th>選択肢/備考</th></tr>
       <tr><td>氏名</td><td><code>Title</code></td><td>1行テキスト(255)</td><td>✓</td><td></td></tr>
@@ -189,6 +214,10 @@ Set-PnPView -List "現場" -Identity $view.Id -Fields @(
   <div class="card">
     <h2>5️⃣ 社員資格（EmployeeQualificationMaster）</h2>
     <p>社員資格名のマスタ（シンプルなマスタテーブル）。</p>
+    <figure class="list-screenshot">
+      <img src="screenshots/04_EmployeeQualificationMaster.png" alt="社員資格マスタ 完成画面">
+      <figcaption>9件投入済み（一級建築施工管理技士〜一級土木施工管理技士）</figcaption>
+    </figure>
     <table>
       <tr><th>表示名</th><th>内部名</th><th>型</th><th>必須</th><th>備考</th></tr>
       <tr><td>資格名称</td><td><code>Title</code></td><td>1行テキスト(255)</td><td>✓</td><td>例: 一級建築施工管理技士</td></tr>
@@ -199,6 +228,10 @@ Set-PnPView -List "現場" -Identity $view.Id -Fields @(
   <div class="card">
     <h2>6️⃣ 社員実績（EmployeeAchievement）</h2>
     <p>社員と現場の紐付け＋担当工事を管理する実績テーブル。</p>
+    <figure class="list-screenshot">
+      <img src="screenshots/08_EmployeeAchievement.png" alt="社員実績リスト 完成画面">
+      <figcaption>19件投入済み・Lookup×2（社員/現場）</figcaption>
+    </figure>
     <table>
       <tr><th>表示名</th><th>内部名</th><th>型</th><th>必須</th><th>備考</th></tr>
       <tr><td>タイトル</td><td><code>Title</code></td><td>1行テキスト(255)</td><td></td><td>任意ラベル</td></tr>
@@ -213,6 +246,10 @@ Set-PnPView -List "現場" -Identity $view.Id -Fields @(
   <div class="card">
     <h2>7️⃣ 危険作業（RiskyWorkMaster）</h2>
     <p>KY活動で選択する危険作業のマスタ（シンプルテーブル）。</p>
+    <figure class="list-screenshot">
+      <img src="screenshots/05_RiskyWorkMaster.png" alt="危険作業マスタ 完成画面">
+      <figcaption>23件投入済み（材料荷降ろし時のつり荷落下〜重機操作）</figcaption>
+    </figure>
     <table>
       <tr><th>表示名</th><th>内部名</th><th>型</th><th>必須</th><th>備考</th></tr>
       <tr><td>危険作業</td><td><code>Title</code></td><td>1行テキスト(255)</td><td>✓</td><td>例: 材料荷降ろしの時につり荷が落下して人に当る</td></tr>
@@ -223,6 +260,10 @@ Set-PnPView -List "現場" -Identity $view.Id -Fields @(
   <div class="card">
     <h2>8️⃣ 危険回避策（RiskAvoidanceMaster）</h2>
     <p>危険作業に対する回避策（1対多）。</p>
+    <figure class="list-screenshot">
+      <img src="screenshots/06_RiskAvoidanceMaster.png" alt="危険回避策マスタ 完成画面">
+      <figcaption>24件投入済み・Lookup→危険作業（ID解決済み）</figcaption>
+    </figure>
     <table>
       <tr><th>表示名</th><th>内部名</th><th>型</th><th>必須</th><th>備考</th></tr>
       <tr><td>危険回避策</td><td><code>Title</code></td><td>1行テキスト(255)</td><td>✓</td><td>例: 苫で合図しつつ荷囲下の人払いをする</td></tr>

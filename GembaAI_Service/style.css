@@ -375,6 +375,30 @@ footer {
   color: white;
 }
 
+.list-screenshot {
+  margin: 1rem 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f8fafd;
+  text-align: center;
+}
+.list-screenshot img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  cursor: zoom-in;
+}
+.list-screenshot figcaption {
+  font-size: 0.85rem;
+  color: var(--muted);
+  padding: 0.5rem 1rem;
+  background: #fff;
+  border-top: 1px solid var(--border);
+  text-align: left;
+}
+
 .role-badges {
   margin-top: 0.7rem;
   padding-top: 0.6rem;

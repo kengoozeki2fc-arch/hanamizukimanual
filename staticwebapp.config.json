@@ -41,6 +41,7 @@
       "/nagaken/*.html",
       "/GembaAI_Service/*.html",
       "/GembaAI_Service/*.css",
+      "/GembaAI_Service/screenshots/*.png",
       "/kensetsu-invoice/*.html",
       "/kensetsu-invoice/*.css",
       "/kensetsu-invoice/*.js",
