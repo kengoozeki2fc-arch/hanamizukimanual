@@ -429,58 +429,10 @@
     <div class="section-body">
       <p>本章は <strong>システム管理者ロール</strong> が行う、システム全体の初期整備作業です。永賢組テナント（ClientID=1）を新規開設するとき、または大規模な構成変更を行うときの手順を説明します。</p>
 
-      <h3 class="sub">2-1. Azure環境の確認</h3>
-      <div class="step-list">
-        <div class="step-card">
-          <div class="step-number">STEP<span>1</span></div>
-          <div class="step-content">
-            <h3>サブスクリプション・リソースグループの確認</h3>
-            <ul>
-              <li>Subscription: <code>general-con-face-recognition</code></li>
-              <li>Tenant: <code>child-camera.com</code></li>
-              <li>RG: <code>RG-PROD-NAGAKEN</code>（管理画面系）／<code>entryexit-prod-rg</code>（顔認証API系）</li>
-            </ul>
-          </div>
-        </div>
-        <div class="step-card">
-          <div class="step-number">STEP<span>2</span></div>
-          <div class="step-content">
-            <h3>Web App・Function App・SQL DB 稼働確認</h3>
-            <ul>
-              <li><code>app-prod-ngkn-system</code>（face.gemba-ai.cloud）</li>
-              <li><code>entryexit-prod-func</code>（顔認証API）</li>
-              <li><code>sqldb-prod-nagaken</code>（サーバーレス・60分でauto pause）</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <h3 class="sub">2-2. ClientMaster の登録</h3>
-      <div class="step-list">
-        <div class="step-card">
-          <div class="step-number">STEP<span>1</span></div>
-          <div class="step-content">
-            <h3>DBに新規テナントレコードを作成</h3>
-            <ul>
-              <li>ClientID（連番）／会社名／SharePoint SiteCollectionURL</li>
-              <li>ブランディング情報（ロゴ・カラー）を設定</li>
-            </ul>
-          </div>
-        </div>
-        <div class="step-card">
-          <div class="step-number">STEP<span>2</span></div>
-          <div class="step-content">
-            <h3>JWT allowedClients 許可リストに追加</h3>
-            <ul>
-              <li>Goバイナリ <code>face_identity_utility</code> 内の <code>main.allowedClients</code> に追記</li>
-              <li>再ビルド＆Blob <code>faceidentity</code> コンテナに再アップロード</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div class="important">
-        <div class="imp-title">⚠ allowedClients はハードコードです</div>
-        新規テナント追加時はGoバイナリ再ビルド＋Blob再アップロードが必須。環境変数化は未対応（改善候補）。
+      <h3 class="sub">2-1. Azure環境の確認 ／ 2-2. ClientMasterの登録</h3>
+      <div class="info">
+        <strong>この2項目は クラウドパワー株式会社の保守範囲</strong> で設定を行います。<br>
+        新規テナント追加・Azure構成変更・ClientMaster追加が必要になった場合は、クラウドパワー株式会社までご連絡ください。
       </div>
 
       <h3 class="sub">2-3. 本社管理者アカウントの発行</h3>
