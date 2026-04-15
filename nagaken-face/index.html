@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>顔認証 初期登録 操作手順書｜株式会社永賢組</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #222;
+      background: #f5f5f5;
+    }
+
+    /* ===== 表紙ヘッダー ===== */
+    .cover {
+      background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%);
+      color: #fff;
+      text-align: center;
+      padding: 60px 20px 50px;
+    }
+    .cover .label {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.5);
+      border-radius: 4px;
+      padding: 4px 16px;
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      margin-bottom: 18px;
+    }
+    .cover h1 {
+      font-size: clamp(22px, 4vw, 34px);
+      font-weight: 700;
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
+    .cover h1 span { display: block; font-size: 0.65em; font-weight: 400; opacity: 0.85; margin-top: 6px; }
+    .cover .meta { margin-top: 24px; font-size: 14px; opacity: 0.85; }
+
+    /* ===== 目次ナビ ===== */
+    .toc { background: #fff; border-bottom: 3px solid #2a6496; padding: 20px 0; }
+    .toc ul {
+      max-width: 900px; margin: 0 auto; padding: 0 20px;
+      list-style: none; display: flex; flex-wrap: wrap; gap: 6px 16px;
+    }
+    .toc ul li a {
+      color: #2a6496; text-decoration: none; font-size: 13px;
+      padding: 4px 8px; border-radius: 4px; transition: background 0.2s;
+    }
+    .toc ul li a:hover { background: #e8f0fa; }
+
+    /* ===== メインコンテンツ ===== */
+    main { max-width: 900px; margin: 30px auto; padding: 0 16px 60px; }
+
+    /* ===== セクション ===== */
+    section {
+      background: #fff; border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      margin-bottom: 32px; overflow: hidden;
+    }
+    .section-header {
+      background: #1a3a5c; color: #fff; padding: 14px 24px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .section-header .ch {
+      font-size: 12px; background: rgba(255,255,255,0.2);
+      border-radius: 3px; padding: 2px 8px;
+      letter-spacing: 0.05em; white-space: nowrap;
+    }
+    .section-header h2 { font-size: 18px; font-weight: 700; }
+    .section-body { padding: 24px; }
+
+    /* ===== ロール別カード ===== */
+    .role-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 16px 0;
+    }
+    @media (max-width: 700px) { .role-grid { grid-template-columns: 1fr; } }
+    .role-card {
+      border: 1px solid #d0d7e0;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fafcff;
+    }
+    .role-card .role-title {
+      background: #2a6496; color: #fff;
+      padding: 8px 12px; font-size: 14px; font-weight: 700;
+      text-align: center;
+    }
+    .role-card .role-body { padding: 12px 14px; font-size: 13px; }
+    .role-card .role-body .who { color: #1a3a5c; font-weight: 700; margin-bottom: 6px; }
+
+    /* ===== フロー図 ===== */
+    .flow {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      margin: 16px 0; align-items: stretch;
+    }
+    .flow .box {
+      flex: 1 1 200px;
+      background: #e8f0fa; border: 1px solid #2a6496;
+      border-radius: 6px; padding: 12px;
+      font-size: 13px; text-align: center;
+    }
+    .flow .box strong { display: block; color: #1a3a5c; margin-bottom: 4px; }
+    .flow .arrow {
+      display: flex; align-items: center; justify-content: center;
+      color: #2a6496; font-size: 20px;
+    }
+    @media (max-width: 700px) { .flow .arrow { transform: rotate(90deg); } }
+
+    /* ===== 注意・ポイントボックス ===== */
+    .notice {
+      background: #fff8e1; border-left: 4px solid #f59f00;
+      border-radius: 0 6px 6px 0; padding: 12px 16px;
+      margin: 12px 0; font-size: 14px;
+    }
+    .notice strong { color: #c77b00; }
+
+    .info {
+      background: #e8f0fa; border-left: 4px solid #2a6496;
+      border-radius: 0 6px 6px 0; padding: 12px 16px;
+      margin: 12px 0; font-size: 14px;
+    }
+
+    .important {
+      background: #fdecea; border: 1px solid #f5c6c0;
+      border-left: 4px solid #e53935;
+      border-radius: 0 6px 6px 0; padding: 14px 18px;
+      margin: 16px 0;
+    }
+    .important .imp-title {
+      color: #c62828; font-weight: 700;
+      margin-bottom: 8px; font-size: 15px;
+    }
+
+    /* ===== 準備リスト ===== */
+    ul.checklist { list-style: none; margin: 10px 0; }
+    ul.checklist li { padding: 4px 0 4px 28px; position: relative; }
+    ul.checklist li::before {
+      content: "✔"; position: absolute; left: 0;
+      color: #2a6496; font-weight: 700;
+    }
+
+    /* ===== STEPカード ===== */
+    .step-list { margin: 16px 0; display: flex; flex-direction: column; gap: 14px; }
+    .step-card {
+      display: flex; gap: 16px; align-items: flex-start;
+      border: 1px solid #d0d7e0; border-radius: 8px;
+      padding: 16px; background: #fafcff;
+    }
+    .step-number {
+      flex-shrink: 0; width: 48px; height: 48px;
+      background: #2a6496; color: #fff; border-radius: 50%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; line-height: 1.2;
+    }
+    .step-number span { font-size: 20px; }
+    .step-content h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; color: #1a3a5c; }
+    .step-content ul { list-style: none; padding: 0; }
+    .step-content ul li {
+      padding: 2px 0 2px 18px; position: relative; font-size: 14px;
+    }
+    .step-content ul li::before {
+      content: "▶"; position: absolute; left: 0;
+      color: #2a6496; font-size: 10px; top: 5px;
+    }
+
+    /* ===== スクリーンショットプレースホルダ ===== */
+    .screenshot-placeholder {
+      background: #f0f4f8;
+      border: 2px dashed #a0b4c8;
+      border-radius: 6px;
+      padding: 28px 16px;
+      margin: 12px 0;
+      text-align: center;
+      color: #6b7d91;
+      font-size: 13px;
+    }
+    .screenshot-placeholder .ph-icon { font-size: 28px; margin-bottom: 8px; }
+    .screenshot-placeholder .ph-label { font-weight: 700; color: #2a6496; margin-bottom: 4px; }
+
+    /* ===== URL表示 ===== */
+    .url-box {
+      background: #1a3a5c; color: #7dd3fc;
+      font-family: "Courier New", monospace; font-size: 14px;
+      padding: 12px 18px; border-radius: 6px;
+      margin: 12px 0; word-break: break-all;
+    }
+    .url-box a { color: #7dd3fc; }
+
+    /* ===== URLボタン ===== */
+    .url-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: #1d4ed8; color: #fff;
+      font-size: 15px; font-weight: bold;
+      padding: 14px 24px; border-radius: 8px;
+      margin: 12px 0; text-decoration: none;
+      transition: background 0.2s; cursor: pointer;
+    }
+    .url-btn:hover { background: #1e40af; }
+    .url-btn .btn-icon { font-size: 18px; }
+    .url-btn .btn-sub {
+      display: block; font-size: 11px; font-weight: normal;
+      opacity: 0.8; margin-top: 2px;
+    }
+
+    /* ===== トラブル対処テーブル ===== */
+    .trouble-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 12px 0; }
+    .trouble-table th {
+      background: #1a3a5c; color: #fff;
+      padding: 10px 14px; text-align: left;
+    }
+    .trouble-table td {
+      border: 1px solid #d0d7e0;
+      padding: 10px 14px; vertical-align: top;
+    }
+    .trouble-table tr:nth-child(even) td { background: #f7faff; }
+    .trouble-table td:first-child { font-weight: 600; color: #c62828; width: 40%; }
+
+    /* ===== 入力項目テーブル ===== */
+    .field-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 12px 0; }
+    .field-table th {
+      background: #1a3a5c; color: #fff;
+      padding: 8px 12px; text-align: center;
+    }
+    .field-table td {
+      border: 1px solid #d0d7e0; padding: 8px 12px; vertical-align: top;
+    }
+    .field-table tr:nth-child(even) td { background: #f7faff; }
+    .field-table td:first-child { text-align: center; width: 44px; font-weight: 600; color: #555; }
+    .badge-req {
+      display: inline-block; background: #e53935; color: #fff;
+      border-radius: 3px; padding: 1px 6px;
+      font-size: 12px; font-weight: 700;
+    }
+    .badge-opt {
+      display: inline-block; background: #78909c; color: #fff;
+      border-radius: 3px; padding: 1px 6px; font-size: 12px;
+    }
+
+    /* ===== お問い合わせ ===== */
+    .contact-box {
+      background: #e8f0fa; border-radius: 8px;
+      padding: 20px 24px; display: flex;
+      gap: 24px; flex-wrap: wrap;
+    }
+    .contact-item { font-size: 14px; }
+    .contact-item .label { font-weight: 700; color: #1a3a5c; font-size: 12px; margin-bottom: 4px; }
+
+    /* ===== フッター ===== */
+    footer {
+      text-align: center; font-size: 12px;
+      color: #888; padding: 20px;
+    }
+
+    /* 見出し */
+    h3.sub {
+      font-size: 15px; color: #1a3a5c;
+      margin: 20px 0 8px;
+      border-bottom: 2px solid #d0d7e0; padding-bottom: 4px;
+    }
+    h4.sub2 {
+      font-size: 14px; color: #2a6496;
+      margin: 16px 0 6px;
+    }
+
+    p { margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+
+<!-- パスワードゲート -->
+<div id="pw-gate" style="display:none; position:fixed; inset:0; background:#1a3a5c; z-index:9999; align-items:center; justify-content:center;">
+  <div style="background:#fff; border-radius:10px; padding:40px 36px; width:320px; box-shadow:0 8px 32px rgba(0,0,0,0.3); text-align:center;">
+    <div style="font-size:28px; margin-bottom:8px;">🔒</div>
+    <div style="font-size:18px; font-weight:700; color:#1a3a5c; margin-bottom:4px;">株式会社永賢組</div>
+    <div style="font-size:13px; color:#666; margin-bottom:24px;">顔認証 初期登録手順書　閲覧認証</div>
+    <input id="pw-id" type="text" placeholder="ID" autocomplete="username"
+      style="width:100%; padding:10px 12px; border:1px solid #d0d7e0; border-radius:6px; font-size:15px; margin-bottom:10px;">
+    <input id="pw-pass" type="password" placeholder="パスワード" autocomplete="current-password"
+      style="width:100%; padding:10px 12px; border:1px solid #d0d7e0; border-radius:6px; font-size:15px; margin-bottom:16px;">
+    <div id="pw-err" style="color:#e53935; font-size:13px; margin-bottom:10px; display:none;">IDまたはパスワードが違います</div>
+    <button onclick="checkPw()"
+      style="width:100%; background:#1a3a5c; color:#fff; border:none; border-radius:6px; padding:12px; font-size:15px; font-weight:700; cursor:pointer;">
+      ログイン
+    </button>
+  </div>
+</div>
+
+<script>
+  (function() {
+    if (sessionStorage.getItem('nagaken_face_auth') === '1') return;
+    document.body.style.overflow = 'hidden';
+    document.getElementById('pw-gate').style.display = 'flex';
+    document.getElementById('pw-pass').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') checkPw();
+    });
+    document.getElementById('pw-id').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') document.getElementById('pw-pass').focus();
+    });
+  })();
+
+  function checkPw() {
+    var id = document.getElementById('pw-id').value;
+    var pw = document.getElementById('pw-pass').value;
+    if (id === 'nagaken-face' && pw === 'NagakenFace1234') {
+      sessionStorage.setItem('nagaken_face_auth', '1');
+      document.getElementById('pw-gate').style.display = 'none';
+      document.body.style.overflow = '';
+    } else {
+      document.getElementById('pw-err').style.display = 'block';
+      document.getElementById('pw-pass').value = '';
+      document.getElementById('pw-pass').focus();
+    }
+  }
+</script>
+
+<!-- 表紙 -->
+<div class="cover">
+  <div class="label">建築現場の顔認証入退場システム</div>
+  <h1>顔認証 初期登録 操作手順書<span>株式会社永賢組　管理者・現場監督・作業員　共通版</span></h1>
+  <div class="meta">作成日：2026年4月　／　対象システム：face.gemba-ai.cloud</div>
+</div>
+
+<!-- 目次ナビ -->
+<nav class="toc">
+  <ul>
+    <li><a href="#ch1">第1章 はじめに</a></li>
+    <li><a href="#ch2">第2章 管理者の初期セットアップ</a></li>
+    <li><a href="#ch3">第3章 現場監督の初期セットアップ</a></li>
+    <li><a href="#ch4">第4章 作業員の初期登録</a></li>
+    <li><a href="#ch5">第5章 よくあるトラブル</a></li>
+    <li><a href="#ch6">第6章 お問い合わせ</a></li>
+  </ul>
+</nav>
+
+<main>
+
+  <!-- 第1章 -->
+  <section id="ch1">
+    <div class="section-header">
+      <span class="ch">第1章</span>
+      <h2>はじめに</h2>
+    </div>
+    <div class="section-body">
+      <p>本手順書は、建築現場の顔認証入退場管理システム「face.gemba-ai.cloud」の <strong>初期登録作業</strong> を、関係者ごとに分けて説明したものです。</p>
+
+      <h3 class="sub">対象者（3つのロール）</h3>
+      <div class="role-grid">
+        <div class="role-card">
+          <div class="role-title">① 管理者</div>
+          <div class="role-body">
+            <div class="who">本社・システム担当</div>
+            現場マスター、協力会社、NFCタグの大元を登録する人。第2章を担当。
+          </div>
+        </div>
+        <div class="role-card">
+          <div class="role-title">② 現場監督</div>
+          <div class="role-body">
+            <div class="who">各現場の担当監督</div>
+            担当現場の確認、NFCカードの配布、作業員への案内。第3章を担当。
+          </div>
+        </div>
+        <div class="role-card">
+          <div class="role-title">③ 作業員</div>
+          <div class="role-body">
+            <div class="who">協力会社の職人さん</div>
+            個人情報・顔写真・資格者証・NFCタグの本人登録。第4章を担当。
+          </div>
+        </div>
+      </div>
+
+      <h3 class="sub">初期登録の全体フロー</h3>
+      <div class="flow">
+        <div class="box"><strong>STEP 1</strong>管理者が現場・協力会社を登録</div>
+        <div class="arrow">▶</div>
+        <div class="box"><strong>STEP 2</strong>現場監督がNFCカードを準備</div>
+        <div class="arrow">▶</div>
+        <div class="box"><strong>STEP 3</strong>作業員が本人情報・顔写真を登録</div>
+      </div>
+
+      <div class="info">登録先サイトは <strong>face.gemba-ai.cloud</strong>（管理画面）と <strong>SharePointサイト</strong> の2系統です。どちらに何を登録するかは各章で明示します。</div>
+
+      <h3 class="sub">事前に準備するもの</h3>
+      <ul class="checklist">
+        <li>管理画面ログインアカウント（管理者・現場監督）</li>
+        <li>SharePointサイトへのアクセス権（管理者のみ）</li>
+        <li>NFCカード（NTAG 424 DNA・入場用／退場用のペア）</li>
+        <li>スマートフォン or タブレット（作業員の顔写真・資格者証撮影用）</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 第2章 -->
+  <section id="ch2">
+    <div class="section-header">
+      <span class="ch">第2章</span>
+      <h2>管理者（本社）の初期セットアップ</h2>
+    </div>
+    <div class="section-body">
+      <p>本章は <strong>管理者ロール</strong> が行う作業です。新しい現場を開設するとき、または協力会社を追加するときの手順を説明します。</p>
+
+      <h3 class="sub">2-1. face.gemba-ai.cloud 管理画面にログイン</h3>
+      <div class="step-list">
+        <div class="step-card">
+          <div class="step-number">STEP<span>1</span></div>
+          <div class="step-content">
+            <h3>管理画面URLを開く</h3>
+            <a class="url-btn" href="https://face.gemba-ai.cloud/" target="_blank" rel="noopener">
+              <span class="btn-icon">🔗</span>
+              管理画面を開く
+              <span class="btn-sub">https://face.gemba-ai.cloud/</span>
+            </a>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">STEP<span>2</span></div>
+          <div class="step-content">
+            <h3>管理者アカウントでログイン</h3>
+            <ul>
+              <li>配布されたID・パスワードを入力</li>
+              <li>ClientID＝1（株式会社永賢組）のテナントに接続されることを確認</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="screenshot-placeholder">
+        <div class="ph-icon">📷</div>
+        <div class="ph-label">スクリーンショット貼付予定</div>
+        管理画面ログイン画面
+      </div>
+
+      <h3 class="sub">2-2. 現場（Onsite）の新規追加</h3>
+      <div class="step-list">
+        <div class="step-card">
+          <div class="step-number">STEP<span>1</span></div>
+          <div class="step-content">
+            <h3>現場管理メニューを開く</h3>
+            <ul>
+              <li>サイドメニューから「現場管理」または相当メニューを選択</li>
+              <li>「新規追加」ボタンを押す</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">STEP<span>2</span></div>
+          <div class="step-content">
+            <h3>現場情報を入力</h3>
+            <ul>
+              <li>現場名（工事件名）</li>
+              <li>現場所在地</li>
+              <li>工期（着工日・完工予定日）</li>
+              <li>担当監督（現場監督の氏名／ユーザー）</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">STEP<span>3</span></div>
+          <div class="step-content">
+            <h3>保存</h3>
+            <ul>
+              <li>「保存」を押して登録完了</li>
+              <li>自動で発番される <strong>OnsiteID</strong> を控えておく（第4章の作業員登録時に使用）</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="screenshot-placeholder">
+        <div class="ph-icon">📷</div>
+        <div class="ph-label">スクリーンショット貼付予定</div>
+        現場新規追加画面
+      </div>
+
+      <h3 class="sub">2-3. 協力会社の追加・現場への紐付け</h3>
+      <div class="step-list">
+        <div class="step-card">
+          <div class="step-number">STEP<span>1</span></div>
+          <div class="step-content">
+            <h3>協力会社マスターに登録</h3>
+            <ul>
+              <li>「協力会社管理」→「新規追加」</li>
+              <li>会社名・代表者・連絡先・所在地を入力</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">STEP<span>2</span></div>
+          <div class="step-content">
+            <h3>協力会社を該当現場に紐付け</h3>
+            <ul>
+              <li>2-2で作成した現場の詳細画面を開く</li>
+              <li>「協力会社を追加」から該当会社を選択</li>
+              <li>紐付け保存時に <strong>OnsitePartnerRelationID</strong> が発番される</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="notice"><strong>ポイント：</strong> 同じ協力会社でも、現場ごとに紐付けが必要です。現場Aで登録済の会社も、現場Bでは改めて紐付けてください。</div>
+
+      <h3 class="sub">2-4. SharePointリストで現場マスターを登録</h3>
+      <p>現場の真のマスターは SharePointリスト側に持っています。管理画面での登録とセットで必ず実施してください。</p>
+      <div class="step-list">
+        <div class="step-card">
+          <div class="step-number">STEP<span>1</span></div>
+          <div class="step-content">
+            <h3>SharePointサイトを開く</h3>
+            <ul>
+              <li>社内ポータルから「永賢組 顔認証システム用リスト」サイトへ</li>
+              <li>「現場マスター」リストを開く</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">STEP<span>2</span></div>
+          <div class="step-content">
+            <h3>新規アイテム追加</h3>
+            <ul>
+              <li>「新規」ボタンから行を追加</li>
+              <li>OnsiteID（管理画面で発番された番号）</li>
+              <li>現場名・所在地・工期・担当監督</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">STEP<span>3</span></div>
+          <div class="step-content">
+            <h3>「協力会社リスト」にも同期</h3>
+            <ul>
+              <li>OnsitePartnerRelationID と協力会社名を記入</li>
+              <li>管理画面と値が一致していることを確認</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="screenshot-placeholder">
+        <div class="ph-icon">📷</div>
+        <div class="ph-label">スクリーンショット貼付予定</div>
+        SharePointリスト登録画面
+      </div>
+      <div class="important">
+        <div class="imp-title">⚠ 管理画面とSharePointの値は必ず一致させてください</div>
+        OnsiteID・OnsitePartnerRelationID がずれると、現場での顔認証時に「紐付けなし」エラーで入場できなくなります。
+      </div>
+    </div>
+  </section>
+
+  <!-- 第3章 -->
+  <section id="ch3">
+    <div class="section-header">
+      <span class="ch">第3章</span>
+      <h2>現場監督の初期セットアップ</h2>
+    </div>
+    <div class="section-body">
+      <p>本章は <strong>現場監督ロール</strong> が現場着工前〜着工直後に行う作業です。</p>
+
+      <h3 class="sub">3-1. 管理画面ログインと担当現場の確認</h3>
+      <div class="step-list">
+        <div class="step-card">
+          <div class="step-number">STEP<span>1</span></div>
+          <div class="step-content">
+            <h3>管理画面にログイン</h3>
+            <ul>
+              <li>本社から配布された現場監督用アカウントでログイン</li>
+              <li>「担当現場一覧」に自分の現場が表示されることを確認</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">STEP<span>2</span></div>
+          <div class="step-content">
+            <h3>現場情報を確認</h3>
+            <ul>
+              <li>OnsiteID を控える（作業員から問い合わせが来たときに必要）</li>
+              <li>紐付いている協力会社一覧を確認</li>
+              <li>不足があれば本社管理者に追加依頼</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="sub">3-2. NFCカード（入場・退場ペア）の配布準備</h3>
+      <div class="step-list">
+        <div class="step-card">
+          <div class="step-number">STEP<span>1</span></div>
+          <div class="step-content">
+            <h3>現場に届いたNFCカードを受け取る</h3>
+            <ul>
+              <li>本社から「入場用」「退場用」ペアで配布される</li>
+              <li>カード裏面のシリアルに傷・欠損がないか確認</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">STEP<span>2</span></div>
+          <div class="step-content">
+            <h3>現場リーダー位置に設置</h3>
+            <ul>
+              <li>入場リーダー（ゲート入口）／退場リーダー（ゲート出口）に対応カードを固定</li>
+              <li>電源・ネットワーク疎通確認</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">STEP<span>3</span></div>
+          <div class="step-content">
+            <h3>テスト入退場</h3>
+            <ul>
+              <li>自分のアカウントで1往復、入場→退場のテスト</li>
+              <li>管理画面の「入退場記録」に2件分ログが残ることを確認</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="notice"><strong>ポイント：</strong> NFCカードは <strong>NXP NTAG 424 DNA（SUN認証対応）</strong> を使用しています。他社製カードは動作しません。</div>
+
+      <h3 class="sub">3-3. 作業員への登録案内</h3>
+      <p>着工時・新規入場者がいるときは、以下の案内を作業員に渡してください。</p>
+      <div class="step-list">
+        <div class="step-card">
+          <div class="step-number">STEP<span>1</span></div>
+          <div class="step-content">
+            <h3>登録URLを作業員に伝える</h3>
+            <ul>
+              <li>作業員用 登録URL（QRコードでの配布推奨）</li>
+              <li>OnsiteID（現場番号）を伝える</li>
+              <li>所属する協力会社名を確認</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">STEP<span>2</span></div>
+          <div class="step-content">
+            <h3>初回登録できる場所・時間を案内</h3>
+            <ul>
+              <li>基本は現場事務所のタブレットで登録</li>
+              <li>スマホでも登録可能（本人スマホ・自宅でも可）</li>
+              <li>初回ログイン後、顔写真と資格者証の撮影が必要と伝える</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="screenshot-placeholder">
+        <div class="ph-icon">📷</div>
+        <div class="ph-label">スクリーンショット貼付予定</div>
+        作業員配布用QRコード・案内チラシ
+      </div>
+    </div>
+  </section>
+
+  <!-- 第4章 -->
+  <section id="ch4">
+    <div class="section-header">
+      <span class="ch">第4章</span>
+      <h2>作業員の初期登録</h2>
+    </div>
+    <div class="section-body">
+      <p>本章は <strong>作業員ロール</strong>（協力会社の職人さん）が、現場に初めて入る前に行う登録手順です。</p>
+
+      <h3 class="sub">4-1. 登録のタイミング・場所</h3>
+      <ul class="checklist">
+        <li>現場に初めて入る日の前日〜当日朝までに完了が理想</li>
+        <li>現場事務所のタブレット／自分のスマホ／自宅PCのいずれでもOK</li>
+        <li>登録完了後、現場入口のNFCリーダーで入場可能になる</li>
+      </ul>
+
+      <h3 class="sub">4-2. 登録ページにアクセス</h3>
+      <a class="url-btn" href="https://face.gemba-ai.cloud/site-entry?ClientID=1" target="_blank" rel="noopener">
+        <span class="btn-icon">🔗</span>
+        作業員登録ページを開く
+        <span class="btn-sub">https://face.gemba-ai.cloud/site-entry?ClientID=1</span>
+      </a>
+
+      <h3 class="sub">4-3. 初回ログイン（電話番号入力）</h3>
+      <div class="step-list">
+        <div class="step-card">
+          <div class="step-number">STEP<span>1</span></div>
+          <div class="step-content">
+            <h3>電話番号を入力</h3>
+            <ul>
+              <li>本人の携帯電話番号（ハイフン無し／数字のみ）</li>
+              <li>携帯を持っていない場合は空欄のまま「確認」でスキップ可</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="screenshot-placeholder">
+        <div class="ph-icon">📷</div>
+        <div class="ph-label">スクリーンショット貼付予定</div>
+        初回ログイン画面（電話番号入力）
+      </div>
+
+      <h3 class="sub">4-4. 個人情報の入力</h3>
+      <p>以下の項目を入力します。※マークは必須項目です。</p>
+      <table class="field-table">
+        <thead>
+          <tr><th>#</th><th>項目</th><th>必須</th><th>入力例・注意</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>氏名</td><td><span class="badge-req">必須</span></td><td>戸籍上の氏名（漢字）</td></tr>
+          <tr><td>2</td><td>フリガナ</td><td><span class="badge-req">必須</span></td><td>全角カタカナ</td></tr>
+          <tr><td>3</td><td>生年月日</td><td><span class="badge-req">必須</span></td><td>yyyy/mm/dd 形式</td></tr>
+          <tr><td>4</td><td>性別</td><td><span class="badge-req">必須</span></td><td>男／女／その他</td></tr>
+          <tr><td>5</td><td>郵便番号</td><td><span class="badge-req">必須</span></td><td>ハイフン有り（例: 456-0012）</td></tr>
+          <tr><td>6</td><td>住所</td><td><span class="badge-req">必須</span></td><td>都道府県から番地まで</td></tr>
+          <tr><td>7</td><td>電話番号</td><td><span class="badge-opt">任意</span></td><td>固定・携帯どちらでも可</td></tr>
+          <tr><td>8</td><td>緊急連絡先 電話番号</td><td><span class="badge-req">必須</span></td><td>本人以外の連絡先</td></tr>
+          <tr><td>9</td><td>緊急連絡先 氏名</td><td><span class="badge-req">必須</span></td><td>家族・親族など</td></tr>
+          <tr><td>10</td><td>緊急連絡先 続柄</td><td><span class="badge-req">必須</span></td><td>父／母／配偶者／子 等</td></tr>
+          <tr><td>11</td><td>一人親方か</td><td><span class="badge-req">必須</span></td><td>はい／いいえ</td></tr>
+          <tr><td>12</td><td>外国の方か</td><td><span class="badge-req">必須</span></td><td>はい／いいえ</td></tr>
+          <tr><td>13</td><td>技能実習生か</td><td><span class="badge-req">必須</span></td><td>はい／いいえ</td></tr>
+          <tr><td>14</td><td>労災特別加入</td><td><span class="badge-req">必須</span></td><td>はい／いいえ（一人親方の場合必須）</td></tr>
+          <tr><td>15</td><td>保険加入金額</td><td><span class="badge-opt">任意</span></td><td>労災特別加入時のみ</td></tr>
+          <tr><td>16</td><td>所属取引先</td><td><span class="badge-req">必須</span></td><td>プルダウンから選択（協力会社名）</td></tr>
+          <tr><td>17</td><td>血液型</td><td><span class="badge-opt">任意</span></td><td>A／B／O／AB</td></tr>
+          <tr><td>18</td><td>直近の健康診断日</td><td><span class="badge-req">必須</span></td><td>yyyy/mm/dd</td></tr>
+        </tbody>
+      </table>
+
+      <h3 class="sub">4-5. 顔写真の登録</h3>
+      <div class="step-list">
+        <div class="step-card">
+          <div class="step-number">STEP<span>1</span></div>
+          <div class="step-content">
+            <h3>「顔写真を撮影」ボタンを押す</h3>
+            <ul>
+              <li>カメラアクセス許可を求められたら「許可」を選択</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">STEP<span>2</span></div>
+          <div class="step-content">
+            <h3>正面を向いて撮影</h3>
+            <ul>
+              <li>ヘルメット・帽子・マスク・サングラスは外す</li>
+              <li>明るい場所・背景は無地がベスト</li>
+              <li>顔がフレーム中央に収まるように</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">STEP<span>3</span></div>
+          <div class="step-content">
+            <h3>確認して保存</h3>
+            <ul>
+              <li>ブレ・逆光・顔切れがないかプレビューで確認</li>
+              <li>問題なければ「保存」</li>
+              <li>NG判定が出た場合は再撮影</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="screenshot-placeholder">
+        <div class="ph-icon">📷</div>
+        <div class="ph-label">スクリーンショット貼付予定</div>
+        顔写真登録画面
+      </div>
+      <div class="notice"><strong>ポイント：</strong> 顔写真は入退場時の顔認証に使われます。現場と同じ服装・帽子ありで撮ると、ヘルメット姿と照合できなくなることがあるため、<strong>素顔で撮影</strong>してください。</div>
+
+      <h3 class="sub">4-6. 資格者証写真の登録</h3>
+      <div class="step-list">
+        <div class="step-card">
+          <div class="step-number">STEP<span>1</span></div>
+          <div class="step-content">
+            <h3>所持している資格を選択</h3>
+            <ul>
+              <li>プルダウンから資格名を選択（例：玉掛け／フォークリフト／高所作業車 等）</li>
+              <li>該当なしの場合はスキップ可</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">STEP<span>2</span></div>
+          <div class="step-content">
+            <h3>資格者証の表面を撮影</h3>
+            <ul>
+              <li>氏名・資格名・交付日がはっきり読める状態で撮影</li>
+              <li>光の反射でラミネートが白飛びしないように注意</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">STEP<span>3</span></div>
+          <div class="step-content">
+            <h3>複数資格がある場合は繰り返し</h3>
+            <ul>
+              <li>「他の資格を追加」ボタンで資格ごとに繰り返す</li>
+              <li>全て登録後「保存」</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="screenshot-placeholder">
+        <div class="ph-icon">📷</div>
+        <div class="ph-label">スクリーンショット貼付予定</div>
+        資格者証登録画面
+      </div>
+
+      <h3 class="sub">4-7. NFCタグの本人紐付け（初回タッチ）</h3>
+      <div class="step-list">
+        <div class="step-card">
+          <div class="step-number">STEP<span>1</span></div>
+          <div class="step-content">
+            <h3>現場入口で「新規入場」リーダーにタッチ</h3>
+            <ul>
+              <li>自分のスマホNFC機能をONにしてリーダーにかざす</li>
+              <li>画面に「新規入場登録」が表示される</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">STEP<span>2</span></div>
+          <div class="step-content">
+            <h3>顔認証で本人確認</h3>
+            <ul>
+              <li>カメラに正面を向く</li>
+              <li>4-5で登録した顔写真と照合・一致すれば登録完了</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">STEP<span>3</span></div>
+          <div class="step-content">
+            <h3>以降は通常の入退場タッチ</h3>
+            <ul>
+              <li>入場時：入場リーダー／退場時：退場リーダー</li>
+              <li>タッチ＋顔認証の2段階で記録される</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="important">
+        <div class="imp-title">⚠ 顔認証が通らないときは</div>
+        照明が暗い／マスク・サングラスをしている／登録写真と体重・髪型が大きく変わった 等が原因です。現場監督に連絡して顔写真の再登録を依頼してください。
+      </div>
+    </div>
+  </section>
+
+  <!-- 第5章 -->
+  <section id="ch5">
+    <div class="section-header">
+      <span class="ch">第5章</span>
+      <h2>よくあるトラブルと対処法</h2>
+    </div>
+    <div class="section-body">
+      <table class="trouble-table">
+        <thead><tr><th>症状</th><th>対処法</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>管理画面に担当現場が表示されない</td>
+            <td>本社管理者に依頼して「現場マスター」のSharePointリストで担当監督欄に自分のアカウントが設定されているか確認してもらう。</td>
+          </tr>
+          <tr>
+            <td>作業員が登録ページを開くと「ClientID不明」エラー</td>
+            <td>URLに <code>?ClientID=1</code> が付いているかを確認。QRコードを作り直して再配布。</td>
+          </tr>
+          <tr>
+            <td>顔写真登録時に「認識できません」</td>
+            <td>明るい場所・無地背景で再撮影。マスク・ヘルメット・サングラスは外す。</td>
+          </tr>
+          <tr>
+            <td>資格者証の文字が読めない</td>
+            <td>ラミネートの反射を避けて再撮影。裏面ではなく表面を撮る。</td>
+          </tr>
+          <tr>
+            <td>NFCカードをタッチしても無反応</td>
+            <td>カードがNTAG 424 DNAか確認。リーダーの電源・ネットワークを確認。別カードでテスト。</td>
+          </tr>
+          <tr>
+            <td>入場時「紐付けなし」エラー</td>
+            <td>管理画面とSharePointで OnsiteID・OnsitePartnerRelationID が一致しているか本社管理者に確認依頼。</td>
+          </tr>
+          <tr>
+            <td>顔認証が通らない（体重・髪型変化）</td>
+            <td>現場監督から本社に「顔写真再登録」依頼。site-entryページから上書き登録可能。</td>
+          </tr>
+          <tr>
+            <td>協力会社のプルダウンに該当会社が無い</td>
+            <td>本社管理者に依頼して協力会社マスター＋現場紐付けを追加してもらう。</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 第6章 -->
+  <section id="ch6">
+    <div class="section-header">
+      <span class="ch">第6章</span>
+      <h2>お問い合わせ</h2>
+    </div>
+    <div class="section-body">
+      <p>本手順書・システムに関するお問い合わせ先：</p>
+      <div class="contact-box">
+        <div class="contact-item">
+          <div class="label">運用サポート</div>
+          建設業トータルサポート
+        </div>
+        <div class="contact-item">
+          <div class="label">担当</div>
+          大関　謙吾
+        </div>
+        <div class="contact-item">
+          <div class="label">メール</div>
+          kengoozeki.2fc@gmail.com
+        </div>
+      </div>
+      <div class="info">システム障害・緊急時は、本社システム担当（管理者）を経由して連絡してください。</div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  &copy; 2026 株式会社永賢組　／　顔認証 初期登録 操作手順書
+</footer>
+
+</body>
+</html>
