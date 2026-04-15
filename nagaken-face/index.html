@@ -77,11 +77,12 @@
     /* ===== ロール別カード ===== */
     .role-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
       margin: 16px 0;
     }
-    @media (max-width: 700px) { .role-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 1000px) { .role-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 600px) { .role-grid { grid-template-columns: 1fr; } }
     .role-card {
       border: 1px solid #d0d7e0;
       border-radius: 8px;
@@ -90,11 +91,11 @@
     }
     .role-card .role-title {
       background: #2a6496; color: #fff;
-      padding: 8px 12px; font-size: 14px; font-weight: 700;
+      padding: 8px 10px; font-size: 13px; font-weight: 700;
       text-align: center;
     }
-    .role-card .role-body { padding: 12px 14px; font-size: 13px; }
-    .role-card .role-body .who { color: #1a3a5c; font-weight: 700; margin-bottom: 6px; }
+    .role-card .role-body { padding: 10px 12px; font-size: 12.5px; line-height: 1.6; }
+    .role-card .role-body .who { color: #1a3a5c; font-weight: 700; margin-bottom: 4px; font-size: 12px; }
 
     /* ===== フロー図 ===== */
     .flow {
@@ -325,7 +326,7 @@
 <!-- 表紙 -->
 <div class="cover">
   <div class="label">建築現場の顔認証入退場システム</div>
-  <h1>顔認証 初期登録 操作手順書<span>株式会社永賢組　管理者・現場監督・作業員　共通版</span></h1>
+  <h1>顔認証 初期登録 操作手順書<span>株式会社永賢組　システム管理者・本社管理者・現場監督・協力会社・作業員　共通版</span></h1>
   <div class="meta">作成日：2026年4月　／　対象システム：face.gemba-ai.cloud</div>
 </div>
 
@@ -333,11 +334,13 @@
 <nav class="toc">
   <ul>
     <li><a href="#ch1">第1章 はじめに</a></li>
-    <li><a href="#ch2">第2章 管理者の初期セットアップ</a></li>
-    <li><a href="#ch3">第3章 現場監督の初期セットアップ</a></li>
-    <li><a href="#ch4">第4章 作業員の初期登録</a></li>
-    <li><a href="#ch5">第5章 よくあるトラブル</a></li>
-    <li><a href="#ch6">第6章 お問い合わせ</a></li>
+    <li><a href="#ch2">第2章 システム管理者</a></li>
+    <li><a href="#ch3">第3章 本社管理者</a></li>
+    <li><a href="#ch4">第4章 現場監督</a></li>
+    <li><a href="#ch5">第5章 協力会社</a></li>
+    <li><a href="#ch6">第6章 作業員の初期登録</a></li>
+    <li><a href="#ch7">第7章 よくあるトラブル</a></li>
+    <li><a href="#ch8">第8章 お問い合わせ</a></li>
   </ul>
 </nav>
 
@@ -352,38 +355,56 @@
     <div class="section-body">
       <p>本手順書は、建築現場の顔認証入退場管理システム「face.gemba-ai.cloud」の <strong>初期登録作業</strong> を、関係者ごとに分けて説明したものです。</p>
 
-      <h3 class="sub">対象者（3つのロール）</h3>
+      <h3 class="sub">対象者（5つのロール）</h3>
       <div class="role-grid">
         <div class="role-card">
-          <div class="role-title">① 管理者</div>
+          <div class="role-title">① システム管理者</div>
           <div class="role-body">
-            <div class="who">本社・システム担当</div>
-            現場マスター、協力会社、NFCタグの大元を登録する人。第2章を担当。
+            <div class="who">システム提供側</div>
+            Azure環境・SharePoint・ClientMaster・本社管理者アカウント・NFCカードの調達。第2章を担当。
           </div>
         </div>
         <div class="role-card">
-          <div class="role-title">② 現場監督</div>
+          <div class="role-title">② 本社管理者</div>
+          <div class="role-body">
+            <div class="who">永賢組 本社担当</div>
+            現場・協力会社マスターの登録、SharePointリスト同期、現場監督・協力会社アカウントの発行。第3章を担当。
+          </div>
+        </div>
+        <div class="role-card">
+          <div class="role-title">③ 現場監督</div>
           <div class="role-body">
             <div class="who">各現場の担当監督</div>
-            担当現場の確認、NFCカードの配布、作業員への案内。第3章を担当。
+            担当現場の確認、NFCカード設置、作業員への案内。第4章を担当。
           </div>
         </div>
         <div class="role-card">
-          <div class="role-title">③ 作業員</div>
+          <div class="role-title">④ 協力会社</div>
+          <div class="role-body">
+            <div class="who">協力会社の事務担当</div>
+            所属作業員リストの確認・追加、登録URLの案内。第5章を担当。
+          </div>
+        </div>
+        <div class="role-card">
+          <div class="role-title">⑤ 作業員</div>
           <div class="role-body">
             <div class="who">協力会社の職人さん</div>
-            個人情報・顔写真・資格者証・NFCタグの本人登録。第4章を担当。
+            個人情報・顔写真・資格者証・NFCタグの本人登録。第6章を担当。
           </div>
         </div>
       </div>
 
       <h3 class="sub">初期登録の全体フロー</h3>
       <div class="flow">
-        <div class="box"><strong>STEP 1</strong>管理者が現場・協力会社を登録</div>
+        <div class="box"><strong>STEP 1</strong>システム管理者が環境・アカウントを整備</div>
         <div class="arrow">▶</div>
-        <div class="box"><strong>STEP 2</strong>現場監督がNFCカードを準備</div>
+        <div class="box"><strong>STEP 2</strong>本社管理者が現場・協力会社を登録</div>
         <div class="arrow">▶</div>
-        <div class="box"><strong>STEP 3</strong>作業員が本人情報・顔写真を登録</div>
+        <div class="box"><strong>STEP 3</strong>現場監督がNFCカード設置</div>
+        <div class="arrow">▶</div>
+        <div class="box"><strong>STEP 4</strong>協力会社が所属作業員を案内</div>
+        <div class="arrow">▶</div>
+        <div class="box"><strong>STEP 5</strong>作業員が本人情報・顔写真を登録</div>
       </div>
 
       <div class="info">登録先サイトは <strong>face.gemba-ai.cloud</strong>（管理画面）と <strong>SharePointサイト</strong> の2系統です。どちらに何を登録するかは各章で明示します。</div>
@@ -402,12 +423,139 @@
   <section id="ch2">
     <div class="section-header">
       <span class="ch">第2章</span>
-      <h2>管理者（本社）の初期セットアップ</h2>
+      <h2>システム管理者の初期セットアップ</h2>
     </div>
     <div class="section-body">
-      <p>本章は <strong>管理者ロール</strong> が行う作業です。新しい現場を開設するとき、または協力会社を追加するときの手順を説明します。</p>
+      <p>本章は <strong>システム管理者ロール</strong> が行う、システム全体の初期整備作業です。永賢組テナント（ClientID=1）を新規開設するとき、または大規模な構成変更を行うときの手順を説明します。</p>
 
-      <h3 class="sub">2-1. face.gemba-ai.cloud 管理画面にログイン</h3>
+      <h3 class="sub">2-1. Azure環境の確認</h3>
+      <div class="step-list">
+        <div class="step-card">
+          <div class="step-number">STEP<span>1</span></div>
+          <div class="step-content">
+            <h3>サブスクリプション・リソースグループの確認</h3>
+            <ul>
+              <li>Subscription: <code>general-con-face-recognition</code></li>
+              <li>Tenant: <code>child-camera.com</code></li>
+              <li>RG: <code>RG-PROD-NAGAKEN</code>（管理画面系）／<code>entryexit-prod-rg</code>（顔認証API系）</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">STEP<span>2</span></div>
+          <div class="step-content">
+            <h3>Web App・Function App・SQL DB 稼働確認</h3>
+            <ul>
+              <li><code>app-prod-ngkn-system</code>（face.gemba-ai.cloud）</li>
+              <li><code>entryexit-prod-func</code>（顔認証API）</li>
+              <li><code>sqldb-prod-nagaken</code>（サーバーレス・60分でauto pause）</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="sub">2-2. ClientMaster の登録</h3>
+      <div class="step-list">
+        <div class="step-card">
+          <div class="step-number">STEP<span>1</span></div>
+          <div class="step-content">
+            <h3>DBに新規テナントレコードを作成</h3>
+            <ul>
+              <li>ClientID（連番）／会社名／SharePoint SiteCollectionURL</li>
+              <li>ブランディング情報（ロゴ・カラー）を設定</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">STEP<span>2</span></div>
+          <div class="step-content">
+            <h3>JWT allowedClients 許可リストに追加</h3>
+            <ul>
+              <li>Goバイナリ <code>face_identity_utility</code> 内の <code>main.allowedClients</code> に追記</li>
+              <li>再ビルド＆Blob <code>faceidentity</code> コンテナに再アップロード</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="important">
+        <div class="imp-title">⚠ allowedClients はハードコードです</div>
+        新規テナント追加時はGoバイナリ再ビルド＋Blob再アップロードが必須。環境変数化は未対応（改善候補）。
+      </div>
+
+      <h3 class="sub">2-3. 本社管理者アカウントの発行</h3>
+      <div class="step-list">
+        <div class="step-card">
+          <div class="step-number">STEP<span>1</span></div>
+          <div class="step-content">
+            <h3>管理画面のユーザーテーブルにレコード追加</h3>
+            <ul>
+              <li>本社の管理担当者（初期は1〜2名）</li>
+              <li>権限：全現場・全協力会社の編集可</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">STEP<span>2</span></div>
+          <div class="step-content">
+            <h3>ID・初期パスワードを本社管理者に通知</h3>
+            <ul>
+              <li>安全なチャネル（Teams DM／対面）で通知</li>
+              <li>初回ログイン時にパスワード変更を依頼</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="sub">2-4. SharePointサイトの準備</h3>
+      <div class="step-list">
+        <div class="step-card">
+          <div class="step-number">STEP<span>1</span></div>
+          <div class="step-content">
+            <h3>永賢組テナント用SharePointサイトを作成</h3>
+            <ul>
+              <li>「現場マスター」リスト</li>
+              <li>「協力会社リスト」</li>
+              <li>「タグ管理」リスト</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">STEP<span>2</span></div>
+          <div class="step-content">
+            <h3>本社管理者にアクセス権限付与</h3>
+            <ul>
+              <li>編集権限を付与</li>
+              <li>監査ログ取得を有効化</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="sub">2-5. NFCカードの調達</h3>
+      <ul class="checklist">
+        <li>NXP NTAG 424 DNA（SUN認証対応）を仕入れる</li>
+        <li>他社製NTAG は動作しないので要注意</li>
+        <li>入場用・退場用のペアで現場ごとに配布</li>
+        <li>AES鍵は安全に管理（社外流出防止）</li>
+      </ul>
+      <div class="screenshot-placeholder">
+        <div class="ph-icon">📷</div>
+        <div class="ph-label">スクリーンショット貼付予定</div>
+        Azure Portal・DB構成・NFCカード現物
+      </div>
+    </div>
+  </section>
+
+  <!-- 第3章 -->
+  <section id="ch3">
+    <div class="section-header">
+      <span class="ch">第3章</span>
+      <h2>本社管理者の初期セットアップ</h2>
+    </div>
+    <div class="section-body">
+      <p>本章は <strong>本社管理者ロール</strong> が行う作業です。新しい現場を開設するとき、または協力会社を追加するときの手順を説明します。</p>
+
+      <h3 class="sub">3-1. face.gemba-ai.cloud 管理画面にログイン</h3>
       <div class="step-list">
         <div class="step-card">
           <div class="step-number">STEP<span>1</span></div>
@@ -437,7 +585,7 @@
         管理画面ログイン画面
       </div>
 
-      <h3 class="sub">2-2. 現場（Onsite）の新規追加</h3>
+      <h3 class="sub">3-2. 現場（Onsite）の新規追加</h3>
       <div class="step-list">
         <div class="step-card">
           <div class="step-number">STEP<span>1</span></div>
@@ -478,7 +626,7 @@
         現場新規追加画面
       </div>
 
-      <h3 class="sub">2-3. 協力会社の追加・現場への紐付け</h3>
+      <h3 class="sub">3-3. 協力会社の追加・現場への紐付け</h3>
       <div class="step-list">
         <div class="step-card">
           <div class="step-number">STEP<span>1</span></div>
@@ -504,7 +652,7 @@
       </div>
       <div class="notice"><strong>ポイント：</strong> 同じ協力会社でも、現場ごとに紐付けが必要です。現場Aで登録済の会社も、現場Bでは改めて紐付けてください。</div>
 
-      <h3 class="sub">2-4. SharePointリストで現場マスターを登録</h3>
+      <h3 class="sub">3-4. SharePointリストで現場マスターを登録</h3>
       <p>現場の真のマスターは SharePointリスト側に持っています。管理画面での登録とセットで必ず実施してください。</p>
       <div class="step-list">
         <div class="step-card">
@@ -551,16 +699,16 @@
     </div>
   </section>
 
-  <!-- 第3章 -->
-  <section id="ch3">
+  <!-- 第4章 -->
+  <section id="ch4">
     <div class="section-header">
-      <span class="ch">第3章</span>
+      <span class="ch">第4章</span>
       <h2>現場監督の初期セットアップ</h2>
     </div>
     <div class="section-body">
       <p>本章は <strong>現場監督ロール</strong> が現場着工前〜着工直後に行う作業です。</p>
 
-      <h3 class="sub">3-1. 管理画面ログインと担当現場の確認</h3>
+      <h3 class="sub">4-1. 管理画面ログインと担当現場の確認</h3>
       <div class="step-list">
         <div class="step-card">
           <div class="step-number">STEP<span>1</span></div>
@@ -585,7 +733,7 @@
         </div>
       </div>
 
-      <h3 class="sub">3-2. NFCカード（入場・退場ペア）の配布準備</h3>
+      <h3 class="sub">4-2. NFCカード（入場・退場ペア）の配布準備</h3>
       <div class="step-list">
         <div class="step-card">
           <div class="step-number">STEP<span>1</span></div>
@@ -620,7 +768,7 @@
       </div>
       <div class="notice"><strong>ポイント：</strong> NFCカードは <strong>NXP NTAG 424 DNA（SUN認証対応）</strong> を使用しています。他社製カードは動作しません。</div>
 
-      <h3 class="sub">3-3. 作業員への登録案内</h3>
+      <h3 class="sub">4-3. 作業員への登録案内</h3>
       <p>着工時・新規入場者がいるときは、以下の案内を作業員に渡してください。</p>
       <div class="step-list">
         <div class="step-card">
@@ -654,30 +802,145 @@
     </div>
   </section>
 
-  <!-- 第4章 -->
-  <section id="ch4">
+  <!-- 第5章 協力会社 -->
+  <section id="ch5">
     <div class="section-header">
-      <span class="ch">第4章</span>
+      <span class="ch">第5章</span>
+      <h2>協力会社の初期セットアップ</h2>
+    </div>
+    <div class="section-body">
+      <p>本章は <strong>協力会社ロール</strong>（協力会社の事務担当者）が行う作業です。所属する作業員（職人さん）が顔認証システムで入退場できるよう、事前の案内と情報整備を行います。</p>
+
+      <h3 class="sub">5-1. 管理画面ログイン</h3>
+      <div class="step-list">
+        <div class="step-card">
+          <div class="step-number">STEP<span>1</span></div>
+          <div class="step-content">
+            <h3>本社管理者から配布されたアカウントでログイン</h3>
+            <ul>
+              <li>ID・初期パスワードで face.gemba-ai.cloud 管理画面へ</li>
+              <li>初回ログイン時にパスワード変更</li>
+              <li>自社（協力会社）の情報が正しく表示されることを確認</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">STEP<span>2</span></div>
+          <div class="step-content">
+            <h3>所属ClientIDを確認</h3>
+            <ul>
+              <li>所属先が <strong>本社（ClientID=1）</strong> か <strong>九州支店（ClientID=4）</strong> かを確認</li>
+              <li>作業員に案内するURLが変わるため重要</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="sub">5-2. 紐付いている現場の確認</h3>
+      <div class="step-list">
+        <div class="step-card">
+          <div class="step-number">STEP<span>1</span></div>
+          <div class="step-content">
+            <h3>「現場一覧」で自社が入る現場をチェック</h3>
+            <ul>
+              <li>現場名・OnsiteID・工期を確認</li>
+              <li>入る予定の現場が無い場合は本社管理者に追加依頼</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="sub">5-3. 所属作業員リストの確認・追加</h3>
+      <div class="step-list">
+        <div class="step-card">
+          <div class="step-number">STEP<span>1</span></div>
+          <div class="step-content">
+            <h3>「所属作業員」一覧を開く</h3>
+            <ul>
+              <li>既登録の作業員が表示される</li>
+              <li>未登録の作業員がいれば追加</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">STEP<span>2</span></div>
+          <div class="step-content">
+            <h3>新規作業員を仮登録（任意）</h3>
+            <ul>
+              <li>事務所で先に個人情報を代行入力することも可能</li>
+              <li>ただし顔写真・資格者証は本人登録のみ可</li>
+              <li>入力後、作業員本人に site-entry で続きを登録するよう案内</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="notice"><strong>ポイント：</strong> 協力会社が代行で入力できるのは個人情報のみ。顔写真・資格者証の撮影と NFCタグの本人紐付けは必ず作業員本人が行ってください。</div>
+
+      <h3 class="sub">5-4. 所属作業員への登録URL案内</h3>
+      <div class="step-list">
+        <div class="step-card">
+          <div class="step-number">STEP<span>1</span></div>
+          <div class="step-content">
+            <h3>登録URLを配布（QRコード推奨）</h3>
+            <ul>
+              <li>本社所属：<code>https://face.gemba-ai.cloud/site-entry?ClientID=1</code></li>
+              <li>九州支店所属：<code>https://face.gemba-ai.cloud/site-entry?ClientID=4</code></li>
+              <li>LINE・メール・紙のQRコードなど、作業員が開きやすい方法で配布</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">STEP<span>2</span></div>
+          <div class="step-content">
+            <h3>登録完了を確認</h3>
+            <ul>
+              <li>管理画面「所属作業員」一覧で登録ステータスを確認</li>
+              <li>顔写真・資格者証がアップ済みかを確認</li>
+              <li>未完了者には再案内</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="screenshot-placeholder">
+        <div class="ph-icon">📷</div>
+        <div class="ph-label">スクリーンショット貼付予定</div>
+        協力会社向け管理画面・所属作業員一覧
+      </div>
+    </div>
+  </section>
+
+  <!-- 第6章 -->
+  <section id="ch6">
+    <div class="section-header">
+      <span class="ch">第6章</span>
       <h2>作業員の初期登録</h2>
     </div>
     <div class="section-body">
       <p>本章は <strong>作業員ロール</strong>（協力会社の職人さん）が、現場に初めて入る前に行う登録手順です。</p>
 
-      <h3 class="sub">4-1. 登録のタイミング・場所</h3>
+      <h3 class="sub">6-1. 登録のタイミング・場所</h3>
       <ul class="checklist">
         <li>現場に初めて入る日の前日〜当日朝までに完了が理想</li>
         <li>現場事務所のタブレット／自分のスマホ／自宅PCのいずれでもOK</li>
         <li>登録完了後、現場入口のNFCリーダーで入場可能になる</li>
       </ul>
 
-      <h3 class="sub">4-2. 登録ページにアクセス</h3>
+      <h3 class="sub">6-2. 登録ページにアクセス</h3>
+      <p>所属先に応じて、以下のどちらかのURLを開いてください。協力会社の事務担当から案内された方のリンクを使います。</p>
       <a class="url-btn" href="https://face.gemba-ai.cloud/site-entry?ClientID=1" target="_blank" rel="noopener">
         <span class="btn-icon">🔗</span>
-        作業員登録ページを開く
+        本社（ClientID=1）所属の方
         <span class="btn-sub">https://face.gemba-ai.cloud/site-entry?ClientID=1</span>
       </a>
+      <br>
+      <a class="url-btn" href="https://face.gemba-ai.cloud/site-entry?ClientID=4" target="_blank" rel="noopener">
+        <span class="btn-icon">🔗</span>
+        九州支店（ClientID=4）所属の方
+        <span class="btn-sub">https://face.gemba-ai.cloud/site-entry?ClientID=4</span>
+      </a>
+      <div class="notice"><strong>ポイント：</strong> URL末尾の <code>ClientID</code> が所属テナントの番号です。本社 = 1／九州支店 = 4。間違えると別テナントに登録されてしまうので注意。</div>
 
-      <h3 class="sub">4-3. 初回ログイン（電話番号入力）</h3>
+      <h3 class="sub">6-3. 初回ログイン（電話番号入力）</h3>
       <div class="step-list">
         <div class="step-card">
           <div class="step-number">STEP<span>1</span></div>
@@ -696,7 +959,7 @@
         初回ログイン画面（電話番号入力）
       </div>
 
-      <h3 class="sub">4-4. 個人情報の入力</h3>
+      <h3 class="sub">6-4. 個人情報の入力</h3>
       <p>以下の項目を入力します。※マークは必須項目です。</p>
       <table class="field-table">
         <thead>
@@ -724,7 +987,7 @@
         </tbody>
       </table>
 
-      <h3 class="sub">4-5. 顔写真の登録</h3>
+      <h3 class="sub">6-5. 顔写真の登録</h3>
       <div class="step-list">
         <div class="step-card">
           <div class="step-number">STEP<span>1</span></div>
@@ -765,7 +1028,7 @@
       </div>
       <div class="notice"><strong>ポイント：</strong> 顔写真は入退場時の顔認証に使われます。現場と同じ服装・帽子ありで撮ると、ヘルメット姿と照合できなくなることがあるため、<strong>素顔で撮影</strong>してください。</div>
 
-      <h3 class="sub">4-6. 資格者証写真の登録</h3>
+      <h3 class="sub">6-6. 資格者証写真の登録</h3>
       <div class="step-list">
         <div class="step-card">
           <div class="step-number">STEP<span>1</span></div>
@@ -804,7 +1067,7 @@
         資格者証登録画面
       </div>
 
-      <h3 class="sub">4-7. NFCタグの本人紐付け（初回タッチ）</h3>
+      <h3 class="sub">6-7. NFCタグの本人紐付け（初回タッチ）</h3>
       <div class="step-list">
         <div class="step-card">
           <div class="step-number">STEP<span>1</span></div>
@@ -844,10 +1107,10 @@
     </div>
   </section>
 
-  <!-- 第5章 -->
-  <section id="ch5">
+  <!-- 第7章 -->
+  <section id="ch7">
     <div class="section-header">
-      <span class="ch">第5章</span>
+      <span class="ch">第7章</span>
       <h2>よくあるトラブルと対処法</h2>
     </div>
     <div class="section-body">
@@ -860,7 +1123,11 @@
           </tr>
           <tr>
             <td>作業員が登録ページを開くと「ClientID不明」エラー</td>
-            <td>URLに <code>?ClientID=1</code> が付いているかを確認。QRコードを作り直して再配布。</td>
+            <td>URLに <code>?ClientID=1</code>（本社）または <code>?ClientID=4</code>（九州支店）が付いているかを確認。QRコードを作り直して再配布。</td>
+          </tr>
+          <tr>
+            <td>作業員が別テナントで登録されてしまった</td>
+            <td>所属に応じて ClientID=1（本社）または ClientID=4（九州支店）のURLを使っているか再確認。誤テナント側のレコードは本社管理者に削除依頼。</td>
           </tr>
           <tr>
             <td>顔写真登録時に「認識できません」</td>
@@ -891,10 +1158,10 @@
     </div>
   </section>
 
-  <!-- 第6章 -->
-  <section id="ch6">
+  <!-- 第8章 -->
+  <section id="ch8">
     <div class="section-header">
-      <span class="ch">第6章</span>
+      <span class="ch">第8章</span>
       <h2>お問い合わせ</h2>
     </div>
     <div class="section-body">
