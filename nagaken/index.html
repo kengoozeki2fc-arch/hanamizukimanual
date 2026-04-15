@@ -444,7 +444,8 @@
     <li><a href="#ch3">第3章 CSVファイルの作り方</a></li>
     <li><a href="#ch4">第4章 CSV一括登録の操作手順</a></li>
     <li><a href="#ch5">第5章 よくあるトラブルと対処法</a></li>
-    <li><a href="#ch6">第6章 お問い合わせ</a></li>
+    <li><a href="#ch6">第6章 九州支社向け関連資料</a></li>
+    <li><a href="#ch7">第7章 お問い合わせ</a></li>
   </ul>
 </nav>
 
@@ -800,10 +801,65 @@
     </div>
   </section>
 
-  <!-- 第6章 -->
+  <!-- 第6章 九州支社向け関連資料 -->
   <section id="ch6">
     <div class="section-header">
       <span class="ch">第6章</span>
+      <h2>九州支社向け関連資料</h2>
+    </div>
+    <div class="section-body">
+      <p>株式会社永賢組 九州支社の現場運用に特化した関連資料です。ダウンロードしてご活用ください。</p>
+
+      <h3 style="margin-top:24px;">6-1. 新規入場者の登録項目（入場フォーム仕様）</h3>
+      <p>現場NFCタグ「新規入場」をスマホでタップした後に表示される、新規入場者登録フォームの入力項目解説です。役割（職長 / 作業員）・所属協力業者・送り出し教育受講日・今日の体調・治療中のけが・血圧・体温・署名の入力ガイドを含みます。</p>
+      <p>
+        <a href="new_entrant_registration.pdf" target="_blank" rel="noopener"
+           style="display:inline-block;padding:10px 20px;background:#0ea5e9;color:white;border-radius:8px;text-decoration:none;font-weight:600;">
+          📄 新規入場者の登録項目サンプル.pdf をダウンロード
+        </a>
+      </p>
+
+      <h3 style="margin-top:28px;">6-2. 現場NFCタグ台紙</h3>
+      <p>現場に掲示するNFCタグの台紙テンプレート（Word 形式）。以下 6 種類のアクション用タグが含まれています。</p>
+      <ul>
+        <li>現場入場</li>
+        <li>現場退場</li>
+        <li>新規入場</li>
+        <li>KY活動</li>
+        <li>安全会議参加</li>
+        <li>新規入場者教育完了</li>
+      </ul>
+      <p>作業員がスマートフォンでタグをタップすると、それぞれのアクションページへ遷移します。</p>
+      <p>
+        <a href="nfc_tags_template.docx" target="_blank" rel="noopener"
+           style="display:inline-block;padding:10px 20px;background:#0ea5e9;color:white;border-radius:8px;text-decoration:none;font-weight:600;">
+          📄 現場NFCの台紙.docx をダウンロード
+        </a>
+      </p>
+
+      <h3 style="margin-top:28px;">6-3. 安全作業指示書（Excel マクロ）利用手順書</h3>
+      <p>「作業指示」＋「KY活動」を Excel マクロ経由で SQL テーブルへ登録する運用手順です。主な内容は以下のとおり。</p>
+      <ol>
+        <li>管理画面から作業員指示書 Excel をダウンロード（Blob Storage 経由）</li>
+        <li>マクロを有効化 ＋ 必要に応じてブロック解除</li>
+        <li>「本日の情報を取得」で既存の作業指示・KY活動データを反映</li>
+        <li>協力会社名 / 新規・中止 / 予定人員 / 作業内容 / 安全指示事項を入力</li>
+        <li>「明日のKY活動に反映」で作業指示テーブルへ登録</li>
+      </ol>
+      <div class="info" style="margin-top:12px;">Excel 項目と SQL テーブル項目の対応表、および入力値定義（必須項目・プルダウン候補）も手順書内に記載しています。</div>
+      <p style="margin-top:12px;">
+        <a href="safety_work_instruction_manual.docx" target="_blank" rel="noopener"
+           style="display:inline-block;padding:10px 20px;background:#0ea5e9;color:white;border-radius:8px;text-decoration:none;font-weight:600;">
+          📄 安全作業指示書_利用手順書.docx をダウンロード
+        </a>
+      </p>
+    </div>
+  </section>
+
+  <!-- 第7章 -->
+  <section id="ch7">
+    <div class="section-header">
+      <span class="ch">第7章</span>
       <h2>お問い合わせ</h2>
     </div>
     <div class="section-body">
@@ -828,7 +884,7 @@
 </main>
 
 <footer>
-  株式会社永賢組　入退場管理システム　一括登録 操作手順書　／　2026年4月作成
+  株式会社永賢組　入退場管理システム　操作手順書　／　2026年4月作成（九州支社向け関連資料 追加版）
 </footer>
 
 </body>
