@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<base href="/kokorocare/">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>先生向けマニュアル｜企業のオンライン保健室</title>
+<link rel="stylesheet" href="style.css">
+<script defer src="fallback.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <h1>先生（担当先生）向け操作マニュアル</h1>
+  <p>保健室業務の中心を担う先生向けの手順書</p>
+</header>
+<div class="breadcrumb"><a href="index.html">ホーム</a> / 先生</div>
+
+<main>
+  <nav class="role-nav">
+    <a href="index.html">ホーム</a>
+    <a href="role-individual.html">受信者</a>
+    <a href="role-corporate.html">企業管理者</a>
+    <a class="current" href="role-teacher.html">先生</a>
+    <a href="role-room-admin.html">保健室管理者</a>
+    <a href="role-sysadmin.html">システム管理者</a>
+    <a href="common.html">共通事項</a>
+  </nav>
+
+  <section>
+    <h2>先生ができること</h2>
+    <div class="inherit-note">
+      企業管理者の全機能（<a href="role-corporate.html">企業管理者マニュアル参照</a>）に加えて、以下の機能が利用できます。
+    </div>
+    <ul class="feature-list">
+      <li><strong>企業の登録・編集</strong> &mdash; 新しい企業を登録し、担当先生やテンプレートを設定できます</li>
+      <li><strong>個人（従業員）の登録・編集</strong> &mdash; 企業に所属する従業員を登録・招待し、情報を編集できます</li>
+      <li><strong>問診票の送付</strong> &mdash; 個人に対して問診票メールを送信できます</li>
+      <li><strong>面談の登録・編集</strong> &mdash; 個人との面談記録を作成・編集できます</li>
+      <li><strong>初回面談の結果を記録</strong> &mdash; 個人の初回面談結果を記入できます</li>
+      <li><strong>月次報告の作成</strong> &mdash; 企業向けの月次報告を作成し、PDFで出力できます</li>
+      <li><strong>利き脳の設定</strong> &mdash; 個人の利き脳（義・勇・礼・誠）を設定できます</li>
+      <li><strong>面談予定の管理・メール送信</strong> &mdash; 企業の今月の面談予定を管理し、対象者にメールを一括送信できます</li>
+      <li><strong>メールテンプレートの管理</strong> &mdash; 面談予定メールのテンプレートを作成・編集できます</li>
+      <li><strong>先生レポートの閲覧</strong> &mdash; 自分の月次活動サマリーを確認できます</li>
+      <li><strong>自分の先生プロフィールを編集</strong> &mdash; 勤務可能曜日・プロファイリング資料・備考を更新できます</li>
+    </ul>
+  </section>
+
+  <!-- ===== 企業管理 ===== -->
+  <section>
+    <h2>企業を登録・管理する</h2>
+    <h3>新しい企業を登録する</h3>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>サイドメニューの「企業管理」をクリックし、<span class="btn-sample">新規登録</span>をクリックします。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>企業名と所属保健室を入力して登録します。</p>
+        <div class="screenshot"><img src="images/teacher-company-create.png" alt="企業登録画面"></div>
+      </div>
+    </div>
+
+    <h3>企業詳細ページの構成</h3>
+    <p>企業名をクリックすると詳細ページが開きます。以下のセクションで構成されています。</p>
+    <table>
+      <tr><th>セクション</th><th>内容</th></tr>
+      <tr><td>ヘッダー</td><td>会社名・所属保健室・社員数・担当先生数</td></tr>
+      <tr><td>ライフプロファイリングまとめ</td><td>企業全体のプロファイリング資料（ファイル添付）</td></tr>
+      <tr><td>担当先生</td><td>先生の追加・解除</td></tr>
+      <tr><td>今月の面談結果</td><td>今月実施済みの面談記録一覧</td></tr>
+      <tr><td>今月の面談予定</td><td>面談予定の追加・メール送信</td></tr>
+      <tr><td>従業員一覧</td><td>所属する個人の一覧</td></tr>
+      <tr><td>招待状況</td><td>招待メール送信済みの一覧</td></tr>
+      <tr><td>月次報告履歴</td><td>過去の月次報告一覧</td></tr>
+    </table>
+    <div class="screenshot"><img src="images/teacher-company-detail.png" alt="企業詳細ページ"></div>
+  </section>
+
+  <!-- ===== 個人管理 ===== -->
+  <section>
+    <h2>個人（従業員）を登録・管理する</h2>
+    <h3>個人を新規登録する</h3>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>サイドメニューの「個人管理」をクリックし、<span class="btn-sample">新規登録</span>をクリックします。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>氏名・メールアドレス・所属企業などを入力して登録します。</p>
+      </div>
+    </div>
+
+    <h3>招待メールを送る</h3>
+    <p>個人を登録すると、その個人に招待メールを送信できます。招待メールには登録用リンクが含まれ、受信者がリンクから自分のアカウントを作成します。</p>
+
+    <h3>個人詳細ページの構成</h3>
+    <table>
+      <tr><th>セクション</th><th>内容</th></tr>
+      <tr><td>プロフィールヘッダー</td><td>氏名・メール・性別・生年月日・住所</td></tr>
+      <tr><td>登録情報</td><td>一括編集可能な基本情報</td></tr>
+      <tr><td>旧問診票リンク</td><td>過去の問診票へのリンク（あれば）</td></tr>
+      <tr><td>パーソナル診断 / 初回ヒアリング資料</td><td>ファイル添付</td></tr>
+      <tr><td>初回面談の結果</td><td>テキスト入力（先生以上のみ表示）</td></tr>
+      <tr><td>問診票送付履歴</td><td>送付済みの問診票一覧</td></tr>
+      <tr><td>利き脳</td><td>義・勇・礼・誠の4択ラジオボタン</td></tr>
+      <tr><td>受診履歴</td><td>日付・先生名を大きく表示、クリックで展開</td></tr>
+      <tr><td>その他添付ファイル</td><td>最大5件まで添付可能</td></tr>
+    </table>
+    <div class="screenshot"><img src="images/teacher-individual-detail.png" alt="個人詳細ページ"></div>
+  </section>
+
+  <!-- ===== 問診票送付 ===== -->
+  <section>
+    <h2>問診票を送付する</h2>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>個人詳細ページの問診票セクションで<span class="btn-sample">問診票を送付</span>をクリックします。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>確認ダイアログが表示されます。送付先のメールアドレスを確認して<span class="btn-sample">送信</span>をクリック。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <p>受信者に問診票リンク付きのメールが届きます。回答が完了すると、問診票送付履歴にステータスが反映されます。</p>
+      </div>
+    </div>
+    <div class="screenshot"><img src="images/teacher-send-form.png" alt="問診票送付"></div>
+  </section>
+
+  <!-- ===== 面談登録 ===== -->
+  <section>
+    <h2>面談を記録する</h2>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>サイドメニューの「個人面談登録」をクリックし、<span class="btn-sample">新規登録</span>をクリックします。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>対象の個人を選択し、面談日時・所見（findings）・次回へ向けてのコメント（nextComment）を入力します。</p>
+        <div class="screenshot"><img src="images/teacher-consultation-form.png" alt="面談登録フォーム"></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <p>入力が完了したら<span class="btn-sample">保存</span>をクリックします。登録した面談記録は個人詳細ページの「受診履歴」にも反映されます。</p>
+      </div>
+    </div>
+
+    <h3>初回面談の結果を記録する</h3>
+    <p>個人詳細ページの「初回面談の結果」セクションに、初回面談の所見を自由記述で記録できます。記録すると、面談日時と先生名が自動的に保存されます。</p>
+  </section>
+
+  <!-- ===== 利き脳 ===== -->
+  <section>
+    <h2>利き脳を設定する</h2>
+    <p>個人詳細ページの「利き脳」セクションで、以下の4つから選択します。選択すると即時保存されます。</p>
+    <table>
+      <tr><th>選択肢</th><th>読み</th></tr>
+      <tr><td>義（gi）</td><td>ぎ</td></tr>
+      <tr><td>勇（yu）</td><td>ゆう</td></tr>
+      <tr><td>礼（rei）</td><td>れい</td></tr>
+      <tr><td>誠（makoto）</td><td>まこと</td></tr>
+    </table>
+    <div class="note">
+      利き脳の情報は先生以上の権限でのみ閲覧・編集できます。受信者や企業管理者には表示されません。
+    </div>
+  </section>
+
+  <!-- ===== 面談予定 ===== -->
+  <section>
+    <h2>面談予定を管理する</h2>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>企業詳細ページの「今月の面談予定」セクションで<span class="btn-sample">追加</span>をクリックすると、社員チェックリストのモーダルが表示されます。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>面談予定に追加したい社員にチェックを入れて確定します。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <p>追加後、<span class="btn-sample">送信</span>ボタンをクリックすると、未送信の予定者全員に企業のメールテンプレートを使ったメールが一括送信されます。</p>
+      </div>
+    </div>
+    <div class="note">
+      送信済みの予定者は「送信済み」バッジが表示されます。再送信はできません。
+    </div>
+    <div class="screenshot"><img src="images/teacher-schedule-manage.png" alt="面談予定管理"></div>
+  </section>
+
+  <!-- ===== メールテンプレート ===== -->
+  <section>
+    <h2>メールテンプレートを管理する</h2>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>サイドメニューの「メールテンプレート」をクリックします。登録済みのテンプレート一覧が表示されます。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p><span class="btn-sample">新規作成</span>をクリックし、テンプレート名・件名・本文を入力します。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <p>本文中に変数を挿入できます。カーソル位置に挿入ボタンで追加してください。</p>
+        <table>
+          <tr><th>変数</th><th>置換される値</th></tr>
+          <tr><td><code>{{会社名}}</code></td><td>企業名</td></tr>
+          <tr><td><code>{{個人名}}</code></td><td>個人の氏名</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <p>「プレビュー」でサンプルデータ（サンプル株式会社 / 山田太郎）に置換された状態を確認できます。</p>
+      </div>
+    </div>
+    <div class="note">
+      企業詳細ページで企業ごとにメールテンプレートを割り当てることができます。面談予定メールの送信時に、割り当てたテンプレートが使用されます。
+    </div>
+    <div class="screenshot"><img src="images/teacher-email-template.png" alt="メールテンプレート管理"></div>
+  </section>
+
+  <!-- ===== 月次報告 ===== -->
+  <section>
+    <h2>月次報告を作成する</h2>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>サイドメニューの「月次報告」をクリックし、<span class="btn-sample">新規作成</span>をクリックします。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>対象企業・対象月を選択し、以下の項目を入力します。</p>
+        <table>
+          <tr><th>項目</th><th>内容</th></tr>
+          <tr><td>総評</td><td>今月全体のコメント</td></tr>
+          <tr><td>翌月のテーマ</td><td>来月に向けた目標・方針</td></tr>
+          <tr><td>会社への依頼事項</td><td>企業側にお願いしたいこと</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <p>保存後、<span class="btn-sample primary">PDF ダウンロード</span>で月次報告PDFを出力できます。PDFには個別セッションの状況（氏名・受診日・現状・課題）も自動で含まれます。</p>
+      </div>
+    </div>
+    <div class="screenshot"><img src="images/teacher-monthly-report.png" alt="月次報告作成"></div>
+  </section>
+
+  <!-- ===== 先生レポート ===== -->
+  <section>
+    <h2>先生レポートを確認する</h2>
+    <p>サイドメニューの「先生レポート」をクリックすると、自分の月次活動サマリーが表示されます。年月フィルタで過去の実績も確認できます。</p>
+    <div class="note">
+      先生ロールでは自分のレポートのみ閲覧できます。他の先生のレポートを見るには保健室管理者以上の権限が必要です。
+    </div>
+    <div class="screenshot"><img src="images/teacher-report.png" alt="先生レポート"></div>
+  </section>
+
+  <!-- ===== 自分のプロフィール ===== -->
+  <section>
+    <h2>自分の先生プロフィールを編集する</h2>
+    <p>サイドメニューの「先生管理」から自分のレコードを開いて、以下の情報を編集できます。</p>
+    <table>
+      <tr><th>項目</th><th>内容</th></tr>
+      <tr><td>勤務可能曜日</td><td>月〜日の中から複数選択</td></tr>
+      <tr><td>プロファイリング資料</td><td>ファイルをアップロード（Azure Blob保存）</td></tr>
+      <tr><td>備考</td><td>自由記述メモ</td></tr>
+    </table>
+    <div class="note">
+      先生ロールでは自分のプロフィールのみ編集できます。他の先生のプロフィールを管理するには保健室管理者以上の権限が必要です。
+    </div>
+  </section>
+</main>
+
+<footer>
+  &copy; kokorocare / 企業のオンライン保健室 操作マニュアル
+</footer>
+</body>
+</html>

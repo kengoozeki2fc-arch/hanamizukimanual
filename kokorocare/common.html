@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<base href="/kokorocare/">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>共通事項｜企業のオンライン保健室 操作マニュアル</title>
+<link rel="stylesheet" href="style.css">
+<script defer src="fallback.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <h1>共通事項</h1>
+  <p>全ロール共通の操作手順</p>
+</header>
+<div class="breadcrumb"><a href="index.html">ホーム</a> / 共通事項</div>
+
+<main>
+  <nav class="role-nav">
+    <a href="index.html">ホーム</a>
+    <a href="role-individual.html">受信者</a>
+    <a href="role-corporate.html">企業管理者</a>
+    <a href="role-teacher.html">先生</a>
+    <a href="role-room-admin.html">保健室管理者</a>
+    <a href="role-sysadmin.html">システム管理者</a>
+    <a class="current" href="common.html">共通事項</a>
+  </nav>
+
+  <section id="login">
+    <h2>ログイン手順</h2>
+    <p>本システムには2種類のログイン方式があります。</p>
+
+    <h3>メール＋パスワード認証（受信者・企業管理者・先生）</h3>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p><code>https://bo.kokorocare.business/login</code> にアクセスします。</p>
+        <div class="screenshot"><img src="images/login-page.png" alt="ログイン画面"></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>登録済みの<strong>メールアドレス</strong>と<strong>パスワード</strong>を入力し、<span class="btn-sample">ログイン</span>をクリックします。</p>
+      </div>
+    </div>
+
+    <h3>OTP認証（保健室管理者・システム管理者）</h3>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p><code>https://bo.kokorocare.business/admin/login</code> にアクセスし、メールアドレスを入力します。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>登録メールアドレスに<strong>6桁の認証コード</strong>が届きます。コードを入力して<span class="btn-sample">認証</span>をクリック。</p>
+      </div>
+    </div>
+    <div class="warn">
+      認証コードの有効期限は<strong>10分</strong>です。期限切れの場合は再度メールアドレスを入力してコードを再発行してください。
+    </div>
+  </section>
+
+  <section id="menu">
+    <h2>サイドメニューの見かた</h2>
+    <p>ログイン後、画面左側にサイドメニューが表示されます。表示されるメニュー項目はログインユーザーの役割によって異なります。</p>
+    <table>
+      <tr><th>メニュー項目</th><th>表示されるロール</th><th>内容</th></tr>
+      <tr><td>ダッシュボード</td><td>全ロール</td><td>ログイン後の最初の画面。統計情報を表示</td></tr>
+      <tr><td>保健室管理</td><td>保健室管理者・システム管理者</td><td>保健室の登録・編集</td></tr>
+      <tr><td>企業管理</td><td>企業管理者以上</td><td>企業情報の閲覧・管理</td></tr>
+      <tr><td>先生管理</td><td>保健室管理者・システム管理者</td><td>先生アカウントの管理</td></tr>
+      <tr><td>個人管理</td><td>全ロール</td><td>個人（従業員）情報の管理</td></tr>
+      <tr><td>個人面談登録</td><td>先生以上</td><td>面談記録の登録</td></tr>
+      <tr><td>月次報告</td><td>企業管理者以上</td><td>月次報告の閲覧・作成</td></tr>
+      <tr><td>先生レポート</td><td>先生以上</td><td>先生別の月次活動サマリー</td></tr>
+      <tr><td>メールテンプレート</td><td>先生以上</td><td>メール文面のテンプレート管理</td></tr>
+    </table>
+  </section>
+
+  <section id="health-room-filter">
+    <h2>保健室フィルタの使いかた</h2>
+    <p>保健室が2つ以上登録されている場合、サイドバーに「保健室」プルダウンが表示されます。</p>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>プルダウンから対象の保健室を選択すると、企業・先生・個人などの一覧が選択した保健室のデータだけに絞り込まれます。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>「すべての保健室」を選ぶとフィルタが解除され、全データが表示されます。</p>
+      </div>
+    </div>
+    <div class="note">
+      保健室が1つだけの場合は自動的にその保健室が選択され、プルダウンは表示されません。
+    </div>
+  </section>
+
+  <section id="faq">
+    <h2>よくある質問</h2>
+    <h3>パスワードを忘れた場合は？</h3>
+    <p>システム管理者または保健室管理者にご連絡ください。パスワードのリセットを行います。</p>
+
+    <h3>OTPメールが届かない場合は？</h3>
+    <p>迷惑メールフォルダをご確認ください。<code>noreply@kokorocare.business</code> からのメールが受信できるよう設定をお願いします。</p>
+
+    <h3>スマートフォンから利用できますか？</h3>
+    <p>はい。iOS Safari、Android Chrome でご利用いただけます。画面レイアウトは自動的にスマートフォン向けに調整されます。</p>
+
+    <h3>画面に表示されるメニューが少ない場合は？</h3>
+    <p>サイドメニューはログインユーザーの役割に応じて表示項目が変わります。必要な機能が見当たらない場合は、管理者にロールの確認をご依頼ください。</p>
+  </section>
+</main>
+
+<footer>
+  &copy; kokorocare / 企業のオンライン保健室 操作マニュアル
+</footer>
+</body>
+</html>

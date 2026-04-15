@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<base href="/kokorocare/">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>保健室管理者向けマニュアル｜企業のオンライン保健室</title>
+<link rel="stylesheet" href="style.css">
+<script defer src="fallback.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <h1>保健室管理者向け操作マニュアル</h1>
+  <p>保健室全体を統括する管理者さま向けの手順書</p>
+</header>
+<div class="breadcrumb"><a href="index.html">ホーム</a> / 保健室管理者</div>
+
+<main>
+  <nav class="role-nav">
+    <a href="index.html">ホーム</a>
+    <a href="role-individual.html">受信者</a>
+    <a href="role-corporate.html">企業管理者</a>
+    <a href="role-teacher.html">先生</a>
+    <a class="current" href="role-room-admin.html">保健室管理者</a>
+    <a href="role-sysadmin.html">システム管理者</a>
+    <a href="common.html">共通事項</a>
+  </nav>
+
+  <section>
+    <h2>保健室管理者ができること</h2>
+    <div class="inherit-note">
+      先生の全機能（<a href="role-teacher.html">先生マニュアル参照</a>）に加えて、以下の機能が利用できます。
+    </div>
+    <ul class="feature-list">
+      <li><strong>保健室の登録・編集</strong> &mdash; 新しい保健室を作成し、名称を変更できます</li>
+      <li><strong>先生の登録・管理</strong> &mdash; 全先生のアカウントを作成・編集できます（先生は自分のみ）</li>
+      <li><strong>全先生のレポート閲覧</strong> &mdash; 自分の保健室に所属する全先生のレポートを会社・先生フィルタ付きで閲覧できます</li>
+      <li><strong>OTP認証でのログイン</strong> &mdash; パスワードではなく、メールで届く6桁コードでログインします</li>
+    </ul>
+    <div class="warn">
+      保健室管理者のログインは<strong>管理者ログイン</strong>（<code>/admin/login</code>）からOTP認証で行います。通常のログイン画面（<code>/login</code>）では入れません。詳しくは<a href="common.html#login">共通事項：ログイン手順</a>をご覧ください。
+    </div>
+  </section>
+
+  <!-- ===== 保健室管理 ===== -->
+  <section>
+    <h2>保健室を登録・管理する</h2>
+    <h3>新しい保健室を登録する</h3>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>サイドメニューの「保健室管理」をクリックし、<span class="btn-sample">新規登録</span>をクリックします。</p>
+        <div class="screenshot"><img src="images/room-health-room-list.png" alt="保健室一覧"></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>保健室名を入力して<span class="btn-sample">登録</span>をクリックします。</p>
+      </div>
+    </div>
+
+    <h3>保健室を編集する</h3>
+    <p>保健室一覧から対象の保健室をクリックし、名称を変更して保存します。</p>
+    <div class="note">
+      保健室を削除するにはシステム管理者の権限が必要です。
+    </div>
+  </section>
+
+  <!-- ===== 先生管理 ===== -->
+  <section>
+    <h2>先生を登録・管理する</h2>
+    <h3>新しい先生を登録する</h3>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>サイドメニューの「先生管理」をクリックし、<span class="btn-sample">新規登録</span>をクリックします。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>以下の情報を入力して登録します。</p>
+        <table>
+          <tr><th>項目</th><th>内容</th></tr>
+          <tr><td>氏名</td><td>先生の表示名</td></tr>
+          <tr><td>メールアドレス</td><td>ログインに使用</td></tr>
+          <tr><td>所属保健室</td><td>どの保健室に所属するか</td></tr>
+          <tr><td>勤務可能曜日</td><td>月〜日から複数選択</td></tr>
+          <tr><td>備考</td><td>自由記述（任意）</td></tr>
+        </table>
+        <div class="screenshot"><img src="images/room-teacher-create.png" alt="先生登録画面"></div>
+      </div>
+    </div>
+
+    <h3>先生のプロフィールを編集する</h3>
+    <p>先生一覧から対象の先生をクリックすると詳細画面が開きます。勤務可能曜日・プロファイリング資料・備考を編集できます。</p>
+
+    <h3>先生を企業に割り当てる</h3>
+    <p>企業詳細ページの「担当先生」セクションで先生を追加・解除できます。1つの企業に複数の先生を割り当て可能です。</p>
+  </section>
+
+  <!-- ===== 全先生レポート ===== -->
+  <section>
+    <h2>全先生のレポートを確認する</h2>
+    <p>サイドメニューの「先生レポート」をクリックすると、自分の保健室に所属する全先生のレポートが表示されます。</p>
+    <p>以下のフィルタが利用できます。</p>
+    <table>
+      <tr><th>フィルタ</th><th>内容</th></tr>
+      <tr><td>年月</td><td>対象月を指定</td></tr>
+      <tr><td>会社</td><td>特定の企業に絞り込み</td></tr>
+      <tr><td>先生</td><td>自分の保健室の先生全員から選択</td></tr>
+    </table>
+    <div class="note">
+      先生ロールでは自分のレポートのみ表示されますが、保健室管理者は自分の保健室の全先生を確認できます。
+    </div>
+    <div class="screenshot"><img src="images/room-teacher-report-all.png" alt="全先生レポート"></div>
+  </section>
+</main>
+
+<footer>
+  &copy; kokorocare / 企業のオンライン保健室 操作マニュアル
+</footer>
+</body>
+</html>
