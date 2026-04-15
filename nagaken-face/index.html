@@ -809,74 +809,69 @@
       <h2>協力会社の初期セットアップ</h2>
     </div>
     <div class="section-body">
-      <p>本章は <strong>協力会社ロール</strong>（協力会社の事務担当者）が行う作業です。所属する作業員（職人さん）が顔認証システムで入退場できるよう、事前の案内と情報整備を行います。</p>
+      <p>本章は <strong>協力会社ロール</strong>（協力会社の事務担当者）が行う作業です。協力会社側には管理画面ログインやアカウント発行は <strong>ありません</strong>。所属作業員の個人情報を <strong>一括登録ページ（ログイン不要）</strong> からCSVで登録するのがメインの作業になります。</p>
 
-      <h3 class="sub">5-1. 管理画面ログイン</h3>
-      <div class="step-list">
-        <div class="step-card">
-          <div class="step-number">STEP<span>1</span></div>
-          <div class="step-content">
-            <h3>本社管理者から配布されたアカウントでログイン</h3>
-            <ul>
-              <li>ID・初期パスワードで face.gemba-ai.cloud 管理画面へ</li>
-              <li>初回ログイン時にパスワード変更</li>
-              <li>自社（協力会社）の情報が正しく表示されることを確認</li>
-            </ul>
-          </div>
-        </div>
-        <div class="step-card">
-          <div class="step-number">STEP<span>2</span></div>
-          <div class="step-content">
-            <h3>所属ClientIDを確認</h3>
-            <ul>
-              <li>所属先が <strong>本社（ClientID=1）</strong> か <strong>九州支店（ClientID=4）</strong> かを確認</li>
-              <li>作業員に案内するURLが変わるため重要</li>
-            </ul>
-          </div>
-        </div>
+      <div class="info">
+        <strong>作業の全体像：</strong><br>
+        ① 所属作業員の個人情報をCSVで一括登録（協力会社が実施） →
+        ② 顔写真・資格者証・NFCタグの本人登録（作業員本人が第6章の手順で実施）
       </div>
 
-      <h3 class="sub">5-2. 紐付いている現場の確認</h3>
-      <div class="step-list">
-        <div class="step-card">
-          <div class="step-number">STEP<span>1</span></div>
-          <div class="step-content">
-            <h3>「現場一覧」で自社が入る現場をチェック</h3>
-            <ul>
-              <li>現場名・OnsiteID・工期を確認</li>
-              <li>入る予定の現場が無い場合は本社管理者に追加依頼</li>
-            </ul>
-          </div>
-        </div>
+      <h3 class="sub">5-1. 一括登録ページへアクセス（ログイン不要）</h3>
+      <p>所属先（本社／九州支店）に応じて、以下のURLを開きます。ログインは不要です。</p>
+      <a class="url-btn" href="https://face.gemba-ai.cloud/multiadd?clientId=1" target="_blank" rel="noopener">
+        <span class="btn-icon">🔗</span>
+        本社所属（clientId=1）の一括登録
+        <span class="btn-sub">https://face.gemba-ai.cloud/multiadd?clientId=1</span>
+      </a>
+      <br>
+      <a class="url-btn" href="https://face.gemba-ai.cloud/multiadd?clientId=4" target="_blank" rel="noopener">
+        <span class="btn-icon">🔗</span>
+        九州支店所属（clientId=4）の一括登録
+        <span class="btn-sub">https://face.gemba-ai.cloud/multiadd?clientId=4</span>
+      </a>
+
+      <h3 class="sub">5-2. 登録方法（2種類）</h3>
+      <table class="field-table">
+        <thead>
+          <tr><th>#</th><th>方法</th><th>向いている場面</th><th>操作概要</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>CSV一括登録</td>
+            <td>3名以上を一斉に登録</td>
+            <td>CSVテンプレートをDL → Excelで編集 → アップロード</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>画面直接入力</td>
+            <td>1〜2名の登録</td>
+            <td>画面上の表に直接入力して保存</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="info">
+        詳細な操作手順（CSV仕様18列・画面直接入力・トラブル対処）は既存の一括登録手順書で説明しています。<br>
+        👉 <a href="https://manual.kensetsu-total.support/nagaken" target="_blank" rel="noopener">一括登録 操作手順書（別ページ）</a>
       </div>
 
-      <h3 class="sub">5-3. 所属作業員リストの確認・追加</h3>
-      <div class="step-list">
-        <div class="step-card">
-          <div class="step-number">STEP<span>1</span></div>
-          <div class="step-content">
-            <h3>「所属作業員」一覧を開く</h3>
-            <ul>
-              <li>既登録の作業員が表示される</li>
-              <li>未登録の作業員がいれば追加</li>
-            </ul>
-          </div>
-        </div>
-        <div class="step-card">
-          <div class="step-number">STEP<span>2</span></div>
-          <div class="step-content">
-            <h3>新規作業員を仮登録（任意）</h3>
-            <ul>
-              <li>事務所で先に個人情報を代行入力することも可能</li>
-              <li>ただし顔写真・資格者証は本人登録のみ可</li>
-              <li>入力後、作業員本人に site-entry で続きを登録するよう案内</li>
-            </ul>
-          </div>
-        </div>
+      <h3 class="sub">5-3. 登録できる情報・できない情報</h3>
+      <ul class="checklist">
+        <li>✔ 個人情報18項目（氏名・生年月日・住所・緊急連絡先・資格有無・健康診断日 等）</li>
+      </ul>
+      <div class="important">
+        <div class="imp-title">⚠ 一括登録では登録できないもの</div>
+        <ul>
+          <li>顔写真</li>
+          <li>資格者証の写真</li>
+          <li>NFCタグの本人紐付け</li>
+        </ul>
+        これらは作業員本人が第6章の site-entry ページで登録する必要があります。
       </div>
-      <div class="notice"><strong>ポイント：</strong> 協力会社が代行で入力できるのは個人情報のみ。顔写真・資格者証の撮影と NFCタグの本人紐付けは必ず作業員本人が行ってください。</div>
 
-      <h3 class="sub">5-4. 所属作業員への登録URL案内</h3>
+      <h3 class="sub">5-4. 所属作業員への本人登録URL案内</h3>
+      <p>一括登録が済んだら、作業員本人に顔写真・資格者証の登録URLを案内します。</p>
       <div class="step-list">
         <div class="step-card">
           <div class="step-number">STEP<span>1</span></div>
@@ -892,11 +887,10 @@
         <div class="step-card">
           <div class="step-number">STEP<span>2</span></div>
           <div class="step-content">
-            <h3>登録完了を確認</h3>
+            <h3>未登録者のフォローアップ</h3>
             <ul>
-              <li>管理画面「所属作業員」一覧で登録ステータスを確認</li>
-              <li>顔写真・資格者証がアップ済みかを確認</li>
-              <li>未完了者には再案内</li>
+              <li>初回入場時に顔写真未登録だと現場で登録時間が発生</li>
+              <li>事前登録を推奨するよう案内</li>
             </ul>
           </div>
         </div>
@@ -904,7 +898,7 @@
       <div class="screenshot-placeholder">
         <div class="ph-icon">📷</div>
         <div class="ph-label">スクリーンショット貼付予定</div>
-        協力会社向け管理画面・所属作業員一覧
+        一括登録ページ・CSVアップロード画面
       </div>
     </div>
   </section>
