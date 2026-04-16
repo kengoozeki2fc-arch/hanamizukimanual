@@ -109,6 +109,7 @@
       font-size: 13px; text-align: center;
     }
     .flow .box strong { display: block; color: #1a3a5c; margin-bottom: 4px; }
+    .flow a.box:hover { background: #d0e4f5; border-color: #1a3a5c; }
     .flow .arrow {
       display: flex; align-items: center; justify-content: center;
       color: #2a6496; font-size: 20px;
@@ -273,6 +274,16 @@
     }
 
     p { margin-bottom: 8px; }
+    .back-to-top {
+      display: block; text-align: right; margin-top: 16px;
+      font-size: 13px;
+    }
+    .back-to-top a {
+      color: #2a6496; text-decoration: none;
+      padding: 4px 12px; border: 1px solid #d0d7e0;
+      border-radius: 4px; transition: background 0.2s;
+    }
+    .back-to-top a:hover { background: #e8f0fa; }
   </style>
 </head>
 <body>
@@ -324,7 +335,7 @@
 </script>
 
 <!-- 表紙 -->
-<div class="cover">
+<div class="cover" id="top">
   <div class="label">建築現場の顔認証入退場システム</div>
   <h1>顔認証 初期登録 操作手順書<span>株式会社永賢組　システム管理者・本社管理者・現場監督・協力会社・作業員　共通版</span></h1>
   <div class="meta">作成日：2026年4月　／　対象システム：face.gemba-ai.cloud</div>
@@ -396,15 +407,15 @@
 
       <h3 class="sub">初期登録の全体フロー</h3>
       <div class="flow">
-        <div class="box"><strong>STEP 1</strong>システム管理者が環境・アカウントを整備</div>
+        <a href="#ch2" class="box" style="text-decoration:none; color:inherit; cursor:pointer;"><strong>STEP 1</strong>システム管理者が環境・アカウントを整備</a>
         <div class="arrow">▶</div>
-        <div class="box"><strong>STEP 2</strong>本社管理者が現場・協力会社を登録</div>
+        <a href="#ch3" class="box" style="text-decoration:none; color:inherit; cursor:pointer;"><strong>STEP 2</strong>本社管理者が現場・協力会社を登録</a>
         <div class="arrow">▶</div>
-        <div class="box"><strong>STEP 3</strong>現場監督がNFCカード設置／協力会社へ個人情報登録の案内</div>
+        <a href="#ch4" class="box" style="text-decoration:none; color:inherit; cursor:pointer;"><strong>STEP 3</strong>現場監督がNFCカード設置／協力会社へ個人情報登録の案内</a>
         <div class="arrow">▶</div>
-        <div class="box"><strong>STEP 4</strong>協力会社事務員が一括登録 or 作業員に登録案内</div>
+        <a href="#ch5" class="box" style="text-decoration:none; color:inherit; cursor:pointer;"><strong>STEP 4</strong>協力会社事務員が一括登録 or 作業員に登録案内</a>
         <div class="arrow">▶</div>
-        <div class="box"><strong>STEP 5</strong>作業員が本人情報・顔写真を登録</div>
+        <a href="#ch6" class="box" style="text-decoration:none; color:inherit; cursor:pointer;"><strong>STEP 5</strong>作業員が本人情報・顔写真を登録</a>
       </div>
 
       <div class="info">登録先サイトは <strong>face.gemba-ai.cloud</strong>（管理画面）と <strong>SharePointサイト</strong> の2系統です。どちらに何を登録するかは各章で明示します。</div>
@@ -575,6 +586,7 @@
         <li>AES鍵は安全に管理（社外流出防止）</li>
       </ul>
 
+      <div class="back-to-top"><a href="#top">▲ 一番上に戻る</a></div>
     </div>
   </section>
 
@@ -771,6 +783,7 @@
         <div class="ph-label">スクリーンショット貼付予定</div>
         作業員配布用QRコード・案内チラシ
       </div>
+      <div class="back-to-top"><a href="#top">▲ 一番上に戻る</a></div>
     </div>
   </section>
 
@@ -872,6 +885,7 @@
         <div class="ph-label">スクリーンショット貼付予定</div>
         一括登録ページ・CSVアップロード画面
       </div>
+      <div class="back-to-top"><a href="#top">▲ 一番上に戻る</a></div>
     </div>
   </section>
 
@@ -1072,6 +1086,7 @@
         <div class="imp-title">⚠ 顔認証が通らないときは</div>
         照明が暗い／マスク・サングラスをしている／登録写真と体重・髪型が大きく変わった 等が原因です。現場監督に連絡して顔写真の再登録を依頼してください。
       </div>
+      <div class="back-to-top"><a href="#top">▲ 一番上に戻る</a></div>
     </div>
   </section>
 
@@ -1123,6 +1138,7 @@
           </tr>
         </tbody>
       </table>
+      <div class="back-to-top"><a href="#top">▲ 一番上に戻る</a></div>
     </div>
   </section>
 
@@ -1149,6 +1165,7 @@
         </div>
       </div>
       <div class="info">システム障害・緊急時は、本社システム担当（管理者）を経由して連絡してください。</div>
+      <div class="back-to-top"><a href="#top">▲ 一番上に戻る</a></div>
     </div>
   </section>
 
