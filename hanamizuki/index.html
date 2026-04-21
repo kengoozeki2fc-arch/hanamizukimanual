@@ -95,10 +95,21 @@
   /* セクションへのアンカージャンプ時の余白 */
   .section-box { scroll-margin-top: 20px; }
 
+  /* ==== ドキュメント間共通ナビ ==== */
+  .doc-nav { max-width: 900px; margin: 20px auto 10px; padding: 0 20px; }
+  .doc-nav-label { font-size: 11px; color: #888; margin-bottom: 8px; letter-spacing: 2px; font-weight: bold; }
+  .doc-nav-items { display: flex; gap: 10px; flex-wrap: wrap; }
+  .doc-nav-item { flex: 1; min-width: 160px; display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 10px; background: white; border: 1.5px solid #dde4ea; text-decoration: none; color: #555; transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s, background 0.15s; }
+  .doc-nav-item .dn-icon { font-size: 22px; flex-shrink: 0; line-height: 1; }
+  .doc-nav-item .dn-text { font-size: 14px; font-weight: bold; }
+  .doc-nav-item:not(.active):hover { border-color: #3a9fd0; background: #f0f8fc; transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .doc-nav-item.active { background: linear-gradient(135deg, #4db8a4, #3a9fd0); color: white; border-color: transparent; cursor: default; box-shadow: 0 2px 8px rgba(74,184,164,0.25); }
+  @media (max-width: 600px) { .doc-nav-items { flex-direction: column; } .doc-nav-item { min-width: 0; } }
+
   @media print {
     body { background: white; }
     .section-box { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; }
-    .back-to-top { display: none; }
+    .back-to-top, .doc-nav { display: none; }
   }
 </style>
 </head>
@@ -152,6 +163,25 @@
     <span>撮影データは毎日1回、自動的にAzureクラウドへ転送・保存されます。先生が転送作業をする必要はありません。</span>
   </div>
 </div>
+
+<!-- 3ドキュメント共通ナビ -->
+<nav class="doc-nav" aria-label="マニュアル切替">
+  <div class="doc-nav-label">📚 このサービスのマニュアル</div>
+  <div class="doc-nav-items">
+    <span class="doc-nav-item active" aria-current="page">
+      <span class="dn-icon">👩‍🏫</span>
+      <span class="dn-text">先生向けガイド</span>
+    </span>
+    <a href="/hanamizuki/setup.html" class="doc-nav-item">
+      <span class="dn-icon">🛠️</span>
+      <span class="dn-text">カメラセットアップ</span>
+    </a>
+    <a href="/hanamizuki-server" class="doc-nav-item">
+      <span class="dn-icon">⚙️</span>
+      <span class="dn-text">サーバーセットアップ</span>
+    </a>
+  </div>
+</nav>
 
 <!-- ① おはようカメラ -->
 <div class="section">

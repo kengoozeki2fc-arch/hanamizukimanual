@@ -76,10 +76,21 @@
 
   .draft-note { background: #fff8ea; border: 1.5px dashed #f0a030; border-radius: 10px; padding: 14px 18px; margin: 20px auto; max-width: 900px; color: #a07020; font-size: 13px; }
 
+  /* ==== ドキュメント間共通ナビ ==== */
+  .doc-nav { max-width: 900px; margin: 20px auto 10px; padding: 0 20px; }
+  .doc-nav-label { font-size: 11px; color: #888; margin-bottom: 8px; letter-spacing: 2px; font-weight: bold; }
+  .doc-nav-items { display: flex; gap: 10px; flex-wrap: wrap; }
+  .doc-nav-item { flex: 1; min-width: 160px; display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 10px; background: white; border: 1.5px solid #dde4ea; text-decoration: none; color: #555; transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s, background 0.15s; }
+  .doc-nav-item .dn-icon { font-size: 22px; flex-shrink: 0; line-height: 1; }
+  .doc-nav-item .dn-text { font-size: 14px; font-weight: bold; }
+  .doc-nav-item:not(.active):hover { border-color: #3a9fd0; background: #f0f8fc; transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .doc-nav-item.active { background: linear-gradient(135deg, #4db8a4, #3a9fd0); color: white; border-color: transparent; cursor: default; box-shadow: 0 2px 8px rgba(74,184,164,0.25); }
+  @media (max-width: 600px) { .doc-nav-items { flex-direction: column; } .doc-nav-item { min-width: 0; } }
+
   @media print {
     body { background: white; }
     .section-box { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; }
-    .back-to-top, .top-link-bar { display: none; }
+    .back-to-top, .top-link-bar, .doc-nav { display: none; }
   }
 </style>
 </head>
@@ -92,13 +103,28 @@
   <p>カメラ機材の到着〜設置〜初期設定までの手順をまとめています</p>
 </div>
 
-<div class="top-link-bar">
-  <a href="index.html">← 先生向け操作ガイドに戻る</a>
-</div>
+<!-- 3ドキュメント共通ナビ -->
+<nav class="doc-nav" aria-label="マニュアル切替">
+  <div class="doc-nav-label">📚 このサービスのマニュアル</div>
+  <div class="doc-nav-items">
+    <a href="/hanamizuki/" class="doc-nav-item">
+      <span class="dn-icon">👩‍🏫</span>
+      <span class="dn-text">先生向けガイド</span>
+    </a>
+    <span class="doc-nav-item active" aria-current="page">
+      <span class="dn-icon">🛠️</span>
+      <span class="dn-text">カメラセットアップ</span>
+    </span>
+    <a href="/hanamizuki-server" class="doc-nav-item">
+      <span class="dn-icon">⚙️</span>
+      <span class="dn-text">サーバーセットアップ</span>
+    </a>
+  </div>
+</nav>
 
 <div class="draft-note">
   ⚠️ このガイドは設置担当者（クラウドパワー／園管理者）向けです。日常利用の先生向けは
-  <a href="index.html" style="color:#c07020; font-weight:bold;">先生向け操作ガイド</a> を参照してください。
+  <a href="/hanamizuki/" style="color:#c07020; font-weight:bold;">先生向け操作ガイド</a> を参照してください。
 </div>
 
 <!-- セットアップ対象 -->
