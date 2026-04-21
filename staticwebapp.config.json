@@ -71,6 +71,16 @@
       "headers": {
         "Cache-Control": "public, max-age=86400"
       }
+    },
+    {
+      "route": "/hanamizuki-server",
+      "rewrite": "/hanamizuki-server/index.html"
+    },
+    {
+      "route": "/hanamizuki-server/images/*",
+      "headers": {
+        "Cache-Control": "public, max-age=86400"
+      }
     }
   ],
   "navigationFallback": {
@@ -105,6 +115,9 @@
       "/gemba-academy/*.js",
       "/gemba-academy/images/*.png",
       "/gemba-academy/images/*.jpg",
+      "/hanamizuki-server/*.html",
+      "/hanamizuki-server/images/*.png",
+      "/hanamizuki-server/images/*.jpg",
       "/*.png",
       "/*.jpg",
       "/*.pdf",

@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<base href="/hanamizuki-server/">
+<title>はなみずき園 カメラシステム サーバー側セットアップ手順書</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif; background: #f7f9fc; color: #333; font-size: 15px; line-height: 1.7; }
+
+  /* ヘッダー（管理者向けは濃紺グラデで差別化） */
+  .header { background: linear-gradient(135deg, #2c4b73, #3a6a9a); color: white; text-align: center; padding: 40px 20px 30px; }
+  .header .badge { display: inline-block; background: rgba(255,255,255,0.25); border-radius: 20px; padding: 4px 16px; font-size: 13px; margin-bottom: 12px; letter-spacing: 1px; }
+  .header h1 { font-size: 26px; font-weight: bold; margin-bottom: 8px; }
+  .header p { font-size: 14px; opacity: 0.9; }
+
+  .overview, .section { max-width: 960px; margin: 30px auto; padding: 0 20px; }
+  .section { margin-top: 0; }
+  .section-h2 { font-size: 18px; color: #2c4b73; margin-bottom: 16px; padding-left: 10px; border-left: 4px solid #2c4b73; }
+
+  /* 全体像カード（4リソース） */
+  .resource-cards { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; }
+  .resource-card { flex: 1; min-width: 180px; background: white; border-radius: 12px; padding: 18px 14px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-top: 4px solid var(--color); }
+  .resource-card .icon { font-size: 32px; margin-bottom: 8px; }
+  .resource-card h3 { font-size: 14px; font-weight: bold; margin-bottom: 4px; color: var(--color); }
+  .resource-card p { font-size: 12px; color: #666; }
+  .resource-card .tag { display: inline-block; margin-top: 6px; background: var(--color); color: white; border-radius: 10px; padding: 2px 10px; font-size: 11px; }
+
+  a.resource-card { text-decoration: none; color: inherit; transition: transform 0.15s, box-shadow 0.15s; }
+  a.resource-card:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0,0,0,0.12); }
+
+  /* セクションBox */
+  .section-box { background: white; border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.07); overflow: hidden; margin-bottom: 30px; scroll-margin-top: 20px; }
+  .section-header { display: flex; align-items: center; gap: 12px; padding: 16px 24px; color: white; font-size: 17px; font-weight: bold; }
+  .section-header .num { background: rgba(255,255,255,0.3); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: bold; flex-shrink: 0; }
+  .section-body { padding: 24px; }
+  .section-body h3.sub { font-size: 16px; color: #2c4b73; margin: 20px 0 12px; padding-left: 10px; border-left: 3px solid #4db8a4; }
+  .section-body h4 { margin: 18px 0 10px; color: #555; }
+
+  /* ステップ */
+  .steps { list-style: none; }
+  .steps li { display: flex; gap: 14px; margin-bottom: 14px; align-items: flex-start; }
+  .steps li .step-num { background: #e8edf4; color: #2c4b73; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+  .steps li .step-text { flex: 1; }
+  .steps li .step-text strong { display: block; margin-bottom: 2px; }
+
+  /* スクショ */
+  .screenshot-real { max-width: 100%; border-radius: 10px; border: 1px solid #dde4ea; box-shadow: 0 2px 10px rgba(0,0,0,0.08); margin: 14px 0; display: block; }
+  .screenshot-caption { font-size: 12px; color: #888; text-align: center; margin-top: -8px; margin-bottom: 14px; }
+
+  /* バナー */
+  .info-banner { display: flex; gap: 10px; align-items: flex-start; background: #eaf0fa; border-left: 4px solid #2c4b73; border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 14px 0; font-size: 14px; }
+  .info-banner.green { background: #eafaf1; border-color: #4db8a4; }
+  .info-banner.orange { background: #fff8ea; border-color: #f0a030; }
+  .info-banner.red { background: #fdecec; border-color: #d64545; }
+  .info-banner .bi { font-size: 18px; flex-shrink: 0; }
+
+  /* コード／JSON */
+  pre.code-block { background: #1e2736; color: #e6edf3; border-radius: 8px; padding: 14px 18px; margin: 10px 0; font-family: 'SF Mono', 'Consolas', 'Courier New', monospace; font-size: 13px; line-height: 1.6; overflow-x: auto; }
+  pre.code-block .kw { color: #79c0ff; }
+  pre.code-block .str { color: #a5d6ff; }
+  pre.code-block .hl { color: #ffa657; font-weight: bold; }
+  code.inline { background: #f0f4f8; border-radius: 4px; padding: 2px 6px; font-family: 'SF Mono','Consolas',monospace; font-size: 13px; color: #2c4b73; }
+
+  /* Before/After 並列 */
+  .ba-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 10px 0; }
+  .ba-grid .ba-box { background: #1e2736; color: #e6edf3; border-radius: 8px; padding: 12px 14px; font-family: 'SF Mono','Consolas',monospace; font-size: 12.5px; line-height: 1.55; overflow-x: auto; }
+  .ba-grid .ba-box.before { border-left: 3px solid #d64545; }
+  .ba-grid .ba-box.after { border-left: 3px solid #4db8a4; }
+  .ba-grid .ba-label { display: inline-block; font-family: 'Hiragino Kaku Gothic ProN', sans-serif; font-size: 11px; font-weight: bold; padding: 2px 8px; border-radius: 4px; margin-bottom: 6px; }
+  .ba-grid .before .ba-label { background: #d64545; color: white; }
+  .ba-grid .after  .ba-label { background: #4db8a4; color: white; }
+  @media (max-width: 720px) { .ba-grid { grid-template-columns: 1fr; } }
+
+  /* コネクタアコーディオン */
+  details.connector { background: #f7f9fc; border: 1px solid #dde4ea; border-radius: 10px; padding: 0; margin: 10px 0; overflow: hidden; }
+  details.connector > summary { cursor: pointer; padding: 12px 16px; font-weight: bold; color: #2c4b73; display: flex; align-items: center; gap: 10px; background: #f0f4f8; list-style: none; }
+  details.connector > summary::-webkit-details-marker { display: none; }
+  details.connector > summary::before { content: '▶'; font-size: 10px; color: #7a93a8; transition: transform 0.15s; }
+  details.connector[open] > summary::before { transform: rotate(90deg); }
+  details.connector > summary .conn-id { background: #2c4b73; color: white; border-radius: 4px; padding: 2px 8px; font-size: 12px; min-width: 28px; text-align: center; }
+  details.connector > .conn-body { padding: 16px 20px; border-top: 1px solid #dde4ea; }
+  details.connector > summary:hover { background: #e8edf4; }
+
+  /* 表 */
+  .spec-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 10px 0 14px; }
+  .spec-table th { background: #2c4b73; color: white; padding: 10px 14px; text-align: left; font-weight: bold; }
+  .spec-table td { padding: 10px 14px; border-bottom: 1px solid #e8eef3; vertical-align: top; }
+  .spec-table tr:nth-child(even) td { background: #f7fbfd; }
+  .spec-table td.mono { font-family: 'SF Mono','Consolas',monospace; font-weight: bold; color: #2c4b73; }
+
+  /* チェックリスト */
+  .checklist { list-style: none; }
+  .checklist li { padding: 8px 0; border-bottom: 1px solid #eee; display: flex; align-items: flex-start; gap: 10px; font-size: 14px; }
+  .checklist li::before { content: '☐'; font-size: 18px; color: #2c4b73; flex-shrink: 0; line-height: 1; }
+
+  /* 上に戻る */
+  .back-to-top { display: block; text-align: right; margin-top: 20px; font-size: 13px; color: #2c4b73; text-decoration: none; }
+  .back-to-top:hover { text-decoration: underline; }
+
+  /* 色変数 */
+  .c-cosmos   { --color: #3F51B5; }
+  .c-pa-app   { --color: #742774; }
+  .c-pa-flow  { --color: #0066ff; }
+  .c-func     { --color: #1c8fc4; }
+  .bg-cosmos  { background: #3F51B5; }
+  .bg-pa-app  { background: #742774; }
+  .bg-pa-flow { background: #0066ff; }
+  .bg-func    { background: #1c8fc4; }
+  .bg-final   { background: #4db8a4; }
+  .bg-gray    { background: #888; }
+
+  .footer { text-align: center; padding: 30px 20px; font-size: 12px; color: #aaa; }
+
+  @media print {
+    body { background: white; }
+    .section-box { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; }
+    .back-to-top { display: none; }
+    details.connector { break-inside: avoid; }
+    details.connector[open] > summary::before { transform: none; }
+    details.connector > .conn-body { display: block !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ヘッダー -->
+<div class="header" id="top">
+  <div class="badge">管理者・インテグレーター向け</div>
+  <h1>🛠️ はなみずき園 カメラシステム サーバー側セットアップ手順書</h1>
+  <p>新規テナント（新規園）への導入時に実施するAzure・Power Platform側の作業手順</p>
+</div>
+
+<!-- このドキュメントについて -->
+<div class="overview">
+  <div class="info-banner">
+    <span class="bi">📘</span>
+    <div>
+      <strong>このドキュメントの対象：</strong>新規の保育園を本サービスへ追加するときに、Azure／Power Platform 側を構築するエンジニア向けの手順書です。先生・保育士向けの操作ガイドは
+      <a href="/hanamizuki" style="color:#2c4b73; font-weight:bold;">こちら</a> を参照してください。
+    </div>
+  </div>
+
+  <h2 class="section-h2">システム全体像（4つのリソース）</h2>
+  <div class="resource-cards">
+    <a href="#section-cosmos" class="resource-card c-cosmos">
+      <div class="icon">🗃️</div>
+      <h3>Cosmos DB</h3>
+      <p>クライアント・園児・保育士・メール設定を保持するNoSQL DB</p>
+      <span class="tag">データ層</span>
+    </a>
+    <a href="#section-pa-app" class="resource-card c-pa-app">
+      <div class="icon">📱</div>
+      <h3>Power Apps</h3>
+      <p>管理画面（顔登録／写真DL／笑顔レポート）のフロントエンド</p>
+      <span class="tag">フロント</span>
+    </a>
+    <a href="#section-pa-app" class="resource-card c-func">
+      <div class="icon">⚙️</div>
+      <h3>Azure Functions</h3>
+      <p>Power Apps 背後のAPI群。Face API／ZIP／笑顔スコア処理</p>
+      <span class="tag">バックエンド</span>
+    </a>
+    <a href="#section-pa-app" class="resource-card c-pa-flow">
+      <div class="icon">🔄</div>
+      <h3>Power Automate</h3>
+      <p>OneDrive→Blob移行、OneDrive上のファイル削除</p>
+      <span class="tag">バックエンド</span>
+    </a>
+  </div>
+
+  <table class="spec-table">
+    <thead>
+      <tr><th>No.</th><th>リソース</th><th>レイヤ</th><th>主な役割</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>Azure Functions</td><td>バックエンド</td><td>Power Apps の全サーバー側機能を実装。Blob からの Face API 処理、Cosmos DB 登録、ZIPダウンロード、笑顔スコアダウンロード</td></tr>
+      <tr><td>2</td><td>Power Apps</td><td>フロントエンド</td><td>先生・園児のUIデザイン（顔登録／一覧／ダウンロード／メール設定）</td></tr>
+      <tr><td>3</td><td>Power Automate</td><td>バックエンド</td><td>OneDrive から Blob への日次移行、OneDrive 上のファイル削除</td></tr>
+      <tr><td>4</td><td>Cosmos DB（child-camera）</td><td>データ</td><td>Clients / Children / Staff / Settings コンテナを保持</td></tr>
+    </tbody>
+  </table>
+
+  <div class="info-banner green">
+    <span class="bi">🧭</span>
+    <div><strong>導入作業の流れ：</strong> ① Cosmos DB に新組織を追加（ClientID採番） → ② Power Apps Solution をクライアント環境へインポート → ③ 8つのコネクタの ClientID を書き換え → ④ 動作確認 → ⑤ 納品。所要時間の目安は約 2〜3 時間。</div>
+  </div>
+</div>
+
+<!-- ① Cosmos DB -->
+<div class="section">
+  <div class="section-box" id="section-cosmos">
+    <div class="section-header bg-cosmos">
+      <div class="num">①</div>
+      <span>🗃️ Cosmos DB — Clients テーブルに新組織を追加</span>
+    </div>
+    <div class="section-body">
+      <p>リソース名：<code class="inline">child-camera</code>（Azure Cosmos DB アカウント）／ コンテナ：<code class="inline">Clients</code></p>
+
+      <h3 class="sub">フェーズ1：Clients コンテナに組織レコードを追加する</h3>
+
+      <ol class="steps">
+        <li><div class="step-num">1</div><div class="step-text"><strong>Azure Portal にサインインし、Cosmos DB「child-camera」を開く</strong></div></li>
+        <li><div class="step-num">2</div><div class="step-text"><strong>左ペインから「Data Explorer」を選択</strong></div></li>
+        <li><div class="step-num">3</div><div class="step-text"><strong>コンテナ「Clients」を選択</strong></div></li>
+        <li><div class="step-num">4</div><div class="step-text"><strong>上部ツールバーの「New Item」をクリック</strong></div></li>
+      </ol>
+      <img src="images/cosmos-new-item.png" alt="Cosmos DB Data Explorer で New Item ボタンをクリック" class="screenshot-real">
+      <p class="screenshot-caption">▲ Data Explorer → Clients.Items を開き「New Item」を押す</p>
+
+      <ol class="steps">
+        <li><div class="step-num">5</div><div class="step-text"><strong>右ペインに以下のJSONテンプレートを貼り付け、園情報を書き換える</strong>
+        <p style="font-size:13px; color:#555; margin-top:4px;"><code class="inline">id</code> と <code class="inline">ClientID</code> は <strong>既存最大値＋1</strong> を採番（既存が 1 なら 2）。<code class="inline">PersonGroupId</code> / <code class="inline">StaffGroupId</code> は <strong>連番ルール（下記）</strong>で採番。</p>
+        </div></li>
+      </ol>
+
+<pre class="code-block">{
+    "id": "<span class="hl">2</span>",
+    "ClientID": <span class="hl">2</span>,
+    "OrganizationName": "ORGANIZATION NAME",
+    "ClientName": "CLIENT NAME",
+    "ClientKanaName": "KANA NAME",
+    "ClientAddress": "ADDRESS",
+    "ClientPhoneNo": "MOBILE NUMBER",
+    "ClientPrefecture": "Japan",
+    "Status": true,
+    "CreatedDate": "2025-09-12T10:00:00Z",
+    "UpdateDate":  "2025-09-12T10:30:00Z",
+    "PersonGroupId": "<span class="hl">hana-mizuki-g004</span>",
+    "StaffGroupId":  "<span class="hl">hana-mizuki-s004</span>"
+}</pre>
+
+      <img src="images/cosmos-save-item.png" alt="JSONを貼り付けて Save ボタンをクリック" class="screenshot-real">
+      <p class="screenshot-caption">▲ 右ペインへJSONを貼付し、上部ツールバーの「Save」を押す</p>
+
+      <ol class="steps" style="margin-top:8px;">
+        <li><div class="step-num">6</div><div class="step-text"><strong>「Save item」をクリックしてレコードを保存</strong></div></li>
+      </ol>
+
+      <h3 class="sub">PersonGroupId / StaffGroupId の採番ルール</h3>
+      <div class="info-banner orange">
+        <span class="bi">🔢</span>
+        <div><strong>連番で増やすこと。</strong>Face API 内のディレクトリ名として使われるため、既存の最大番号＋1 を割り当てます。Blob Storage のフォルダー作成にも同じ値が使われます。</div>
+      </div>
+
+      <table class="spec-table">
+        <thead>
+          <tr><th>項目</th><th>既存（例）</th><th>新規割当（例）</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>PersonGroupId</td><td class="mono">hana-mizuki-g005</td><td class="mono">hana-mizuki-g006</td></tr>
+          <tr><td>StaffGroupId</td><td class="mono">hana-mizuki-s005</td><td class="mono">hana-mizuki-s006</td></tr>
+        </tbody>
+      </table>
+
+      <div class="info-banner red">
+        <span class="bi">⚠️</span>
+        <div><strong>Face API ディレクトリは Azure Portal から作成する画面がありません。</strong>PersonGroupId / StaffGroupId を変更・追加した場合は <strong>必ず開発担当（クラウドパワー）に連絡</strong>してください。こちらでディレクトリを作成します。</div>
+      </div>
+
+      <a href="#top" class="back-to-top">▲ 上に戻る</a>
+    </div>
+  </div>
+
+  <!-- ② Power Apps Solution -->
+  <div class="section-box" id="section-pa-app">
+    <div class="section-header bg-pa-app">
+      <div class="num">②</div>
+      <span>📱 Power Apps Solution のエクスポート・インポート</span>
+    </div>
+    <div class="section-body">
+      <p>Power Apps の管理画面は <strong>Solution（ソリューション）単位</strong>で他環境へ移送します。開発元環境から ZIP エクスポートし、クライアント環境へインポートします。</p>
+
+      <h3 class="sub">フェーズ1：Power App を Solution に追加する</h3>
+      <ol class="steps">
+        <li><div class="step-num">1</div><div class="step-text"><strong><a href="https://make.powerapps.com" target="_blank">https://make.powerapps.com</a> にアクセス</strong></div></li>
+        <li><div class="step-num">2</div><div class="step-text"><strong>対象の環境を選択する</strong></div></li>
+        <li><div class="step-num">3</div><div class="step-text"><strong>左メニュー「Solutions（ソリューション）」へ移動</strong></div></li>
+        <li><div class="step-num">4</div><div class="step-text"><strong>「New Solution（新しいソリューション）」をクリック</strong>
+        <p style="font-size:13px; color:#555; margin-top:4px;">名前（例：<code class="inline">ChildCameraSolution</code>）／発行元／バージョン を入力</p>
+        </div></li>
+        <li><div class="step-num">5</div><div class="step-text"><strong>作成した Solution を開く</strong></div></li>
+        <li><div class="step-num">6</div><div class="step-text"><strong>「既存を追加」→「App」→「Canvas App」をクリック</strong></div></li>
+        <li><div class="step-num">7</div><div class="step-text"><strong>対象の Power App を選択して追加する</strong></div></li>
+      </ol>
+
+      <h3 class="sub">フェーズ2：Solution を ZIP エクスポートする</h3>
+      <ol class="steps">
+        <li><div class="step-num">1</div><div class="step-text"><strong>Solution 内で「Export」をクリック</strong></div></li>
+        <li><div class="step-num">2</div><div class="step-text"><strong>「Next」をクリック</strong></div></li>
+        <li><div class="step-num">3</div><div class="step-text"><strong>Managed / Unmanaged を選択し「Export」をクリック</strong>
+        <p style="font-size:13px; color:#555; margin-top:4px;">・<strong>Managed</strong>：クライアント納品用（編集不可の封入形式）<br>・<strong>Unmanaged</strong>：開発用（編集可能）</p>
+        </div></li>
+        <li><div class="step-num">4</div><div class="step-text"><strong>ZIP ファイルがダウンロードされる</strong></div></li>
+      </ol>
+
+      <h3 class="sub">フェーズ3：クライアント環境へ Solution をインポート</h3>
+      <ol class="steps">
+        <li><div class="step-num">1</div><div class="step-text"><strong>クライアント環境（Power Platform テナント）にログイン</strong>
+        <p style="font-size:13px; color:#555; margin-top:4px;"><a href="https://make.powerapps.com" target="_blank">https://make.powerapps.com</a></p>
+        </div></li>
+        <li><div class="step-num">2</div><div class="step-text"><strong>環境セレクタで正しい環境を選択</strong></div></li>
+        <li><div class="step-num">3</div><div class="step-text"><strong>左メニュー「Solutions」へ移動</strong></div></li>
+        <li><div class="step-num">4</div><div class="step-text"><strong>「Import Solution」をクリック</strong></div></li>
+        <li><div class="step-num">5</div><div class="step-text"><strong>エクスポートした ZIP をアップロード</strong></div></li>
+        <li><div class="step-num">6</div><div class="step-text"><strong>「次へ」→「インポート」をクリック</strong></div></li>
+      </ol>
+
+      <h3 class="sub">フェーズ4：アプリケーションを確認する</h3>
+      <ol class="steps">
+        <li><div class="step-num">1</div><div class="step-text"><strong>インポート後、Solution を開く</strong></div></li>
+        <li><div class="step-num">2</div><div class="step-text"><strong>以下を確認する</strong>
+          <ul style="margin:6px 0 0 16px; padding:0; font-size:14px; color:#555;">
+            <li>アプリが利用可能であること</li>
+            <li>接続設定が正常に動作していること</li>
+          </ul>
+        </div></li>
+        <li><div class="step-num">3</div><div class="step-text"><strong>実機アクセスして基本動作をテストする</strong></div></li>
+      </ol>
+
+      <div class="info-banner orange">
+        <span class="bi">📝</span>
+        <div><strong>簡易フロー：</strong> 開発元環境（Solution 作成 → ZIP エクスポート） → 本番環境（ZIP インポート → アプリ実行）</div>
+      </div>
+
+      <div class="info-banner red" style="margin-top:10px;">
+        <span class="bi">❗</span>
+        <div><strong>重要事項</strong>
+          <ul style="margin:6px 0 0 16px; padding:0; font-size:14px;">
+            <li>クライアント納品時は <strong>Managed Solution</strong> を使用してください。</li>
+            <li>インポート後、以下の再設定が必要な場合があります：<br><code class="inline">API 接続</code> <code class="inline">環境変数</code> <code class="inline">権限設定</code></li>
+            <li>インポート後は必ず動作確認を実施してください。</li>
+          </ul>
+        </div>
+      </div>
+
+      <a href="#top" class="back-to-top">▲ 上に戻る</a>
+    </div>
+  </div>
+
+  <!-- ③ Client ID 変更 -->
+  <div class="section-box" id="section-clientid">
+    <div class="section-header bg-pa-app">
+      <div class="num">③</div>
+      <span>🔑 クライアントID の変更（8つのコネクタ）</span>
+    </div>
+    <div class="section-body">
+      <p>
+        Cosmos DB の Clients コンテナで新規採番した <strong>ClientID</strong>（例：<code class="inline">2</code>）を、Power Apps 側の <strong>8つのコネクタ呼び出し</strong>に反映します。
+        初期値はすべて <strong><code class="inline">1</code></strong>（はなみずき）になっているので、新テナント用に書き換えてください。
+      </p>
+
+      <div class="info-banner">
+        <span class="bi">ℹ️</span>
+        <div>最初のパラメータが ClientID を表します。書き換え後は <strong>アプリを保存し、公開</strong> してください。</div>
+      </div>
+
+      <h4 style="margin-top:20px;">コネクタ一覧（全8個）</h4>
+      <table class="spec-table">
+        <thead><tr><th>#</th><th>コネクタ名</th><th>使用画面／イベント</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td class="mono">StudentList</td><td>Child List 画面 OnVisible ／ 削除確認 Yes ボタン</td></tr>
+          <tr><td>2</td><td class="mono">StudentRegistration</td><td>Children Registration 保存ボタン OnClick</td></tr>
+          <tr><td>3</td><td class="mono">Download_Children</td><td>Download Children ダウンロードボタン OnClick</td></tr>
+          <tr><td>4</td><td class="mono">StaffList</td><td>Staff 画面 OnVisible ／ 削除確認 Yes ボタン</td></tr>
+          <tr><td>5</td><td class="mono">Teacher_Registration</td><td>Teacher Registration 保存ボタン OnClick</td></tr>
+          <tr><td>6</td><td class="mono">DownloadSmileScore</td><td>Teacher List 笑顔ダウンロードボタン OnClick</td></tr>
+          <tr><td>7</td><td class="mono">getEmailList</td><td>設定 → メール画面 OnVisible</td></tr>
+          <tr><td>8</td><td class="mono">Email_Registration</td><td>Email Settings 保存ボタン OnClick</td></tr>
+        </tbody>
+      </table>
+
+      <!-- コネクタ1 -->
+      <details class="connector">
+        <summary><span class="conn-id">1</span>StudentList</summary>
+        <div class="conn-body">
+          <h4>A. OnVisible（Child List 画面）</h4>
+          <ol class="steps">
+            <li><div class="step-num">1</div><div class="step-text">Child List 画面へ移動</div></li>
+            <li><div class="step-num">2</div><div class="step-text">左ツリービューで <strong>「いちらんがめん」</strong> をクリック</div></li>
+            <li><div class="step-num">3</div><div class="step-text">右プロパティパネルで <strong>OnVisible</strong> イベントを選択</div></li>
+            <li><div class="step-num">4</div><div class="step-text">以下の関数が表示される</div></li>
+          </ol>
+          <div class="ba-grid">
+            <div class="ba-box before"><span class="ba-label">Before（ClientID=1）</span>
+<pre style="margin:0;">Set(
+    varChildResp,
+    StudentList.Run("1").studentdata
+);</pre>
+            </div>
+            <div class="ba-box after"><span class="ba-label">After（ClientID=2）</span>
+<pre style="margin:0;">Set(
+    varChildResp,
+    StudentList.Run("2").studentdata
+);</pre>
+            </div>
+          </div>
+
+          <h4>B. 削除確認（Yes ボタン）</h4>
+          <ol class="steps">
+            <li><div class="step-num">1</div><div class="step-text">「削除」ボタン → 確認メッセージで Yes ボタンをクリック</div></li>
+            <li><div class="step-num">2</div><div class="step-text">Yes ボタンの <strong>OnClick</strong> イベントを開く</div></li>
+            <li><div class="step-num">3</div><div class="step-text">同じく <code class="inline">StudentList.Run("1")</code> → <code class="inline">"2"</code> に変更</div></li>
+          </ol>
+
+          <div class="info-banner green"><span class="bi">✅</span><span>変更後「保存 → 公開」してください。</span></div>
+        </div>
+      </details>
+
+      <!-- コネクタ2 -->
+      <details class="connector">
+        <summary><span class="conn-id">2</span>StudentRegistration</summary>
+        <div class="conn-body">
+          <ol class="steps">
+            <li><div class="step-num">1</div><div class="step-text">Children Registration ページへ移動</div></li>
+            <li><div class="step-num">2</div><div class="step-text">「保存」ボタンをクリック</div></li>
+            <li><div class="step-num">3</div><div class="step-text">右プロパティパネルで <strong>OnClick</strong> を確認</div></li>
+          </ol>
+          <img src="images/powerapps-student-registration.png" alt="Student_Registration コネクタの OnClick 画面" class="screenshot-real">
+          <p class="screenshot-caption">▲ 「保存」ボタンの OnClick に Student_Registration.Run が記述されている</p>
+          <div class="ba-grid">
+            <div class="ba-box before"><span class="ba-label">Before</span>
+<pre style="margin:0;">Student_Registration.Run(
+    1,
+    Trim(NameInput.Text),
+    Trim(NameInput_1.Text),
+    Dropdown.Selected.Year,
+    JSON(attachments)
+)</pre>
+            </div>
+            <div class="ba-box after"><span class="ba-label">After</span>
+<pre style="margin:0;">Student_Registration.Run(
+    2,
+    Trim(NameInput.Text),
+    Trim(NameInput_1.Text),
+    Dropdown.Selected.Year,
+    JSON(attachments)
+)</pre>
+            </div>
+          </div>
+          <div class="info-banner green"><span class="bi">✅</span><span>アプリを保存し、公開してください。</span></div>
+        </div>
+      </details>
+
+      <!-- コネクタ3 -->
+      <details class="connector">
+        <summary><span class="conn-id">3</span>Download_Children</summary>
+        <div class="conn-body">
+          <ol class="steps">
+            <li><div class="step-num">1</div><div class="step-text">Download Children ページへ移動</div></li>
+            <li><div class="step-num">2</div><div class="step-text">「ダウンロード」ボタンをクリック</div></li>
+            <li><div class="step-num">3</div><div class="step-text">確認メッセージで Yes ボタンをクリック</div></li>
+            <li><div class="step-num">4</div><div class="step-text">右プロパティパネルで <strong>OnClick</strong> を確認</div></li>
+          </ol>
+          <img src="images/powerapps-download-children-1.png" alt="Download_Children OnClick 上部" class="screenshot-real">
+          <p class="screenshot-caption">▲ ボタン_9 の OnClick（Download_Children.Run の 3番目引数が ClientID）</p>
+          <img src="images/powerapps-download-children-2.png" alt="Download_Children OnClick 詳細" class="screenshot-real">
+          <p class="screenshot-caption">▲ IfError / Notify を含む Full コード</p>
+          <div class="ba-grid">
+            <div class="ba-box before"><span class="ba-label">Before</span>
+<pre style="margin:0;">Set(
+    Response,
+    Download_Children.Run(
+        DownloadKanjiName,
+        DownloadChildId,
+        1
+    )
+)</pre>
+            </div>
+            <div class="ba-box after"><span class="ba-label">After</span>
+<pre style="margin:0;">Set(
+    Response,
+    Download_Children.Run(
+        DownloadKanjiName,
+        DownloadChildId,
+        2
+    )
+)</pre>
+            </div>
+          </div>
+          <div class="info-banner green"><span class="bi">✅</span><span>アプリを保存し、公開してください。</span></div>
+        </div>
+      </details>
+
+      <!-- コネクタ4 -->
+      <details class="connector">
+        <summary><span class="conn-id">4</span>StaffList</summary>
+        <div class="conn-body">
+          <h4>A. OnVisible（スタッフページ）</h4>
+          <ol class="steps">
+            <li><div class="step-num">1</div><div class="step-text">Staff ページへ移動</div></li>
+            <li><div class="step-num">2</div><div class="step-text">左ツリービューで <strong>「せんせいいちらんがめん」</strong> をクリック</div></li>
+            <li><div class="step-num">3</div><div class="step-text">右プロパティパネルで <strong>OnVisible</strong> を選択</div></li>
+          </ol>
+          <div class="ba-grid">
+            <div class="ba-box before"><span class="ba-label">Before</span>
+<pre style="margin:0;">Set(
+    varStaffResp,
+    StaffList.Run("1").staffdata
+);</pre>
+            </div>
+            <div class="ba-box after"><span class="ba-label">After</span>
+<pre style="margin:0;">Set(
+    varStaffResp,
+    StaffList.Run("2").staffdata
+);</pre>
+            </div>
+          </div>
+
+          <h4>B. 削除確認（Yes ボタン）</h4>
+          <ol class="steps">
+            <li><div class="step-num">1</div><div class="step-text">「削除」ボタン → Yes ボタンをクリック</div></li>
+            <li><div class="step-num">2</div><div class="step-text"><strong>OnClick</strong> を開き、同じ要領で <code class="inline">"1"</code> → <code class="inline">"2"</code></div></li>
+          </ol>
+          <div class="info-banner green"><span class="bi">✅</span><span>アプリを保存し、公開してください。</span></div>
+        </div>
+      </details>
+
+      <!-- コネクタ5 -->
+      <details class="connector">
+        <summary><span class="conn-id">5</span>Teacher_Registration</summary>
+        <div class="conn-body">
+          <ol class="steps">
+            <li><div class="step-num">1</div><div class="step-text">Teacher Registration ページへ移動</div></li>
+            <li><div class="step-num">2</div><div class="step-text">「保存」ボタンをクリック</div></li>
+            <li><div class="step-num">3</div><div class="step-text">右プロパティパネルで <strong>OnClick</strong> を確認</div></li>
+          </ol>
+          <img src="images/powerapps-teacher-registration.png" alt="Teacher_Registration OnClick 画面" class="screenshot-real">
+          <p class="screenshot-caption">▲ Teacher_Registration.Run の 1番目引数が ClientID</p>
+          <div class="ba-grid">
+            <div class="ba-box before"><span class="ba-label">Before</span>
+<pre style="margin:0;">Teacher_Registration.Run(
+    1,
+    Trim(NameInput_4.Text),
+    Trim(NameInput_5.Text),
+    JSON(attachments)
+)</pre>
+            </div>
+            <div class="ba-box after"><span class="ba-label">After</span>
+<pre style="margin:0;">Teacher_Registration.Run(
+    2,
+    Trim(NameInput_4.Text),
+    Trim(NameInput_5.Text),
+    JSON(attachments)
+)</pre>
+            </div>
+          </div>
+          <div class="info-banner green"><span class="bi">✅</span><span>アプリを保存し、公開してください。</span></div>
+        </div>
+      </details>
+
+      <!-- コネクタ6 -->
+      <details class="connector">
+        <summary><span class="conn-id">6</span>DownloadSmileScore</summary>
+        <div class="conn-body">
+          <ol class="steps">
+            <li><div class="step-num">1</div><div class="step-text">Teacher List ページへ移動</div></li>
+            <li><div class="step-num">2</div><div class="step-text">「笑顔ダウンロード」ボタン → Yes ボタンをクリック</div></li>
+            <li><div class="step-num">3</div><div class="step-text">右プロパティパネルで <strong>OnClick</strong> を確認</div></li>
+          </ol>
+          <img src="images/powerapps-download-smile.png" alt="DownloadSmileScore OnClick 画面" class="screenshot-real">
+          <p class="screenshot-caption">▲ DownloadSmileScore.Run の 1番目引数が ClientID</p>
+          <div class="ba-grid">
+            <div class="ba-box before"><span class="ba-label">Before</span>
+<pre style="margin:0;">DownloadSmileScore.Run(
+    "1",
+    {
+        date:   Text(DatePicker1.SelectedDate, "yyyy-mm-dd"),
+        date_1: Text(DatePicker2.SelectedDate, "yyyy-mm-dd")
+    }
+)</pre>
+            </div>
+            <div class="ba-box after"><span class="ba-label">After</span>
+<pre style="margin:0;">DownloadSmileScore.Run(
+    "2",
+    {
+        date:   Text(DatePicker1.SelectedDate, "yyyy-mm-dd"),
+        date_1: Text(DatePicker2.SelectedDate, "yyyy-mm-dd")
+    }
+)</pre>
+            </div>
+          </div>
+          <div class="info-banner green"><span class="bi">✅</span><span>アプリを保存し、公開してください。</span></div>
+        </div>
+      </details>
+
+      <!-- コネクタ7 -->
+      <details class="connector">
+        <summary><span class="conn-id">7</span>getEmailList</summary>
+        <div class="conn-body">
+          <ol class="steps">
+            <li><div class="step-num">1</div><div class="step-text">「設定」ページへ移動</div></li>
+            <li><div class="step-num">2</div><div class="step-text">左ツリービューで <strong>「メールがめん」</strong> をクリック</div></li>
+            <li><div class="step-num">3</div><div class="step-text">右プロパティパネルで <strong>OnVisible</strong> を選択</div></li>
+          </ol>
+          <img src="images/powerapps-get-email-list.png" alt="getEmailList OnVisible 画面" class="screenshot-real">
+          <p class="screenshot-caption">▲ メールがめんの OnVisible で getEmailList.Run("1") が呼ばれる</p>
+          <div class="ba-grid">
+            <div class="ba-box before"><span class="ba-label">Before</span>
+<pre style="margin:0;">Set(
+    varRespEmail,
+    ParseJSON(getEmailList.Run("1").emaildata)
+);</pre>
+            </div>
+            <div class="ba-box after"><span class="ba-label">After</span>
+<pre style="margin:0;">Set(
+    varRespEmail,
+    ParseJSON(getEmailList.Run("2").emaildata)
+);</pre>
+            </div>
+          </div>
+          <div class="info-banner green"><span class="bi">✅</span><span>アプリを保存し、公開してください。</span></div>
+        </div>
+      </details>
+
+      <!-- コネクタ8 -->
+      <details class="connector">
+        <summary><span class="conn-id">8</span>Email_Registration</summary>
+        <div class="conn-body">
+          <ol class="steps">
+            <li><div class="step-num">1</div><div class="step-text">Email Settings ページへ移動</div></li>
+            <li><div class="step-num">2</div><div class="step-text">「保存」ボタンをクリック</div></li>
+            <li><div class="step-num">3</div><div class="step-text">右プロパティパネルで <strong>OnClick</strong> を確認</div></li>
+          </ol>
+          <div class="ba-grid">
+            <div class="ba-box before"><span class="ba-label">Before</span>
+<pre style="margin:0;">Email_Registration.Run(
+    1,
+    Trim(NameInput_9.Text)
+)</pre>
+            </div>
+            <div class="ba-box after"><span class="ba-label">After</span>
+<pre style="margin:0;">Email_Registration.Run(
+    2,
+    Trim(NameInput_9.Text)
+)</pre>
+            </div>
+          </div>
+          <div class="info-banner green"><span class="bi">✅</span><span>アプリを保存し、公開してください。</span></div>
+        </div>
+      </details>
+
+      <a href="#top" class="back-to-top">▲ 上に戻る</a>
+    </div>
+  </div>
+
+  <!-- ④ 納品前チェックリスト -->
+  <div class="section-box" id="section-checklist">
+    <div class="section-header bg-final">
+      <div class="num">④</div>
+      <span>✅ 納品前チェックリスト</span>
+    </div>
+    <div class="section-body">
+      <ul class="checklist">
+        <li>Cosmos DB「Clients」コンテナに新組織レコードが保存されている（id・ClientID が連番採番）</li>
+        <li>PersonGroupId / StaffGroupId を連番で払い出し、開発担当に連絡済み（Face API ディレクトリ作成依頼）</li>
+        <li>Power Apps Solution（Managed）をクライアント環境へインポートし、エラーなし</li>
+        <li>API 接続・環境変数・権限設定の再設定が完了している</li>
+        <li>8つのコネクタすべてで ClientID が新規採番値に置換されている（1→2 など）</li>
+        <li>アプリを保存し、公開済み（Publish 済み）</li>
+        <li>顔写真登録／一覧表示／写真ダウンロード／笑顔スコアダウンロード／メール設定 が実機で動作する</li>
+        <li>先生向け操作ガイド（<code class="inline">manual.kensetsu-total.support/hanamizuki</code>）のアカウント情報を差し替え済み</li>
+        <li>納品アカウント情報（OneDrive・Power Apps・Safie）を納品フォルダに集約</li>
+      </ul>
+      <a href="#top" class="back-to-top">▲ 上に戻る</a>
+    </div>
+  </div>
+
+  <!-- 困ったときは -->
+  <div class="section-box" id="section-help">
+    <div class="section-header bg-gray">
+      <div class="num">🆘</div>
+      <span>困ったときは</span>
+    </div>
+    <div class="section-body">
+      <h4 style="color:#555; margin-bottom:10px;">よくあるトラブル</h4>
+      <ul class="checklist">
+        <li>Solution インポート時にエラー → API 接続・環境変数が未設定の可能性。Solutions → 当該 Solution → Connection References で再設定</li>
+        <li>アプリは開くが一覧が空 → ClientID の書換え漏れ。8つのコネクタをすべて確認</li>
+        <li>顔登録で「登録に失敗」 → Face API ディレクトリが未作成。PersonGroupId / StaffGroupId を開発担当に連絡</li>
+        <li>笑顔スコアダウンロードでメールが届かない → getEmailList / Email_Registration の ClientID を確認</li>
+        <li>上記で解決しない場合は開発担当（クラウドパワー）に連絡</li>
+      </ul>
+      <a href="#top" class="back-to-top">▲ 上に戻る</a>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <p>はなみずき園 カメラシステム サーバー側セットアップ手順書　|　作成：クラウドパワー株式会社</p>
+  <p style="margin-top:4px;">管理者・インテグレーター向けの内部ドキュメントです</p>
+</div>
+</body>
+</html>
