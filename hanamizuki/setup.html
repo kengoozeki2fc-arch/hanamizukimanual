@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<base href="/hanamizuki/">
+<title>はなみずき園 カメラシステム 設置・初期設定ガイド</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif; background: #f7f9fc; color: #333; font-size: 15px; line-height: 1.7; }
+
+  .header { background: linear-gradient(135deg, #e05050, #f0a030); color: white; text-align: center; padding: 40px 20px 30px; }
+  .header .badge { display: inline-block; background: rgba(255,255,255,0.25); border-radius: 20px; padding: 4px 16px; font-size: 13px; margin-bottom: 12px; letter-spacing: 1px; }
+  .header h1 { font-size: 26px; font-weight: bold; margin-bottom: 8px; }
+  .header p { font-size: 14px; opacity: 0.9; }
+
+  .overview, .section { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+  .section { margin-top: 0; }
+  .section-h2 { font-size: 18px; color: #3a9fd0; margin-bottom: 16px; padding-left: 10px; border-left: 4px solid #3a9fd0; }
+
+  .camera-cards { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; }
+  .camera-card { flex: 1; min-width: 200px; background: white; border-radius: 12px; padding: 18px 14px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-top: 4px solid var(--color); }
+  .camera-card .icon { font-size: 32px; margin-bottom: 8px; }
+  .camera-card h3 { font-size: 14px; font-weight: bold; margin-bottom: 4px; color: var(--color); }
+  .camera-card p { font-size: 12px; color: #666; }
+  .camera-card .tag { display: inline-block; margin-top: 6px; background: var(--color); color: white; border-radius: 10px; padding: 2px 10px; font-size: 11px; }
+
+  .section-box { background: white; border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.07); overflow: hidden; margin-bottom: 30px; scroll-margin-top: 20px; }
+  .section-header { display: flex; align-items: center; gap: 12px; padding: 16px 24px; color: white; font-size: 17px; font-weight: bold; }
+  .section-header .num { background: rgba(255,255,255,0.3); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: bold; flex-shrink: 0; }
+  .section-body { padding: 24px; }
+
+  .steps { list-style: none; }
+  .steps li { display: flex; gap: 14px; margin-bottom: 16px; align-items: flex-start; }
+  .steps li .step-num { background: #fde8e8; color: #e05050; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+  .c-ohayo .steps li .step-num { background: #fff1e0; color: #c07020; }
+  .steps li .step-text { flex: 1; }
+  .steps li .step-text strong { display: block; margin-bottom: 2px; }
+  .steps li .step-text p { font-size: 14px; color: #555; margin-top: 4px; }
+
+  .screenshot-placeholder { background: #f0f4f8; border: 2px dashed #b0c4d8; border-radius: 10px; padding: 24px 20px; text-align: center; margin: 14px 0; color: #7a93a8; }
+  .screenshot-placeholder .ph-icon { font-size: 28px; margin-bottom: 6px; }
+  .screenshot-placeholder p { font-size: 13px; }
+  .screenshot-placeholder .ph-label { display: inline-block; background: #b0c4d8; color: white; border-radius: 6px; padding: 2px 10px; font-size: 11px; margin-bottom: 6px; }
+
+  .info-banner { display: flex; gap: 10px; align-items: flex-start; background: #eaf6fb; border-left: 4px solid #3a9fd0; border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 14px 0; font-size: 14px; }
+  .info-banner.green { background: #eafaf1; border-color: #4db8a4; }
+  .info-banner.orange { background: #fff8ea; border-color: #f0a030; }
+  .info-banner.red { background: #fdecec; border-color: #e05050; }
+  .info-banner .bi { font-size: 18px; flex-shrink: 0; }
+
+  .checklist { list-style: none; background: #fafbfd; border-radius: 10px; padding: 14px 20px; margin: 14px 0; }
+  .checklist li { padding: 8px 0; border-bottom: 1px solid #eee; display: flex; align-items: flex-start; gap: 10px; font-size: 14px; }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist li::before { content: '☐'; font-size: 18px; color: #3a9fd0; flex-shrink: 0; margin-top: -2px; }
+
+  .back-to-top { display: block; text-align: right; margin-top: 20px; font-size: 13px; color: #3a9fd0; text-decoration: none; }
+  .back-to-top:hover { text-decoration: underline; }
+
+  .top-link-bar { max-width: 900px; margin: 20px auto 0; padding: 0 20px; font-size: 13px; }
+  .top-link-bar a { color: #3a9fd0; text-decoration: none; }
+  .top-link-bar a:hover { text-decoration: underline; }
+
+  .footer { text-align: center; padding: 30px 20px; font-size: 12px; color: #aaa; }
+
+  .c-ohayo  { --color: #f0a030; }
+  .c-safie  { --color: #e05050; }
+  .bg-ohayo  { background: #f0a030; }
+  .bg-safie  { background: #e05050; }
+
+  a.camera-card { text-decoration: none; color: inherit; transition: transform 0.15s, box-shadow 0.15s; }
+  a.camera-card:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0,0,0,0.12); }
+
+  .draft-note { background: #fff8ea; border: 1.5px dashed #f0a030; border-radius: 10px; padding: 14px 18px; margin: 20px auto; max-width: 900px; color: #a07020; font-size: 13px; }
+
+  @media print {
+    body { background: white; }
+    .section-box { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; }
+    .back-to-top, .top-link-bar { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ヘッダー -->
+<div class="header" id="top">
+  <div class="badge">設置・初期設定ガイド</div>
+  <h1>🛠️ はなみずき園 カメラシステム セットアップ</h1>
+  <p>カメラ機材の到着〜設置〜初期設定までの手順をまとめています</p>
+</div>
+
+<div class="top-link-bar">
+  <a href="index.html">← 先生向け操作ガイドに戻る</a>
+</div>
+
+<div class="draft-note">
+  ⚠️ このガイドは設置担当者（クラウドパワー／園管理者）向けです。日常利用の先生向けは
+  <a href="index.html" style="color:#c07020; font-weight:bold;">先生向け操作ガイド</a> を参照してください。
+</div>
+
+<!-- セットアップ対象 -->
+<div class="overview">
+  <h2 class="section-h2">このガイドで設置するカメラ</h2>
+  <div class="camera-cards">
+    <a href="#setup-safie" class="camera-card c-safie">
+      <div class="icon">📹</div>
+      <h3>⑤ 動画カメラ（Safie）</h3>
+      <p>申込〜ネット接続〜保護者招待まで</p>
+      <span class="tag">ライブ配信</span>
+    </a>
+    <a href="#setup-ohayo" class="camera-card c-ohayo">
+      <div class="icon">🌅</div>
+      <h3>① おはようカメラ（iPad）</h3>
+      <p>アカウント払出〜音声操作〜OneDrive同期</p>
+      <span class="tag">自動撮影</span>
+    </a>
+  </div>
+</div>
+
+<!-- ⑤ Safie動画カメラ セットアップ -->
+<div class="section">
+  <div class="section-box c-safie" id="setup-safie">
+    <div class="section-header bg-safie">
+      <div class="num">⑤</div>
+      <span>📹 動画カメラ（Safie）セットアップ</span>
+    </div>
+    <div class="section-body">
+      <p style="margin-bottom:14px;">Safieはクラウド型の動画カメラサービスです。カメラ本体はSafie社から送付されます。</p>
+
+      <ol class="steps">
+        <li>
+          <div class="step-num">1</div>
+          <div class="step-text">
+            <strong>Safieを申し込む</strong>
+            <p>Safieのサービス申込ページからカメラ台数を選択して申し込みます。申込時のオプションで <strong>「閲覧ユーザー追加オプション」</strong> を必ず付けてください（保護者アカウントを発行するために必要です）。</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">2</div>
+          <div class="step-text">
+            <strong>カメラ到着後、電源を入れる</strong>
+            <p>Safie社からカメラが届いたら、付属のACアダプタで電源を入れます。</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">3</div>
+          <div class="step-text">
+            <strong>インターネットに接続する</strong>
+            <p>スマートフォンに <strong>Safieアプリ</strong> をインストール → ログイン → アプリのメニューから「カメラをインターネットに接続」を選び、画面の指示に従って園内Wi-Fiに接続します。</p>
+          </div>
+          </li>
+        <li>
+          <div class="step-num">4</div>
+          <div class="step-text">
+            <strong>設置してカメラの角度を確認する</strong>
+            <p>保育室の撮影範囲が適切になる場所にカメラを固定します。Safieアプリのライブ映像を見ながら、死角が出ないように角度を調整してください。</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">5</div>
+          <div class="step-text">
+            <strong>保護者を管理画面から招待する</strong>
+            <p>Safie管理画面にログイン → 「ユーザー管理」から、園で事前に預かっている保護者のメールアドレスを入力して招待メールを送信します。保護者は届いたメールのリンクから自分のパスワードを設定してログインできるようになります。</p>
+          </div>
+        </li>
+      </ol>
+
+      <div class="info-banner green">
+        <span class="bi">👨‍👩‍👧</span>
+        <span>保護者アカウントは「閲覧ユーザー追加オプション」の契約数が上限になります。人数に合わせて契約数を調整してください。</span>
+      </div>
+
+      <div class="screenshot-placeholder">
+        <div class="ph-icon">📷</div>
+        <div class="ph-label">Screenshot</div>
+        <p>Safieアプリ メニュー画面／管理画面 ユーザー招待画面（後日撮影予定）</p>
+      </div>
+
+      <a href="#top" class="back-to-top">▲ 上に戻る</a>
+    </div>
+  </div>
+
+  <!-- ① おはようカメラ セットアップ -->
+  <div class="section-box c-ohayo" id="setup-ohayo">
+    <div class="section-header bg-ohayo">
+      <div class="num">①</div>
+      <span>🌅 おはようカメラ（iPad）セットアップ</span>
+    </div>
+    <div class="section-body">
+      <p style="margin-bottom:14px;">iPadに音声操作を設定し、OneDriveで自動バックアップされる状態まで仕上げます。</p>
+
+      <ol class="steps">
+        <li>
+          <div class="step-num">1</div>
+          <div class="step-text">
+            <strong>グリッドワークスに連絡して組織アカウントを払い出してもらう</strong>
+            <p>おはようカメラ専用の組織アカウント（Microsoft 365）が必要です。グリッドワークス宛に依頼して、iPadとOneDrive用のアカウント（ID／パスワード）を発行してもらってください。</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">2</div>
+          <div class="step-text">
+            <strong>iPadのアクセシビリティで「音声操作」を有効にする</strong>
+            <p>iPad の <code style="background:#f7f9fc; padding:2px 6px; border-radius:4px;">設定 → アクセシビリティ → 音声コントロール</code> を開いて ON にします。コマンドに <strong>「おはよう」でシャッターを切る</strong> 設定を追加してください。</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">3</div>
+          <div class="step-text">
+            <strong>iPadを設置して「おはよう」で撮影テストをする</strong>
+            <p>園児の目線に合う位置にiPadを固定します。カメラアプリを起動した状態で「おはよう」と声を出し、シャッターが切れて写真が保存されることを確認します。</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">4</div>
+          <div class="step-text">
+            <strong>OneDriveアプリをインストールしてログインする</strong>
+            <p>App Store から「Microsoft OneDrive」をインストール → 手順1で払い出されたIDでサインインします。</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">5</div>
+          <div class="step-text">
+            <strong>写真の自動バックアップをONにする</strong>
+            <p>OneDriveアプリの <code style="background:#f7f9fc; padding:2px 6px; border-radius:4px;">設定 → カメラアップロード</code> を開いて ON にします。これで撮影した写真が自動的にOneDriveへ同期されます。</p>
+          </div>
+        </li>
+      </ol>
+
+      <div class="info-banner orange">
+        <span class="bi">⚠️</span>
+        <span>iPadを再起動したときは OneDriveアプリを一度立ち上げてバックアップが再開していることを確認してください。</span>
+      </div>
+
+      <div class="screenshot-placeholder">
+        <div class="ph-icon">📷</div>
+        <div class="ph-label">Screenshot</div>
+        <p>アクセシビリティ音声コントロール設定／OneDrive カメラアップロード設定（後日撮影予定）</p>
+      </div>
+
+      <h4 style="margin:20px 0 10px; color:#555;">設置完了チェックリスト</h4>
+      <ul class="checklist">
+        <li>組織アカウントでiPadにサインインできた</li>
+        <li>「おはよう」でシャッターが切れて写真が保存される</li>
+        <li>OneDriveアプリにサインインし、カメラアップロードがONになっている</li>
+        <li>テスト撮影した写真がOneDrive上に同期されている</li>
+      </ul>
+
+      <a href="#top" class="back-to-top">▲ 上に戻る</a>
+    </div>
+  </div>
+
+  <div class="draft-note" style="margin-top:0;">
+    📝 この先（② 自動追尾カメラ／③ 管理画面 の設置手順）は続けて追記予定です。
+  </div>
+</div>
+
+<div class="footer">
+  <p>はなみずき園 カメラシステム 設置・初期設定ガイド　|　作成：クラウドパワー株式会社</p>
+  <p style="margin-top:4px;">ご不明点はクラウドパワー担当までお問い合わせください</p>
+</div>
+</body>
+</html>
