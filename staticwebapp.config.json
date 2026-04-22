@@ -81,6 +81,20 @@
       "headers": {
         "Cache-Control": "public, max-age=86400"
       }
+    },
+    {
+      "route": "/oisi",
+      "rewrite": "/oisi/index.html"
+    },
+    {
+      "route": "/oisi/benkyokai",
+      "rewrite": "/oisi/benkyokai/index.html"
+    },
+    {
+      "route": "/oisi/benkyokai/images/*",
+      "headers": {
+        "Cache-Control": "public, max-age=86400"
+      }
     }
   ],
   "navigationFallback": {
@@ -118,6 +132,10 @@
       "/hanamizuki-server/*.html",
       "/hanamizuki-server/images/*.png",
       "/hanamizuki-server/images/*.jpg",
+      "/oisi/*.html",
+      "/oisi/benkyokai/*.html",
+      "/oisi/benkyokai/images/*.png",
+      "/oisi/benkyokai/images/*.jpg",
       "/*.png",
       "/*.jpg",
       "/*.pdf",

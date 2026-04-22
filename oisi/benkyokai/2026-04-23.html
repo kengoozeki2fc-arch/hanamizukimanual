@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>令和6年度 1級建築施工管理技術検定 第二次検定 勉強会資料（問題1〜5）</title>
+<style>
+  :root {
+    --cp-blue-50:  #F2F8FC;
+    --cp-blue-100: #D6E9F5;
+    --cp-blue-200: #C5DDE9;
+    --cp-blue-300: #A3CDE8;
+    --cp-blue-400: #74B2E0;
+    --cp-blue-500: #5A9BC7;
+    --cp-blue-700: #2E6BA6;
+    --cp-blue-900: #1A3A5C;
+    --cp-gray-100: #F0F0F0;
+    --cp-gray-300: #CCCCCC;
+    --cp-gray-600: #666666;
+    --cp-gray-700: #4A4A4A;
+    --cp-gray-900: #1A1A1A;
+    --cp-success-50:  #E6F5EB;
+    --cp-success-500: #28A745;
+    --cp-success-700: #1B7D3A;
+    --cp-warning-50:  #FFF8E1;
+    --cp-warning-500: #F0AD00;
+    --cp-error-500:   #DC3545;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Hiragino Sans", "ヒラギノ角ゴ Pro", "Yu Gothic", "游ゴシック", sans-serif;
+    line-height: 1.75;
+    color: var(--cp-gray-900);
+    background: var(--cp-blue-50);
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+  header.cover {
+    background: linear-gradient(135deg, var(--cp-blue-700) 0%, var(--cp-blue-400) 100%);
+    color: #fff;
+    padding: 56px 40px;
+    border-radius: 16px;
+    margin-bottom: 40px;
+    box-shadow: 0 6px 20px rgba(46,107,166,.15);
+  }
+  header.cover h1 {
+    font-size: 28px;
+    margin: 0 0 12px;
+    letter-spacing: .05em;
+  }
+  header.cover .subtitle {
+    font-size: 18px;
+    opacity: .95;
+    margin-bottom: 24px;
+  }
+  header.cover .meta {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 8px 16px;
+    font-size: 14px;
+  }
+  header.cover .meta dt {
+    opacity: .8;
+    font-weight: 600;
+  }
+  header.cover .meta dd { margin: 0; }
+
+  h2.q-title {
+    font-size: 22px;
+    color: #fff;
+    background: var(--cp-blue-700);
+    padding: 14px 20px;
+    border-radius: 8px 8px 0 0;
+    margin: 56px 0 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  h2.q-title .badge {
+    background: var(--cp-warning-500);
+    color: #fff;
+    font-size: 13px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-weight: 700;
+  }
+  .q-body {
+    background: #fff;
+    padding: 28px;
+    border: 1px solid var(--cp-blue-200);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    margin-bottom: 24px;
+  }
+  .q-body h3 {
+    color: var(--cp-blue-900);
+    font-size: 17px;
+    border-left: 5px solid var(--cp-blue-400);
+    padding-left: 12px;
+    margin: 24px 0 12px;
+  }
+  .q-body p { margin: 8px 0; }
+  .q-body ul, .q-body ol {
+    padding-left: 1.5em;
+    margin: 8px 0;
+  }
+  .q-body ul li, .q-body ol li { margin: 4px 0; }
+
+  .condition-box {
+    background: var(--cp-warning-50);
+    border-left: 4px solid var(--cp-warning-500);
+    padding: 12px 16px;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+  .condition-box strong { color: #8A6500; }
+
+  table.overview, table.choices, table.worktable {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 14px;
+    background: #fff;
+  }
+  table.overview th, table.overview td,
+  table.worktable th, table.worktable td {
+    border: 1px solid var(--cp-gray-300);
+    padding: 8px 10px;
+    text-align: left;
+    vertical-align: top;
+  }
+  table.overview th, table.worktable th {
+    background: var(--cp-blue-100);
+    color: var(--cp-blue-900);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  table.overview tr:nth-child(even) td,
+  table.worktable tr:nth-child(even) td {
+    background: var(--cp-gray-100);
+  }
+  table.choices {
+    max-width: 520px;
+    margin: 12px auto;
+  }
+  table.choices th, table.choices td {
+    border: 1px solid var(--cp-gray-300);
+    padding: 8px 12px;
+    text-align: center;
+  }
+  table.choices thead th {
+    background: var(--cp-blue-300);
+    color: #fff;
+  }
+  table.choices tbody th {
+    background: var(--cp-blue-50);
+    width: 40px;
+    font-weight: 700;
+  }
+  table.choices tr.correct td, table.choices tr.correct th {
+    background: var(--cp-success-50) !important;
+    font-weight: 700;
+    color: var(--cp-success-700);
+  }
+
+  /* 問題5：設問側テーブル → 正答欄 の間を空ける */
+  table.choices + .answer-box { margin-top: 36px; }
+
+  /* 正答欄内に複製する選択肢テーブル（設問側とは別配色で正解行をハイライト） */
+  .answer-box table.choices.answer-ver {
+    max-width: 520px;
+    margin: 10px auto 4px;
+    background: #fff;
+  }
+  .answer-box table.choices.answer-ver thead th {
+    background: var(--cp-blue-900);
+    color: #fff;
+  }
+  .answer-box table.choices.answer-ver tbody th {
+    background: var(--cp-blue-50);
+  }
+  .answer-box table.choices.answer-ver tr.correct td,
+  .answer-box table.choices.answer-ver tr.correct th {
+    background: var(--cp-warning-50) !important;
+    color: #8A6500 !important;
+    font-weight: 700;
+  }
+
+  .image-wrap {
+    text-align: center;
+    margin: 20px 0;
+    background: #fff;
+    padding: 16px;
+    border: 1px solid var(--cp-gray-300);
+    border-radius: 6px;
+  }
+  .image-wrap img {
+    max-width: 100%;
+    height: auto;
+  }
+  .image-wrap .caption {
+    font-size: 13px;
+    color: var(--cp-gray-600);
+    margin-top: 8px;
+  }
+
+  .answer-box {
+    background: var(--cp-success-50);
+    border-left: 5px solid var(--cp-success-500);
+    padding: 20px 24px;
+    margin: 24px 0;
+    border-radius: 0 6px 6px 0;
+  }
+  .answer-box h4 {
+    margin: 0 0 12px;
+    color: var(--cp-success-700);
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .answer-box h4::before {
+    content: "✓";
+    background: var(--cp-success-500);
+    color: #fff;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .answer-box h5 {
+    color: var(--cp-blue-700);
+    margin: 16px 0 6px;
+    font-size: 15px;
+  }
+
+  .explain-box {
+    background: var(--cp-blue-50);
+    border: 1px dashed var(--cp-blue-400);
+    padding: 16px 20px;
+    margin: 16px 0;
+    border-radius: 6px;
+    font-size: 14.5px;
+  }
+  .explain-box h4 {
+    margin: 0 0 10px;
+    color: var(--cp-blue-700);
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .explain-box h4::before { content: "💡"; }
+
+  .warn-box {
+    background: #FDEAEA;
+    border-left: 5px solid var(--cp-error-500);
+    padding: 12px 18px;
+    margin: 16px 0;
+    border-radius: 0 6px 6px 0;
+    font-size: 14px;
+  }
+  .warn-box strong { color: var(--cp-error-500); }
+
+  .proposal {
+    background: #fff;
+    border: 1px solid var(--cp-blue-200);
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin: 14px 0;
+  }
+  .proposal .head {
+    font-weight: 700;
+    color: var(--cp-blue-700);
+    font-size: 15px;
+    border-bottom: 2px solid var(--cp-blue-200);
+    padding-bottom: 6px;
+    margin-bottom: 10px;
+  }
+  .proposal dl { margin: 0; }
+  .proposal dt {
+    font-weight: 700;
+    color: var(--cp-blue-900);
+    margin-top: 8px;
+  }
+  .proposal dd { margin: 0 0 6px; }
+
+  footer.closing {
+    margin-top: 60px;
+    padding: 24px;
+    background: var(--cp-blue-900);
+    color: #fff;
+    text-align: center;
+    border-radius: 10px;
+  }
+  footer.closing .slogan {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    margin: 0;
+  }
+  footer.closing .sub {
+    opacity: .85;
+    margin-top: 8px;
+    font-size: 14px;
+  }
+
+  .nav-toc {
+    background: #fff;
+    border: 1px solid var(--cp-blue-200);
+    border-radius: 8px;
+    padding: 18px 24px;
+    margin-bottom: 32px;
+  }
+  .nav-toc h3 {
+    margin: 0 0 10px;
+    color: var(--cp-blue-700);
+    font-size: 15px;
+  }
+  .nav-toc ol { margin: 0; padding-left: 1.5em; }
+  .nav-toc a {
+    color: var(--cp-blue-700);
+    text-decoration: none;
+  }
+  .nav-toc a:hover { text-decoration: underline; }
+
+  @media print {
+    body { background: #fff; padding: 0; max-width: none; }
+    header.cover { box-shadow: none; page-break-after: always; }
+    h2.q-title { page-break-before: always; }
+    .q-body { page-break-inside: avoid; }
+    .answer-box, .explain-box, .proposal { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<p style="max-width:1000px;margin:0 auto 12px;font-size:13px;">
+  <a href="./" style="color:#2E6BA6;text-decoration:none;">← 勉強会一覧に戻る</a>
+  ｜<a href="../" style="color:#2E6BA6;text-decoration:none;">大石建設マニュアルTOP</a>
+</p>
+
+<header class="cover">
+  <h1>令和6年度 1級建築施工管理技術検定 第二次検定</h1>
+  <div class="subtitle">社内対策講座 勉強会資料（問題1〜5）</div>
+  <dl class="meta">
+    <dt>試験実施日</dt><dd>2024年10月20日（日）</dd>
+    <dt>対象受験</dt><dd>2026年10月18日（日）本試験</dd>
+    <dt>講師</dt><dd>林さん／大関（けんけん）</dd>
+    <dt>参加者</dt><dd>杉浦さん・星さん・森口さん・永原さん</dd>
+    <dt>出典</dt><dd>全国建設研修センター 公表問題／社内解答集・LLC株式会社</dd>
+  </dl>
+</header>
+
+<nav class="nav-toc">
+  <h3>目次</h3>
+  <ol>
+    <li><a href="#q1">問題1　施工経験記述（持続可能な建設業・働き方改革）</a></li>
+    <li><a href="#q2">問題2　設備・機械の安全使用留意事項</a></li>
+    <li><a href="#q3">問題3　ネットワーク工程表（事務所ビル内装）</a></li>
+    <li><a href="#q4">問題4　仕上げ工事の施工上の留意事項</a></li>
+    <li><a href="#q5">問題5　五肢択一（用語・数値穴埋め 全8問）</a></li>
+  </ol>
+</nav>
+
+<!-- ========================= 問題1 ========================= -->
+<section id="q1">
+<h2 class="q-title">問題1　<span class="badge">記述</span>施工経験記述（働き方改革）</h2>
+<div class="q-body">
+  <h3>設問</h3>
+  <p>持続可能な建設業を目指して、<strong>働き方改革</strong>を推進すべく様々な取組が官民一体となって続けられている昨今、建築工事の現場を管理していく上でのあなたの考えについて、次の1．及び2．の問いに答えなさい。</p>
+
+  <h3>1．現場作業の軽減策（3つ提案）</h3>
+  <p>右に示す工事概要の建築工事において、あなたが建設現場における統括的な施工の技術上の管理を求められる立場として、機能・性能等の要求された品質を確保しながら適正、かつ、合理的に進める上で、有効と考える<strong>現場作業の軽減策を3つ提案</strong>し、それぞれ次の①から③について具体的に記述しなさい。</p>
+  <p>ただし、3つの提案の②及び③はすべて異なる内容を記述するものとする。</p>
+
+  <div class="condition-box">
+    <strong>※記述不可の内容</strong>：
+    <ul>
+      <li>工事概要に示す工事において施工上必要としない工事及び作業に関する内容</li>
+      <li>計画変更確認申請が必要となる内容</li>
+      <li>竣工引渡し時期の遅れに繋がる内容</li>
+      <li>工程の短縮は図れるが現場作業の軽減には繋がらない内容</li>
+      <li>建築設備工事に関する内容</li>
+    </ul>
+  </div>
+
+  <ol>
+    <li>工種名又は作業名等</li>
+    <li>あなたが考える有効な現場作業の軽減策とそれが現場作業の軽減に繋がる理由</li>
+    <li>②の実施に当たって確保すべき品質とそのための軽減策における施工上の留意事項</li>
+  </ol>
+
+  <h3>2．時間外労働の現状（工事概要に関わらず）</h3>
+  <p>建設業における働き方改革の課題の1つとして、建設現場における<strong>時間外労働</strong>が挙げられる。右に示す工事概要の建築工事に係わらず、あなたの今日までの経験を踏まえて、建設工事の施工に従事する者の時間外労働の現状に関して、次の①及び②について具体的に記述しなさい。</p>
+  <ol>
+    <li>これまでの建設現場における施工や工程、管理等の業務において、施工に従事する者の時間外労働を増長させていた要因とそれが時間外労働の増長に繋がっていた理由</li>
+    <li>①の対策として、あなたが有効と考える建設現場における組織としての取組や工夫</li>
+  </ol>
+
+  <h3>工事概要（出題データ）</h3>
+  <table class="overview">
+    <tr><th>工事名</th><td>共同住宅新築工事</td><th>工期</th><td>2024年1月〜2025年6月</td></tr>
+    <tr><th>主要用途</th><td>共同住宅 52戸</td><th>主要構造</th><td>鉄筋コンクリート構造 地上7階建て</td></tr>
+    <tr><th>用途地域</th><td>住居地域／6m道路隣接</td><th>最高高さ</th><td>23.25m</td></tr>
+    <tr><th>敷地面積</th><td>2,350.00 m²</td><th>階高</th><td>1〜4階 3.3m、5〜7階 3.0m</td></tr>
+    <tr><th>建築面積</th><td>758.85 m²</td><th>エレベーター</th><td>乗用 8人乗り 1台</td></tr>
+    <tr><th>延床面積</th><td>4,950.60 m²</td><th>根切り深さ</th><td>2.5m（親杭横矢板工法）</td></tr>
+    <tr><th>鉄筋継手</th><td>柱・梁主筋：ガス圧接継手</td><th>地業</th><td>現場造成杭（アースドリル工法）</td></tr>
+  </table>
+
+  <div class="answer-box">
+    <h4>模範回答（3案）</h4>
+
+    <div class="proposal">
+      <div class="head">提案① 鉄筋工事（柱・梁主筋）</div>
+      <dl>
+        <dt>② 軽減策と理由</dt>
+        <dd>柱・梁主筋の継手を<strong>機械式継手（ねじ式等）</strong>に変更する。<br>→ ガス圧接作業を削減でき、火気養生や熟練技能者への依存度が低減し、作業時間短縮と作業負担軽減につながる。</dd>
+        <dt>③ 確保すべき品質／施工上の留意事項</dt>
+        <dd>所定のトルク管理を徹底し、施工前に施工要領書を整備して技能教育を行う。継手性能試験結果を確認し、継手位置の配筋精度を管理する。</dd>
+      </dl>
+    </div>
+
+    <div class="proposal">
+      <div class="head">提案② 内装工事（軽量鉄骨下地組立）</div>
+      <dl>
+        <dt>② 軽減策と理由</dt>
+        <dd><strong>プレカット材の採用およびユニット化施工</strong>を行う。<br>→ 現場加工が削減され、施工時間短縮・廃材削減につながる。</dd>
+        <dt>③ 確保すべき品質／施工上の留意事項</dt>
+        <dd>事前に施工図を精査し、搬入前寸法を確認する。開口部精度を確保し、レベル・通りの確認を徹底する。</dd>
+      </dl>
+    </div>
+
+    <div class="proposal">
+      <div class="head">提案③ 外壁工事（塗装）</div>
+      <dl>
+        <dt>② 軽減策と理由</dt>
+        <dd><strong>ローラー塗りを主体とした施工計画と可搬式足場の活用</strong>を行う。<br>→ 高所作業車依存を低減し、段取り替えが削減される。</dd>
+        <dt>③ 確保すべき品質／施工上の留意事項</dt>
+        <dd>膜厚管理を行い、塗り重ねの乾燥時間を遵守する。下地処理を確認し、塗りムラ防止の施工管理を行う。</dd>
+      </dl>
+    </div>
+
+    <h5>2．時間外労働の現状</h5>
+    <div class="proposal">
+      <dl>
+        <dt>① 増長要因と理由</dt>
+        <dd>設計変更への急対応・工程遅延のしわ寄せ・協力業者間の調整不足・書類業務の現場集中。これらにより突発対応や夜間書類作業が常態化していた。</dd>
+        <dt>② 有効な組織的取組</dt>
+        <dd>工程の週次見直し会議の徹底／ICT施工管理（写真整理・電子黒板活用）／業務分担明確化／施工BIM活用による干渉防止。</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="explain-box">
+    <h4>勉強会のポイント</h4>
+    <ul>
+      <li>3提案の②③は<strong>必ず異なる内容</strong>。工種・手段・品質確保策まで重複させない。</li>
+      <li>「工程短縮は図れるが<strong>現場作業の軽減</strong>には繋がらない」内容（例：並行作業化だけ、夜間作業化）は減点対象。</li>
+      <li>建築<strong>設備</strong>工事に関する内容は禁止。電気・給排水・空調は書かない。</li>
+      <li>提案の軸は「<strong>工場化・プレカット・ユニット化・機械化（ICT/ロボ）・外段取り化</strong>」のいずれかが定番。</li>
+      <li>2．の時間外労働は工事概要に紐付けない「あなたの経験」で書く。①は要因→理由、②は組織的取組で書き分けること。</li>
+    </ul>
+  </div>
+</div>
+</section>
+
+<!-- ========================= 問題2 ========================= -->
+<section id="q2">
+<h2 class="q-title">問題2　<span class="badge">記述</span>設備・機械の安全使用留意事項</h2>
+<div class="q-body">
+  <h3>設問</h3>
+  <p>建築工事における次の1．から3．の設備又は機械を安全に使用するための<strong>留意事項</strong>を、それぞれ<strong>2つ具体的に記述</strong>しなさい。</p>
+
+  <div class="condition-box">
+    <strong>※記述不可の内容</strong>：
+    <ul>
+      <li>1．から3．の解答はすべて異なる内容</li>
+      <li>保護帽や要求性能墜落制止用器具等の保護具の使用</li>
+      <li>気象条件、資格、免許及び届出に関する記述</li>
+      <li>使用資機材に不良品はないものとし、2．を除き保守点検に関する記述は不可</li>
+    </ul>
+  </div>
+
+  <ol>
+    <li>バケット容量 0.5 m³ 程度のバックホウ</li>
+    <li>工事用の仮設電力設備</li>
+    <li>ホイール式垂直昇降型の高所作業車</li>
+  </ol>
+
+  <div class="answer-box">
+    <h4>模範回答</h4>
+    <h5>1．バックホウ（バケット容量0.5m³程度）</h5>
+    <ul>
+      <li>作業半径内への立入を禁止し、合図者を配置して周囲の安全を確保する。</li>
+      <li>掘削箇所の地盤状況を事前に確認し、法面崩壊や機械の転倒を防止する（アウトリガー確実設置・水平確認）。</li>
+    </ul>
+    <h5>2．工事用仮設電力設備</h5>
+    <ul>
+      <li>回路ごとに<strong>漏電遮断器</strong>を設置し、感電事故を防止する。</li>
+      <li>配線は<strong>架空配線または防護管</strong>で保護し、損傷や引っ掛かりによる短絡・断線を防止する。</li>
+    </ul>
+    <h5>3．ホイール式垂直昇降型高所作業車</h5>
+    <ul>
+      <li>設置箇所の地盤支持力を確認し、不陸や段差のない平坦な位置で使用して転倒を防止する。</li>
+      <li>作業床の<strong>積載荷重</strong>を超過させない。作業範囲内の上方障害物・側方接触物を事前確認し接触事故を防止する。</li>
+    </ul>
+  </div>
+
+  <div class="explain-box">
+    <h4>勉強会のポイント</h4>
+    <ul>
+      <li>各機械で<strong>2つ・異なる観点</strong>を書く（①本体の転倒／②周囲への接触、のように分解するとカブらない）。</li>
+      <li>「ヘルメット着用」「フルハーネス装着」は<strong>禁止</strong>（保護具NG）。</li>
+      <li>「有資格者が運転」「運転資格確認」も<strong>禁止</strong>（資格・免許NG）。</li>
+      <li>「風速○m以上で中止」も<strong>禁止</strong>（気象条件NG）。</li>
+      <li>書ける軸：<strong>①転倒防止（地盤・アウトリガー・水平） ②接触防止（立入禁止・合図・バリケード） ③電気安全（漏電・絶縁・保護管） ④操作安全（積載荷重・作業半径・旋回範囲）</strong>。</li>
+    </ul>
+  </div>
+</div>
+</section>
+
+<!-- ========================= 問題3 ========================= -->
+<section id="q3">
+<h2 class="q-title">問題3　<span class="badge">記述</span>ネットワーク工程表（事務所ビル内装）</h2>
+<div class="q-body">
+  <h3>設問</h3>
+  <p>市街地での事務所ビル新築工事において、右の工事概要に示す事務所部分の内装工事に関する作業工程について、次の1．から4．の問いに答えなさい。</p>
+  <ul>
+    <li>工程表は計画時点におけるもので、対応する作業内容と所要日数、施工条件を合わせて示しているが、作業⑤及び作業⑧については作業内容を記載していない。</li>
+    <li>作業⑦のフリーアクセスフロア敷設作業は、作業ⓓ及び作業ⓔとの関係を示すために作業⑦-1、作業⑦-2に分けて工程表及び作業内容と所要日数に示している。</li>
+    <li>工程表の設備工事は電気設備（照明、コンセント）、通信設備、警報設備、空調設備とする。</li>
+    <li>各作業は一般的な手順に従って施工されるものとし、施工中に必要な試験や検査については記載を省略している。</li>
+  </ul>
+
+  <ol>
+    <li>作業⑤及び作業⑧の作業内容を記述しなさい。</li>
+    <li>内装工事における建築工事と設備工事の一般的な施工手順と、作業内容と所要日数、施工条件に記載してある条件を読み取り、◯始から◯終までの<strong>総所要日数</strong>を記入しなさい。</li>
+    <li>作業④のフリーフロート及び作業⑦のトータルフロートを記入しなさい。</li>
+    <li>作業⑦の着手に必要な支持脚（ペデスタル）の墨出しに係る工程を見込んでおらず、作業⑦の所要日数に1日を追加しなければならないことが判明した。工程追加後の◯始から◯終までの<strong>総所要日数</strong>を記入しなさい。</li>
+  </ol>
+
+  <h3>工事概要</h3>
+  <table class="overview">
+    <tr><th>用途</th><td>事務所</td></tr>
+    <tr><th>構造・規模</th><td>鉄筋コンクリート構造、地上6階、基準階における事務室部分の床面積 325 m²</td></tr>
+    <tr><th>事務室仕上げ</th><td>床：フリーアクセスフロア下地、タイルカーペット仕上げ<br>壁：軽量鉄骨下地、せっこうボード張り、塗装仕上げ<br>天井：軽量鉄骨下地、せっこうボード張り、ロックウール化粧吸音板仕上げ</td></tr>
+  </table>
+
+  <h3>工程表（出題原図）</h3>
+  <div class="image-wrap">
+    <img src="images/q3_network-07.png" alt="問題3 工程表ネットワーク図">
+    <div class="caption">出典：令和6年度 第二次検定問題 P-7／工程表・作業内容・所要日数・施工条件</div>
+  </div>
+
+  <h3>作業内容と所要日数（出題データ再掲）</h3>
+  <table class="worktable">
+    <tr><th>作業</th><th>作業内容</th><th>所要日数</th><th>作業</th><th>作業内容</th><th>所要日数</th></tr>
+    <tr><td>①</td><td>仕上げ墨出し</td><td>1日</td><td>⑦-2</td><td>フリーアクセスフロア敷設</td><td>2日</td></tr>
+    <tr><td>②</td><td>天井足場架設</td><td>1日</td><td>⑧</td><td>（問1で答える）</td><td>2日</td></tr>
+    <tr><td>③</td><td>天井・壁 軽量鉄骨下地組立（建具枠取付共）</td><td>3日</td><td>⑨</td><td>建具扉吊込み</td><td>1日</td></tr>
+    <tr><td>④</td><td>天井・壁ボード張り</td><td>4日</td><td>ⓐ</td><td>天井内設備機器等設置</td><td>3日</td></tr>
+    <tr><td>⑤</td><td>（問1で答える）</td><td>1日</td><td>ⓑ</td><td>間仕切壁内配管等設置</td><td>2日</td></tr>
+    <tr><td>⑥</td><td>壁、鋼製建具枠塗装</td><td>4日</td><td>ⓒ</td><td>天井面照明設備等設置</td><td>3日</td></tr>
+    <tr><td>⑦-1</td><td>フリーアクセスフロア敷設</td><td>2日</td><td>ⓓ</td><td>壁面器具結線、取付け</td><td>2日</td></tr>
+    <tr><td colspan="3"></td><td>ⓔ</td><td>フリーアクセスフロア内配線</td><td>1日</td></tr>
+  </table>
+
+  <div class="answer-box">
+    <h4>模範回答</h4>
+    <h5>1．作業⑤および作業⑧の作業内容</h5>
+    <ul>
+      <li><strong>作業⑤</strong>：ボード面パテ処理（ボードジョイント・ビス頭のパテしごき／塗装下地処理）</li>
+      <li><strong>作業⑧</strong>：タイルカーペット張り</li>
+    </ul>
+    <h5>2．◯始から◯終までの総所要日数</h5>
+    <p><strong>18日</strong></p>
+    <h5>3．フロート</h5>
+    <ul>
+      <li>作業④ フリーフロート：<strong>2日</strong></li>
+      <li>作業⑦ トータルフロート：<strong>1日</strong></li>
+    </ul>
+    <h5>4．工程追加後の総所要日数（作業⑦+1日）</h5>
+    <p><strong>19日</strong></p>
+
+    <div class="warn-box">
+      <strong>⚠ 解答ソース間の差異</strong>：社内PDF解答集では「④FF=1日・⑦TF=2日」、Word版では「④FF=2日・⑦TF=1日」と記載が逆転している。<strong>勉強会で林講師の最終判断を確認</strong>した上で確定すること。
+    </div>
+  </div>
+
+  <div class="explain-box">
+    <h4>勉強会のポイント</h4>
+    <ul>
+      <li>まず「天井⇒壁⇒床」の<strong>上から下へ</strong>の一般手順を押さえる（水下り順）。</li>
+      <li>作業⑤（パテ処理）は見えない作業で忘れやすい。⑥塗装の前には必ず下地処理が入る。</li>
+      <li>⑦-1（OA床敷設）→ⓔ（フロア内配線）→⑦-2（再敷設＝点検口含む完了）の分割意図を押さえる。</li>
+      <li><strong>クリティカルパス</strong>を特定した上で、そこから外れた作業のフロートを数えるのが定石。計算は必ず図に書き込んで検算する。</li>
+      <li>問4は「ボトルネックが＋1日ずれた時の影響」を見る問題。クリティカルに乗ると全体＋1、フロート内なら不変。</li>
+    </ul>
+  </div>
+</div>
+</section>
+
+<!-- ========================= 問題4 ========================= -->
+<section id="q4">
+<h2 class="q-title">問題4　<span class="badge">記述</span>仕上げ工事の施工上の留意事項</h2>
+<div class="q-body">
+  <h3>設問</h3>
+  <p>次の1．から4．の問いに答えなさい。</p>
+  <div class="condition-box">
+    <strong>※記述不可の内容</strong>：
+    <ul>
+      <li>1．から4．の解答はすべて異なる内容</li>
+      <li>材料（仕様、品質、搬入等）に関する記述</li>
+      <li>作業環境（騒音、振動、気象条件等）に関する記述</li>
+      <li>清掃及び安全に関する記述</li>
+      <li>各問の冒頭に示された個別除外条件（タイル割付・保管・下地／防水層／下地 等）</li>
+    </ul>
+  </div>
+
+  <ol>
+    <li>タイル工事において、<strong>有機系接着剤を用いて外壁タイル張り</strong>を行うときの施工上の留意事項を2つ、具体的に記述しなさい。<br>
+      <em>ただし、タイルの割付け、材料の保管及び下地に関する記述は除く。</em></li>
+    <li>金属工事において、パラペット天端に押出形材の既製品である<strong>アルミニウム製笠木</strong>を設けるときの施工上の留意事項を2つ、具体的に記述しなさい。<br>
+      <em>ただし、材料の保管及び防水層に関する記述は除く。なお、パラペットは現場打ちコンクリートとする。</em></li>
+    <li>左官工事において、内装床の張物下地となる<strong>セルフレベリング材塗り</strong>を行うときの施工上の留意事項を2つ、具体的に記述しなさい。<br>
+      <em>なお、セルフレベリング材は固定プラント式のスラリータイプとし、専用車両で現場まで輸送供給される。</em></li>
+    <li>内装床工事において、<strong>ビニル床シートを平場部に張り付ける</strong>ときの施工上の留意事項を2つ、具体的に記述しなさい。<br>
+      <em>ただし、下地に関する記述は除く。</em></li>
+  </ol>
+
+  <div class="answer-box">
+    <h4>模範回答</h4>
+    <h5>1．外壁タイル張り（有機系接着剤）</h5>
+    <ul>
+      <li>接着剤は下地面全面に均一に塗布し、<strong>くし目ごて</strong>でくし目を立てる。塗布後は<strong>オープンタイム（可使時間）</strong>を厳守し、表面が乾く前にタイルを圧着する。</li>
+      <li>張付け後は所定の圧着用工具で<strong>全面に圧着</strong>し、タイル裏面への接着剤の回り込みを確保して浮き・剥離を防止する。</li>
+    </ul>
+    <h5>2．アルミニウム製笠木（パラペット天端）</h5>
+    <ul>
+      <li>固定金物（アンカー）の<strong>固定間隔と位置</strong>を管理し、下地コンクリート天端の精度（通り・高さ・勾配）を確保する。</li>
+      <li><strong>温度変化による伸縮</strong>を考慮してジョイント部に所定のクリアランスを設け、ジョイント金物とシーリングで水密を確保する。</li>
+    </ul>
+    <h5>3．セルフレベリング材塗り（内装床）</h5>
+    <ul>
+      <li>打込み前に<strong>流動性（フロー値）</strong>を確認し、打込みは区画の一方向から連続して行い打継ぎを生じさせない。</li>
+      <li>硬化中は<strong>振動・通行を避け</strong>、所定の養生期間を確保して平滑性・強度を発現させる。</li>
+    </ul>
+    <h5>4．ビニル床シート張り（平場）</h5>
+    <ul>
+      <li>接着剤は所定の<strong>塗布量</strong>をくしべらで均一に塗布し、オープンタイムを守って圧着する。</li>
+      <li>張付け後は<strong>45kgローラー等で圧着</strong>し、空気溜りを外側へ押し出して浮き・剥がれを防止する。</li>
+    </ul>
+  </div>
+
+  <div class="explain-box">
+    <h4>勉強会のポイント</h4>
+    <ul>
+      <li><strong>除外条件が多い問題</strong>。各問冒頭の「ただし〜除く」を読み飛ばすと一発で減点されるので、本番では設問文に線を引く訓練を。</li>
+      <li>材料系（品質・保管）／作業環境（騒音・気象）／清掃・安全 は<strong>すべて全問共通で禁止</strong>。書ける軸は「<strong>施工手順・施工精度・施工時の管理値・硬化/乾燥/養生・仕上がり品質（浮き・剥離・ムラ・漏れ）</strong>」。</li>
+      <li>施工管理値のキーワード暗記：オープンタイム／くし目／圧着／フロー値／塗布量／転圧 などは数値とセットで覚える。</li>
+    </ul>
+  </div>
+</div>
+</section>
+
+<!-- ========================= 問題5 ========================= -->
+<section id="q5">
+<h2 class="q-title">問題5　<span class="badge">択一</span>五肢択一（用語・数値 穴埋め 全8問）</h2>
+<div class="q-body">
+  <h3>設問（共通）</h3>
+  <p>次の1．から8．の各記述において、<strong>□に当てはまる最も適当な語句又は数値の組合せを、下の枠内から1つ選びなさい</strong>。</p>
+
+  <!-- 5-1 -->
+  <h3>5-1 仮設通路（労働安全衛生規則）</h3>
+  <p>作業場に通ずる場所及び作業場内には、労働者が使用するための安全な通路を設け、かつ、これを常時有効に保持しなければならない。通路で主要なものには、これを保持するため、通路であることを示す表示をしなければならない。<br>
+  通路には、正常の通行を妨げない程度に、<strong>a</strong> 又は照明の方法を講じなければならない。ただし、常時通行の用に供しない地下室等で通行する労働者に、適当な照明具を所持させるときは、この限りでない。<br>
+  また、<strong>b</strong> に設ける通路は用途に応じた幅を有し、通路面から高さ <strong>c</strong> m以内に障害物を置いてはならない。</p>
+  <table class="choices">
+    <thead><tr><th></th><th>a</th><th>b</th><th>c</th></tr></thead>
+    <tbody>
+      <tr><th>①</th><td>採光</td><td>屋内</td><td>2.0</td></tr>
+      <tr><th>②</th><td>換気</td><td>屋外</td><td>1.8</td></tr>
+      <tr><th>③</th><td>採光</td><td>屋内</td><td>1.8</td></tr>
+      <tr><th>④</th><td>換気</td><td>屋外</td><td>2.0</td></tr>
+      <tr><th>⑤</th><td>採光</td><td>屋外</td><td>1.8</td></tr>
+    </tbody>
+  </table>
+  <div class="answer-box">
+    <h4>正答：③（a=採光／b=屋内／c=1.8）</h4>
+    <table class="choices answer-ver">
+      <thead><tr><th></th><th>a</th><th>b</th><th>c</th></tr></thead>
+      <tbody>
+        <tr><th>①</th><td>採光</td><td>屋内</td><td>2.0</td></tr>
+        <tr><th>②</th><td>換気</td><td>屋外</td><td>1.8</td></tr>
+        <tr class="correct"><th>③</th><td>採光</td><td>屋内</td><td>1.8</td></tr>
+        <tr><th>④</th><td>換気</td><td>屋外</td><td>2.0</td></tr>
+        <tr><th>⑤</th><td>採光</td><td>屋外</td><td>1.8</td></tr>
+      </tbody>
+    </table>
+    <p>安衛則第540条 通路の要件。屋内通路の障害物禁止高さ <strong>1.8m以内</strong>、<strong>採光または照明</strong>は頻出数値。</p>
+  </div>
+
+  <!-- 5-2 -->
+  <h3>5-2 根切り工事（浸透・地盤破壊現象）</h3>
+  <p>根切り工事において、掘削底面付近の砂質地盤に上向きの浸透流が生じ、この水の浸透力が砂の水中での有効重量より大きくなり、砂粒子が水中で浮遊する状態を <strong>a</strong> という。<br>
+  <strong>a</strong> が発生し、沸騰したような状態でその付近の地盤が破壊する現象を <strong>b</strong> という。<br>
+  また、掘削底面やその直下に難透水層があり、その下にある被圧地下水により掘削底面が持ち上がる現象を <strong>c</strong> という。</p>
+  <table class="choices">
+    <thead><tr><th></th><th>a</th><th>b</th><th>c</th></tr></thead>
+    <tbody>
+      <tr><th>①</th><td>地盤沈下</td><td>パイピング</td><td>ヒービング</td></tr>
+      <tr><th>②</th><td>クイックサンド</td><td>ボイリング</td><td>ヒービング</td></tr>
+      <tr><th>③</th><td>クイックサンド</td><td>パイピング</td><td>ヒービング</td></tr>
+      <tr><th>④</th><td>地盤沈下</td><td>ボイリング</td><td>盤ぶくれ</td></tr>
+      <tr><th>⑤</th><td>クイックサンド</td><td>ボイリング</td><td>盤ぶくれ</td></tr>
+    </tbody>
+  </table>
+  <div class="answer-box">
+    <h4>正答：⑤（a=クイックサンド／b=ボイリング／c=盤ぶくれ）</h4>
+    <table class="choices answer-ver">
+      <thead><tr><th></th><th>a</th><th>b</th><th>c</th></tr></thead>
+      <tbody>
+        <tr><th>①</th><td>地盤沈下</td><td>パイピング</td><td>ヒービング</td></tr>
+        <tr><th>②</th><td>クイックサンド</td><td>ボイリング</td><td>ヒービング</td></tr>
+        <tr><th>③</th><td>クイックサンド</td><td>パイピング</td><td>ヒービング</td></tr>
+        <tr><th>④</th><td>地盤沈下</td><td>ボイリング</td><td>盤ぶくれ</td></tr>
+        <tr class="correct"><th>⑤</th><td>クイックサンド</td><td>ボイリング</td><td>盤ぶくれ</td></tr>
+      </tbody>
+    </table>
+    <ul>
+      <li><strong>クイックサンド</strong>：砂粒が浮遊する状態</li>
+      <li><strong>ボイリング</strong>：沸騰状に噴き上がり地盤破壊</li>
+      <li><strong>盤ぶくれ</strong>：被圧地下水で底面が持ち上がる現象（難透水層下）</li>
+      <li>似た用語の<strong>ヒービング</strong>は軟弱粘性土で山留背面土が回り込み底面が盛り上がる現象。混同注意。</li>
+    </ul>
+  </div>
+
+  <!-- 5-3 -->
+  <h3>5-3 既製コンクリート杭 埋込み工法（杭心ずれ管理）</h3>
+  <p>既製コンクリート杭の埋込み工法において、杭心ずれを低減するためには、掘削ロッドの振止め装置を用いることや、杭心位置から直角二方向に逃げ心を取り、掘削中や杭の建込み時にも逃げ心からの距離を随時確認することが大切である。<br>
+  一般的な施工精度の管理値は、杭心ずれ量が D/<strong>a</strong> 以下（Dは杭直径）、かつ、<strong>b</strong> mm以下、<strong>c</strong> が 1/100 以内である。</p>
+  <table class="choices">
+    <thead><tr><th></th><th>a</th><th>b</th><th>c</th></tr></thead>
+    <tbody>
+      <tr><th>①</th><td>3</td><td>100</td><td>鉛直精度</td></tr>
+      <tr><th>②</th><td>4</td><td>100</td><td>鉛直精度</td></tr>
+      <tr><th>③</th><td>3</td><td>150</td><td>水平精度</td></tr>
+      <tr><th>④</th><td>4</td><td>150</td><td>鉛直精度</td></tr>
+      <tr><th>⑤</th><td>4</td><td>100</td><td>水平精度</td></tr>
+    </tbody>
+  </table>
+  <div class="answer-box">
+    <h4>正答：②（a=4／b=100／c=鉛直精度）</h4>
+    <table class="choices answer-ver">
+      <thead><tr><th></th><th>a</th><th>b</th><th>c</th></tr></thead>
+      <tbody>
+        <tr><th>①</th><td>3</td><td>100</td><td>鉛直精度</td></tr>
+        <tr class="correct"><th>②</th><td>4</td><td>100</td><td>鉛直精度</td></tr>
+        <tr><th>③</th><td>3</td><td>150</td><td>水平精度</td></tr>
+        <tr><th>④</th><td>4</td><td>150</td><td>鉛直精度</td></tr>
+        <tr><th>⑤</th><td>4</td><td>100</td><td>水平精度</td></tr>
+      </tbody>
+    </table>
+    <p>杭心ずれは <strong>D/4 かつ 100mm以下</strong>、<strong>鉛直精度 1/100以内</strong>が標準管理値。杭の「水平精度」ではなく「<strong>鉛直</strong>精度」である点を必ず押さえる。</p>
+  </div>
+
+  <!-- 5-4 -->
+  <h3>5-4 鉄筋工事（あき・かぶり厚さ）</h3>
+  <p>鉄筋工事において、鉄筋相互のあきは <strong>a</strong> の最大寸法の1.25倍、<strong>b</strong> mm、及び隣り合う鉄筋の径（呼び名の数値）の平均の1.5倍のうち最大のもの以上とする。<br>
+  鉄筋の間隔は、鉄筋相互のあきに鉄筋の最大外径を加えたものとする。<br>
+  柱及び梁の主筋のかぶり厚さは、D29以上の異形鉄筋を使用する場合、径（呼び名の数値）の <strong>c</strong> 倍以上とする。</p>
+  <table class="choices">
+    <thead><tr><th></th><th>a</th><th>b</th><th>c</th></tr></thead>
+    <tbody>
+      <tr><th>①</th><td>細骨材</td><td>20</td><td>1.25</td></tr>
+      <tr><th>②</th><td>粗骨材</td><td>20</td><td>1.5</td></tr>
+      <tr><th>③</th><td>粗骨材</td><td>25</td><td>1.25</td></tr>
+      <tr><th>④</th><td>粗骨材</td><td>25</td><td>1.5</td></tr>
+      <tr><th>⑤</th><td>細骨材</td><td>20</td><td>1.5</td></tr>
+    </tbody>
+  </table>
+  <div class="answer-box">
+    <h4>正答：④（a=粗骨材／b=25／c=1.5）</h4>
+    <table class="choices answer-ver">
+      <thead><tr><th></th><th>a</th><th>b</th><th>c</th></tr></thead>
+      <tbody>
+        <tr><th>①</th><td>細骨材</td><td>20</td><td>1.25</td></tr>
+        <tr><th>②</th><td>粗骨材</td><td>20</td><td>1.5</td></tr>
+        <tr><th>③</th><td>粗骨材</td><td>25</td><td>1.25</td></tr>
+        <tr class="correct"><th>④</th><td>粗骨材</td><td>25</td><td>1.5</td></tr>
+        <tr><th>⑤</th><td>細骨材</td><td>20</td><td>1.5</td></tr>
+      </tbody>
+    </table>
+    <p>鉄筋相互のあき＝<strong>粗骨材最大寸法×1.25、25mm、呼び名平均×1.5</strong> の最大。D29以上の主筋はかぶり厚さ＝<strong>呼び名×1.5倍</strong>以上。</p>
+  </div>
+
+  <!-- 5-5 -->
+  <h3>5-5 型枠支保工（鋼管枠・パイプサポート）</h3>
+  <p>型枠支保工において、鋼管枠を支柱として用いるものにあっては、鋼管枠と鋼管枠との間に <strong>a</strong> を設け、支柱の脚部の滑動を防止するための措置として、支柱の脚部の固定及び <strong>b</strong> の取付け等を行う。<br>
+  また、パイプサポートを支柱として用いるものにあっては、支柱の高さが <strong>c</strong> mを超えるときは、高さ2m以内ごとに水平つなぎを2方向に設けなければならない。</p>
+  <table class="choices">
+    <thead><tr><th></th><th>a</th><th>b</th><th>c</th></tr></thead>
+    <tbody>
+      <tr><th>①</th><td>中桟</td><td>布枠</td><td>3.0</td></tr>
+      <tr><th>②</th><td>交差筋かい</td><td>根がらみ</td><td>3.0</td></tr>
+      <tr><th>③</th><td>交差筋かい</td><td>根がらみ</td><td>3.5</td></tr>
+      <tr><th>④</th><td>交差筋かい</td><td>布枠</td><td>3.5</td></tr>
+      <tr><th>⑤</th><td>中桟</td><td>布枠</td><td>3.5</td></tr>
+    </tbody>
+  </table>
+  <div class="answer-box">
+    <h4>正答：③（a=交差筋かい／b=根がらみ／c=3.5）</h4>
+    <table class="choices answer-ver">
+      <thead><tr><th></th><th>a</th><th>b</th><th>c</th></tr></thead>
+      <tbody>
+        <tr><th>①</th><td>中桟</td><td>布枠</td><td>3.0</td></tr>
+        <tr><th>②</th><td>交差筋かい</td><td>根がらみ</td><td>3.0</td></tr>
+        <tr class="correct"><th>③</th><td>交差筋かい</td><td>根がらみ</td><td>3.5</td></tr>
+        <tr><th>④</th><td>交差筋かい</td><td>布枠</td><td>3.5</td></tr>
+        <tr><th>⑤</th><td>中桟</td><td>布枠</td><td>3.5</td></tr>
+      </tbody>
+    </table>
+    <p>鋼管枠支柱 → 枠間に<strong>交差筋かい</strong>、脚部に<strong>根がらみ</strong>。パイプサポートは支柱高さ <strong>3.5m超</strong> で2m以内ごとに水平つなぎ2方向。安衛則第242条系の頻出条文。</p>
+  </div>
+
+  <!-- 5-6 -->
+  <h3>5-6 コンクリートポンプ工法</h3>
+  <p>コンクリートポンプ工法による1日のコンクリートの打込み区画及び <strong>a</strong> は、建物の規模及び施工時間、レディーミクストコンクリートの供給能力を勘案して定める。<br>
+  コンクリートの打込み速度は、スランプ18cm程度の場合、打ち込む部位によっても変わるが、20 m³/h から <strong>b</strong> m³/h が目安となる。<br>
+  また、スランプ10cmから15cmのコンクリートの場合、公称棒径45mmの棒形振動機1台当たりの締固め能力は、10 m³/h から <strong>c</strong> m³/h 程度である。</p>
+  <table class="choices">
+    <thead><tr><th></th><th>a</th><th>b</th><th>c</th></tr></thead>
+    <tbody>
+      <tr><th>①</th><td>打込み量</td><td>30</td><td>15</td></tr>
+      <tr><th>②</th><td>打込み順序</td><td>40</td><td>20</td></tr>
+      <tr><th>③</th><td>打込み順序</td><td>30</td><td>20</td></tr>
+      <tr><th>④</th><td>打込み量</td><td>40</td><td>15</td></tr>
+      <tr><th>⑤</th><td>打込み量</td><td>30</td><td>20</td></tr>
+    </tbody>
+  </table>
+  <div class="answer-box">
+    <h4>正答：①（a=打込み量／b=30／c=15）</h4>
+    <table class="choices answer-ver">
+      <thead><tr><th></th><th>a</th><th>b</th><th>c</th></tr></thead>
+      <tbody>
+        <tr class="correct"><th>①</th><td>打込み量</td><td>30</td><td>15</td></tr>
+        <tr><th>②</th><td>打込み順序</td><td>40</td><td>20</td></tr>
+        <tr><th>③</th><td>打込み順序</td><td>30</td><td>20</td></tr>
+        <tr><th>④</th><td>打込み量</td><td>40</td><td>15</td></tr>
+        <tr><th>⑤</th><td>打込み量</td><td>30</td><td>20</td></tr>
+      </tbody>
+    </table>
+    <p>スランプ18cm → 打込み速度 <strong>20〜30 m³/h</strong>。棒形振動機（φ45mm）1台の締固め能力 <strong>10〜15 m³/h</strong>。JASS 5 系の暗記定数。</p>
+  </div>
+
+  <!-- 5-7 -->
+  <h3>5-7 寒中コンクリート</h3>
+  <p>コンクリート工事において、寒中コンクリートでは、レディーミクストコンクリートの荷卸し時のコンクリート温度は、原則として <strong>a</strong> ℃以上 20℃未満とし、加熱した材料を用いる場合、セメントを投入する直前のミキサ内の骨材及び水の温度は、40℃以下とする。<br>
+  打込み後のコンクリートは、初期凍害を受けないよう、必要な保温養生を行う。<br>
+  初期養生の期間は、コンクリートの圧縮強度が <strong>b</strong> N/mm² が得られるまでとし、この間は、打ち込んだコンクリートのすべての部分が0℃を下回らないようにする。<br>
+  また、<strong>c</strong> 養生中は、コンクリートが乾燥しないように散水等で湿潤養生する。</p>
+  <table class="choices">
+    <thead><tr><th></th><th>a</th><th>b</th><th>c</th></tr></thead>
+    <tbody>
+      <tr><th>①</th><td>10</td><td>5</td><td>断熱</td></tr>
+      <tr><th>②</th><td>10</td><td>5</td><td>加熱</td></tr>
+      <tr><th>③</th><td>5</td><td>10</td><td>加熱</td></tr>
+      <tr><th>④</th><td>5</td><td>5</td><td>加熱</td></tr>
+      <tr><th>⑤</th><td>5</td><td>10</td><td>断熱</td></tr>
+    </tbody>
+  </table>
+  <div class="answer-box">
+    <h4>正答：②（a=10／b=5／c=加熱）</h4>
+    <table class="choices answer-ver">
+      <thead><tr><th></th><th>a</th><th>b</th><th>c</th></tr></thead>
+      <tbody>
+        <tr><th>①</th><td>10</td><td>5</td><td>断熱</td></tr>
+        <tr class="correct"><th>②</th><td>10</td><td>5</td><td>加熱</td></tr>
+        <tr><th>③</th><td>5</td><td>10</td><td>加熱</td></tr>
+        <tr><th>④</th><td>5</td><td>5</td><td>加熱</td></tr>
+        <tr><th>⑤</th><td>5</td><td>10</td><td>断熱</td></tr>
+      </tbody>
+    </table>
+    <p>寒中コンクリートの荷卸し温度 <strong>10℃以上20℃未満</strong>、初期養生終了は圧縮強度 <strong>5N/mm²</strong> 到達まで。<strong>加熱養生</strong>時は乾燥防止のため湿潤養生を併用。</p>
+  </div>
+
+  <!-- 5-8 -->
+  <h3>5-8 鉄骨工事（完全溶込み溶接の余盛高さ）</h3>
+  <p>鉄骨の完全溶込み溶接において、突合せ継手の余盛高さの最小値は <strong>a</strong> mmとする。<br>
+  裏当て金付きのT継手の余盛高さの最小値は、突き合わせる材の厚さの 1/4 とし、材の厚さが40mmを超える場合は <strong>b</strong> mmとする。<br>
+  裏はつりT継手の余盛高さの最小値は、突き合わせる材の厚さの 1/<strong>c</strong> とし、材の厚さが40mmを超える場合は5mmとする。</p>
+  <table class="choices">
+    <thead><tr><th></th><th>a</th><th>b</th><th>c</th></tr></thead>
+    <tbody>
+      <tr><th>①</th><td>0</td><td>8</td><td>8</td></tr>
+      <tr><th>②</th><td>0</td><td>8</td><td>10</td></tr>
+      <tr><th>③</th><td>2</td><td>10</td><td>8</td></tr>
+      <tr><th>④</th><td>2</td><td>8</td><td>10</td></tr>
+      <tr><th>⑤</th><td>0</td><td>10</td><td>8</td></tr>
+    </tbody>
+  </table>
+  <div class="answer-box">
+    <h4>正答：⑤（a=0／b=10／c=8）</h4>
+    <table class="choices answer-ver">
+      <thead><tr><th></th><th>a</th><th>b</th><th>c</th></tr></thead>
+      <tbody>
+        <tr><th>①</th><td>0</td><td>8</td><td>8</td></tr>
+        <tr><th>②</th><td>0</td><td>8</td><td>10</td></tr>
+        <tr><th>③</th><td>2</td><td>10</td><td>8</td></tr>
+        <tr><th>④</th><td>2</td><td>8</td><td>10</td></tr>
+        <tr class="correct"><th>⑤</th><td>0</td><td>10</td><td>8</td></tr>
+      </tbody>
+    </table>
+    <ul>
+      <li>突合せ継手：余盛高さ最小値 <strong>0mm</strong>（余盛は必須ではない）</li>
+      <li>裏当て金付きT継手：厚さの1/4、40mm超は <strong>10mm</strong></li>
+      <li>裏はつりT継手：厚さの<strong>1/8</strong>、40mm超は5mm</li>
+      <li>JASS 6 図表。「0・10・8」のセットで暗記する。</li>
+    </ul>
+  </div>
+
+  <div class="explain-box">
+    <h4>問題5全体の学習ポイント</h4>
+    <ul>
+      <li>択一8問は<strong>用語と数値の暗記勝負</strong>。配点も大きいので落とさない。</li>
+      <li>a・b・cの3空欄のうち<strong>2つ正解できれば選択肢が絞れる</strong>構造。全部思い出せなくても諦めない。</li>
+      <li>紛らわしいペアを押さえる：「ボイリング↔ヒービング↔盤ぶくれ」「交差筋かい↔布枠」「粗骨材↔細骨材」「採光↔換気」。</li>
+      <li>数値暗記は<strong>語呂合わせノート</strong>を各自作成。次回勉強会までに8問分完成させることを宿題に。</li>
+    </ul>
+  </div>
+</div>
+</section>
+
+<footer class="closing">
+  <p class="slogan">10月18日、全員合格。</p>
+  <p class="sub">大石建設の未来を、共に築きましょう。</p>
+</footer>
+
+</body>
+</html>
