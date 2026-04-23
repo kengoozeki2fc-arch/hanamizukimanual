@@ -95,6 +95,10 @@
       "headers": {
         "Cache-Control": "public, max-age=86400"
       }
+    },
+    {
+      "route": "/oisi-builder",
+      "rewrite": "/oisi-builder/index.html"
     }
   ],
   "navigationFallback": {
@@ -135,6 +139,8 @@
       "/oisi/*.html",
       "/oisi/benkyokai/*.html",
       "/oisi/benkyokai/images/*.png",
+      "/oisi-builder/*.html",
+      "/oisi-builder/*.json",
       "/oisi/benkyokai/images/*.jpg",
       "/*.png",
       "/*.jpg",

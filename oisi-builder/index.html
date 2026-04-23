@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>大石建設 施工実績ウィジェットビルダー</title>
+<style>
+  :root {
+    --cp-blue-50:  #eff7fc;
+    --cp-blue-100: #d9ecf7;
+    --cp-blue-200: #b3d9ef;
+    --cp-blue-300: #74b2e0;
+    --cp-blue-400: #5196c8;
+    --cp-blue-700: #2a6aa0;
+    --cp-text-heading: #143e63;
+    --cp-text-body: #33495e;
+    --cp-text-sub:  #6b7c8c;
+    --cp-bg:        #f5f9fc;
+    --cp-border:    #cfe1ef;
+    --cp-warning-50: #fff6e0;
+    --cp-warning-300: #f0c36c;
+    --cp-warning-700: #a8690a;
+    --cp-success-50: #e7f6ec;
+    --cp-success-300: #86c69a;
+    --cp-success-700: #196237;
+    --cp-error-500: #d4654b;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN",
+      "Yu Gothic", "Meiryo", sans-serif;
+    background: var(--cp-bg);
+    color: var(--cp-text-body);
+    line-height: 1.6;
+  }
+  header.app {
+    background: linear-gradient(135deg, var(--cp-blue-700), var(--cp-blue-400));
+    color: #fff;
+    padding: 24px;
+  }
+  header.app .inner { max-width: 1200px; margin: 0 auto; }
+  header.app h1 { margin: 0; font-size: 22px; font-weight: 700; }
+  header.app p { margin: 4px 0 0; font-size: 13px; opacity: .9; }
+
+  main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+  @media (min-width: 980px) {
+    main { grid-template-columns: 420px 1fr; }
+  }
+
+  section.panel {
+    background: #fff;
+    border: 1px solid var(--cp-border);
+    border-radius: 14px;
+    padding: 20px 22px;
+  }
+  section.panel h2 {
+    margin: 0 0 14px;
+    font-size: 15px;
+    color: var(--cp-text-heading);
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--cp-blue-100);
+  }
+  label.field { display: block; margin-bottom: 12px; }
+  label.field .lbl {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--cp-text-heading);
+    margin-bottom: 4px;
+  }
+  input[type="text"], input[type="url"], select {
+    width: 100%;
+    padding: 8px 10px;
+    font-size: 13px;
+    border: 1px solid var(--cp-blue-200);
+    border-radius: 8px;
+    background: var(--cp-blue-50);
+    color: var(--cp-text-heading);
+  }
+  input:focus, select:focus {
+    outline: none;
+    border-color: var(--cp-blue-400);
+    background: #fff;
+    box-shadow: 0 0 0 2px var(--cp-blue-100);
+  }
+  .row { display: flex; gap: 10px; }
+  .row label.field { flex: 1; margin-bottom: 0; }
+
+  button {
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background .15s;
+  }
+  button.primary {
+    background: var(--cp-blue-300);
+    color: #fff;
+  }
+  button.primary:hover { background: var(--cp-blue-400); }
+  button.ghost {
+    background: transparent;
+    color: var(--cp-blue-700);
+    border: 1px solid var(--cp-blue-300);
+  }
+  button.ghost:hover { background: var(--cp-blue-50); }
+  button.danger {
+    background: transparent;
+    color: var(--cp-error-500);
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+  button.danger:hover { text-decoration: underline; }
+
+  .actions-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+
+  /* プロジェクトテーブル */
+  .proj-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .proj-table th, .proj-table td {
+    border-bottom: 1px dashed var(--cp-blue-100);
+    padding: 6px 4px;
+    text-align: left;
+    vertical-align: middle;
+  }
+  .proj-table th {
+    background: var(--cp-blue-50);
+    color: var(--cp-text-heading);
+    font-weight: 600;
+    font-size: 11px;
+    position: sticky; top: 0;
+  }
+  .proj-table td .thumb {
+    width: 48px; height: 36px;
+    background-size: cover; background-position: center;
+    background-color: var(--cp-blue-50);
+    border-radius: 4px;
+  }
+  .proj-table td a {
+    color: var(--cp-blue-700);
+    text-decoration: none;
+  }
+  .proj-table td a:hover { text-decoration: underline; }
+  .proj-table .title-cell {
+    max-width: 280px;
+    color: var(--cp-text-heading);
+    font-weight: 500;
+  }
+  .proj-table .pill {
+    display: inline-block;
+    background: var(--cp-blue-50);
+    color: var(--cp-blue-700);
+    padding: 1px 6px;
+    border-radius: 999px;
+    font-size: 10px;
+    border: 1px solid var(--cp-blue-200);
+  }
+
+  /* 出力セクション */
+  .filter-select { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .filter-select label.field { flex: 1; min-width: 170px; margin-bottom: 0; }
+
+  .output-tabs { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+  .output-tabs button {
+    background: var(--cp-blue-50);
+    color: var(--cp-text-sub);
+    padding: 6px 14px;
+    font-size: 12px;
+  }
+  .output-tabs button.active {
+    background: var(--cp-blue-300);
+    color: #fff;
+  }
+
+  textarea.html-out {
+    width: 100%;
+    min-height: 260px;
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 11px;
+    padding: 10px;
+    border: 1px solid var(--cp-blue-200);
+    border-radius: 8px;
+    background: #fafcfe;
+    color: var(--cp-text-body);
+    resize: vertical;
+  }
+
+  .preview-frame {
+    border: 1px solid var(--cp-border);
+    border-radius: 10px;
+    padding: 14px;
+    margin-top: 10px;
+    background: var(--cp-bg);
+  }
+
+  .info {
+    font-size: 11px;
+    color: var(--cp-text-sub);
+    margin-top: 4px;
+  }
+
+  .muted { color: var(--cp-text-sub); }
+  .empty-state {
+    color: var(--cp-text-sub);
+    text-align: center;
+    padding: 30px 10px;
+    font-size: 13px;
+  }
+  .data-toolbar {
+    display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;
+    padding-top: 10px;
+    border-top: 1px dashed var(--cp-blue-100);
+  }
+  .data-toolbar .small {
+    font-size: 11px;
+    padding: 4px 10px;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 20px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--cp-text-heading);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-size: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,.15);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s;
+  }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<header class="app">
+  <div class="inner">
+    <h1>🏗️ 大石建設 施工実績 ウィジェットビルダー</h1>
+    <p>案件を登録 → 年度別・カテゴリ別にフィルタして Jimdo 貼付用 HTML を生成。データはブラウザに自動保存。</p>
+  </div>
+</header>
+
+<main>
+
+  <!-- ========== 左: 入力フォーム＋案件一覧 ========== -->
+  <section class="panel">
+    <h2>案件登録</h2>
+
+    <form id="entry-form">
+      <input type="hidden" id="edit-id" value="">
+
+      <label class="field">
+        <span class="lbl">タイトル <span style="color:var(--cp-error-500)">*</span></span>
+        <input type="text" id="f-title" required placeholder="例: 城山保育園新築工事">
+      </label>
+
+      <label class="field">
+        <span class="lbl">写真URL <span class="muted" style="font-weight:400;font-size:11px">（空ならプレースホルダ表示）</span></span>
+        <input type="url" id="f-image" placeholder="https://image.jimcdn.com/...">
+      </label>
+
+      <label class="field">
+        <span class="lbl">タイトルクリック先 URL <span class="muted" style="font-weight:400;font-size:11px">（空ならリンク無効）</span></span>
+        <input type="url" id="f-link" placeholder="https://www.ooisi-kensetsu.co.jp/...">
+      </label>
+
+      <div class="field">
+        <span class="lbl">カテゴリー <span style="color:var(--cp-error-500)">*</span>
+          <span class="muted" style="font-weight:400;font-size:11px">（複数選択可）</span>
+        </span>
+        <div id="f-categories" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 12px;padding:6px 4px;">
+          <!-- チェックボックスはJSで生成 -->
+        </div>
+      </div>
+
+      <label class="field">
+        <span class="lbl">年度 <span class="muted" style="font-weight:400;font-size:11px">（不明可）</span></span>
+        <select id="f-year"></select>
+      </label>
+
+      <label class="field">
+        <span class="lbl">サブ説明
+          <span class="muted" style="font-weight:400; font-size:11px">（空欄 or 「自動生成」で 年度/カテゴリ を自動挿入）</span>
+        </span>
+        <div style="display:flex; gap:6px;">
+          <input type="text" id="f-meta" placeholder="自動生成: 2025年 / 公共施設" style="flex:1">
+          <button type="button" class="ghost" id="auto-meta-btn" style="font-size:11px; padding:6px 10px; flex:0 0 auto">自動生成</button>
+        </div>
+      </label>
+
+      <div class="actions-row">
+        <button type="submit" class="primary" id="submit-btn">案件を追加</button>
+        <button type="button" class="ghost" id="cancel-edit-btn" style="display:none">編集をキャンセル</button>
+      </div>
+    </form>
+
+    <div class="data-toolbar">
+      <button class="ghost small" id="regen-meta-btn" title="サブ説明が空 or 自動形式 の案件のみ 年度/カテゴリ で再生成">サブ説明を自動再生成</button>
+      <button class="ghost small" id="export-json-btn">JSON書き出し</button>
+      <button class="ghost small" id="import-json-btn">JSON取り込み</button>
+      <button class="danger small" id="clear-all-btn">全データ削除</button>
+      <input type="file" id="import-file" accept=".json" style="display:none">
+    </div>
+
+    <div style="margin-top:10px; padding-top:10px; border-top:1px dashed var(--cp-blue-100);">
+      <div class="lbl" style="display:block; font-size:12px; font-weight:600; color:var(--cp-text-heading); margin-bottom:6px;">
+        📁 ローカルJSONファイル
+        <span class="muted" style="font-weight:400;font-size:11px">（OneDrive同期フォルダ内の projects.json を直接読み書き）</span>
+      </div>
+      <div class="actions-row" style="margin-bottom:6px">
+        <button type="button" class="ghost small" id="file-open-btn">ファイルを開く…</button>
+        <button type="button" class="primary small" id="file-save-btn" disabled style="padding:4px 10px;font-size:11px">💾 同じファイルに保存</button>
+        <button type="button" class="ghost small" id="file-saveas-btn">別名で保存…</button>
+      </div>
+      <div class="info" id="file-status" style="font-size:11px;">現在のファイル: <span class="muted">未選択</span></div>
+    </div>
+    <div class="info" id="count-info">登録 0 件</div>
+  </section>
+
+  <!-- ========== 右: リスト＋出力 ========== -->
+  <section class="panel">
+    <h2>登録済み案件一覧</h2>
+    <div id="list-wrap"></div>
+
+    <h2 style="margin-top:28px">HTML出力</h2>
+
+    <div class="output-tabs">
+      <button id="tab-year" class="active">年度絞り</button>
+      <button id="tab-cat">カテゴリー絞り</button>
+      <button id="tab-all">オールインワン（JS絞り込み）</button>
+    </div>
+
+    <div class="filter-select" id="filter-by-year">
+      <label class="field">
+        <span class="lbl">対象の年度</span>
+        <select id="pick-year"></select>
+      </label>
+    </div>
+    <div class="filter-select" id="filter-by-cat" style="display:none">
+      <label class="field">
+        <span class="lbl">対象のカテゴリー</span>
+        <select id="pick-cat"></select>
+      </label>
+    </div>
+
+    <div class="actions-row">
+      <button class="primary" id="copy-btn">📋 HTMLをコピー</button>
+      <button class="ghost" id="download-btn">💾 .html ダウンロード</button>
+      <span class="info" id="filter-count"></span>
+    </div>
+
+    <label class="field" style="margin-top:14px">
+      <span class="lbl">生成されたHTML（編集可）</span>
+      <textarea class="html-out" id="html-out"></textarea>
+    </label>
+
+    <div class="preview-frame">
+      <div class="lbl" style="font-size:12px; font-weight:600; color:var(--cp-text-heading); margin-bottom:6px">プレビュー</div>
+      <div id="preview"></div>
+    </div>
+  </section>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  const STORAGE_KEY = "ooishi-widget-builder-v1";
+
+  const CATEGORIES = [
+    "公共施設","教育施設","福祉施設","共同住宅","店舗・その他施設",
+    "個人住宅","耐震・大規模改修","リフォーム",
+  ];
+
+  function currentYear() { return new Date().getFullYear(); }
+  function yearList() {
+    const y = currentYear();
+    const arr = [];
+    for (let i = y+1; i >= 2010; i--) arr.push(String(i));
+    return arr;
+  }
+
+  let state = load();
+
+  function load() {
+    try {
+      const s = localStorage.getItem(STORAGE_KEY);
+      if (!s) return { projects: [] };
+      const d = JSON.parse(s);
+      if (!d.projects) d.projects = [];
+      // マイグレーション: 旧 p.category(string) → p.categories(string[])
+      for (const p of d.projects) {
+        if (!Array.isArray(p.categories)) {
+          p.categories = p.category ? [p.category] : [];
+        }
+        delete p.category;
+      }
+      return d;
+    } catch (e) {
+      return { projects: [] };
+    }
+  }
+  function save() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function uid() {
+    return "p_" + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+  }
+
+  function toast(msg) {
+    const el = document.getElementById("toast");
+    el.textContent = msg;
+    el.classList.add("show");
+    setTimeout(() => el.classList.remove("show"), 1400);
+  }
+
+  // -- サブ説明の自動生成
+  function buildAutoMeta(year, categories) {
+    const catStr = Array.isArray(categories) ? categories.join(" / ") : (categories || "");
+    if (!year && !catStr) return "";
+    if (!year) return catStr;
+    if (!catStr) return `${year}年`;
+    return `${year}年 / ${catStr}`;
+  }
+  function isAutoMetaValue(v) {
+    if (!v) return true;
+    return /^\d{4}年\s*\/\s*.+$/.test(v.trim())
+        || /^\d{4}年$/.test(v.trim())
+        || /^[^\d]+$/.test(v.trim()); // 年なし・カテゴリのみパターン
+  }
+  let metaAuto = true;
+  function applyAutoMetaIfNeeded() {
+    if (!metaAuto) return;
+    const y = document.getElementById("f-year").value;
+    const cats = getCheckedCategories();
+    document.getElementById("f-meta").value = buildAutoMeta(y, cats);
+  }
+
+  // -- 初期化: 年度セレクト + カテゴリチェックボックス
+  function initYearSelects() {
+    const fyear = document.getElementById("f-year");
+    const years = yearList();
+    fyear.innerHTML = `<option value="">不明</option>` +
+      years.map(y => `<option value="${y}">${y}年</option>`).join("");
+    fyear.value = String(currentYear());
+    initCategoryCheckboxes();
+    refreshPickers();
+  }
+  function initCategoryCheckboxes() {
+    const wrap = document.getElementById("f-categories");
+    wrap.innerHTML = CATEGORIES.map(c => `
+      <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--cp-text-heading);cursor:pointer;padding:3px 2px;">
+        <input type="checkbox" class="f-cat-ck" value="${escapeAttr(c)}" style="margin:0">
+        <span>${escapeHtml(c)}</span>
+      </label>
+    `).join("");
+    // チェック変更でautoMeta追随
+    wrap.querySelectorAll("input.f-cat-ck").forEach(cb =>
+      cb.addEventListener("change", applyAutoMetaIfNeeded));
+  }
+  function getCheckedCategories() {
+    return Array.from(document.querySelectorAll("input.f-cat-ck:checked"))
+      .map(cb => cb.value);
+  }
+  function setCheckedCategories(list) {
+    const set = new Set(list || []);
+    document.querySelectorAll("input.f-cat-ck").forEach(cb => {
+      cb.checked = set.has(cb.value);
+    });
+  }
+
+  function refreshPickers() {
+    const pyear = document.getElementById("pick-year");
+    const pcat  = document.getElementById("pick-cat");
+    // ユーザーが選択中の値を保持しておく（optionを作り直しても維持する）
+    const prevY = pyear.value;
+    const prevC = pcat.value;
+    const ys = [...new Set(state.projects.map(p => p.year))].sort((a,b)=>b.localeCompare(a));
+    const cs = [...new Set(state.projects.flatMap(p => p.categories || []))];
+    const yearOpts = ys.length ? ys : [String(currentYear())];
+    const catOpts  = cs.length ? cs : CATEGORIES;
+    pyear.innerHTML = yearOpts
+      .map(y => `<option value="${y}">${y}年</option>`).join("");
+    pcat.innerHTML  = catOpts
+      .map(c => `<option value="${escapeAttr(c)}">${escapeHtml(c)}</option>`).join("");
+    // 既存選択が今も候補にあればそれを優先、無ければ先頭
+    pyear.value = yearOpts.includes(prevY) ? prevY : yearOpts[0];
+    pcat.value  = catOpts.includes(prevC)  ? prevC : catOpts[0];
+  }
+
+  // -- 登録 / 編集 / 削除
+  const form = document.getElementById("entry-form");
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const editId = document.getElementById("edit-id").value;
+    const title = document.getElementById("f-title").value.trim();
+    const image = document.getElementById("f-image").value.trim();
+    const link  = document.getElementById("f-link").value.trim();
+    const categories = getCheckedCategories();
+    const year = document.getElementById("f-year").value;
+    let meta = document.getElementById("f-meta").value.trim();
+    if (!meta) meta = buildAutoMeta(year, categories);
+    // 必須: title / categories(1件以上) のみ。image / link / year は任意
+    if (!title || categories.length === 0) {
+      if (categories.length === 0) toast("カテゴリーを1つ以上選んでください");
+      return;
+    }
+    if (editId) {
+      const p = state.projects.find(p => p.id === editId);
+      if (p) Object.assign(p, { title, image, link, categories, year, meta });
+      toast("更新しました");
+    } else {
+      state.projects.push({ id: uid(), title, image, link, categories, year, meta });
+      toast("追加しました");
+    }
+    save();
+    form.reset();
+    setCheckedCategories([]);
+    document.getElementById("edit-id").value = "";
+    document.getElementById("f-year").value = String(currentYear());
+    metaAuto = true;
+    applyAutoMetaIfNeeded();
+    document.getElementById("submit-btn").textContent = "案件を追加";
+    document.getElementById("cancel-edit-btn").style.display = "none";
+    render();
+  });
+
+  document.getElementById("cancel-edit-btn").addEventListener("click", () => {
+    form.reset();
+    setCheckedCategories([]);
+    document.getElementById("edit-id").value = "";
+    document.getElementById("f-year").value = String(currentYear());
+    metaAuto = true;
+    applyAutoMetaIfNeeded();
+    document.getElementById("submit-btn").textContent = "案件を追加";
+    document.getElementById("cancel-edit-btn").style.display = "none";
+  });
+
+  // 年度変更 → 自動追随で meta 更新（カテゴリチェックはinitCategoryCheckboxesで既に配線済み）
+  document.getElementById("f-year").addEventListener("change", applyAutoMetaIfNeeded);
+  // meta を手入力したら自動追随を解除（自動形式に戻ったら再び自動に）
+  document.getElementById("f-meta").addEventListener("input", (e) => {
+    metaAuto = isAutoMetaValue(e.target.value);
+  });
+  // 「自動生成」ボタン → 強制的に年度/カテゴリで再生成
+  document.getElementById("auto-meta-btn").addEventListener("click", () => {
+    metaAuto = true;
+    applyAutoMetaIfNeeded();
+  });
+
+  function editProject(id) {
+    const p = state.projects.find(x => x.id === id);
+    if (!p) return;
+    document.getElementById("edit-id").value = p.id;
+    document.getElementById("f-title").value = p.title;
+    document.getElementById("f-image").value = p.image || "";
+    document.getElementById("f-link").value  = p.link  || "";
+    setCheckedCategories(p.categories || []);
+    document.getElementById("f-year").value = p.year || "";
+    document.getElementById("f-meta").value = p.meta || "";
+    // 既存値が自動形式（空 or "YYYY年 / カテ"）なら autoで追随、それ以外は手動保持
+    metaAuto = isAutoMetaValue(p.meta || "");
+    if (metaAuto) applyAutoMetaIfNeeded();
+    document.getElementById("submit-btn").textContent = "保存（更新）";
+    document.getElementById("cancel-edit-btn").style.display = "inline-block";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function deleteProject(id) {
+    if (!confirm("この案件を削除しますか？")) return;
+    state.projects = state.projects.filter(p => p.id !== id);
+    save();
+    render();
+    toast("削除しました");
+  }
+
+  document.getElementById("regen-meta-btn").addEventListener("click", () => {
+    let changed = 0;
+    for (const p of state.projects) {
+      const current = p.meta || "";
+      if (isAutoMetaValue(current)) {
+        const nv = buildAutoMeta(p.year, p.categories);
+        if (current !== nv) {
+          p.meta = nv;
+          changed++;
+        }
+      }
+    }
+    save();
+    render();
+    toast(`サブ説明 ${changed} 件を自動再生成`);
+  });
+
+  document.getElementById("clear-all-btn").addEventListener("click", () => {
+    if (!confirm("すべての案件データを削除します。よろしいですか？")) return;
+    state.projects = [];
+    save();
+    render();
+    toast("全削除しました");
+  });
+
+  document.getElementById("export-json-btn").addEventListener("click", () => {
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "ooishi-projects.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById("import-json-btn").addEventListener("click", () => {
+    document.getElementById("import-file").click();
+  });
+
+  // --- ローカルJSONファイル直接読み書き（File System Access API） ---
+  const HAS_FSA = typeof window.showOpenFilePicker === "function"
+               && typeof window.showSaveFilePicker === "function";
+  const DB_NAME = "ooishi-builder-db", STORE = "handles";
+  function openIDB() {
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open(DB_NAME, 1);
+      req.onupgradeneeded = () => req.result.createObjectStore(STORE);
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  }
+  async function saveHandle(handle) {
+    const db = await openIDB();
+    await new Promise((res, rej) => {
+      const tx = db.transaction(STORE, "readwrite");
+      tx.objectStore(STORE).put(handle, "current");
+      tx.oncomplete = res; tx.onerror = () => rej(tx.error);
+    });
+  }
+  async function loadHandle() {
+    const db = await openIDB();
+    return new Promise(res => {
+      const tx = db.transaction(STORE, "readonly");
+      const r = tx.objectStore(STORE).get("current");
+      r.onsuccess = () => res(r.result || null);
+      r.onerror = () => res(null);
+    });
+  }
+  let currentHandle = null;
+  function setFileStatus(name, extra, err) {
+    const el = document.getElementById("file-status");
+    const mutedCls = err ? "" : "muted";
+    const color = err ? "color:var(--cp-error-500);" : "";
+    el.innerHTML = `現在のファイル: <span style="${color}" class="${name ? '' : mutedCls}">${name || "未選択"}</span>`
+      + (extra ? ` <span class="muted">— ${extra}</span>` : "");
+    document.getElementById("file-save-btn").disabled = !currentHandle;
+  }
+
+  async function ensureRWPermission(handle) {
+    if (!handle.queryPermission) return true;
+    const q = await handle.queryPermission({ mode: "readwrite" });
+    if (q === "granted") return true;
+    const r = await handle.requestPermission({ mode: "readwrite" });
+    return r === "granted";
+  }
+
+  async function readHandleIntoState(handle) {
+    const file = await handle.getFile();
+    const text = await file.text();
+    const data = JSON.parse(text);
+    if (!data.projects || !Array.isArray(data.projects)) throw new Error("projects配列が見つかりません");
+    for (const p of data.projects) {
+      if (!Array.isArray(p.categories)) p.categories = p.category ? [p.category] : [];
+      delete p.category;
+      if (!p.id) p.id = uid();
+    }
+    const merge = state.projects.length > 0 &&
+      confirm(`${data.projects.length}件を読み込みます。現在のローカルデータを上書きしますか？（キャンセルで統合）`);
+    if (!merge && state.projects.length > 0) {
+      const ids = new Set(state.projects.map(p => p.id));
+      for (const p of data.projects) if (!ids.has(p.id)) state.projects.push(p);
+    } else {
+      state = data;
+    }
+    save();
+    render();
+  }
+
+  async function writeStateToHandle(handle) {
+    if (!await ensureRWPermission(handle)) throw new Error("書き込み権限が拒否されました");
+    const w = await handle.createWritable();
+    await w.write(JSON.stringify(state, null, 2));
+    await w.close();
+  }
+
+  // 起動時に前回ハンドル復元（表示だけ。実アクセスは操作時に permission要求）
+  (async () => {
+    if (!HAS_FSA) {
+      setFileStatus("", "このブラウザは File System Access 非対応（Chrome/Edge推奨）", true);
+      document.getElementById("file-open-btn").disabled = true;
+      document.getElementById("file-save-btn").disabled = true;
+      document.getElementById("file-saveas-btn").disabled = true;
+      return;
+    }
+    try {
+      const h = await loadHandle();
+      if (h) {
+        currentHandle = h;
+        setFileStatus(h.name, "（前回選択を復元・操作時に権限確認あり）");
+      }
+    } catch {}
+  })();
+
+  document.getElementById("file-open-btn").addEventListener("click", async () => {
+    if (!HAS_FSA) return;
+    try {
+      const [handle] = await window.showOpenFilePicker({
+        types: [{ description: "JSON", accept: { "application/json": [".json"] } }],
+        excludeAcceptAllOption: false,
+        multiple: false,
+      });
+      if (!await ensureRWPermission(handle)) {
+        setFileStatus(handle.name, "読み取り権限OK（書込は保存時に確認）");
+      }
+      currentHandle = handle;
+      await saveHandle(handle);
+      await readHandleIntoState(handle);
+      setFileStatus(handle.name, `✓ 読み込み完了 (${state.projects.length}件)`);
+      toast("ファイルを開きました");
+    } catch (e) {
+      if (e.name !== "AbortError") setFileStatus(currentHandle?.name || "", "読み込み失敗: " + e.message, true);
+    }
+  });
+
+  document.getElementById("file-save-btn").addEventListener("click", async () => {
+    if (!currentHandle) return;
+    try {
+      await writeStateToHandle(currentHandle);
+      setFileStatus(currentHandle.name, `💾 保存完了 ${new Date().toLocaleTimeString("ja-JP")}`);
+      toast("ファイルに保存しました");
+    } catch (e) {
+      setFileStatus(currentHandle.name, "保存失敗: " + e.message, true);
+    }
+  });
+
+  document.getElementById("file-saveas-btn").addEventListener("click", async () => {
+    if (!HAS_FSA) return;
+    try {
+      const handle = await window.showSaveFilePicker({
+        suggestedName: "projects.json",
+        types: [{ description: "JSON", accept: { "application/json": [".json"] } }],
+      });
+      await writeStateToHandle(handle);
+      currentHandle = handle;
+      await saveHandle(handle);
+      setFileStatus(handle.name, `💾 別名で保存完了 ${new Date().toLocaleTimeString("ja-JP")}`);
+      toast("別名で保存しました");
+    } catch (e) {
+      if (e.name !== "AbortError") setFileStatus(currentHandle?.name || "", "保存失敗: " + e.message, true);
+    }
+  });
+  document.getElementById("import-file").addEventListener("change", async (e) => {
+    const f = e.target.files[0];
+    if (!f) return;
+    try {
+      const text = await f.text();
+      const data = JSON.parse(text);
+      if (!data.projects || !Array.isArray(data.projects)) throw new Error("invalid");
+      if (!confirm(`${data.projects.length} 件を取り込みます。既存データと統合しますか？（キャンセルで上書き）`)) {
+        state = data;
+      } else {
+        const ids = new Set(state.projects.map(p => p.id));
+        for (const p of data.projects) {
+          if (!p.id) p.id = uid();
+          if (!ids.has(p.id)) state.projects.push(p);
+        }
+      }
+      save();
+      render();
+      toast("取り込みました");
+    } catch (err) {
+      alert("JSON取り込み失敗: " + err.message);
+    } finally {
+      e.target.value = "";
+    }
+  });
+
+  // -- 一覧描画
+  function render() {
+    const wrap = document.getElementById("list-wrap");
+    const ps = state.projects.slice().sort((a,b) => {
+      if (a.year !== b.year) return b.year.localeCompare(a.year);
+      if (a.category !== b.category) return a.category.localeCompare(b.category);
+      return a.title.localeCompare(b.title);
+    });
+    if (ps.length === 0) {
+      wrap.innerHTML = '<div class="empty-state">まだ案件がありません。左のフォームから追加してください。</div>';
+    } else {
+      let html = '<table class="proj-table"><thead><tr>'+
+        '<th>画像</th><th>タイトル</th><th>カテ</th><th>年</th><th></th>'+
+        '</tr></thead><tbody>';
+      for (const p of ps) {
+        html += '<tr>'+
+          `<td><div class="thumb" style="background-image:url('${escapeAttr(p.image)}');"></div></td>`+
+          `<td class="title-cell"><a href="${escapeAttr(p.link)}" target="_blank" rel="noopener">${escapeHtml(p.title)}</a>${p.meta ? `<div class="muted" style="font-size:10px">${escapeHtml(p.meta)}</div>`:""}</td>`+
+          `<td>${(p.categories && p.categories.length ? p.categories : ['—']).map(c => `<span class="pill" style="margin-right:2px">${escapeHtml(c)}</span>`).join("")}</td>`+
+          `<td>${p.year ? escapeHtml(p.year) : '<span class="muted">—</span>'}</td>`+
+          `<td style="white-space:nowrap">`+
+            `<button class="ghost small" data-edit="${p.id}" style="font-size:11px; padding:3px 8px">編集</button> `+
+            `<button class="danger" data-del="${p.id}">削除</button>`+
+          `</td>`+
+        '</tr>';
+      }
+      html += '</tbody></table>';
+      wrap.innerHTML = html;
+      wrap.querySelectorAll("[data-edit]").forEach(b =>
+        b.addEventListener("click", () => editProject(b.dataset.edit)));
+      wrap.querySelectorAll("[data-del]").forEach(b =>
+        b.addEventListener("click", () => deleteProject(b.dataset.del)));
+    }
+    document.getElementById("count-info").textContent = `登録 ${state.projects.length} 件`;
+    refreshPickers();
+    rebuildOutput();
+  }
+
+  // -- タブ切替
+  let mode = "year";
+  document.getElementById("tab-year").addEventListener("click", () => {
+    mode = "year";
+    document.getElementById("tab-year").classList.add("active");
+    document.getElementById("tab-cat").classList.remove("active");
+    document.getElementById("tab-all").classList.remove("active");
+    document.getElementById("filter-by-year").style.display = "flex";
+    document.getElementById("filter-by-cat").style.display = "none";
+    rebuildOutput();
+  });
+  document.getElementById("tab-cat").addEventListener("click", () => {
+    mode = "cat";
+    document.getElementById("tab-cat").classList.add("active");
+    document.getElementById("tab-year").classList.remove("active");
+    document.getElementById("tab-all").classList.remove("active");
+    document.getElementById("filter-by-cat").style.display = "flex";
+    document.getElementById("filter-by-year").style.display = "none";
+    rebuildOutput();
+  });
+  document.getElementById("tab-all").addEventListener("click", () => {
+    mode = "all";
+    document.getElementById("tab-all").classList.add("active");
+    document.getElementById("tab-year").classList.remove("active");
+    document.getElementById("tab-cat").classList.remove("active");
+    document.getElementById("filter-by-year").style.display = "none";
+    document.getElementById("filter-by-cat").style.display = "none";
+    rebuildOutput();
+  });
+  document.getElementById("pick-year").addEventListener("change", rebuildOutput);
+  document.getElementById("pick-cat").addEventListener("change", rebuildOutput);
+
+  // -- HTMLテンプレ
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, ch => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"
+    }[ch]));
+  }
+  function escapeAttr(s) { return escapeHtml(s); }
+
+  function buildCardHtml(p) {
+    const title = escapeHtml(p.title);
+    const hasImage = !!(p.image && p.image.trim());
+    const hasLink  = !!(p.link  && p.link.trim());
+    const image = escapeAttr(p.image || "");
+    const link  = escapeAttr(p.link  || "");
+    // サブ説明が空なら year/categoryで自動フォールバック（両方空なら空文字）
+    const catStr = (p.categories && p.categories.length) ? p.categories.join(" / ") : "";
+    const autoMeta = (p.year ? `${p.year}年` : "") + (p.year && catStr ? " / " : "") + catStr;
+    const metaText = (p.meta && p.meta.trim()) ? p.meta : autoMeta;
+    const metaLine = metaText ? escapeHtml(metaText) : "";
+
+    // 画像エリア: 画像あれば background-image、なければ "No Image" プレースホルダ
+    const imgBox = hasImage
+      ? `<a href="${link}" target="_blank" rel="noopener" aria-label="${title}"
+           style="flex:0 0 133px !important;width:133px !important;height:100px !important;max-width:133px !important;max-height:100px !important;min-width:133px !important;min-height:100px !important;border-radius:8px !important;overflow:hidden !important;background-image:url('${image}') !important;background-size:cover !important;background-position:center !important;background-color:#eff7fc;display:block !important;"></a>`
+      : `<div style="flex:0 0 133px !important;width:133px !important;height:100px !important;border-radius:8px;background:#eff7fc;display:flex !important;align-items:center;justify-content:center;color:#b3d9ef;font-size:11px;">No Image</div>`;
+
+    // タイトル・「詳細を見る」ボタン: リンクあれば <a>、なければ <span>
+    const titleEl = hasLink
+      ? `<a href="${link}" target="_blank" rel="noopener"
+           style="text-decoration:none !important;color:#143e63 !important;font-size:15px !important;font-weight:600 !important;line-height:1.45 !important;display:block;margin-bottom:4px;">${title}</a>`
+      : `<div style="color:#143e63;font-size:15px;font-weight:600;line-height:1.45;margin-bottom:4px;">${title}</div>`;
+
+    const ctaEl = hasLink
+      ? `<div style="margin-top:6px;font-size:12px;">
+           <a href="${link}" target="_blank" rel="noopener"
+              style="text-decoration:none !important;color:#2a6aa0 !important;font-weight:600 !important;background:#eff7fc;padding:4px 10px;border-radius:6px;display:inline-block;">詳細を見る →</a>
+         </div>`
+      : "";
+
+    return `
+  <div style="border:1px solid #d9ecf7;border-radius:12px;overflow:hidden;background:#fff;margin-bottom:12px;padding:12px;display:flex !important;flex-wrap:nowrap !important;align-items:center;gap:14px;box-shadow:0 1px 3px rgba(20,62,99,.04);">
+    ${imgBox}
+    <div style="flex:1 1 auto;min-width:0;">
+      ${titleEl}
+      ${metaLine ? `<div style="font-size:11px;color:#6b7c8c;">${metaLine}</div>` : ""}
+      ${ctaEl}
+    </div>
+  </div>`;
+  }
+
+  function buildWrapperHtml(headingLabel, count, cardsHtml) {
+    return `<!-- 大石建設 施工実績 ${escapeHtml(headingLabel)}（Jimdoウィジェット用） -->
+<div style="font-family:-apple-system,'Hiragino Kaku Gothic ProN','Yu Gothic','Meiryo',sans-serif;color:#33495e;max-width:820px;">
+  <div style="display:flex !important;align-items:baseline;gap:10px;margin:0 0 14px;padding-bottom:8px;border-bottom:2px solid #d9ecf7;">
+    <h2 style="margin:0 !important;font-size:18px !important;color:#143e63 !important;font-weight:700 !important;">${escapeHtml(headingLabel)}</h2>
+    <span style="font-size:11px;color:#2a6aa0;background:#eff7fc;padding:2px 10px;border-radius:999px;">${count}件</span>
+  </div>
+${cardsHtml}
+</div>
+`;
+  }
+
+  function getFiltered() {
+    if (mode === "year") {
+      const y = document.getElementById("pick-year").value;
+      return {
+        label: `${y}年`,
+        items: state.projects
+          .filter(p => p.year === y)
+          .sort((a,b)=> a.category.localeCompare(b.category) || a.title.localeCompare(b.title)),
+        slug: `year-${y}`
+      };
+    } else {
+      const c = document.getElementById("pick-cat").value;
+      return {
+        label: c,
+        items: state.projects
+          .filter(p => (p.categories || []).includes(c))
+          .sort((a,b)=> b.year.localeCompare(a.year) || a.title.localeCompare(b.title)),
+        slug: `cat-${c}`
+      };
+    }
+  }
+
+  // オールインワン（JS絞り込み付き）HTML生成
+  function buildAllInOneHtml() {
+    const allCats = [...new Set(state.projects.flatMap(p => p.categories || []))]
+      .sort((a,b)=> CATEGORIES.indexOf(a) - CATEGORIES.indexOf(b));
+    const allYears = [...new Set(state.projects.map(p => p.year))]
+      .sort((a,b)=> b.localeCompare(a));
+    const total = state.projects.length;
+
+    const uid = "ois" + Math.random().toString(36).slice(2,8);
+
+    // 全カード（data-year, data-category付き・デフォルト全件表示）
+    const firstCat = p => (p.categories && p.categories[0]) || "";
+    const sortedAll = state.projects.slice().sort((a,b)=>
+      (b.year||"").localeCompare(a.year||"")
+      || (CATEGORIES.indexOf(firstCat(a))-CATEGORIES.indexOf(firstCat(b)))
+      || a.title.localeCompare(b.title)
+    );
+    const cardsHtml = sortedAll.map(p => {
+      const card = buildCardHtml(p);
+      // 先頭の <div style="..."> に data-ois-year / data-ois-cats を差し込む
+      // data-ois-cats は ",公共施設,教育施設," 形式（前後カンマ付き）で includes判定用
+      const catsAttr = (p.categories && p.categories.length)
+        ? "," + p.categories.join(",") + ","
+        : "";
+      return card.replace(/^\s*<div /,
+        `<div data-ois-year="${escapeAttr(p.year || "")}" data-ois-cats="${escapeAttr(catsAttr)}" `);
+    }).join("");
+
+    // タブボタンスタイル
+    const tabBase   = "display:inline-block;padding:6px 14px;margin:0 6px 6px 0;font-size:12px;font-weight:600;border-radius:999px;cursor:pointer;font-family:inherit;border:1px solid;";
+    const tabActive = tabBase + "background:#74b2e0;color:#fff;border-color:#74b2e0;";
+    const tabInactv = tabBase + "background:#fff;color:#6b7c8c;border-color:#b3d9ef;";
+
+    // 年度タブ
+    const yearTabs = [
+      `<button type="button" data-ois-tab="y" data-val="" onclick="oisSetY('${uid}','')" style="${tabActive}">全年度</button>`,
+      ...allYears.map(y =>
+        `<button type="button" data-ois-tab="y" data-val="${escapeAttr(y)}" onclick="oisSetY('${uid}','${escapeAttr(y)}')" style="${tabInactv}">${escapeHtml(y)}年</button>`
+      )
+    ].join("");
+    // カテゴリタブ
+    const catTabs = [
+      `<button type="button" data-ois-tab="c" data-val="" onclick="oisSetC('${uid}','')" style="${tabActive}">全カテゴリ</button>`,
+      ...allCats.map(c =>
+        `<button type="button" data-ois-tab="c" data-val="${escapeAttr(c)}" onclick="oisSetC('${uid}','${escapeAttr(c)}')" style="${tabInactv}">${escapeHtml(c)}</button>`
+      )
+    ].join("");
+
+    // 絞り込みJS（<script>タグ1つ。Jimdoがscript剥がすと絞り込み効かないが全件表示のまま=安全fallback）
+    const filterFn = `
+  (function(){
+    var tabActive = ${JSON.stringify(tabActive)};
+    var tabInactv = ${JSON.stringify(tabInactv)};
+    var UID = '${uid}';
+    window.oisSetY = window.oisSetY || function(uid, val){
+      var root = document.getElementById(uid);
+      if (root) root.setAttribute('data-cur-y', val);
+      window.oisApply(uid);
+    };
+    window.oisSetC = window.oisSetC || function(uid, val){
+      var root = document.getElementById(uid);
+      if (root) root.setAttribute('data-cur-c', val);
+      window.oisApply(uid);
+    };
+    window.oisApply = window.oisApply || function(uid){
+      var root = document.getElementById(uid);
+      if (!root) return;
+      var y = root.getAttribute('data-cur-y') || '';
+      var c = root.getAttribute('data-cur-c') || '';
+      var list = document.getElementById(uid+'-list');
+      var shown = 0;
+      for (var i=0;i<list.children.length;i++){
+        var el = list.children[i];
+        var okY = !y || el.getAttribute('data-ois-year') === y;
+        var cats = el.getAttribute('data-ois-cats') || '';
+        var okC = !c || cats.indexOf(','+c+',') !== -1;
+        if (okY && okC){ el.style.display=''; shown++; } else { el.style.display='none'; }
+      }
+      var counter = document.getElementById(uid+'-count');
+      if (counter) counter.textContent = shown + '件';
+      // タブハイライト更新
+      var aStyle = root.getAttribute('data-active') || tabActive;
+      var iStyle = root.getAttribute('data-inactive') || tabInactv;
+      var ybtns = root.querySelectorAll('[data-ois-tab="y"]');
+      for (var j=0;j<ybtns.length;j++){
+        ybtns[j].setAttribute('style', ybtns[j].getAttribute('data-val')===y ? aStyle : iStyle);
+      }
+      var cbtns = root.querySelectorAll('[data-ois-tab="c"]');
+      for (var k=0;k<cbtns.length;k++){
+        cbtns[k].setAttribute('style', cbtns[k].getAttribute('data-val')===c ? aStyle : iStyle);
+      }
+    };
+    var root = document.getElementById(UID);
+    if (root){
+      root.setAttribute('data-active', tabActive);
+      root.setAttribute('data-inactive', tabInactv);
+      window.oisApply(UID);
+    }
+  })();
+`;
+
+    return `<!-- 大石建設 施工実績 オールインワン（タブ絞り込み・Jimdoウィジェット用） -->
+<div id="${uid}" data-cur-y="" data-cur-c="" style="font-family:-apple-system,'Hiragino Kaku Gothic ProN','Yu Gothic','Meiryo',sans-serif;color:#33495e;max-width:820px;">
+
+  <div style="display:flex;align-items:baseline;gap:10px;margin:0 0 14px;padding-bottom:8px;border-bottom:2px solid #d9ecf7;flex-wrap:wrap;">
+    <h2 style="margin:0 !important;font-size:18px !important;color:#143e63 !important;font-weight:700 !important;">施工実績</h2>
+    <span style="font-size:11px;color:#2a6aa0;background:#eff7fc;padding:2px 10px;border-radius:999px;">全 ${total} 件</span>
+    <span style="margin-left:auto;font-size:12px;color:#6b7c8c;">表示中: <span id="${uid}-count" style="font-weight:600;color:#143e63;">${total}件</span></span>
+  </div>
+
+  <div style="background:#fafcfe;border:1px dashed #d9ecf7;border-radius:10px;padding:10px 12px 4px;margin-bottom:10px;">
+    <div style="font-size:12px;font-weight:600;color:#143e63;margin-bottom:6px;">📅 年度で絞り込み</div>
+    <div>${yearTabs}</div>
+  </div>
+
+  <div style="background:#fafcfe;border:1px dashed #d9ecf7;border-radius:10px;padding:10px 12px 4px;margin-bottom:14px;">
+    <div style="font-size:12px;font-weight:600;color:#143e63;margin-bottom:6px;">🏢 カテゴリで絞り込み</div>
+    <div>${catTabs}</div>
+  </div>
+
+  <div id="${uid}-list">
+    ${cardsHtml}
+  </div>
+</div>
+<script>${filterFn}<\/script>
+`;
+  }
+
+  function rebuildOutput() {
+    let html, label, count;
+    if (mode === "all") {
+      html = buildAllInOneHtml();
+      label = "オールインワン";
+      count = state.projects.length;
+      document.getElementById("filter-count").textContent = `全 ${count} 件を施設別/年代別タブで出力`;
+    } else {
+      const f = getFiltered();
+      const cards = f.items.map(buildCardHtml).join("\n");
+      html = buildWrapperHtml(f.label, f.items.length, cards || "  <!-- 該当案件なし -->");
+      document.getElementById("filter-count").textContent = `${f.label} に該当する案件: ${f.items.length} 件`;
+    }
+    document.getElementById("html-out").value = html;
+    document.getElementById("preview").innerHTML = html;
+  }
+
+  document.getElementById("copy-btn").addEventListener("click", async () => {
+    const ta = document.getElementById("html-out");
+    try {
+      await navigator.clipboard.writeText(ta.value);
+      toast("HTMLをコピーしました");
+    } catch {
+      ta.select(); document.execCommand("copy");
+      toast("コピー（フォールバック）");
+    }
+  });
+
+  document.getElementById("download-btn").addEventListener("click", () => {
+    const slug = (mode === "all") ? "all-tabs" : getFiltered().slug;
+    const blob = new Blob([document.getElementById("html-out").value], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `ooishi-${slug}.html`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  // サンプルデータ投入（初回のみ）
+  if (state.projects.length === 0) {
+    state.projects = [
+      { id: uid(), title: "城山保育園新築工事",
+        image: "https://image.jimcdn.com/app/cms/image/transf/dimension=1008x10000:format=jpg/path/se0daa6e6e2ff0f3d/image/i19bb9abed43c8f82/version/1776819367/image.jpg",
+        link: "https://www.ooisi-kensetsu.co.jp/underconstructionall/%E6%9C%80%E6%96%B0-%E5%9F%8E%E5%B1%B1%E4%BF%9D%E8%82%B2%E5%9C%92%E6%96%B0%E7%AF%89%E5%B7%A5%E4%BA%8B/",
+        category: "教育施設", year: "2025", meta: "最新施工実績 / 竣工写真ページ" },
+      { id: uid(), title: "都営上砂町一丁目アパート（19，20号棟）外壁改修、屋上防水及び鉄部塗装工事",
+        image: "https://image.jimcdn.com/app/cms/image/transf/dimension=1008x10000:format=jpg/path/se0daa6e6e2ff0f3d/image/i64e13310358d7f30/version/1776670553/image.jpg",
+        link: "https://www.ooisi-kensetsu.co.jp/jisseki/2022/toukodai/",
+        category: "耐震・大規模改修", year: "2025", meta: "大規模改修工事 / 竣工実績" },
+      { id: uid(), title: "稲城市立稲城第二小学校校舎増築工事",
+        image: "https://image.jimcdn.com/app/cms/image/transf/dimension=1010x10000:format=jpg/path/se0daa6e6e2ff0f3d/image/iceeef68febd0792b/version/1776238619/image.jpg",
+        link: "https://www.ooisi-kensetsu.co.jp/results02/2025%E5%B9%B4/#:~:text=%E5%B9%B4%203%E6%9C%88-,%E7%A8%B2%E5%9F%8E%E5%B8%82%E7%AB%8B%E7%A8%B2%E5%9F%8E%E7%AC%AC%E4%BA%8C%E5%B0%8F%E5%AD%A6%E6%A0%A1%E6%A0%A1%E8%88%8E%E5%A2%97%E7%AF%89%E5%B7%A5%E4%BA%8B,-%E7%99%BA%E6%B3%A8%E8%80%85",
+        category: "教育施設", year: "2025", meta: "教育施設 / 2025年3月 竣工" },
+    ];
+    save();
+  }
+
+  // 初期実行
+  initYearSelects();
+  metaAuto = true;
+  applyAutoMetaIfNeeded();
+  render();
+})();
+</script>
+
+</body>
+</html>
