@@ -41,7 +41,7 @@ const ALLOWED_ORIGIN = 'https://manual.kensetsu-total.support';
 const FALLBACK_ORIGIN = 'http://localhost:4280'; // SWA CLI emulator
 const API_VERSION = '2022-03-01-preview';
 const POLL_INTERVAL_MS = 1500;
-const POLL_TIMEOUT_MS = 45_000;
+const POLL_TIMEOUT_MS = 20_000;
 
 function corsHeaders(origin) {
   const allow =
@@ -247,6 +247,7 @@ app.http('grade-skk1', {
     }
 
     const prompt = buildPrompt(question, payload);
+    const t0 = Date.now();
     context.log?.(
       `grade-skk1: questionId=${questionId} promptLen=${prompt.length}`,
     );
@@ -254,6 +255,7 @@ app.http('grade-skk1', {
     let accessToken;
     try {
       accessToken = await getAccessToken(context);
+      context.log?.(`grade-skk1: token ok t+${Date.now() - t0}ms`);
     } catch (e) {
       if (e instanceof CopilotAuthError) {
         context.error?.(`grade-skk1 auth error: ${e.message}`);
@@ -272,6 +274,9 @@ app.http('grade-skk1', {
     let conversationId;
     try {
       conversationId = await createConversation(base, accessToken, context);
+      context.log?.(
+        `grade-skk1: conversation created id=${conversationId} t+${Date.now() - t0}ms`,
+      );
     } catch (e) {
       const status = e?.status || 502;
       return jsonResponse(
@@ -280,7 +285,6 @@ app.http('grade-skk1', {
         origin,
       );
     }
-    context.log?.(`grade-skk1: conversation created id=${conversationId}`);
 
     let sendResult;
     try {
@@ -291,6 +295,7 @@ app.http('grade-skk1', {
         prompt,
         context,
       );
+      context.log?.(`grade-skk1: send ok t+${Date.now() - t0}ms`);
     } catch (e) {
       const status = e?.status || 502;
       return jsonResponse(
