@@ -4,6 +4,11 @@
     "AzureWebJobsStorage": "",
     "FUNCTIONS_WORKER_RUNTIME": "node",
     "FUNCTIONS_NODE_BLOCK_ON_ENTRY_POINT_ERROR": "true",
-    "COPILOT_DIRECTLINE_SECRET": "<set-locally-only-do-not-commit>"
+    "SPO_TENANT_ID": "<entra-tenant-id>",
+    "SPO_CLIENT_ID": "<spn-client-id>",
+    "SPO_CLIENT_SECRET": "<spn-client-secret>",
+    "COPILOT_BOT_USERNAME": "<gemba-bot-upn>",
+    "COPILOT_BOT_PASSWORD": "<gemba-bot-password>",
+    "COPILOT_ENDPOINT": "https://default506cae5ac1514312bc5dfbcf375efa.94.environment.api.powerplatform.com/copilotstudio/dataverse-backed/authenticated/bots/cr746_1/conversations"
   }
 }

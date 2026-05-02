@@ -1,34 +1,47 @@
 // POST /api/grade-skk1
 //
-// 1級建築施工管理技士 第二次検定 勉強会 (oisi/benkyokai-skk1) の
-// 答案を Copilot Studio 「建設サポート」 bot へ Direct Line 経由で投げて
-// 採点・添削コメントを返す薄いプロキシ。
+// 1級建築施工管理技士 第二次検定 勉強会 (oisi/benkyokai-skk1) の答案を
+// Copilot Studio 「1級建築施工管理試験マスター」 bot (cr746_1) へ
+// Power Platform API 経由で投げて採点・添削コメントを返すプロキシ。
+//
+// 認証: ROPC (gemba-bot アカウント)。詳細は ./copilotAuth.js
+//
+// 流れ:
+//   1. ROPC で Power Platform Access Token 取得 (キャッシュあり)
+//   2. POST {base}/conversations?api-version=...     新規会話作成
+//   3. POST {base}/conversations/{id}?api-version=...  メッセージ送信
+//   4. レスポンス activities から bot 応答テキスト抽出
+//      空なら GET /activities を short polling
 //
 // Request body:
 //   {
 //     "questionId": "q1" | "q2-1" | "q2-2" | "q2-3"
 //                 | "q4-1" | "q4-2" | "q4-3" | "q4-4",
 //     "answer":    string  // q1 以外
-//     "answers":   { overview, q1a, q1b, q2 }  // q1 用 (任意)
+//     "answers":   { overview, q1a, q1b, q2 }  // q1 用
 //   }
 //
 // Response (200):
-//   {
-//     "questionId": "...",
-//     "verdict":    string,  // bot reply (currently same as raw)
-//     "raw":        string   // bot reply
-//   }
+//   { "questionId": "...", "verdict": string, "raw": string }
 //
 // 環境変数:
-//   COPILOT_DIRECTLINE_SECRET  Direct Line シークレット (Azure Portal で登録)
+//   SPO_TENANT_ID / SPO_CLIENT_ID / SPO_CLIENT_SECRET
+//   COPILOT_BOT_USERNAME / COPILOT_BOT_PASSWORD
+//   COPILOT_ENDPOINT
 
 const { app } = require('@azure/functions');
 const { getQuestion } = require('./questions');
-const { askBot, HttpUpstreamError } = require('./directLineClient');
+const {
+  getAccessToken,
+  getCopilotBase,
+  CopilotAuthError,
+} = require('./copilotAuth');
 
 const ALLOWED_ORIGIN = 'https://manual.kensetsu-total.support';
 const FALLBACK_ORIGIN = 'http://localhost:4280'; // SWA CLI emulator
-const BOT_USER_ID = 'skk1-grader-user';
+const API_VERSION = '2022-03-01-preview';
+const POLL_INTERVAL_MS = 1500;
+const POLL_TIMEOUT_MS = 45_000;
 
 function corsHeaders(origin) {
   const allow =
@@ -80,6 +93,100 @@ function buildPrompt(question, payload) {
       '採点・○×評価・改善点を具体的に教えてください。',
   );
   return lines.join('\n');
+}
+
+function extractBotMessages(activities) {
+  if (!Array.isArray(activities)) return [];
+  return activities
+    .filter(
+      (a) =>
+        a &&
+        a.type === 'message' &&
+        a.from?.role === 'bot' &&
+        typeof a.text === 'string' &&
+        a.text.trim().length > 0,
+    )
+    .map((a) => a.text);
+}
+
+async function createConversation(base, accessToken, log) {
+  const res = await fetch(
+    `${base}/conversations?api-version=${API_VERSION}`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: '{}',
+    },
+  );
+  if (!res.ok) {
+    const txt = await res.text().catch(() => '');
+    log?.error?.(
+      `Copilot conversation create failed: status=${res.status} body=${txt.slice(0, 300)}`,
+    );
+    const err = new Error('Copilot 会話作成に失敗しました');
+    err.status = 502;
+    throw err;
+  }
+  const j = await res.json();
+  if (!j.conversationId) {
+    const err = new Error('Copilot 会話 ID が取得できません');
+    err.status = 502;
+    throw err;
+  }
+  return j.conversationId;
+}
+
+async function sendMessage(base, accessToken, conversationId, text, log) {
+  const res = await fetch(
+    `${base}/conversations/${conversationId}?api-version=${API_VERSION}`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ activity: { type: 'message', text } }),
+    },
+  );
+  if (!res.ok) {
+    const txt = await res.text().catch(() => '');
+    log?.error?.(
+      `Copilot send message failed: status=${res.status} body=${txt.slice(0, 300)}`,
+    );
+    const err = new Error('Copilot メッセージ送信に失敗しました');
+    err.status = 502;
+    throw err;
+  }
+  return res.json();
+}
+
+async function pollActivities(base, accessToken, conversationId, log) {
+  const start = Date.now();
+  while (Date.now() - start < POLL_TIMEOUT_MS) {
+    await new Promise((r) => setTimeout(r, POLL_INTERVAL_MS));
+    const res = await fetch(
+      `${base}/conversations/${conversationId}/activities?api-version=${API_VERSION}`,
+      {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${accessToken}` },
+      },
+    );
+    if (!res.ok) {
+      const txt = await res.text().catch(() => '');
+      log?.error?.(
+        `Copilot poll activities failed: status=${res.status} body=${txt.slice(0, 300)}`,
+      );
+      // 一時的失敗の可能性があるので継続
+      continue;
+    }
+    const j = await res.json();
+    const msgs = extractBotMessages(j.activities);
+    if (msgs.length > 0) return msgs;
+  }
+  return [];
 }
 
 app.http('grade-skk1', {
@@ -139,51 +246,90 @@ app.http('grade-skk1', {
       }
     }
 
-    const secret = process.env.COPILOT_DIRECTLINE_SECRET;
-    if (!secret) {
-      context.error?.(
-        'COPILOT_DIRECTLINE_SECRET is not configured on this Function App',
-      );
-      return jsonResponse(
-        503,
-        {
-          error:
-            'Copilot 接続情報が未設定です。管理者に連絡してください (DIRECTLINE_SECRET unset)',
-        },
-        origin,
-      );
-    }
-
     const prompt = buildPrompt(question, payload);
     context.log?.(
       `grade-skk1: questionId=${questionId} promptLen=${prompt.length}`,
     );
 
+    let accessToken;
     try {
-      const { text } = await askBot(secret, prompt, BOT_USER_ID, context);
-      if (!text || text.trim().length === 0) {
-        return jsonResponse(
-          502,
-          { error: 'Bot returned empty reply' },
-          origin,
-        );
-      }
-      return jsonResponse(
-        200,
-        { questionId, verdict: text, raw: text },
-        origin,
-      );
+      accessToken = await getAccessToken(context);
     } catch (e) {
-      if (e instanceof HttpUpstreamError) {
-        context.error?.(`grade-skk1 upstream error: ${e.status} ${e.message}`);
+      if (e instanceof CopilotAuthError) {
+        context.error?.(`grade-skk1 auth error: ${e.message}`);
         return jsonResponse(e.status, { error: e.message }, origin);
       }
-      context.error?.(`grade-skk1 unexpected error: ${e?.stack || e}`);
+      context.error?.(`grade-skk1 auth unexpected: ${e?.stack || e}`);
       return jsonResponse(
-        500,
-        { error: 'Internal error while contacting bot' },
+        503,
+        { error: 'Copilot 認証情報設定エラー' },
         origin,
       );
     }
+
+    const base = getCopilotBase();
+
+    let conversationId;
+    try {
+      conversationId = await createConversation(base, accessToken, context);
+    } catch (e) {
+      const status = e?.status || 502;
+      return jsonResponse(
+        status,
+        { error: e?.message || 'Copilot 接続エラー' },
+        origin,
+      );
+    }
+    context.log?.(`grade-skk1: conversation created id=${conversationId}`);
+
+    let sendResult;
+    try {
+      sendResult = await sendMessage(
+        base,
+        accessToken,
+        conversationId,
+        prompt,
+        context,
+      );
+    } catch (e) {
+      const status = e?.status || 502;
+      return jsonResponse(
+        status,
+        { error: e?.message || 'Copilot 送信エラー' },
+        origin,
+      );
+    }
+
+    let botMessages = extractBotMessages(sendResult?.activities);
+
+    if (botMessages.length === 0) {
+      // 同期応答が空のケースに備えて short polling
+      context.log?.('grade-skk1: send returned no bot messages, polling...');
+      try {
+        botMessages = await pollActivities(
+          base,
+          accessToken,
+          conversationId,
+          context,
+        );
+      } catch (e) {
+        context.error?.(`grade-skk1 poll error: ${e?.stack || e}`);
+      }
+    }
+
+    if (botMessages.length === 0) {
+      return jsonResponse(
+        504,
+        { error: 'Bot 応答が取得できませんでした (timeout)' },
+        origin,
+      );
+    }
+
+    const text = botMessages.join('\n\n').trim();
+    return jsonResponse(
+      200,
+      { questionId, verdict: text, raw: text },
+      origin,
+    );
   },
 });
