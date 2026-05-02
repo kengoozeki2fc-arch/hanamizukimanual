@@ -1,6 +1,11 @@
 {
   "routes": [
     {
+      "route": "/api/grade-skk1",
+      "methods": ["POST", "OPTIONS"],
+      "allowedRoles": ["anonymous"]
+    },
+    {
       "route": "/hanamizuki",
       "rewrite": "/hanamizuki/index.html"
     },
@@ -114,6 +119,7 @@
   "navigationFallback": {
     "rewrite": "/index.html",
     "exclude": [
+      "/api/*",
       "/hanamizuki/images/*.png",
       "/hanamizuki/images/*.jpg",
       "/hanamizuki/images/*.pdf",

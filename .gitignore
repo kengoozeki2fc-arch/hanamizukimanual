@@ -1,0 +1,18 @@
+# Azure Functions local settings (contains secrets)
+api/local.settings.json
+api/.python_packages/
+api/bin/
+api/obj/
+
+# Node
+node_modules/
+*.log
+.npm/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
