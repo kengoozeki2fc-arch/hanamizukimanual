@@ -208,7 +208,8 @@ body {
   animation: spin 0.8s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
-body:not(.kc-ready) main { visibility: hidden; }
+body:not(.kc-ready) .container,
+body:not(.kc-ready) .footer { visibility: hidden; }
 body.kc-ready #auth-overlay { display: none; }
 
 /* ヘッダー右上ユーザーバッジ */
@@ -246,7 +247,6 @@ body.kc-ready #auth-overlay { display: none; }
   <p>クラウドパワー株式会社 / GWC / 建設業トータルサポート — HTMLマニュアル集約</p>
 </div>
 
-<main>
 <div class="container">
 
   <div class="summary">
@@ -403,7 +403,6 @@ body.kc-ready #auth-overlay { display: none; }
 <div class="footer">
   &copy; 2026 Cloud Power Inc. — けんけん作成 / 最終更新 2026-05-02
 </div>
-</main>
 
 <script>
 (function () {
