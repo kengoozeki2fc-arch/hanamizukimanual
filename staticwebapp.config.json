@@ -97,6 +97,16 @@
       }
     },
     {
+      "route": "/oisi/benkyokai-skk1",
+      "rewrite": "/oisi/benkyokai-skk1/index.html"
+    },
+    {
+      "route": "/oisi/benkyokai-skk1/images/*",
+      "headers": {
+        "Cache-Control": "public, max-age=86400"
+      }
+    },
+    {
       "route": "/oisi-builder",
       "rewrite": "/oisi-builder/index.html"
     }
@@ -139,9 +149,12 @@
       "/oisi/*.html",
       "/oisi/benkyokai/*.html",
       "/oisi/benkyokai/images/*.png",
+      "/oisi/benkyokai/images/*.jpg",
+      "/oisi/benkyokai-skk1/*.html",
+      "/oisi/benkyokai-skk1/images/*.png",
+      "/oisi/benkyokai-skk1/images/*.jpg",
       "/oisi-builder/*.html",
       "/oisi-builder/*.json",
-      "/oisi/benkyokai/images/*.jpg",
       "/*.png",
       "/*.jpg",
       "/*.pdf",

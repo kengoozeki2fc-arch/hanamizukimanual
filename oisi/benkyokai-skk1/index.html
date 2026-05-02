@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1級施工管技 社内対策講座 勉強会資料｜大石建設</title>
+<style>
+  :root {
+    --primary: #1a3a5c;
+    --accent:  #e05a00;
+    --correct: #1a7a3a;
+    --wrong:   #b00020;
+    --bg:      #f5f7fa;
+    --card:    #ffffff;
+    --border:  #d0d8e4;
+    --text:    #1e2a38;
+    --muted:   #6b7c93;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Hiragino Sans","Meiryo",sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.75;
+    font-size: 15px;
+  }
+
+  /* ヘッダー */
+  header {
+    background: var(--primary);
+    color: #fff;
+    padding: 20px 24px;
+    border-bottom: 4px solid var(--accent);
+  }
+  header h1 { font-size: 1.2rem; font-weight: 700; }
+  header p  { font-size: 0.82rem; color: #aac4e0; margin-top: 4px; }
+
+  /* ナビ（目次） */
+  nav {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    padding: 10px 24px;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 0.82rem;
+  }
+  nav a { color: var(--primary); text-decoration: none; font-weight: 600; }
+  nav a:hover { text-decoration: underline; }
+
+  main { max-width: 900px; margin: 0 auto; padding: 28px 16px 80px; }
+
+  /* セクション見出し */
+  .section-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--primary);
+    background: #eaf0f8;
+    border-left: 5px solid var(--primary);
+    padding: 10px 16px;
+    margin: 36px 0 18px;
+    border-radius: 0 6px 6px 0;
+    scroll-margin-top: 12px;
+  }
+
+  /* 問題カード */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  }
+  .q-number {
+    display: inline-block;
+    background: var(--primary);
+    color: #fff;
+    font-size: .75rem;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    letter-spacing: .05em;
+  }
+  .q-text { font-weight: 600; margin-bottom: 14px; line-height: 1.8; }
+
+  /* 五肢択一 */
+  .choices { list-style: none; }
+  .choices li { margin-bottom: 8px; }
+  .choices label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+    padding: 9px 14px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    transition: background .15s;
+  }
+  .choices label:hover { background: #f0f5ff; }
+  .choices input[type="radio"] { margin-top: 3px; flex-shrink: 0; }
+  .choices label.correct-choice { background:#eafaf0; border-color:var(--correct); font-weight:600; color:var(--correct); }
+  .choices label.wrong-choice   { background:#fff0f0; border-color:var(--wrong);   color:var(--wrong); }
+
+  /* テキストエリア */
+  .answer-textarea {
+    width: 100%;
+    min-height: 110px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.75;
+    resize: vertical;
+    outline: none;
+    transition: border .15s;
+  }
+  .answer-textarea:focus { border-color: var(--primary); }
+  .answer-textarea.tall  { min-height: 200px; }
+
+  /* 論文フィールド */
+  .essay-field { margin-bottom: 16px; }
+  .essay-label {
+    font-weight: 600;
+    font-size: .88rem;
+    color: var(--primary);
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  /* ネットワーク工程表 */
+  .network-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .85rem;
+    margin: 12px 0;
+  }
+  .network-table th, .network-table td {
+    border: 1px solid var(--border);
+    padding: 7px 10px;
+    text-align: center;
+  }
+  .network-table th { background: #eaf0f8; font-weight: 700; }
+  .network-info {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    font-size: .88rem;
+    line-height: 1.9;
+    margin-bottom: 12px;
+    white-space: pre-wrap;
+  }
+
+  /* ボタン */
+  .btn-row { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    padding: 9px 22px;
+    border: none;
+    border-radius: 6px;
+    font-size: .9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity .15s;
+  }
+  .btn:hover { opacity: .85; }
+  .btn-primary   { background: var(--accent); color: #fff; }
+  .btn-reset     { background: #e8ecf2; color: var(--muted); }
+  .btn-copilot   { background: #0078d4; color: #fff; opacity: .55; cursor: default; }
+
+  /* 解説・模範回答 */
+  .explanation {
+    display: none;
+    margin-top: 16px;
+    background: #f0f8ff;
+    border: 1px solid #b3d4f0;
+    border-radius: 8px;
+    padding: 16px 18px;
+  }
+  .explanation.show { display: block; }
+  .explanation-title {
+    font-size: .78rem;
+    font-weight: 700;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 8px;
+  }
+  .result-badge {
+    display: inline-block;
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding: 2px 14px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+  }
+  .result-badge.ok { background:#d4f5e2; color:var(--correct); }
+  .result-badge.ng { background:#fde8e8; color:var(--wrong); }
+
+  .model-answer {
+    background: #fff8ec;
+    border-left: 4px solid var(--accent);
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    white-space: pre-wrap;
+    font-size: .9rem;
+    line-height: 1.8;
+  }
+
+  /* Copilot結果エリア */
+  .copilot-result {
+    display: none;
+    margin-top: 12px;
+    background: #f0f7ff;
+    border: 1px dashed #0078d4;
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: .88rem;
+  }
+  .copilot-result.show { display: block; }
+  .copilot-label { font-size: .78rem; color: #0078d4; font-weight: 700; margin-bottom: 6px; }
+
+  footer {
+    text-align: center;
+    font-size: .78rem;
+    color: var(--muted);
+    padding: 20px;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+
+  @media (max-width:600px) {
+    header h1 { font-size: 1rem; }
+    .q-card    { padding: 16px; }
+    .btn       { padding: 8px 14px; font-size: .85rem; }
+    nav        { gap: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>1級施工管技 社内対策講座 勉強会資料｜大石建設</h1>
+  <p>2026年10月18日実施予定 ／ 毎週木曜 18:00〜20:00 ／ 講師：林副部長・大関（けんけん）</p>
+</header>
+
+<nav>
+  <a href="#sec1">問題1 施工経験記述</a>
+  <a href="#sec2">問題2 機械安全</a>
+  <a href="#sec3">問題3 ネットワーク</a>
+  <a href="#sec4">問題4 仕上げ工事</a>
+  <a href="#sec5">問題5 五肢択一</a>
+</nav>
+
+<main>
+
+<!-- ========================================================
+     問題1：施工経験記述（論文）
+======================================================== -->
+<div class="section-title" id="sec1">問題1｜施工経験記述（論文）テーマ：働き方改革</div>
+
+<div class="q-card" id="q1">
+  <span class="q-number">問1</span>
+  <p class="q-text">
+    あなたが経験した建築工事について、次の設問に答えなさい。<br>
+    テーマ：<strong>「働き方改革に向けた現場作業の軽減」</strong>
+  </p>
+
+  <div class="essay-field">
+    <span class="essay-label">【工事概要】工事名・場所・工期・構造・規模</span>
+    <textarea class="answer-textarea" id="e-overview" placeholder="例）〇〇ビル新築工事 ／ 東京都〇〇区 ／ 令和〇年〇月〜令和〇年〇月 ／ RC造5階建 ／ 延床2,500㎡"></textarea>
+  </div>
+
+  <div class="essay-field">
+    <span class="essay-label">【設問1-①】作業軽減に取り組んだ工種（3工種）と具体的な軽減策・理由</span>
+    <textarea class="answer-textarea tall" id="e-q1a" placeholder="（工種1）鉄筋工事&#10;・軽減策：プレハブ鉄筋を採用し、現場での組立作業を削減した。&#10;・理由：…&#10;&#10;（工種2）&#10;（工種3）"></textarea>
+  </div>
+
+  <div class="essay-field">
+    <span class="essay-label">【設問1-②】品質確保のために講じた措置</span>
+    <textarea class="answer-textarea" id="e-q1b" placeholder="プレハブ鉄筋の製作図承認時に配筋検査基準を明確化し…"></textarea>
+  </div>
+
+  <div class="essay-field">
+    <span class="essay-label">【設問2】時間外労働の増長要因と組織的対策</span>
+    <textarea class="answer-textarea" id="e-q2" placeholder="増長要因：施工図作成遅延により後工程に波及し…&#10;対策：週次工程調整会議で3週先の施工図提出状況を確認・管理した…"></textarea>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="showEssayAnswer('exp-q1','e-overview,e-q1a,e-q1b,e-q2')">回答する（模範回答を表示）</button>
+    <button class="btn btn-copilot" onclick="showCopilot('copilot-q1')">Copilotに採点させる（準備中）</button>
+  </div>
+
+  <div class="explanation" id="exp-q1">
+    <div class="explanation-title">模範回答例</div>
+    <div class="model-answer">【工事概要】
+〇〇ビル新築工事 ／ 東京都品川区 ／ R5.6〜R6.9 ／ RC造5階建 ／ 延床2,800㎡
+
+【設問1-①】
+（工種1）鉄筋工事
+　軽減策：プレハブ鉄筋（ユニット鉄筋）を採用し、現場組立工数を約60%削減。
+　理由：鉄筋の現場加工・組立は重筋作業で熱中症・転倒リスクが高く、工場製作により安全と品質を同時に向上するため。
+
+（工種2）内装工事
+　軽減策：軽量鉄骨下地をBIMで割付・加工リスト化し、現場カット作業をゼロにした。
+　理由：現場でのスタッド・ランナーカットは粉じん・騒音が発生し効率も低いため。
+
+（工種3）外壁工事
+　軽減策：外壁タイルをPCaユニットに変更し、現場張り作業を廃止した。
+　理由：高所での湿式作業は転落リスクが高く、作業員の安全確保と工期短縮のため。
+
+【設問1-②】
+PCaユニットは工場生産のため寸法・強度が安定しており、現場取付け後に全面打診検査を実施して接合部の健全性を確認した。
+
+【設問2】
+増長要因：施工図の作成遅延が後工程に波及し、夜間・休日作業が常態化した。
+対策：週次工程調整会議で3週先の施工図提出状況を全工種で共有し、遅延を早期検知・対処する仕組みを導入。その結果、時間外労働を前月比30%削減できた。</div>
+  </div>
+
+  <div class="copilot-result" id="copilot-q1">
+    <div class="copilot-label">Copilot 採点結果（準備中）</div>
+    <div>フェーズ2でAzure OpenAI経由の自動採点・添削コメントを実装予定です。</div>
+  </div>
+</div>
+
+
+<!-- ========================================================
+     問題2：設備・機械安全
+======================================================== -->
+<div class="section-title" id="sec2">問題2｜設備・機械安全使用留意事項</div>
+
+<div class="q-card">
+  <span class="q-number">問2-1</span>
+  <p class="q-text">バックホウを使用する作業における安全管理上の留意事項を2つ記述しなさい。</p>
+  <textarea class="answer-textarea" id="ans-q2-1" placeholder="①…&#10;②…"></textarea>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="showModel('exp-q2-1','ans-q2-1')">回答する</button>
+    <button class="btn btn-copilot" onclick="showCopilot('copilot-q2-1')">Copilotに添削させる（準備中）</button>
+  </div>
+  <div class="explanation" id="exp-q2-1">
+    <div class="explanation-title">模範回答</div>
+    <div class="model-answer">① 作業半径内への立入禁止
+　バックホウの旋回・作業範囲内に作業員が立ち入らないよう、バリケード・立入禁止ロープを設置し、専任の誘導者を配置する。
+
+② 合図方法の事前取り決め
+　後退・旋回時の死角をカバーするため、運転者と誘導者の間で合図方法を作業前に確認し、第三者との接触を防止する。
+
+（加点例）作業開始前の始業点検実施、傾斜地での転倒防止のための地盤確認、移動式クレーンとの混在作業禁止など。</div>
+  </div>
+  <div class="copilot-result" id="copilot-q2-1">
+    <div class="copilot-label">Copilot 添削結果（準備中）</div>
+    <div>フェーズ2で実装予定です。</div>
+  </div>
+</div>
+
+<div class="q-card">
+  <span class="q-number">問2-2</span>
+  <p class="q-text">仮設電力設備（仮設配電盤・電力ケーブル）の使用における安全管理上の留意事項を2つ記述しなさい。</p>
+  <textarea class="answer-textarea" id="ans-q2-2" placeholder="①…&#10;②…"></textarea>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="showModel('exp-q2-2','ans-q2-2')">回答する</button>
+    <button class="btn btn-copilot" onclick="showCopilot('copilot-q2-2')">Copilotに添削させる（準備中）</button>
+  </div>
+  <div class="explanation" id="exp-q2-2">
+    <div class="explanation-title">模範回答</div>
+    <div class="model-answer">① 漏電遮断器の設置
+　仮設配電盤には感度電流30mA以下・動作時間0.1秒以内の漏電遮断器を設置し、定期的に動作確認を行う。
+
+② ケーブルの損傷防止
+　電力ケーブルは通路横断箇所にケーブルプロテクター（防護管）を使用し、重機・車両による踏み付けや損傷を防止する。
+
+（加点例）湿潤場所でのIP44以上の防水型機器使用、アース（接地）の確実な施工、200V動力回線と100V系統の分別管理など。</div>
+  </div>
+  <div class="copilot-result" id="copilot-q2-2">
+    <div class="copilot-label">Copilot 添削結果（準備中）</div>
+    <div>フェーズ2で実装予定です。</div>
+  </div>
+</div>
+
+<div class="q-card">
+  <span class="q-number">問2-3</span>
+  <p class="q-text">高所作業車を使用する作業における安全管理上の留意事項を2つ記述しなさい。</p>
+  <textarea class="answer-textarea" id="ans-q2-3" placeholder="①…&#10;②…"></textarea>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="showModel('exp-q2-3','ans-q2-3')">回答する</button>
+    <button class="btn btn-copilot" onclick="showCopilot('copilot-q2-3')">Copilotに添削させる（準備中）</button>
+  </div>
+  <div class="explanation" id="exp-q2-3">
+    <div class="explanation-title">模範回答</div>
+    <div class="model-answer">① 作業床での安全帯使用
+　作業床上の作業者は必ず安全帯（ハーネス型）を着用し、作業床の手すり・中桟・幅木を確認してから乗り込む。
+
+② アウトリガーの完全張り出し
+　軟弱地盤ではアウトリガー下に鉄板・敷板を敷き、完全張り出し状態を確認してから作業を開始する。
+
+（加点例）最大積載荷重の厳守、架空電線への接近距離確保（充電電路に対し300mm以上）、走行時の作業床格納確認など。</div>
+  </div>
+  <div class="copilot-result" id="copilot-q2-3">
+    <div class="copilot-label">Copilot 添削結果（準備中）</div>
+    <div>フェーズ2で実装予定です。</div>
+  </div>
+</div>
+
+
+<!-- ========================================================
+     問題3：ネットワーク工程表
+======================================================== -->
+<div class="section-title" id="sec3">問題3｜ネットワーク工程表</div>
+
+<div class="q-card">
+  <span class="q-number">問3</span>
+  <p class="q-text">下記の工事情報に基づくネットワーク工程表について、各設問に答えなさい。</p>
+
+  <div class="network-info">【工事情報】事務所ビル内装工事（4階部分）
+作業名・所要日数・先行作業：
+  A：軽鉄下地組み     6日  ─ なし（最初の作業）
+  B：電気配線（1）    3日  ─ A完了後
+  C：電気配線（2）    3日  ─ B完了後
+  D：ボード張り       5日  ─ B完了後
+  E：設備配管         4日  ─ A完了後
+  F：ボード仕上げ     3日  ─ D・C完了後
+  G：塗装工事         4日  ─ F完了後
+  H：床仕上げ         3日  ─ G完了後
+  I：建具取付け       2日  ─ G完了後
+  J：清掃・完成検査   2日  ─ H・I完了後</div>
+
+  <div class="essay-field">
+    <span class="essay-label">設問①：クリティカルパスを作業記号で記述しなさい。</span>
+    <textarea class="answer-textarea" id="q3-1" placeholder="例） A → B → … → J"></textarea>
+  </div>
+
+  <div class="essay-field">
+    <span class="essay-label">設問②：工事全体の所要日数は何日か。</span>
+    <textarea class="answer-textarea" id="q3-2" style="min-height:60px" placeholder="例） 〇〇日"></textarea>
+  </div>
+
+  <div class="essay-field">
+    <span class="essay-label">設問③：作業Eのフロートは何日か。また作業Eが2日遅延した場合の全体工期への影響を述べなさい。</span>
+    <textarea class="answer-textarea" id="q3-3" placeholder="フロート：〇日&#10;影響：…"></textarea>
+  </div>
+
+  <div class="essay-field">
+    <span class="essay-label">設問④：工期を2日短縮する場合、最もコスト効率よく短縮できる作業はどれか。理由とともに記述しなさい。</span>
+    <textarea class="answer-textarea" id="q3-4" placeholder="作業：〇&#10;理由：…"></textarea>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="showMultiModel('exp-q3',['q3-1','q3-2','q3-3','q3-4'])">回答する（解答・解説を表示）</button>
+  </div>
+
+  <div class="explanation" id="exp-q3">
+    <div class="explanation-title">解答・解説</div>
+    <div class="model-answer">【各作業の最早完了日計算】
+A=6, B=6+3=9, C=9+3=12, D=9+5=14, E=6+4=10
+F=max(14,12)+3=17, G=17+4=21, H=21+3=24, I=21+2=23, J=max(24,23)+2=26日
+
+①クリティカルパス：A → B → D → F → G → H → J
+　（所要日数の合計 6+3+5+3+4+3+2 = 26日）
+
+②所要日数：26日
+
+③作業Eのフロート
+　Eの最早完了：10日、後続作業なし（直接後続はF以前に合流しない独立経路）
+　フロート = 17（Fの最早開始） − 10（Eの最早完了） = 7日
+　→ Eが2日遅延（完了12日）しても7日のフロートがあるため全体工期に影響なし。
+
+④工期短縮
+　クリティカルパス上の作業が対象。最短日数の作業Jは後工程で短縮効果が高い。
+　ただし品質・安全上は「作業F（ボード仕上げ3日）」を短縮すると後工程G→H→Jに連鎖して全体短縮につながる。
+　→ 答えは複数正解あり。クリティカルパス上のいずれかを根拠とともに記述すれば得点。</div>
+  </div>
+</div>
+
+
+<!-- ========================================================
+     問題4：仕上げ工事
+======================================================== -->
+<div class="section-title" id="sec4">問題4｜仕上げ工事施工上の留意事項</div>
+
+<div class="q-card">
+  <span class="q-number">問4-1</span>
+  <p class="q-text">セメントモルタル塗り外壁タイル張り工事における施工上の留意事項を2つ記述しなさい。</p>
+  <textarea class="answer-textarea" id="ans-q4-1" placeholder="①…&#10;②…"></textarea>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="showModel('exp-q4-1','ans-q4-1')">回答する</button>
+    <button class="btn btn-copilot" onclick="showCopilot('copilot-q4-1')">Copilotに添削させる（準備中）</button>
+  </div>
+  <div class="explanation" id="exp-q4-1">
+    <div class="explanation-title">模範回答</div>
+    <div class="model-answer">① 下地の吸水調整
+　タイル張付け前に下地面の汚れ・浮きを除去し、吸水調整材を全面塗布して適切な含水状態を確保する。気温5℃以下・直射日光・強風時は作業を中止する。
+
+② 打診検査による接着確認
+　張付け後にモルタルが硬化したことを確認してから、打診棒等で全面打診を行い、浮き・剥離の有無を確認して不良部は補修する。
+
+（加点例）1回の張付け面積を3㎡以内とする、伸縮調整目地の設置位置・深さの確認など。</div>
+  </div>
+  <div class="copilot-result" id="copilot-q4-1"><div class="copilot-label">Copilot 添削結果（準備中）</div><div>フェーズ2で実装予定。</div></div>
+</div>
+
+<div class="q-card">
+  <span class="q-number">問4-2</span>
+  <p class="q-text">軽量鉄骨天井下地（システム天井）工事における施工上の留意事項を2つ記述しなさい。</p>
+  <textarea class="answer-textarea" id="ans-q4-2" placeholder="①…&#10;②…"></textarea>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="showModel('exp-q4-2','ans-q4-2')">回答する</button>
+    <button class="btn btn-copilot" onclick="showCopilot('copilot-q4-2')">Copilotに添削させる（準備中）</button>
+  </div>
+  <div class="explanation" id="exp-q4-2">
+    <div class="explanation-title">模範回答</div>
+    <div class="model-answer">① 吊りボルトの取付け間隔
+　吊りボルトは900mm以下のピッチで配置し、壁際は150mm以内に設ける。スラブへの打込みアンカーは引張強度を確認してから使用する。
+
+② レベル（高さ）の均一確認
+　ランナーの施工後、水糸・レーザーレベルを用いて天井面の高さを全面確認し、ねじれ・たわみがないよう調整してからボード張りを行う。
+
+（加点例）開口補強用の副骨・野縁の設置、設備と下地の干渉確認（BIM活用）、耐震クリップの使用など。</div>
+  </div>
+  <div class="copilot-result" id="copilot-q4-2"><div class="copilot-label">Copilot 添削結果（準備中）</div><div>フェーズ2で実装予定。</div></div>
+</div>
+
+<div class="q-card">
+  <span class="q-number">問4-3</span>
+  <p class="q-text">セルフレベリング材を用いた床下地工事における施工上の留意事項を2つ記述しなさい。</p>
+  <textarea class="answer-textarea" id="ans-q4-3" placeholder="①…&#10;②…"></textarea>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="showModel('exp-q4-3','ans-q4-3')">回答する</button>
+    <button class="btn btn-copilot" onclick="showCopilot('copilot-q4-3')">Copilotに添削させる（準備中）</button>
+  </div>
+  <div class="explanation" id="exp-q4-3">
+    <div class="explanation-title">模範回答</div>
+    <div class="model-answer">① 下地の清掃と吸水調整
+　施工前に下地コンクリート面の油脂・ゴミ・浮き部分を除去し、プライマーを塗布して過度な吸水を防止する。
+
+② 気密養生と温度管理
+　流し込み後は硬化するまでドアや窓を閉めて通風を防ぎ、5℃以下・35℃以上の環境下での作業は避ける。養生中は歩行禁止。
+
+（加点例）1回の打設厚さ制限（製品仕様に従う）、打設後の気泡抜き（ニードルローラー使用）、水量の厳守など。</div>
+  </div>
+  <div class="copilot-result" id="copilot-q4-3"><div class="copilot-label">Copilot 添削結果（準備中）</div><div>フェーズ2で実装予定。</div></div>
+</div>
+
+<div class="q-card">
+  <span class="q-number">問4-4</span>
+  <p class="q-text">内装仕上げ工事における壁紙（クロス）張り工事の施工上の留意事項を2つ記述しなさい。</p>
+  <textarea class="answer-textarea" id="ans-q4-4" placeholder="①…&#10;②…"></textarea>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="showModel('exp-q4-4','ans-q4-4')">回答する</button>
+    <button class="btn btn-copilot" onclick="showCopilot('copilot-q4-4')">Copilotに添削させる（準備中）</button>
+  </div>
+  <div class="explanation" id="exp-q4-4">
+    <div class="explanation-title">模範回答</div>
+    <div class="model-answer">① 下地パテ処理の徹底
+　石膏ボードのジョイント部・ビス頭にパテを塗り、サンドペーパーで平滑に仕上げてからプライマー（シーラー）を塗布する。段差があると完成後に目立つため入念に確認する。
+
+② 目地・柄合わせと気泡防止
+　上端から下方向に貼り進め、スムーサー（ヘラ）で空気を外に押し出しながら密着させる。柄物クロスは柄合わせ位置を事前に確認し、ロス率を考慮した材料発注を行う。
+
+（加点例）温湿度条件の管理（5〜35℃・湿度85%以下）、接着剤（でんぷん糊）の塗布量均一化など。</div>
+  </div>
+  <div class="copilot-result" id="copilot-q4-4"><div class="copilot-label">Copilot 添削結果（準備中）</div><div>フェーズ2で実装予定。</div></div>
+</div>
+
+
+<!-- ========================================================
+     問題5：五肢択一（8問）
+======================================================== -->
+<div class="section-title" id="sec5">問題5｜五肢択一（8問）</div>
+
+<!-- 問5-1 -->
+<div class="q-card">
+  <span class="q-number">問5-1</span>
+  <p class="q-text">建設現場の通路に関する次の記述のうち、最も不適当なものはどれか。</p>
+  <ul class="choices">
+    <li><label><input type="radio" name="q5-1" value="ア">ア. 屋内の主要通路の幅は1.2m以上とする</label></li>
+    <li><label><input type="radio" name="q5-1" value="イ">イ. 通路に使用する照明は75ルクス以上とする</label></li>
+    <li><label><input type="radio" name="q5-1" value="ウ">ウ. 高さ2m以上の場所の開口部には手すりを設ける</label></li>
+    <li><label><input type="radio" name="q5-1" value="エ">エ. 架設通路の勾配が15°を超える場合は滑止めを設ける</label></li>
+    <li><label><input type="radio" name="q5-1" value="オ">オ. 踏さん通路の勾配は30°以下とする</label></li>
+  </ul>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="checkChoice('q5-1','ア','屋内の主要通路の幅は1.8m以上（労働安全衛生規則第542条）とする必要があります。1.2mは不十分であり不適当です。')">回答する</button>
+    <button class="btn btn-reset" onclick="resetChoice('q5-1')">リセット</button>
+  </div>
+  <div class="explanation" id="exp-q5-1">
+    <div class="explanation-title">解説</div>
+    <div class="result-badge" id="badge-q5-1"></div>
+    <p id="text-q5-1"></p>
+  </div>
+</div>
+
+<!-- 問5-2 -->
+<div class="q-card">
+  <span class="q-number">問5-2</span>
+  <p class="q-text">地盤の液状化現象に関する次の記述のうち、最も不適当なものはどれか。</p>
+  <ul class="choices">
+    <li><label><input type="radio" name="q5-2" value="ア">ア. 地下水位が高い砂質地盤で起こりやすい</label></li>
+    <li><label><input type="radio" name="q5-2" value="イ">イ. 地震による繰り返しせん断によって有効応力が低下する現象である</label></li>
+    <li><label><input type="radio" name="q5-2" value="ウ">ウ. 粘性土地盤よりも砂質土地盤で発生しやすい</label></li>
+    <li><label><input type="radio" name="q5-2" value="エ">エ. N値が高いほど液状化しやすい</label></li>
+    <li><label><input type="radio" name="q5-2" value="オ">オ. 建物の不同沈下や地盤の流動化を引き起こす</label></li>
+  </ul>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="checkChoice('q5-2','エ','N値（標準貫入試験値）が高いほど地盤は密実で液状化しにくくなります。液状化リスクはN値10以下の緩い砂質地盤で高まります。')">回答する</button>
+    <button class="btn btn-reset" onclick="resetChoice('q5-2')">リセット</button>
+  </div>
+  <div class="explanation" id="exp-q5-2">
+    <div class="explanation-title">解説</div>
+    <div class="result-badge" id="badge-q5-2"></div>
+    <p id="text-q5-2"></p>
+  </div>
+</div>
+
+<!-- 問5-3 -->
+<div class="q-card">
+  <span class="q-number">問5-3</span>
+  <p class="q-text">既製コンクリート杭の埋込み工法（中掘り杭工法）に関する次の記述のうち、最も不適当なものはどれか。</p>
+  <ul class="choices">
+    <li><label><input type="radio" name="q5-3" value="ア">ア. 先端処理にセメントミルク噴出撹拌を用いる場合がある</label></li>
+    <li><label><input type="radio" name="q5-3" value="イ">イ. 打込み工法と比較して騒音・振動が少ない</label></li>
+    <li><label><input type="radio" name="q5-3" value="ウ">ウ. 杭の中空部にオーガを通して掘削する</label></li>
+    <li><label><input type="radio" name="q5-3" value="エ">エ. 掘削した土は杭の外周から地上へ排出される</label></li>
+    <li><label><input type="radio" name="q5-3" value="オ">オ. 先端処理として最終打撃方式がある</label></li>
+  </ul>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="checkChoice('q5-3','エ','中掘り杭工法では掘削土は杭の中空部（内部）を通って地上へ排出されます。外周から排出されるのは誤りです。')">回答する</button>
+    <button class="btn btn-reset" onclick="resetChoice('q5-3')">リセット</button>
+  </div>
+  <div class="explanation" id="exp-q5-3">
+    <div class="explanation-title">解説</div>
+    <div class="result-badge" id="badge-q5-3"></div>
+    <p id="text-q5-3"></p>
+  </div>
+</div>
+
+<!-- 問5-4 -->
+<div class="q-card">
+  <span class="q-number">問5-4</span>
+  <p class="q-text">鉄筋コンクリート造における鉄筋の配筋に関する次の記述のうち、最も不適当なものはどれか。</p>
+  <ul class="choices">
+    <li><label><input type="radio" name="q5-4" value="ア">ア. 鉄筋の最小かぶり厚さは鉄筋外面からコンクリート表面までの距離である</label></li>
+    <li><label><input type="radio" name="q5-4" value="イ">イ. D13の鉄筋を使用する場合、粗骨材最大寸法は鉄筋の純間隔の3/4以下とする</label></li>
+    <li><label><input type="radio" name="q5-4" value="ウ">ウ. 継手の位置は引張応力の大きい断面を避けて設ける</label></li>
+    <li><label><input type="radio" name="q5-4" value="エ">エ. 帯筋のフックは90°曲げとすることができる</label></li>
+    <li><label><input type="radio" name="q5-4" value="オ">オ. スラブ筋のかぶり厚さは梁の主筋より小さくてよい</label></li>
+  </ul>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="checkChoice('q5-4','エ','帯筋（スターラップ・フープ）のフックは135°以上（原則135°フック）に曲げる必要があります。90°フックは基準を満たしません。')">回答する</button>
+    <button class="btn btn-reset" onclick="resetChoice('q5-4')">リセット</button>
+  </div>
+  <div class="explanation" id="exp-q5-4">
+    <div class="explanation-title">解説</div>
+    <div class="result-badge" id="badge-q5-4"></div>
+    <p id="text-q5-4"></p>
+  </div>
+</div>
+
+<!-- 問5-5 -->
+<div class="q-card">
+  <span class="q-number">問5-5</span>
+  <p class="q-text">型枠支保工に関する次の記述のうち、最も不適当なものはどれか。</p>
+  <ul class="choices">
+    <li><label><input type="radio" name="q5-5" value="ア">ア. 支柱の継手は突合せ継手または差込み継手とする</label></li>
+    <li><label><input type="radio" name="q5-5" value="イ">イ. 鋼管枠を支柱として使用する場合の水平つなぎ間隔は垂直方向に4m以内とする</label></li>
+    <li><label><input type="radio" name="q5-5" value="ウ">ウ. コンクリートの打込み中は型枠支保工の異常の有無を監視する</label></li>
+    <li><label><input type="radio" name="q5-5" value="エ">エ. 支柱の脚部の固定・根がらみの取付けを行う</label></li>
+    <li><label><input type="radio" name="q5-5" value="オ">オ. 支柱の高さが3.5mを超える場合は高さ2m以内ごとに水平つなぎを設ける</label></li>
+  </ul>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="checkChoice('q5-5','イ','鋼管枠を支柱に使用する場合の水平つなぎは垂直方向4m以内ではなく、高さ2m以内ごとに設置する必要があります（安衛則第242条）。')">回答する</button>
+    <button class="btn btn-reset" onclick="resetChoice('q5-5')">リセット</button>
+  </div>
+  <div class="explanation" id="exp-q5-5">
+    <div class="explanation-title">解説</div>
+    <div class="result-badge" id="badge-q5-5"></div>
+    <p id="text-q5-5"></p>
+  </div>
+</div>
+
+<!-- 問5-6 -->
+<div class="q-card">
+  <span class="q-number">問5-6</span>
+  <p class="q-text">コンクリートポンプ工法に関する次の記述のうち、最も不適当なものはどれか。</p>
+  <ul class="choices">
+    <li><label><input type="radio" name="q5-6" value="ア">ア. 輸送管径が大きいほど閉塞が起こりにくい</label></li>
+    <li><label><input type="radio" name="q5-6" value="イ">イ. スランプが小さいほど圧送しやすい</label></li>
+    <li><label><input type="radio" name="q5-6" value="ウ">ウ. 先送りモルタルは品質管理上、構造体に使用しない</label></li>
+    <li><label><input type="radio" name="q5-6" value="エ">エ. 輸送管の配管は曲がりを少なくするほうがよい</label></li>
+    <li><label><input type="radio" name="q5-6" value="オ">オ. 圧送時に水を加えてはならない</label></li>
+  </ul>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="checkChoice('q5-6','イ','スランプが大きい（やわらかい）コンクリートほど流動性が高く圧送しやすくなります。スランプが小さいほど閉塞リスクが上がります。')">回答する</button>
+    <button class="btn btn-reset" onclick="resetChoice('q5-6')">リセット</button>
+  </div>
+  <div class="explanation" id="exp-q5-6">
+    <div class="explanation-title">解説</div>
+    <div class="result-badge" id="badge-q5-6"></div>
+    <p id="text-q5-6"></p>
+  </div>
+</div>
+
+<!-- 問5-7 -->
+<div class="q-card">
+  <span class="q-number">問5-7</span>
+  <p class="q-text">寒中コンクリートに関する次の記述のうち、最も不適当なものはどれか。</p>
+  <ul class="choices">
+    <li><label><input type="radio" name="q5-7" value="ア">ア. 日平均気温が4℃以下になるおそれがある場合に適用する</label></li>
+    <li><label><input type="radio" name="q5-7" value="イ">イ. 打込み時のコンクリート温度は5〜20℃の範囲とする</label></li>
+    <li><label><input type="radio" name="q5-7" value="ウ">ウ. 初期凍害を防ぐため、打込み後5MPaの圧縮強度が得られるまで保温・給熱養生を行う</label></li>
+    <li><label><input type="radio" name="q5-7" value="エ">エ. 凍結している骨材はそのまま使用してよい</label></li>
+    <li><label><input type="radio" name="q5-7" value="オ">オ. AE剤・AE減水剤の使用が有効である</label></li>
+  </ul>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="checkChoice('q5-7','エ','凍結している骨材をそのまま使用すると、コンクリートの水セメント比が変化し品質が著しく低下します。解凍して使用する必要があります。')">回答する</button>
+    <button class="btn btn-reset" onclick="resetChoice('q5-7')">リセット</button>
+  </div>
+  <div class="explanation" id="exp-q5-7">
+    <div class="explanation-title">解説</div>
+    <div class="result-badge" id="badge-q5-7"></div>
+    <p id="text-q5-7"></p>
+  </div>
+</div>
+
+<!-- 問5-8 -->
+<div class="q-card">
+  <span class="q-number">問5-8</span>
+  <p class="q-text">鋼材の接合（高力ボルト摩擦接合）に関する次の記述のうち、最も不適当なものはどれか。</p>
+  <ul class="choices">
+    <li><label><input type="radio" name="q5-8" value="ア">ア. 摩擦面はブラスト処理またはディスクグラインダーで仕上げる</label></li>
+    <li><label><input type="radio" name="q5-8" value="イ">イ. ボルトの締付けは1次締め・マーキング・本締めの順で行う</label></li>
+    <li><label><input type="radio" name="q5-8" value="ウ">ウ. 本締め後のナット回転量の検査でマーキングのずれを確認する</label></li>
+    <li><label><input type="radio" name="q5-8" value="エ">エ. 摩擦面に塗装を施して赤錆を防止してから締め付ける</label></li>
+    <li><label><input type="radio" name="q5-8" value="オ">オ. トルクコントロール法によるボルトの締付けが一般的に用いられる</label></li>
+  </ul>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="checkChoice('q5-8','エ','高力ボルト摩擦接合の摩擦面は塗装を行ってはいけません。摩擦力を確保するために素地（ブラスト面・自然発生赤錆など）のままにする必要があります。')">回答する</button>
+    <button class="btn btn-reset" onclick="resetChoice('q5-8')">リセット</button>
+  </div>
+  <div class="explanation" id="exp-q5-8">
+    <div class="explanation-title">解説</div>
+    <div class="result-badge" id="badge-q5-8"></div>
+    <p id="text-q5-8"></p>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  大石建設 社内対策講座 ／ 1級建築施工管理技術検定 2次検定対策 ／ けんけん作成
+</footer>
+
+<script>
+// ================================================
+// 五肢択一：回答チェック
+// ================================================
+function checkChoice(qid, correctVal, explanation) {
+  const selected = document.querySelector(`input[name="${qid}"]:checked`);
+  if (!selected) { alert('選択肢を選んでください。'); return; }
+
+  document.querySelectorAll(`input[name="${qid}"]`).forEach(r => {
+    r.disabled = true;
+    const lbl = r.parentElement;
+    if (r.value === correctVal)       lbl.classList.add('correct-choice');
+    else if (r.checked)               lbl.classList.add('wrong-choice');
+  });
+
+  const isOk = selected.value === correctVal;
+  const badge = document.getElementById(`badge-${qid}`);
+  const textEl = document.getElementById(`text-${qid}`);
+  badge.textContent = isOk ? '正解 ○' : `不正解 ×　正解：${correctVal}`;
+  badge.className = 'result-badge ' + (isOk ? 'ok' : 'ng');
+  textEl.textContent = explanation;
+  document.getElementById(`exp-${qid}`).classList.add('show');
+}
+
+// ================================================
+// 五肢択一：リセット
+// ================================================
+function resetChoice(qid) {
+  document.querySelectorAll(`input[name="${qid}"]`).forEach(r => {
+    r.disabled = false;
+    r.checked = false;
+    r.parentElement.classList.remove('correct-choice','wrong-choice');
+  });
+  const exp = document.getElementById(`exp-${qid}`);
+  if (exp) exp.classList.remove('show');
+}
+
+// ================================================
+// 記述式：模範回答表示
+// ================================================
+function showModel(expId, textareaId) {
+  const ta = document.getElementById(textareaId);
+  if (ta && !ta.value.trim()) {
+    if (!confirm('回答が未入力です。模範回答を表示しますか？')) return;
+  }
+  document.getElementById(expId).classList.add('show');
+}
+
+// ================================================
+// 論文・複数フィールド：模範回答表示
+// ================================================
+function showEssayAnswer(expId, fieldIds) {
+  const ids = fieldIds.split(',');
+  const hasEmpty = ids.some(id => !document.getElementById(id)?.value.trim());
+  if (hasEmpty) {
+    if (!confirm('未入力の欄があります。模範回答を表示しますか？')) return;
+  }
+  document.getElementById(expId).classList.add('show');
+}
+
+// ================================================
+// ネットワーク工程表：複数テキストエリアの回答確認
+// ================================================
+function showMultiModel(expId, fieldIds) {
+  const hasEmpty = fieldIds.some(id => !document.getElementById(id)?.value.trim());
+  if (hasEmpty) {
+    if (!confirm('未入力の設問があります。解答・解説を表示しますか？')) return;
+  }
+  document.getElementById(expId).classList.add('show');
+}
+
+// ================================================
+// Copilot連携（フェーズ2で実装）
+// ================================================
+function showCopilot(resultId) {
+  document.getElementById(resultId).classList.add('show');
+  // TODO フェーズ2: WP REST API経由でAzure OpenAI呼び出し
+  // fetch('/wp-json/benkyokai/v1/review', {
+  //   method: 'POST',
+  //   headers: { 'Content-Type': 'application/json' },
+  //   body: JSON.stringify({ question_id: resultId, answer: ... })
+  // }).then(r => r.json()).then(data => { ... });
+}
+</script>
+
+</body>
+</html>
