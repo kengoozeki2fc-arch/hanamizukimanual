@@ -1,7 +1,7 @@
 // POST /api/grade-skk1
 //
 // 1級建築施工管理技士 第二次検定 勉強会 (oisi/benkyokai-skk1) の答案を
-// Copilot Studio 「1級建築施工管理試験マスター」 bot (cr746_1) へ
+// Copilot Studio 「1級施工管技 採点エージェント (cr746_agent)」へ
 // Power Platform API 経由で投げて採点・添削コメントを返すプロキシ。
 //
 // 認証: ROPC (gemba-bot アカウント)。詳細は ./copilotAuth.js
@@ -10,8 +10,10 @@
 //   1. ROPC で Power Platform Access Token 取得 (キャッシュあり)
 //   2. POST {base}/conversations?api-version=...     新規会話作成
 //   3. POST {base}/conversations/{id}?api-version=...  メッセージ送信
+//      (DynamicPlan型エージェントは初回応答に 47KB / 60秒前後で
+//       採点結果メッセージを含む activities をまとめて返してくる)
 //   4. レスポンス activities から bot 応答テキスト抽出
-//      空なら GET /activities を short polling
+//      空なら GET /activities を polling (60秒・watermark付き)
 //
 // Request body:
 //   {
@@ -40,8 +42,13 @@ const {
 const ALLOWED_ORIGIN = 'https://manual.kensetsu-total.support';
 const FALLBACK_ORIGIN = 'http://localhost:4280'; // SWA CLI emulator
 const API_VERSION = '2022-03-01-preview';
-const POLL_INTERVAL_MS = 1500;
-const POLL_TIMEOUT_MS = 20_000;
+// 新エージェント (cr746_agent) は DynamicPlan 方式で初回POSTに 47KB/～60s で
+// まとめて返ってくる実測あり。fetch自体のタイムアウトは余裕を持たせる。
+const SEND_TIMEOUT_MS = 120_000; // 初回 POST /conversations/{id} 用
+const CREATE_TIMEOUT_MS = 30_000; // 会話作成 POST /conversations 用
+const POLL_INTERVAL_MS = 2000;
+const POLL_TIMEOUT_MS = 60_000;
+const POLL_FETCH_TIMEOUT_MS = 30_000;
 
 function corsHeaders(origin) {
   const allow =
@@ -97,6 +104,9 @@ function buildPrompt(question, payload) {
 
 function extractBotMessages(activities) {
   if (!Array.isArray(activities)) return [];
+  // 新エージェント(cr746_agent)は DynamicPlan event を多数返してくるが、
+  // 採点本文は最後の type=message && from.role=bot && text!=空 の activity に入る。
+  // 複数 message があれば登場順で全部 join (実測ではほぼ1件)。
   return activities
     .filter(
       (a) =>
@@ -109,8 +119,29 @@ function extractBotMessages(activities) {
     .map((a) => a.text);
 }
 
+/**
+ * fetch with AbortSignal timeout. node18+ には AbortSignal.timeout があるが
+ * 念のため自前で実装。
+ */
+async function fetchWithTimeout(url, options, timeoutMs, log, label) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } catch (e) {
+    if (e?.name === 'AbortError') {
+      log?.error?.(
+        `${label || 'fetch'} aborted after ${timeoutMs}ms`,
+      );
+    }
+    throw e;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function createConversation(base, accessToken, log) {
-  const res = await fetch(
+  const res = await fetchWithTimeout(
     `${base}/conversations?api-version=${API_VERSION}`,
     {
       method: 'POST',
@@ -120,6 +151,9 @@ async function createConversation(base, accessToken, log) {
       },
       body: '{}',
     },
+    CREATE_TIMEOUT_MS,
+    log,
+    'create-conversation',
   );
   if (!res.ok) {
     const txt = await res.text().catch(() => '');
@@ -140,7 +174,7 @@ async function createConversation(base, accessToken, log) {
 }
 
 async function sendMessage(base, accessToken, conversationId, text, log) {
-  const res = await fetch(
+  const res = await fetchWithTimeout(
     `${base}/conversations/${conversationId}?api-version=${API_VERSION}`,
     {
       method: 'POST',
@@ -150,6 +184,9 @@ async function sendMessage(base, accessToken, conversationId, text, log) {
       },
       body: JSON.stringify({ activity: { type: 'message', text } }),
     },
+    SEND_TIMEOUT_MS,
+    log,
+    'send-message',
   );
   if (!res.ok) {
     const txt = await res.text().catch(() => '');
@@ -165,15 +202,28 @@ async function sendMessage(base, accessToken, conversationId, text, log) {
 
 async function pollActivities(base, accessToken, conversationId, log) {
   const start = Date.now();
+  let watermark = null;
   while (Date.now() - start < POLL_TIMEOUT_MS) {
     await new Promise((r) => setTimeout(r, POLL_INTERVAL_MS));
-    const res = await fetch(
-      `${base}/conversations/${conversationId}/activities?api-version=${API_VERSION}`,
-      {
-        method: 'GET',
-        headers: { Authorization: `Bearer ${accessToken}` },
-      },
-    );
+    const url = watermark
+      ? `${base}/conversations/${conversationId}/activities?api-version=${API_VERSION}&watermark=${encodeURIComponent(watermark)}`
+      : `${base}/conversations/${conversationId}/activities?api-version=${API_VERSION}`;
+    let res;
+    try {
+      res = await fetchWithTimeout(
+        url,
+        {
+          method: 'GET',
+          headers: { Authorization: `Bearer ${accessToken}` },
+        },
+        POLL_FETCH_TIMEOUT_MS,
+        log,
+        'poll-activities',
+      );
+    } catch (e) {
+      log?.error?.(`Copilot poll activities fetch error: ${e?.message || e}`);
+      continue;
+    }
     if (!res.ok) {
       const txt = await res.text().catch(() => '');
       log?.error?.(
@@ -183,6 +233,7 @@ async function pollActivities(base, accessToken, conversationId, log) {
       continue;
     }
     const j = await res.json();
+    if (j.watermark) watermark = j.watermark;
     const msgs = extractBotMessages(j.activities);
     if (msgs.length > 0) return msgs;
   }
@@ -295,7 +346,12 @@ app.http('grade-skk1', {
         prompt,
         context,
       );
-      context.log?.(`grade-skk1: send ok t+${Date.now() - t0}ms`);
+      const actCount = Array.isArray(sendResult?.activities)
+        ? sendResult.activities.length
+        : 0;
+      context.log?.(
+        `grade-skk1: send ok t+${Date.now() - t0}ms activities=${actCount} action=${sendResult?.action || 'n/a'}`,
+      );
     } catch (e) {
       const status = e?.status || 502;
       return jsonResponse(
@@ -305,17 +361,28 @@ app.http('grade-skk1', {
       );
     }
 
+    // 新エージェント (cr746_agent / DynamicPlan型) では即時レスポンスの
+    // activities 配列に最後の type=message,role=bot,text!=空 が含まれてくる。
+    // action: "waiting" でも text 付き message があれば成功扱い。
     let botMessages = extractBotMessages(sendResult?.activities);
+    context.log?.(
+      `grade-skk1: extracted bot messages from send response: count=${botMessages.length}`,
+    );
 
     if (botMessages.length === 0) {
-      // 同期応答が空のケースに備えて short polling
-      context.log?.('grade-skk1: send returned no bot messages, polling...');
+      // 念のため: 即時応答に bot message が含まれない場合のみ polling
+      context.log?.(
+        'grade-skk1: send returned no bot messages, polling activities...',
+      );
       try {
         botMessages = await pollActivities(
           base,
           accessToken,
           conversationId,
           context,
+        );
+        context.log?.(
+          `grade-skk1: poll done t+${Date.now() - t0}ms count=${botMessages.length}`,
         );
       } catch (e) {
         context.error?.(`grade-skk1 poll error: ${e?.stack || e}`);
