@@ -13,18 +13,27 @@
 //   POST /conversations/{id} に対し 60 秒前後 / 47KB を一括返却するケースがあり、
 //   1リクエストで完結させると SWA フロントが 500 "Backend call failure" を返す。
 //   そこで:
-//     1. /api/grade-skk1       会話作成 + sendMessage を発火 (発火後の完走は待たない)
-//     2. /api/grade-skk1-poll  GET /activities で bot 応答を polling 取得
+//     1. /api/grade-skk1       会話作成 + sendMessage を発火 (Promise.race で先勝ち)
+//     2. /api/grade-skk1-poll  send Promise (引継) と GET /activities polling 並走
 //   と分け、各レスポンスを 45 秒以内に収める。
+//
+// 重要な実装ポイント:
+//   - sendMessage の fetch を AbortController で打ち切ると Power Platform 側の
+//     bot 処理も中断される (実測)。よって abort せず Promise を生かしたまま race。
+//   - Step1 の sendMessage Promise を module-level Map (inflightSends) に登録、
+//     Step2 が同一 Functions プロセス内なら同じ Promise を引き継いで await することで、
+//     bot 処理の完走を確実に待ち受ける。
 //
 // 流れ:
 //   1. ROPC で Power Platform Access Token 取得 (warm キャッシュ)
 //   2. POST /conversations  会話作成
-//   3. POST /conversations/{id}  メッセージ送信開始 (35秒上限で打ち切り、本体側で継続)
-//      - 35秒以内に bot 応答 activity が拾えれば 200 で verdict を直接返す
+//   3. POST /conversations/{id}  メッセージ送信開始
+//      - Promise.race(sendPromise, pollPromise, deadline 40s)
+//      - 40秒以内に bot 応答 activity が拾えれば 200 で verdict を直接返す
 //      - 拾えなければ 202 + { conversationId, status:"pending" } を返す
-//   4. クライアントは pending なら /api/grade-skk1-poll を投げ続ける
-//      - Functions は GET /activities を最大 35秒 polling
+//        (sendPromise は inflightSends に登録された状態で background 継続)
+//   4. クライアントは pending なら /api/grade-skk1-poll を 1.5秒間隔で投げる
+//      - Functions は inflightSends から sendPromise 引継 + GET /activities polling
 //      - 取れたら 200、未取得なら 202 + status:"pending" で繰り返し誘導
 //
 // Request body (POST /api/grade-skk1):
