@@ -856,6 +856,12 @@ function showMultiModel(expId, fieldIds) {
 // それ以外は単一 textarea (ans-<questionId>)。
 
 const COPILOT_API_URL = '/api/grade-skk1';
+const COPILOT_POLL_API_URL = '/api/grade-skk1-poll';
+// SWA managed Functions の応答上限が 45 秒のため、サーバ側で 202+pending が
+// 返ってきた場合は conversationId を握って polling を継続する。
+// 採点全体に許容する最大待機時間 (秒)。
+const COPILOT_TOTAL_TIMEOUT_SEC = 240;
+const COPILOT_POLL_INTERVAL_MS = 1500;
 
 function _resultEl(resultId) {
   return document.getElementById(resultId);
@@ -878,7 +884,7 @@ function _setLoading(resultId) {
   const sp = document.createElement('div');
   sp.className = 'copilot-spinner';
   const txt = document.createElement('span');
-  txt.textContent = '建設サポートに問い合わせ中（最大30秒）…';
+  txt.textContent = '建設サポートに問い合わせ中（最大' + COPILOT_TOTAL_TIMEOUT_SEC + '秒）…';
   wrap.appendChild(sp);
   wrap.appendChild(txt);
   body.appendChild(wrap);
@@ -984,13 +990,17 @@ async function showCopilot(resultId) {
 
   _setLoading(resultId);
 
+  const overallStart = Date.now();
+  const overallDeadline = overallStart + COPILOT_TOTAL_TIMEOUT_SEC * 1000;
+
   try {
+    // Step1: 会話作成 + メッセージ送信開始
     const res = await fetch(COPILOT_API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
-    if (!res.ok) {
+    if (res.status >= 400) {
       let msg = `エラー (HTTP ${res.status})`;
       try {
         const j = await res.json();
@@ -1001,13 +1011,83 @@ async function showCopilot(resultId) {
       _setError(resultId, msg);
       return;
     }
-    const j = await res.json();
-    const text = (j && (j.verdict || j.raw)) || '';
-    if (!text.trim()) {
-      _setError(resultId, '採点結果が空でした。再試行してください。');
+    let j;
+    try {
+      j = await res.json();
+    } catch (_) {
+      _setError(resultId, '採点APIの応答が不正でした。再試行してください。');
       return;
     }
-    _setResult(resultId, text);
+
+    // 200で即verdict返ってくるケース (SWA 45秒以内に Copilot が応答完了した場合)
+    if (res.status === 200 && j && (j.verdict || j.raw)) {
+      const text = (j.verdict || j.raw || '').trim();
+      if (!text) {
+        _setError(resultId, '採点結果が空でした。再試行してください。');
+        return;
+      }
+      _setResult(resultId, text);
+      return;
+    }
+
+    // 202+pending: 以後 conversationId を使って /grade-skk1-poll を繰り返す
+    const conversationId = j && j.conversationId;
+    let watermark = (j && j.watermark) || undefined;
+    if (!conversationId) {
+      _setError(resultId, '採点処理を開始できませんでした。再試行してください。');
+      return;
+    }
+
+    // Polling ループ
+    while (Date.now() < overallDeadline) {
+      // 短い間隔の wait (サーバ側は 1呼び出しで最大35秒 polling してくれる)
+      await new Promise((r) => setTimeout(r, COPILOT_POLL_INTERVAL_MS));
+      if (Date.now() >= overallDeadline) break;
+
+      const pollRes = await fetch(COPILOT_POLL_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          questionId: payload.questionId,
+          conversationId,
+          watermark,
+        }),
+      });
+      if (pollRes.status >= 400 && pollRes.status !== 202) {
+        let msg = `採点取得エラー (HTTP ${pollRes.status})`;
+        try {
+          const pj = await pollRes.json();
+          if (pj && pj.error) msg = pj.error;
+        } catch (_) {
+          /* noop */
+        }
+        _setError(resultId, msg);
+        return;
+      }
+      let pj;
+      try {
+        pj = await pollRes.json();
+      } catch (_) {
+        // ネットワーク途中失敗。次ループで再試行。
+        continue;
+      }
+      if (pj && pj.watermark) watermark = pj.watermark;
+      if (pollRes.status === 200 && pj && (pj.verdict || pj.raw)) {
+        const text = (pj.verdict || pj.raw || '').trim();
+        if (!text) {
+          _setError(resultId, '採点結果が空でした。再試行してください。');
+          return;
+        }
+        _setResult(resultId, text);
+        return;
+      }
+      // 202 pending: ループ継続
+    }
+
+    _setError(
+      resultId,
+      '採点処理が時間内に完了しませんでした。再試行してください。',
+    );
   } catch (e) {
     _setError(
       resultId,
