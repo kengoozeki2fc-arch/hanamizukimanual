@@ -204,54 +204,56 @@ async function createConversation(base, accessToken, log) {
 }
 
 /**
- * sendMessage を発行。timeoutMs 以内にレスポンスが返ってくれば
- * activities を返す。タイムアウトしたら null を返す（fire-and-forget扱い）。
- * Power Platform 側は HTTP接続が切れても会話処理は継続するため、
- * subsequent GET /activities で bot 応答を拾える。
+ * sendMessage を発行。
+ *  - timeoutMs 以内にレスポンスが返ってきたら activities を含む json を返す
+ *  - timeoutMs 経過したら abort せず、Promise を捨てて { ok:false, deferred:true }
+ *    を返す。fetch Promise は background で走り続け、Power Platform 側の bot 処理を
+ *    完走させる。返却された Promise (deferredPromise) を呼び出し側が握って参照する
+ *    ことで、Functions ホストが background promise を維持し続ける確率を上げる。
+ * 重要: AbortController で切ると Power Platform 側の bot 処理も中断されるため、
+ *       deadline に到達した場合は abort せず race で先勝ちさせる方式にする。
  */
-async function sendMessageWithBudget(
-  base,
-  accessToken,
-  conversationId,
-  text,
-  timeoutMs,
-  log,
-) {
-  try {
-    const res = await fetchWithTimeout(
-      `${base}/conversations/${conversationId}?api-version=${API_VERSION}`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
+function startSendMessage(base, accessToken, conversationId, text, log) {
+  const controller = new AbortController();
+  const promise = (async () => {
+    try {
+      const res = await fetch(
+        `${base}/conversations/${conversationId}?api-version=${API_VERSION}`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ activity: { type: 'message', text } }),
+          signal: controller.signal,
         },
-        body: JSON.stringify({ activity: { type: 'message', text } }),
-      },
-      timeoutMs,
-      log,
-      'send-message',
-    );
-    if (!res.ok) {
-      const txt = await res.text().catch(() => '');
-      log?.error?.(
-        `Copilot send message failed: status=${res.status} body=${txt.slice(0, 300)}`,
       );
-      // ネットワーク的に応答は来たが業務エラー。pending扱いで polling に賭ける。
-      return { ok: false, status: res.status };
+      if (!res.ok) {
+        const txt = await res.text().catch(() => '');
+        log?.error?.(
+          `Copilot send message failed: status=${res.status} body=${txt.slice(0, 300)}`,
+        );
+        return { ok: false, status: res.status };
+      }
+      const json = await res.json();
+      return { ok: true, json };
+    } catch (e) {
+      if (e?.name === 'AbortError') {
+        // 通常 race の loser として呼ばれた時に発生。Functions が落とされなければ
+        // ここまで到達するが Power Platform 側は既に応答済みなので問題なし。
+        log?.warn?.(`send-message aborted (loser of race)`);
+        return { ok: false, aborted: true };
+      }
+      log?.error?.(`send-message unexpected: ${e?.stack || e}`);
+      return { ok: false, error: e };
     }
-    const json = await res.json();
-    return { ok: true, json };
-  } catch (e) {
-    if (e?.name === 'AbortError') {
-      log?.warn?.(
-        `send-message aborted after ${timeoutMs}ms (Copilot側は処理継続している想定)`,
-      );
-      return { ok: false, aborted: true };
-    }
-    log?.error?.(`send-message unexpected: ${e?.stack || e}`);
-    return { ok: false, error: e };
-  }
+  })();
+  return { promise, controller };
+}
+
+function delay(ms) {
+  return new Promise((r) => setTimeout(r, ms));
 }
 
 /**
@@ -435,79 +437,93 @@ app.http('grade-skk1', {
       );
     }
 
-    // sendMessage を Promise として走らせ、bot text 拾えるかを並行判定する。
-    // 残り時間を SEND_RESPONSE_BUDGET_MS と比較して短い方を fetch budget にする。
-    const sendBudget = Math.max(
-      5000,
-      Math.min(SEND_RESPONSE_BUDGET_MS, deadline - Date.now() - 2000),
-    );
-    const sendPromise = sendMessageWithBudget(
+    // sendMessage を background で開始（abort せず最後まで走らせる）
+    // Power Platform 側は HTTPコネクションが生きている間 bot 処理を継続するため、
+    // クライアント (=Functions) 側で abort してしまうと処理が中断される実測。
+    const send = startSendMessage(
       base,
       accessToken,
       conversationId,
       prompt,
-      sendBudget,
       context,
     );
 
-    // sendMessage 応答 or polling のどちらか先に bot text を取れた方を採用。
+    // どれが先に決着するか:
+    //  (a) sendMessage の HTTP レスポンス (activities含む) が返る  → 直接 verdict
+    //  (b) GET /activities polling が bot text を拾う          → 直接 verdict
+    //  (c) endpoint deadline が先に来る                          → 202 pending
     let botMessages = [];
     let watermark = null;
 
-    try {
-      const sendResult = await sendPromise;
-      const elapsed = Date.now() - t0;
-      if (sendResult?.ok && sendResult.json) {
-        const actCount = Array.isArray(sendResult.json.activities)
-          ? sendResult.json.activities.length
-          : 0;
-        context.log?.(
-          `grade-skk1: send ok t+${elapsed}ms activities=${actCount} action=${sendResult.json.action || 'n/a'}`,
-        );
-        botMessages = extractBotMessages(sendResult.json.activities);
-        if (sendResult.json.watermark) watermark = sendResult.json.watermark;
-      } else if (sendResult?.aborted) {
-        context.log?.(
-          `grade-skk1: send aborted t+${elapsed}ms (budget=${sendBudget}ms)・polling fallbackで継続`,
-        );
-      } else {
-        context.log?.(
-          `grade-skk1: send not ok t+${elapsed}ms status=${sendResult?.status} ・polling fallbackで継続`,
-        );
-      }
-    } catch (e) {
-      context.error?.(`grade-skk1 send unexpected: ${e?.stack || e}`);
-    }
+    const pollDeadline = deadline - 1000; // 1秒余裕を残す
+    const sendWrapped = send.promise.then((r) => ({ kind: 'send', value: r }));
+    const pollPromise = pollActivitiesUntil(
+      base,
+      accessToken,
+      conversationId,
+      null,
+      pollDeadline,
+      context,
+    ).then((r) => ({ kind: 'poll', value: r }));
+    const deadlinePromise = delay(Math.max(0, deadline - Date.now())).then(
+      () => ({ kind: 'deadline' }),
+    );
 
-    // bot text がまだ取れていなければ、deadline まで polling
-    if (botMessages.length === 0) {
-      const pollDeadline = Math.min(
-        deadline,
-        Date.now() + POLL_TOTAL_BUDGET_MS,
-      );
-      const remainBudget = pollDeadline - Date.now();
-      if (remainBudget > 1000) {
-        context.log?.(
-          `grade-skk1: polling fallback t+${Date.now() - t0}ms remain=${remainBudget}ms`,
-        );
-        const pollResult = await pollActivitiesUntil(
-          base,
-          accessToken,
-          conversationId,
-          watermark,
-          pollDeadline,
-          context,
-        );
-        botMessages = pollResult.messages;
-        watermark = pollResult.watermark;
-        context.log?.(
-          `grade-skk1: poll done t+${Date.now() - t0}ms count=${botMessages.length}`,
-        );
+    // 早い者勝ち。bot text を拾ったほうの結果を採用。
+    let timedOut = false;
+    while (!timedOut && botMessages.length === 0) {
+      const winner = await Promise.race([
+        sendWrapped,
+        pollPromise,
+        deadlinePromise,
+      ]);
+      if (winner.kind === 'deadline') {
+        timedOut = true;
+        break;
+      }
+      if (winner.kind === 'send') {
+        const v = winner.value;
+        const elapsed = Date.now() - t0;
+        if (v?.ok && v.json) {
+          const actCount = Array.isArray(v.json.activities)
+            ? v.json.activities.length
+            : 0;
+          context.log?.(
+            `grade-skk1: send ok t+${elapsed}ms activities=${actCount} action=${v.json.action || 'n/a'}`,
+          );
+          botMessages = extractBotMessages(v.json.activities);
+          if (v.json.watermark) watermark = v.json.watermark;
+          if (botMessages.length > 0) break;
+        } else {
+          context.log?.(
+            `grade-skk1: send returned without bot text t+${elapsed}ms ok=${v?.ok}`,
+          );
+        }
+        // send が空応答だった場合は pollPromise / deadline の決着を待つ
+        // ただし sendWrapped は完了済みなので race から外す → 単に poll/deadline を継続
+        const next = await Promise.race([pollPromise, deadlinePromise]);
+        if (next.kind === 'deadline') {
+          timedOut = true;
+          break;
+        }
+        // poll
+        botMessages = next.value.messages;
+        if (next.value.watermark) watermark = next.value.watermark;
+        break;
+      }
+      if (winner.kind === 'poll') {
+        botMessages = winner.value.messages;
+        if (winner.value.watermark) watermark = winner.value.watermark;
+        break;
       }
     }
 
     if (botMessages.length > 0) {
       const text = botMessages.join('\n\n').trim();
+      // send promise が走り続けている可能性あるが、Power Platform側は応答済みなので
+      // 落としても影響なし。HTTPレスポンス送信後 Promise が放置されると Functions
+      // が unhandled rejection 警告を出すので catch を attach しておく。
+      send.promise.catch(() => {});
       return jsonResponse(
         200,
         {
@@ -521,7 +537,11 @@ app.http('grade-skk1', {
       );
     }
 
-    // 取れなかったので pending 返却。クライアントは /api/grade-skk1-poll を投げ続ける。
+    // deadline 到達: send / poll Promise は捨てて 202 pending 返却。
+    // クライアントは /api/grade-skk1-poll を繰り返す。
+    // send promise は abort しない (Power Platform 側の bot 処理を続行させる)
+    send.promise.catch(() => {});
+    pollPromise.catch(() => {});
     context.log?.(
       `grade-skk1: pending t+${Date.now() - t0}ms conversationId=${conversationId}`,
     );
