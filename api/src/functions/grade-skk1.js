@@ -256,6 +256,40 @@ function delay(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
+// ============================================================================
+// In-flight send Promise を Functions プロセススコープで共有するためのレジストリ。
+// /grade-skk1 が起動した sendMessage POST を /grade-skk1-poll でも引き継いで
+// await できるようにすることで、Power Platform 側の bot 処理が完走するまで
+// HTTP コネクションを維持する。Functions ホストプロセスが warm な間のみ有効
+// (cold start で消える前提)。
+// ============================================================================
+const inflightSends = new Map(); // conversationId -> { promise, startedAt, accessToken }
+const INFLIGHT_TTL_MS = 5 * 60 * 1000;
+
+function registerInflightSend(conversationId, promise, accessToken) {
+  inflightSends.set(conversationId, {
+    promise,
+    startedAt: Date.now(),
+    accessToken,
+  });
+  // 完了したら自動掃除（成功失敗どちらでも）
+  promise.finally(() => {
+    setTimeout(() => {
+      const cur = inflightSends.get(conversationId);
+      if (cur && cur.promise === promise) inflightSends.delete(conversationId);
+    }, 30_000); // 完了後30秒は残してpoll側のlast-chanceに使えるようにする
+  });
+  // 安全弁: 5分でTTL強制削除
+  setTimeout(() => {
+    const cur = inflightSends.get(conversationId);
+    if (cur && cur.promise === promise) inflightSends.delete(conversationId);
+  }, INFLIGHT_TTL_MS);
+}
+
+function getInflightSend(conversationId) {
+  return inflightSends.get(conversationId);
+}
+
 /**
  * GET /activities を deadline (絶対時刻ms) まで polling。
  * 取れたら { messages, watermark } を返す。
@@ -447,6 +481,9 @@ app.http('grade-skk1', {
       prompt,
       context,
     );
+    // module-level レジストリに登録: /grade-skk1-poll が同一プロセス内で
+    // この Promise を await できるようにする (warm な間のみ有効)。
+    registerInflightSend(conversationId, send.promise, accessToken);
 
     // どれが先に決着するか:
     //  (a) sendMessage の HTTP レスポンス (activities含む) が返る  → 直接 verdict
@@ -619,21 +656,92 @@ app.http('grade-skk1-poll', {
       t0 + POLL_TOTAL_BUDGET_MS,
       t0 + (SWA_HARD_LIMIT_MS - 5000),
     );
-    const result = await pollActivitiesUntil(
-      base,
-      accessToken,
-      conversationId,
-      inWatermark,
-      deadline,
-      context,
-    );
+
+    // 同一 Functions プロセス内に走っている send Promise があれば、それも race に
+    // 組み込む。送信完走時の sendResponse.activities にbot text が入っているケースを
+    // 拾えるようにする。
+    const inflight = getInflightSend(conversationId);
+    let botMessages = [];
+    let watermark = inWatermark || null;
+
+    if (inflight) {
+      context.log?.(
+        `grade-skk1-poll: inflight send found (startedAt=t-${Date.now() - inflight.startedAt}ms)`,
+      );
+      const sendWrapped = inflight.promise.then((r) => ({
+        kind: 'send',
+        value: r,
+      }));
+      const pollWrapped = pollActivitiesUntil(
+        base,
+        accessToken,
+        conversationId,
+        watermark,
+        deadline,
+        context,
+      ).then((r) => ({ kind: 'poll', value: r }));
+      const deadlineWrapped = delay(Math.max(0, deadline - Date.now())).then(
+        () => ({ kind: 'deadline' }),
+      );
+      // 順次先勝ち取り
+      while (Date.now() < deadline && botMessages.length === 0) {
+        const winner = await Promise.race([
+          sendWrapped,
+          pollWrapped,
+          deadlineWrapped,
+        ]);
+        if (winner.kind === 'deadline') break;
+        if (winner.kind === 'send') {
+          const v = winner.value;
+          if (v?.ok && v.json) {
+            botMessages = extractBotMessages(v.json.activities);
+            if (v.json.watermark) watermark = v.json.watermark;
+            context.log?.(
+              `grade-skk1-poll: send completed in poll-handler activities=${(v.json.activities || []).length} bot-text=${botMessages.length}`,
+            );
+            if (botMessages.length > 0) break;
+          } else {
+            context.log?.(
+              `grade-skk1-poll: send completed but no bot text ok=${v?.ok}`,
+            );
+          }
+          // send 完走したが bot text 無し → poll 待ちで継続
+          const next = await Promise.race([pollWrapped, deadlineWrapped]);
+          if (next.kind === 'deadline') break;
+          botMessages = next.value.messages;
+          if (next.value.watermark) watermark = next.value.watermark;
+          break;
+        }
+        if (winner.kind === 'poll') {
+          botMessages = winner.value.messages;
+          if (winner.value.watermark) watermark = winner.value.watermark;
+          break;
+        }
+      }
+    } else {
+      // inflight なし: 通常の polling のみ
+      context.log?.(
+        `grade-skk1-poll: no inflight send (cold-start可能性あり)・polling only`,
+      );
+      const result = await pollActivitiesUntil(
+        base,
+        accessToken,
+        conversationId,
+        watermark,
+        deadline,
+        context,
+      );
+      botMessages = result.messages;
+      if (result.watermark) watermark = result.watermark;
+    }
+
     const elapsed = Date.now() - t0;
     context.log?.(
-      `grade-skk1-poll: done t+${elapsed}ms count=${result.messages.length}`,
+      `grade-skk1-poll: done t+${elapsed}ms count=${botMessages.length}`,
     );
 
-    if (result.messages.length > 0) {
-      const text = result.messages.join('\n\n').trim();
+    if (botMessages.length > 0) {
+      const text = botMessages.join('\n\n').trim();
       return jsonResponse(
         200,
         {
@@ -641,7 +749,7 @@ app.http('grade-skk1-poll', {
           verdict: text,
           raw: text,
           conversationId,
-          watermark: result.watermark || undefined,
+          watermark: watermark || undefined,
         },
         origin,
       );
@@ -652,7 +760,7 @@ app.http('grade-skk1-poll', {
       {
         questionId,
         conversationId,
-        watermark: result.watermark || undefined,
+        watermark: watermark || undefined,
         status: 'pending',
       },
       origin,
