@@ -370,23 +370,96 @@ async function pollActivitiesUntil(
   return { messages: [], watermark };
 }
 
+// ============================================================================
+// questionOverride 検証
+// ----------------------------------------------------------------------------
+// クライアント (例: oisi/benkyokai-skk2) が R5 などサーバー側マスタに無い
+// 問題文で採点したい場合、payload に `questionOverride` を載せて送ってくる。
+// shape は questions.js の QUESTIONS と同型: { title, body, parts? }
+//
+// セキュリティ／健全性チェック:
+//   - title / body は文字列・長さ上限あり
+//   - parts は配列で、各要素は { key, label, placeholder? } の文字列
+//   - shape 不正なら null を返し、呼び出し側は getQuestion() フォールバック
+//   - LLM プロンプトに混ぜるためログには平文を出さず override使用フラグだけ
+// ============================================================================
+const OVERRIDE_TITLE_MAX = 200;
+const OVERRIDE_BODY_MAX = 5000;
+const OVERRIDE_PARTS_MAX = 12;
+const OVERRIDE_PART_KEY_MAX = 64;
+const OVERRIDE_PART_LABEL_MAX = 300;
+const OVERRIDE_PART_PLACEHOLDER_MAX = 300;
+
+function _isNonEmptyString(v, max) {
+  return typeof v === 'string' && v.length > 0 && v.length <= max;
+}
+
+/**
+ * payload.questionOverride を検証する。
+ * @returns 妥当な override オブジェクト or null。
+ */
+function sanitizeQuestionOverride(raw) {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  if (!_isNonEmptyString(raw.title, OVERRIDE_TITLE_MAX)) return null;
+  if (!_isNonEmptyString(raw.body, OVERRIDE_BODY_MAX)) return null;
+  const out = { title: raw.title, body: raw.body };
+  if (raw.parts !== undefined) {
+    if (!Array.isArray(raw.parts)) return null;
+    if (raw.parts.length === 0) return null;
+    if (raw.parts.length > OVERRIDE_PARTS_MAX) return null;
+    const parts = [];
+    for (const p of raw.parts) {
+      if (!p || typeof p !== 'object' || Array.isArray(p)) return null;
+      if (!_isNonEmptyString(p.key, OVERRIDE_PART_KEY_MAX)) return null;
+      if (!_isNonEmptyString(p.label, OVERRIDE_PART_LABEL_MAX)) return null;
+      const part = { key: p.key, label: p.label };
+      if (p.placeholder !== undefined) {
+        if (typeof p.placeholder !== 'string') return null;
+        if (p.placeholder.length > OVERRIDE_PART_PLACEHOLDER_MAX) return null;
+        part.placeholder = p.placeholder;
+      }
+      parts.push(part);
+    }
+    out.parts = parts;
+  }
+  return out;
+}
+
 /**
  * 答案 payload バリデーション。
  * 戻り値: { ok:true, prompt } または { ok:false, status, error }
  */
-function validateAndBuildPrompt(payload) {
+function validateAndBuildPrompt(payload, log) {
   const questionId = payload?.questionId;
   if (typeof questionId !== 'string' || !questionId) {
     return { ok: false, status: 400, error: 'questionId is required' };
   }
-  const question = getQuestion(questionId);
-  if (!question) {
-    return {
-      ok: false,
-      status: 400,
-      error: `Unknown questionId: ${questionId}`,
-    };
+  // questionOverride を最優先。妥当でなければマスタにフォールバック。
+  const override = sanitizeQuestionOverride(payload?.questionOverride);
+  let question;
+  let usedOverride;
+  if (override) {
+    question = override;
+    usedOverride = true;
+  } else {
+    if (payload?.questionOverride !== undefined) {
+      log?.warn?.(
+        `validateAndBuildPrompt: questionOverride present but invalid shape for questionId=${questionId}, fallback to master`,
+      );
+    }
+    question = getQuestion(questionId);
+    usedOverride = false;
+    if (!question) {
+      return {
+        ok: false,
+        status: 400,
+        error: `Unknown questionId: ${questionId}`,
+      };
+    }
   }
+  log?.(
+    `validateAndBuildPrompt: questionId=${questionId} override=${usedOverride}`,
+  );
   if (question.parts) {
     const ans = payload.answers || {};
     const filled = question.parts.some(
@@ -411,7 +484,13 @@ function validateAndBuildPrompt(payload) {
       };
     }
   }
-  return { ok: true, questionId, question, prompt: buildPrompt(question, payload) };
+  return {
+    ok: true,
+    questionId,
+    question,
+    usedOverride,
+    prompt: buildPrompt(question, payload),
+  };
 }
 
 // ============================================================================
@@ -438,16 +517,16 @@ app.http('grade-skk1', {
       return jsonResponse(400, { error: 'Invalid JSON body' }, origin);
     }
 
-    const v = validateAndBuildPrompt(payload);
+    const v = validateAndBuildPrompt(payload, context.log?.bind(context));
     if (!v.ok) {
       return jsonResponse(v.status, { error: v.error }, origin);
     }
-    const { questionId, prompt } = v;
+    const { questionId, prompt, usedOverride } = v;
 
     const t0 = Date.now();
     const deadline = t0 + ENDPOINT_BUDGET_MS;
     context.log?.(
-      `grade-skk1: start questionId=${questionId} promptLen=${prompt.length}`,
+      `grade-skk1: start questionId=${questionId} promptLen=${prompt.length} override=${usedOverride}`,
     );
 
     let accessToken;
