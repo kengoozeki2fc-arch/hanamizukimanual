@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>マニュアル一覧 | グリッドワークスコンサルティング</title>
-<script src="https://id.kensetsu-total.support/js/keycloak.min.js"></script>
 <style>
 :root {
   --cp-brand-blue: #74B2E0;
@@ -191,58 +190,11 @@ body {
   .container { padding: 24px 12px 32px; }
 }
 
-/* ---------- 認証ゲート ---------- */
-#auth-overlay {
-  position: fixed; inset: 0;
-  background: var(--cp-page-bg);
-  display: flex; align-items: center; justify-content: center;
-  flex-direction: column; gap: 16px;
-  z-index: 9999;
-  font-size: 14px; color: var(--cp-gray-600);
-}
-.spinner {
-  width: 40px; height: 40px;
-  border: 3px solid var(--cp-blue-100);
-  border-top-color: var(--cp-blue-400);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-body:not(.kc-ready) .container,
-body:not(.kc-ready) .footer { visibility: hidden; }
-body.kc-ready #auth-overlay { display: none; }
-
-/* ヘッダー右上ユーザーバッジ */
-.header { position: relative; }
-.user-bar {
-  position: absolute; top: 14px; right: 20px;
-  font-size: 12px; color: rgba(255,255,255,0.92);
-  display: flex; align-items: center; gap: 12px;
-}
-.user-bar a {
-  color: rgba(255,255,255,0.92); text-decoration: none;
-  border: 1px solid rgba(255,255,255,0.5);
-  padding: 4px 10px; border-radius: 999px;
-  transition: background 0.15s;
-}
-.user-bar a:hover { background: rgba(255,255,255,0.18); }
-@media (max-width: 600px) {
-  .user-bar { position: static; justify-content: flex-end; padding: 8px 16px 0; }
-}
 </style>
 </head>
 <body>
 
-<div id="auth-overlay">
-  <div class="spinner" aria-hidden="true"></div>
-  <div>認証情報を確認中…</div>
-</div>
-
 <div class="header">
-  <div class="user-bar">
-    <span id="user-name"></span>
-    <a href="#" id="logout-link" style="display:none">ログアウト</a>
-  </div>
   <h1>マニュアル一覧</h1>
   <p>クラウドパワー株式会社 / GWC / 建設業トータルサポート — HTMLマニュアル集約</p>
 </div>
@@ -424,49 +376,6 @@ body.kc-ready #auth-overlay { display: none; }
 <div class="footer">
   &copy; 2026 Cloud Power Inc. — けんけん作成 / 最終更新 2026-05-02（MARUWA来場者管理モック追加）
 </div>
-
-<script>
-(function () {
-  const kc = new Keycloak({
-    url: 'https://id.kensetsu-total.support',
-    realm: 'kensetsu-total',
-    clientId: 'manual-portal'
-  });
-
-  kc.init({
-    onLoad: 'login-required',
-    pkceMethod: 'S256',
-    checkLoginIframe: false
-  }).then(function (authenticated) {
-    if (!authenticated) {
-      kc.login();
-      return;
-    }
-    document.body.classList.add('kc-ready');
-    const tp = kc.tokenParsed || {};
-    const name = tp.name || tp.preferred_username || tp.email || '';
-    const userEl = document.getElementById('user-name');
-    if (userEl && name) userEl.textContent = name + ' さん';
-    const logout = document.getElementById('logout-link');
-    if (logout) {
-      logout.style.display = 'inline-block';
-      logout.addEventListener('click', function (e) {
-        e.preventDefault();
-        kc.logout({ redirectUri: window.location.origin + '/' });
-      });
-    }
-    setInterval(function () {
-      kc.updateToken(60).catch(function () { kc.login(); });
-    }, 60000);
-  }).catch(function (err) {
-    document.getElementById('auth-overlay').innerHTML =
-      '<div style="color:#b71c1c;padding:24px;text-align:center;line-height:1.6">' +
-      '認証エラーが発生しました。<br>' +
-      '時間をおいて再度アクセスしてください。<br>' +
-      '<small style="color:#888">' + (err && err.error ? err.error : '') + '</small></div>';
-  });
-})();
-</script>
 
 </body>
 </html>
