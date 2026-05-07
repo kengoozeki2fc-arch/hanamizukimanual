@@ -112,6 +112,16 @@
       }
     },
     {
+      "route": "/oisi/benkyokai-skk2",
+      "rewrite": "/oisi/benkyokai-skk2/index.html"
+    },
+    {
+      "route": "/oisi/benkyokai-skk2/images/*",
+      "headers": {
+        "Cache-Control": "public, max-age=86400"
+      }
+    },
+    {
       "route": "/oisi-builder",
       "rewrite": "/oisi-builder/index.html"
     }
@@ -153,12 +163,18 @@
       "/hanamizuki-server/images/*.png",
       "/hanamizuki-server/images/*.jpg",
       "/oisi/*.html",
+      "/oisi/*.js",
       "/oisi/benkyokai/*.html",
       "/oisi/benkyokai/images/*.png",
       "/oisi/benkyokai/images/*.jpg",
       "/oisi/benkyokai-skk1/*.html",
       "/oisi/benkyokai-skk1/images/*.png",
       "/oisi/benkyokai-skk1/images/*.jpg",
+      "/oisi/benkyokai-skk2/*.html",
+      "/oisi/benkyokai-skk2/*.png",
+      "/oisi/benkyokai-skk2/*.jpg",
+      "/oisi/benkyokai-skk2/images/*.png",
+      "/oisi/benkyokai-skk2/images/*.jpg",
       "/oisi-builder/*.html",
       "/oisi-builder/*.json",
       "/*.png",
