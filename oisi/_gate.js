@@ -1,5 +1,5 @@
 /* 大石建設 社内対策講座 アクセス認証ゲート
- * 対象: /oisi/benkyokai/, /oisi/benkyokai-skk1/, /oisi/benkyokai-skk2/
+ * 対象: /oisi/benkyokai/, /oisi/benkyokai-skk1/, /oisi/benkyokai-skk2/, /oisi/benkyokai-skk3/
  * 方式: ID/PW + SHA-256 ハッシュ照合 + 5回失敗30秒ロック
  * 配置: /oisi/_gate.js（各 index.html の <head> 末尾で <script src="../_gate.js" defer></script> 参照）
  */
