@@ -313,6 +313,8 @@
   .btn-secondary { background: var(--primary); color: #fff; }
   .btn-reset     { background: #e8ecf2; color: var(--muted); }
   .btn-copilot   { background: #0078d4; color: #fff; }
+  .btn-small     { padding: 6px 14px; font-size: .8rem; }
+  .partial-grade-row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px; flex-wrap: wrap; }
 
   .explanation {
     display: none;
@@ -1337,6 +1339,90 @@ function _resetBlanks(answers, scoreBoxId) {
   }
   document.getElementById(scoreBoxId).classList.remove('show');
 }
+
+// ================================================
+// 設問単位の個別採点（問題5・問題6 共通）
+// ================================================
+function _gradePartialKeys(keys, answers, labels) {
+  const unanswered = keys.filter(k => !document.getElementById(k).value);
+  if (unanswered.length === keys.length) {
+    alert('この設問は未回答です。選択肢を選んでから採点してください。');
+    return;
+  }
+  if (unanswered.length > 0) {
+    if (!confirm(unanswered.length + '箇所が未回答です。このまま採点しますか？')) return;
+  }
+  keys.forEach(k => {
+    const sel = document.getElementById(k);
+    const row = document.getElementById('row-' + k);
+    const mark = document.getElementById('mark-' + k);
+    const note = document.getElementById('note-' + k);
+    row.classList.remove('correct', 'wrong');
+    if (!sel.value) {
+      mark.textContent = '';
+      mark.className = 'blank-mark';
+      note.textContent = '';
+      return;
+    }
+    if (sel.value === answers[k]) {
+      row.classList.add('correct');
+      mark.textContent = '○';
+      mark.className = 'blank-mark ok';
+      note.textContent = '';
+    } else {
+      row.classList.add('wrong');
+      mark.textContent = '×';
+      mark.className = 'blank-mark ng';
+      note.textContent = '正解：' + labels[k];
+    }
+  });
+}
+
+function _resetPartialKeys(keys) {
+  keys.forEach(k => {
+    const sel = document.getElementById(k);
+    const row = document.getElementById('row-' + k);
+    const mark = document.getElementById('mark-' + k);
+    const note = document.getElementById('note-' + k);
+    sel.value = '';
+    row.classList.remove('correct', 'wrong');
+    mark.textContent = '';
+    mark.className = 'blank-mark';
+    note.textContent = '';
+  });
+}
+
+// 各 fill-blank-card に「この設問だけ採点 / リセット」ボタンを自動挿入
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.fill-blank-card').forEach(card => {
+    const selects = card.querySelectorAll('select');
+    if (selects.length === 0) return;
+    const keys = Array.from(selects).map(s => s.id).filter(id => /^q[56]-\d+$/.test(id));
+    if (keys.length === 0) return;
+    const isQ6 = keys[0].startsWith('q6');
+    const answers = isQ6 ? r4LawAnswers : r4KukaiAnswers;
+    const labels = isQ6 ? r4LawLabels : r4KukaiLabels;
+
+    const row = document.createElement('div');
+    row.className = 'partial-grade-row';
+
+    const btnGrade = document.createElement('button');
+    btnGrade.type = 'button';
+    btnGrade.className = 'btn btn-secondary btn-small';
+    btnGrade.textContent = 'この設問だけ採点';
+    btnGrade.addEventListener('click', () => _gradePartialKeys(keys, answers, labels));
+
+    const btnReset = document.createElement('button');
+    btnReset.type = 'button';
+    btnReset.className = 'btn btn-reset btn-small';
+    btnReset.textContent = 'リセット';
+    btnReset.addEventListener('click', () => _resetPartialKeys(keys));
+
+    row.appendChild(btnGrade);
+    row.appendChild(btnReset);
+    card.appendChild(row);
+  });
+});
 
 function toggleLawDetail() {
   const det = document.getElementById('law-detail');
