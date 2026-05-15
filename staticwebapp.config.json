@@ -138,10 +138,6 @@
     {
       "route": "/nextface",
       "rewrite": "/nextface/index.html"
-    },
-    {
-      "route": "/nextface/",
-      "rewrite": "/nextface/index.html"
     }
   ],
   "navigationFallback": {
@@ -200,6 +196,7 @@
       "/oisi/benkyokai-skk3/images/*.jpg",
       "/oisi-builder/*.html",
       "/oisi-builder/*.json",
+      "/nextface/*",
       "/nextface/*.html",
       "/nextface/css/*.css",
       "/nextface/js/*.js",
