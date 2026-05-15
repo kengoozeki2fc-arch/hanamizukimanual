@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>仮登録ダッシュボード | 永賢組 顔認証初期登録 v0.5</title>
+  <link rel="stylesheet" href="/nextface/css/common.css">
+  <link rel="stylesheet" href="/nextface/css/provisional.css">
+  <script src="/nextface/js/provisional-store.js" defer></script>
+  <script src="/nextface/js/prov-nav.js" defer></script>
+</head>
+<body>
+  <div class="nav">
+    <h3>② 仮登録ダッシュボード</h3>
+    <a href="/nextface/">メニュー</a>
+  </div>
+
+  <div class="wrap">
+    <div class="prov-nav">
+      <a class="prov-nav-btn" href="/nextface/">← メニューへ戻る</a>
+      <a class="prov-nav-btn" href="/nextface/provisional-dashboard.html">📋 ダッシュボードへ</a>
+      <span class="prov-nav-spacer"></span>
+      <span class="prov-nav-hint">パンくずクリックで各画面へジャンプ</span>
+    </div>
+    <div class="flow-steps">
+      <a class="step done" data-step="1">① 仮登録</a><span class="sep">›</span>
+      <a class="step active" data-step="2">② OCRレビュー〜投入</a><span class="sep">›</span>
+      <a class="step" data-step="3">③ 22項目最終確認</a><span class="sep">›</span>
+      <a class="step" data-step="4">④ 正式投入</a>
+    </div>
+
+    <!-- v0.5 事務員PCヘッダー -->
+    <div class="prov-header">
+      <div class="prov-header-site">
+        <label class="site-label">事務員PC</label>
+        <span class="site-fixed">仮登録ダッシュボード</span>
+      </div>
+      <div class="prov-header-user" id="provHeaderUser">
+        <span class="user-icon">👤</span><span class="user-name">読込中…</span>
+      </div>
+    </div>
+
+    <h1>仮登録一覧（事務員PC）</h1>
+    <p class="muted">監督モバイルから上がってきた仮登録ドラフトをここから処理します。</p>
+
+    <!-- ステータス別カウント -->
+    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-bottom:14px;">
+      <div class="card" style="margin:0; text-align:center; padding:12px;">
+        <div class="status-badge status-draft" style="margin-bottom:6px;">仮登録（OCR待ち）</div>
+        <div style="font-size:26px; font-weight:700; color:#B71C1C;" id="cnt-draft">0</div>
+      </div>
+      <div class="card" style="margin:0; text-align:center; padding:12px;">
+        <div class="status-badge status-review" style="margin-bottom:6px;">レビュー待ち</div>
+        <div style="font-size:26px; font-weight:700; color:#8D6E00;" id="cnt-review">0</div>
+      </div>
+      <div class="card" style="margin:0; text-align:center; padding:12px;">
+        <div class="status-badge status-active" style="margin-bottom:6px;">正式登録済み</div>
+        <div style="font-size:26px; font-weight:700; color:#155724;" id="cnt-active">0</div>
+      </div>
+    </div>
+
+    <!-- フィルタ -->
+    <div class="filter-bar">
+      <input type="text" id="filterText" placeholder="🔍 電話／監督／現場で絞り込み">
+      <select id="filterStatus">
+        <option value="">全ステータス</option>
+        <option value="PROVISIONAL_DRAFT">仮登録（OCR待ち）</option>
+        <option value="OCR_REVIEWING">レビュー待ち</option>
+        <option value="ACTIVE">正式登録済み</option>
+      </select>
+      <select id="filterSort">
+        <option value="newest">新しい順</option>
+        <option value="oldest">古い順</option>
+        <option value="status">ステータス順</option>
+      </select>
+    </div>
+
+    <div class="prov-table-wrap table-scroll">
+      <table id="provTable">
+        <thead>
+          <tr>
+            <th>ステータス</th>
+            <th>仮登録ID</th>
+            <th>電話番号</th>
+            <th>監督</th>
+            <th>現場</th>
+            <th>撮影点数</th>
+            <th>仮登録日時</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:16px;">
+      <a href="/nextface/provisional-entry.html" class="btn btn-block">＋ 新規仮登録（監督モバイル想定）</a>
+    </div>
+  </div>
+
+  <script>
+    const esc = (s) => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+
+    function statusRowClass(s) {
+      return { PROVISIONAL_DRAFT: "row-draft", OCR_REVIEWING: "row-review", ACTIVE: "row-active" }[s] || "";
+    }
+
+    function shotCount(item) {
+      const s = item.shots || {};
+      const a = (s.paper ? 1 : 0) + (s.licence ? 1 : 0) + (s.face ? 1 : 0) + (s.certs?.length || 0);
+      return `${a}点 (資格証 ${s.certs?.length || 0})`;
+    }
+
+    function actionBtn(item) {
+      if (item.status === "PROVISIONAL_DRAFT") {
+        return `<a href="/nextface/provisional-review.html?id=${encodeURIComponent(item.id)}" class="btn btn-accent" style="padding:6px 12px; min-height:32px; font-size:12px;">OCR実行→レビュー</a>`;
+      }
+      if (item.status === "OCR_REVIEWING") {
+        return `<a href="/nextface/provisional-review.html?id=${encodeURIComponent(item.id)}" class="btn" style="padding:6px 12px; min-height:32px; font-size:12px;">レビュー</a>`;
+      }
+      return `<a href="/nextface/provisional-data-entry.html?id=${encodeURIComponent(item.id)}" class="btn btn-ghost" style="padding:6px 12px; min-height:32px; font-size:12px;">閲覧</a>`;
+    }
+
+    function renderRows() {
+      const all = ProvStore.list();
+      const kw = document.getElementById("filterText").value.trim();
+      const st = document.getElementById("filterStatus").value;
+      const sort = document.getElementById("filterSort").value;
+
+      let rows = all;
+      if (kw) {
+        rows = rows.filter(x =>
+          (x.phone || "").includes(kw) ||
+          (x.supervisorName || "").includes(kw) ||
+          (x.onsiteName || "").includes(kw)
+        );
+      }
+      if (st) rows = rows.filter(x => x.status === st);
+
+      const order = { PROVISIONAL_DRAFT: 0, OCR_REVIEWING: 1, ACTIVE: 2 };
+      if (sort === "newest") rows.sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
+      else if (sort === "oldest") rows.sort((a, b) => (a.createdAt || "").localeCompare(b.createdAt || ""));
+      else if (sort === "status") rows.sort((a, b) => (order[a.status] ?? 9) - (order[b.status] ?? 9));
+
+      const tbody = document.querySelector("#provTable tbody");
+      if (!rows.length) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:#888;">該当する仮登録はありません</td></tr>`;
+      } else {
+        tbody.innerHTML = rows.map(item => `
+          <tr class="${statusRowClass(item.status)}" data-id="${esc(item.id)}">
+            <td>${ProvStore.statusBadge(item.status)}</td>
+            <td><code style="font-size:11px;">${esc(item.id)}</code></td>
+            <td>${esc(item.phone)}</td>
+            <td>${esc(item.supervisorName)}</td>
+            <td>${esc(item.onsiteName)}</td>
+            <td>${esc(shotCount(item))}</td>
+            <td>${ProvStore.fmtDateTime(item.createdAt)}</td>
+            <td>${actionBtn(item)}</td>
+          </tr>`).join("");
+
+        // 行クリックでもレビューへ
+        tbody.querySelectorAll("tr").forEach(tr => {
+          tr.addEventListener("click", (e) => {
+            if (e.target.closest("a")) return;
+            const id = tr.dataset.id;
+            const item = ProvStore.getById(id);
+            if (!item) return;
+            location.href = (item.status === "ACTIVE" ? "/provisional-data-entry.html" : "/provisional-review.html") + "?id=" + encodeURIComponent(id);
+          });
+        });
+      }
+
+      // カウント
+      document.getElementById("cnt-draft").textContent = all.filter(x => x.status === "PROVISIONAL_DRAFT").length;
+      document.getElementById("cnt-review").textContent = all.filter(x => x.status === "OCR_REVIEWING").length;
+      document.getElementById("cnt-active").textContent = all.filter(x => x.status === "ACTIVE").length;
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      await ProvStore.ensureSeed();
+      // v0.5: ログインUserヘッダー
+      const ctx = await ProvStore.ensureLoginContext();
+      const u = ctx.user;
+      const userBox = document.getElementById("provHeaderUser");
+      if (userBox) {
+        userBox.innerHTML = `<span class="user-icon">👤</span><span class="user-name">${u?.displayName || "(未ログイン)"}</span>`;
+      }
+      renderRows();
+      ["filterText", "filterStatus", "filterSort"].forEach(id => {
+        document.getElementById(id).addEventListener("input", renderRows);
+        document.getElementById(id).addEventListener("change", renderRows);
+      });
+    });
+  </script>
+</body>
+</html>

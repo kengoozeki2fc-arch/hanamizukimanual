@@ -1,0 +1,29 @@
+{
+  "_meta": {
+    "description": "永賢組 仮登録モック用 現場マスタ（v0.5）。OnsiteMaster の論理同等を sessionStorage で再現。",
+    "schemaVersion": "sites-mock/v1",
+    "note": "ClientID は本社=1 / 九州=4。 OnsiteMaster.OnsiteID と一致させる前提のダミー。"
+  },
+  "sites": [
+    { "onsiteId": 12, "name": "栄三丁目PJ", "clientId": 1, "clientName": "本社" },
+    { "onsiteId": 18, "name": "丸八西区改修", "clientId": 1, "clientName": "本社" },
+    { "onsiteId": 23, "name": "守山区S邸新築", "clientId": 1, "clientName": "本社" },
+    { "onsiteId": 99, "name": "九州 博多PJ", "clientId": 4, "clientName": "九州" }
+  ],
+  "users": [
+    {
+      "userId": "test-foreman-yamada",
+      "displayName": "山田 監督",
+      "email": "yamada@nagaken.example.jp",
+      "siteIds": [12],
+      "note": "1現場固定（栄三丁目PJ）のユーザー。基本ケース。"
+    },
+    {
+      "userId": "test-foreman-multi",
+      "displayName": "佐藤 監督",
+      "email": "sato@nagaken.example.jp",
+      "siteIds": [12, 18, 23],
+      "note": "3現場兼任ユーザー。?multi=1 で起動された時の検証用。"
+    }
+  ]
+}

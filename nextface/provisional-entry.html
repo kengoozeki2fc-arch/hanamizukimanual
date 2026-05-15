@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>仮登録（5点撮影） | 永賢組 顔認証初期登録 v0.5</title>
+  <link rel="stylesheet" href="/nextface/css/common.css">
+  <link rel="stylesheet" href="/nextface/css/provisional.css">
+  <script src="/nextface/js/provisional-store.js" defer></script>
+  <script src="/nextface/js/prov-nav.js" defer></script>
+</head>
+<body>
+  <div class="nav">
+    <h3>① 仮登録：監督モバイル5点撮影</h3>
+    <a href="/nextface/">メニュー</a>
+  </div>
+
+  <div class="wrap">
+    <div class="prov-nav">
+      <a class="prov-nav-btn" href="/nextface/">← メニューへ戻る</a>
+      <a class="prov-nav-btn" href="/nextface/provisional-dashboard.html">📋 ダッシュボードへ</a>
+      <span class="prov-nav-spacer"></span>
+      <span class="prov-nav-hint">パンくずクリックで各画面へジャンプ</span>
+    </div>
+    <div class="flow-steps">
+      <a class="step active" data-step="1">① 仮登録</a><span class="sep">›</span>
+      <a class="step" data-step="2">② OCRレビュー</a><span class="sep">›</span>
+      <a class="step" data-step="3">③ 22項目最終確認</a><span class="sep">›</span>
+      <a class="step" data-step="4">④ 正式投入</a>
+    </div>
+
+    <h1>新規作業員 仮登録</h1>
+    <p class="muted">現場で監督さんが、作業員1名につき5点を撮影／入力します（電波が届く位置で）。</p>
+
+    <!-- v0.5 監督・現場ヘッダー（氏名/電話より上） -->
+    <div class="prov-header" id="provHeader">
+      <div class="prov-header-site" id="provHeaderSite">
+        <label class="site-label">現場名</label>
+        <span class="site-loading">読込中…</span>
+      </div>
+      <div class="prov-header-user" id="provHeaderUser">
+        <span class="user-icon">👤</span>
+        <span class="user-name">読込中…</span>
+      </div>
+    </div>
+
+    <form id="form">
+      <!-- ① 電話番号 -->
+      <div class="card">
+        <h2>① 電話番号入力（仮登録キー）</h2>
+        <label>本人の電話番号 <span style="color:#991b1b">*</span></label>
+        <input type="tel" id="phone" name="phone" required placeholder="09012345678" autocomplete="off">
+        <p class="muted" style="font-size:12px; margin-top:4px;">※ 重複チェックの主キー＋必須項目。OCR対象外（誤読リスクを構造的に排除）</p>
+      </div>
+
+      <!-- ②③④⑤ 5点撮影グリッド -->
+      <div class="card">
+        <h2>撮影（②〜⑤）</h2>
+        <p class="muted">各セルをタップしてカメラ起動→撮影（モックではファイル選択で代用）。OCRは送信後にサーバ側で実行されます。</p>
+
+        <div class="shoot-grid">
+          <!-- ② 紙 -->
+          <div class="shoot-cell required-empty" data-shot="paper">
+            <div class="step-no">②</div>
+            <div class="label">紙の入場票<span style="color:#991b1b">*</span></div>
+            <div class="thumb-area"></div>
+            <label class="pick-btn" for="file-paper">📷 撮影</label>
+            <input type="file" id="file-paper" accept="image/*" capture="environment">
+            <div class="hint">本人記入済の入場票</div>
+          </div>
+
+          <!-- ③ 免許（v0.5 任意化） -->
+          <div class="shoot-cell" data-shot="licence">
+            <div class="step-no">③</div>
+            <div class="label">運転免許証</div>
+            <div class="thumb-area"></div>
+            <label class="pick-btn" for="file-licence">📷 撮影</label>
+            <input type="file" id="file-licence" accept="image/*" capture="environment">
+            <div class="hint">任意。あれば本人確認＋OCR精度UP（無い時は紙OCR主）</div>
+          </div>
+
+          <!-- ④ 資格証（複数可） -->
+          <div class="shoot-cell" data-shot="certs">
+            <div class="step-no">④</div>
+            <div class="label">資格者証（複数可）</div>
+            <div class="thumb-area"></div>
+            <label class="pick-btn" for="file-certs">📷 撮影（追加可）</label>
+            <input type="file" id="file-certs" accept="image/*" capture="environment" multiple>
+            <div class="hint">玉掛・足場 等。種別は自動判定</div>
+          </div>
+
+          <!-- ⑤ 顔 -->
+          <div class="shoot-cell required-empty" data-shot="face">
+            <div class="step-no">⑤</div>
+            <div class="label">本人 顔写真<span style="color:#991b1b">*</span></div>
+            <div class="thumb-area"></div>
+            <label class="pick-btn" for="file-face">📷 撮影</label>
+            <input type="file" id="file-face" accept="image/*" capture="user">
+            <div class="hint">顔ベクトル登録用</div>
+          </div>
+        </div>
+
+        <div id="certWarn" class="banner-soft" style="display:none;">
+          ⚠ 資格証なしで送信します。事務員レビュー時に「資格なし確認」が求められます。
+        </div>
+        <label style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <input type="checkbox" id="ackNoCert"> 資格証なしで送信することを確認しました
+        </label>
+      </div>
+
+      <button type="submit" class="btn btn-block" id="submitBtn" disabled>サーバへ送信（OCR開始）</button>
+      <div id="result" style="margin-top:12px;"></div>
+    </form>
+  </div>
+
+  <script>
+    const shots = { paper: null, licence: null, certs: [], face: null };
+
+    function thumbHtml(dataUrl) {
+      return `<img src="${dataUrl}" alt="">`;
+    }
+
+    function refreshCell(shotKey) {
+      const cell = document.querySelector(`.shoot-cell[data-shot="${shotKey}"]`);
+      const area = cell.querySelector(".thumb-area");
+      // v0.5: 必須＝紙／顔のみ（免許は任意化）
+      const required = ["paper", "face"].includes(shotKey);
+      let done = false;
+      if (shotKey === "certs") {
+        area.innerHTML = shots.certs.map(thumbHtml).join("");
+        done = shots.certs.length > 0;
+      } else {
+        area.innerHTML = shots[shotKey] ? thumbHtml(shots[shotKey]) : "";
+        done = !!shots[shotKey];
+      }
+      cell.classList.toggle("done", done);
+      cell.classList.toggle("required-empty", required && !done);
+      const btn = cell.querySelector(".pick-btn");
+      if (btn) {
+        if (shotKey === "certs") {
+          btn.textContent = shots.certs.length > 0 ? `📷 もう1枚追加 (${shots.certs.length}枚)` : "📷 撮影（追加可）";
+        } else {
+          btn.textContent = done ? "📷 撮り直し" : "📷 撮影";
+        }
+      }
+      validate();
+    }
+
+    function readDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const r = new FileReader();
+        r.onload = () => resolve(String(r.result));
+        r.onerror = reject;
+        r.readAsDataURL(file);
+      });
+    }
+
+    async function bindFile(id, shotKey) {
+      const input = document.getElementById(id);
+      input.addEventListener("change", async (e) => {
+        const files = e.target.files;
+        if (!files || files.length === 0) return;
+        if (shotKey === "certs") {
+          for (const f of files) {
+            const url = await readDataUrl(f);
+            shots.certs.push(url);
+          }
+        } else {
+          shots[shotKey] = await readDataUrl(files[0]);
+        }
+        refreshCell(shotKey);
+        e.target.value = ""; // 同じファイル再選択可
+      });
+    }
+
+    // v0.5: ログインUser／現場ヘッダー
+    let loginUser = null;
+    let userSites = [];          // [{ onsiteId, name, clientId, clientName }]
+    let selectedSite = null;     // 1件確定 or ドロップダウン選択中
+
+    function renderHeader() {
+      const userBox = document.getElementById("provHeaderUser");
+      const siteBox = document.getElementById("provHeaderSite");
+      userBox.innerHTML =
+        `<span class="user-icon">👤</span><span class="user-name">${loginUser?.displayName || "(未ログイン)"}</span>`;
+
+      if (!userSites.length) {
+        siteBox.innerHTML = `<label class="site-label">現場名</label><span class="site-none">(所属現場なし)</span>`;
+        selectedSite = null;
+        return;
+      }
+      if (userSites.length === 1) {
+        // 1現場固定表示
+        selectedSite = userSites[0];
+        siteBox.innerHTML = `
+          <label class="site-label">現場名</label>
+          <span class="site-fixed">🏗 ${selectedSite.name}（${selectedSite.clientName}）</span>
+        `;
+      } else {
+        // 複数現場 → ドロップダウン
+        if (!selectedSite) selectedSite = userSites[0];
+        const opts = userSites.map(s =>
+          `<option value="${s.onsiteId}" ${s.onsiteId === selectedSite.onsiteId ? "selected" : ""}>${s.name}（${s.clientName}）</option>`
+        ).join("");
+        siteBox.innerHTML = `
+          <label class="site-label">現場名</label>
+          <select id="provHeaderSiteSelect" class="site-select">${opts}</select>
+        `;
+        document.getElementById("provHeaderSiteSelect").onchange = (e) => {
+          const id = Number(e.target.value);
+          selectedSite = userSites.find(s => s.onsiteId === id) || userSites[0];
+          validate();
+        };
+      }
+    }
+
+    function validate() {
+      const phone = document.getElementById("phone").value.trim();
+      // v0.5: 必須＝紙／顔／電話番号（免許は任意・資格証も任意だが0枚なら確認チェック必須）
+      const requiredShots = !!shots.paper && !!shots.face;
+      const certOk = shots.certs.length > 0 || document.getElementById("ackNoCert").checked;
+      const ok = phone && selectedSite && requiredShots && certOk;
+      document.getElementById("submitBtn").disabled = !ok;
+
+      // 資格警告
+      document.getElementById("certWarn").style.display = (shots.certs.length === 0) ? "block" : "none";
+    }
+
+    ["phone", "ackNoCert"].forEach(id => {
+      document.getElementById(id).addEventListener("input", validate);
+      document.getElementById(id).addEventListener("change", validate);
+    });
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      await ProvStore.ensureSeed();
+      const ctx = await ProvStore.ensureLoginContext();
+      loginUser = ctx.user;
+      userSites = ctx.sites;
+      renderHeader();
+      bindFile("file-paper", "paper");
+      bindFile("file-licence", "licence");
+      bindFile("file-certs", "certs");
+      bindFile("file-face", "face");
+      validate();
+    });
+
+    document.getElementById("form").onsubmit = async (e) => {
+      e.preventDefault();
+      const result = document.getElementById("result");
+      const submitBtn = document.getElementById("submitBtn");
+      submitBtn.disabled = true;
+
+      const phone = document.getElementById("phone").value.trim();
+      const onsiteId = selectedSite?.onsiteId;
+      const onsiteName = selectedSite?.name || "";
+      const clientId = selectedSite?.clientId || 1;
+      const supv = loginUser?.displayName || "(未ログイン)";
+      const supvUserId = loginUser?.userId || "";
+
+      result.innerHTML = '<div class="alert alert-info">⏳ サーバ送信中（モック1.5秒）…</div>';
+      await new Promise(r => setTimeout(r, 1500));
+
+      // 仮登録ドラフトを upsert
+      const id = ProvStore.newDraftId();
+      ProvStore.upsert({
+        id,
+        status: "PROVISIONAL_DRAFT",
+        phone,
+        supervisorName: supv,
+        supervisorUserId: supvUserId,
+        supervisorClientId: clientId,
+        onsiteId: Number(onsiteId),
+        onsiteName,
+        shots: {
+          paper:   shots.paper   ? { filename: "paper.jpg",   thumb: shots.paper }   : null,
+          licence: shots.licence ? { filename: "licence.jpg", thumb: shots.licence } : null,
+          certs:   shots.certs.map((t, i) => ({ filename: `cert_${i+1}.jpg`, thumb: t })),
+          face:    shots.face    ? { filename: "face.jpg",    thumb: shots.face }    : null,
+        },
+        ocrResult: null,
+      });
+
+      result.innerHTML = `
+        <div class="alert alert-success">
+          ✅ 仮登録完了（モック）<br>
+          ドラフトID: <code>${id}</code><br>
+          サーバ側でOCRが非同期実行され、完了次第「OCR_REVIEWING」に昇格します。<br>
+          <a href="/nextface/provisional-dashboard.html">→ 仮登録一覧（事務員PC）</a>
+        </div>
+        <button type="button" class="btn btn-ghost btn-block" id="newOneBtn" style="margin-top:8px;">続けてもう1人 仮登録</button>
+      `;
+      document.getElementById("newOneBtn").onclick = () => location.reload();
+    };
+  </script>
+</body>
+</html>

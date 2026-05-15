@@ -1,0 +1,228 @@
+{
+  "_comment": "顔認証初期登録フロー v0.4 仮登録モック。3段ステータスごとに2件ずつサンプル投入。実運用では ProvisionalRegistration テーブルから引く。",
+  "items": [
+    {
+      "id": "prov-mock-001",
+      "status": "PROVISIONAL_DRAFT",
+      "phone": "09011112222",
+      "supervisorName": "山田 監督",
+      "supervisorClientId": 1,
+      "onsiteName": "栄三丁目PJ",
+      "onsiteId": 12,
+      "shots": {
+        "paper": { "filename": "paper_001.jpg", "thumb": "" },
+        "licence": { "filename": "licence_001.jpg", "thumb": "" },
+        "certs": [{ "filename": "cert_001_1.jpg", "thumb": "" }],
+        "face": { "filename": "face_001.jpg", "thumb": "" }
+      },
+      "ocrResult": null,
+      "sourceSelection": null,
+      "sourceChangeComment": null,
+      "createdAt": "2026-05-15T01:10:00.000Z",
+      "updatedAt": "2026-05-15T01:10:00.000Z"
+    },
+    {
+      "id": "prov-mock-002",
+      "status": "PROVISIONAL_DRAFT",
+      "phone": "08055556666",
+      "supervisorName": "舘 監督",
+      "supervisorClientId": 1,
+      "onsiteName": "丸八西区改修",
+      "onsiteId": 18,
+      "shots": {
+        "paper": { "filename": "paper_002.jpg", "thumb": "" },
+        "licence": { "filename": "licence_002.jpg", "thumb": "" },
+        "certs": [],
+        "face": { "filename": "face_002.jpg", "thumb": "" }
+      },
+      "ocrResult": null,
+      "sourceSelection": null,
+      "sourceChangeComment": null,
+      "createdAt": "2026-05-15T00:25:00.000Z",
+      "updatedAt": "2026-05-15T00:25:00.000Z"
+    },
+    {
+      "id": "prov-mock-003",
+      "status": "OCR_REVIEWING",
+      "phone": "09033334444",
+      "supervisorName": "山田 監督",
+      "supervisorClientId": 1,
+      "onsiteName": "栄三丁目PJ",
+      "onsiteId": 12,
+      "shots": {
+        "paper": { "filename": "paper_003.jpg", "thumb": "" },
+        "licence": { "filename": "licence_003.jpg", "thumb": "" },
+        "certs": [
+          { "filename": "cert_003_1.jpg", "thumb": "" },
+          { "filename": "cert_003_2.jpg", "thumb": "" }
+        ],
+        "face": { "filename": "face_003.jpg", "thumb": "" }
+      },
+      "ocrResult": {
+        "licence": {
+          "name":      { "value": "佐藤 健一", "confidence": "high" },
+          "nameKana":  { "value": "サトウ ケンイチ", "confidence": "mid" },
+          "birthday":  { "value": "1985-08-12", "confidence": "high" },
+          "address":   { "value": "愛知県名古屋市中区錦三丁目1-1", "confidence": "high" },
+          "postalCode":{ "value": "460-0003", "confidence": "high" },
+          "licenceNumber": { "value": "1234 5678 9012", "confidence": "high" },
+          "expireDate":{ "value": "2029-08-12", "confidence": "high" }
+        },
+        "paper": {
+          "name":      { "value": "佐藤 健一", "confidence": "mid" },
+          "nameKana":  { "value": "サトウ ケンイチ", "confidence": "mid" },
+          "birthday":  { "value": "1985-08-12", "confidence": "mid" },
+          "address":   { "value": "名古屋市中区錦3-1-1 グランドハイツ301", "confidence": "low" },
+          "postalCode":{ "value": "", "confidence": "fail" },
+          "emergencyContactName": { "value": "佐藤 美咲", "confidence": "mid" },
+          "emergencyContactRelation": { "value": "配偶者", "confidence": "high" },
+          "emergencyContactPhone": { "value": "09099998888", "confidence": "mid" },
+          "occupation": { "value": "鳶", "confidence": "high" },
+          "partnerName": { "value": "山田工業", "confidence": "mid" },
+          "bloodType":   { "value": "A", "confidence": "mid" },
+          "rh":          { "value": "+", "confidence": "low" }
+        },
+        "certs": [
+          {
+            "kind": "玉掛", "confidence": "high",
+            "fields": {
+              "name": { "value": "佐藤 健一", "confidence": "high" },
+              "birthday": { "value": "1985-08-12", "confidence": "high" },
+              "certNumber": { "value": "TK-2022-0123", "confidence": "high" },
+              "issueDate": { "value": "2022-06-10", "confidence": "high" },
+              "issuer": { "value": "中部労務安全衛生協会", "confidence": "high" },
+              "limit":  { "value": "1t未満", "confidence": "mid" }
+            }
+          },
+          {
+            "kind": "足場", "confidence": "mid",
+            "fields": {
+              "name": { "value": "佐藤 健一", "confidence": "high" },
+              "birthday": { "value": "1985-08-12", "confidence": "high" },
+              "certNumber": { "value": "AS-2023-0987", "confidence": "mid" },
+              "issueDate": { "value": "2023-04-21", "confidence": "high" },
+              "issuer": { "value": "愛知建設技能講習センター", "confidence": "mid" }
+            }
+          }
+        ]
+      },
+      "sourceSelection": null,
+      "sourceChangeComment": null,
+      "createdAt": "2026-05-14T22:00:00.000Z",
+      "updatedAt": "2026-05-14T22:05:00.000Z"
+    },
+    {
+      "id": "prov-mock-004",
+      "status": "OCR_REVIEWING",
+      "phone": "07088889999",
+      "supervisorName": "舘 監督",
+      "supervisorClientId": 1,
+      "onsiteName": "丸八西区改修",
+      "onsiteId": 18,
+      "shots": {
+        "paper": { "filename": "paper_004.jpg", "thumb": "" },
+        "licence": { "filename": "licence_004.jpg", "thumb": "" },
+        "certs": [],
+        "face": { "filename": "face_004.jpg", "thumb": "" }
+      },
+      "ocrResult": {
+        "licence": {
+          "name":      { "value": "鈴木 太郎", "confidence": "high" },
+          "nameKana":  { "value": "スズキ タロウ", "confidence": "mid" },
+          "birthday":  { "value": "1978-03-30", "confidence": "high" },
+          "address":   { "value": "愛知県春日井市鳥居松町1-23", "confidence": "high" },
+          "postalCode":{ "value": "486-0844", "confidence": "high" },
+          "licenceNumber": { "value": "9876 5432 1098", "confidence": "high" },
+          "expireDate":{ "value": "2028-03-30", "confidence": "high" }
+        },
+        "paper": {
+          "name":      { "value": "鈴木 太郎", "confidence": "mid" },
+          "nameKana":  { "value": "", "confidence": "fail" },
+          "birthday":  { "value": "1978-03-30", "confidence": "mid" },
+          "address":   { "value": "春日井市鳥居松町", "confidence": "low" },
+          "postalCode":{ "value": "", "confidence": "fail" },
+          "emergencyContactName": { "value": "鈴木 花子", "confidence": "low" },
+          "emergencyContactRelation": { "value": "配偶者", "confidence": "high" },
+          "emergencyContactPhone": { "value": "", "confidence": "fail" },
+          "occupation": { "value": "大工", "confidence": "high" },
+          "partnerName": { "value": "鈴木建設", "confidence": "high" },
+          "bloodType":   { "value": "O", "confidence": "mid" },
+          "rh":          { "value": "", "confidence": "fail" }
+        },
+        "certs": []
+      },
+      "sourceSelection": null,
+      "sourceChangeComment": null,
+      "createdAt": "2026-05-14T21:30:00.000Z",
+      "updatedAt": "2026-05-14T21:35:00.000Z"
+    },
+    {
+      "id": "prov-mock-005",
+      "status": "ACTIVE",
+      "phone": "09077778888",
+      "supervisorName": "山田 監督",
+      "supervisorClientId": 1,
+      "onsiteName": "栄三丁目PJ",
+      "onsiteId": 12,
+      "shots": {
+        "paper": { "filename": "paper_005.jpg", "thumb": "" },
+        "licence": { "filename": "licence_005.jpg", "thumb": "" },
+        "certs": [{ "filename": "cert_005.jpg", "thumb": "" }],
+        "face": { "filename": "face_005.jpg", "thumb": "" }
+      },
+      "ocrResult": {
+        "licence": {
+          "name":      { "value": "田中 一郎", "confidence": "high" },
+          "birthday":  { "value": "1972-11-05", "confidence": "high" },
+          "address":   { "value": "岐阜県岐阜市加納西丸町2-1", "confidence": "high" },
+          "postalCode":{ "value": "500-8161", "confidence": "high" }
+        },
+        "paper": {
+          "occupation": { "value": "土工", "confidence": "high" },
+          "partnerName": { "value": "田中組", "confidence": "high" }
+        },
+        "certs": [{ "kind": "車両系建設機械", "confidence": "high", "fields": {} }]
+      },
+      "sourceSelection": { "name": "licence", "address": "licence", "birthday": "licence" },
+      "sourceChangeComment": null,
+      "personalInfoId": "PI-2026-00321",
+      "submittedAt": "2026-05-14T20:10:00.000Z",
+      "createdAt": "2026-05-14T19:50:00.000Z",
+      "updatedAt": "2026-05-14T20:10:00.000Z"
+    },
+    {
+      "id": "prov-mock-006",
+      "status": "ACTIVE",
+      "phone": "08011223344",
+      "supervisorName": "舘 監督",
+      "supervisorClientId": 4,
+      "onsiteName": "九州 博多PJ",
+      "onsiteId": 99,
+      "shots": {
+        "paper": { "filename": "paper_006.jpg", "thumb": "" },
+        "licence": { "filename": "licence_006.jpg", "thumb": "" },
+        "certs": [],
+        "face": { "filename": "face_006.jpg", "thumb": "" }
+      },
+      "ocrResult": {
+        "licence": {
+          "name":      { "value": "高橋 三郎", "confidence": "high" },
+          "birthday":  { "value": "1990-02-14", "confidence": "high" },
+          "address":   { "value": "福岡県福岡市博多区博多駅前1-2-3", "confidence": "high" },
+          "postalCode":{ "value": "812-0011", "confidence": "high" }
+        },
+        "paper": {
+          "occupation": { "value": "鉄筋工", "confidence": "high" },
+          "partnerName": { "value": "高橋鉄筋", "confidence": "high" }
+        },
+        "certs": []
+      },
+      "sourceSelection": { "name": "licence", "address": "paper", "birthday": "licence" },
+      "sourceChangeComment": "住所は紙の方が現住所として最新（免許は転居前）",
+      "personalInfoId": "PI-2026-00322",
+      "submittedAt": "2026-05-13T05:20:00.000Z",
+      "createdAt": "2026-05-13T05:00:00.000Z",
+      "updatedAt": "2026-05-13T05:20:00.000Z"
+    }
+  ]
+}

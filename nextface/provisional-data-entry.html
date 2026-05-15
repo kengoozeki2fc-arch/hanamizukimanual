@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>22項目データ投入 | 永賢組 顔認証初期登録 v0.5</title>
+  <link rel="stylesheet" href="/nextface/css/common.css">
+  <link rel="stylesheet" href="/nextface/css/provisional.css">
+  <script src="/nextface/js/provisional-store.js" defer></script>
+  <script src="/nextface/js/prov-nav.js" defer></script>
+</head>
+<body>
+  <div class="nav">
+    <h3>② データ投入：22項目最終確認</h3>
+    <a href="/nextface/provisional-dashboard.html">← 仮登録一覧</a>
+  </div>
+
+  <div class="wrap">
+    <div class="prov-nav">
+      <a class="prov-nav-btn" href="/nextface/">← メニューへ戻る</a>
+      <a class="prov-nav-btn" href="/nextface/provisional-dashboard.html">📋 ダッシュボードへ</a>
+      <span class="prov-nav-spacer"></span>
+      <span class="prov-nav-hint">パンくずクリックで各画面へジャンプ</span>
+    </div>
+    <div class="flow-steps">
+      <a class="step done" data-step="1">① 仮登録</a><span class="sep">›</span>
+      <a class="step done" data-step="2">② OCRレビュー</a><span class="sep">›</span>
+      <a class="step active" data-step="3">③ 22項目最終確認</a><span class="sep">›</span>
+      <a class="step" data-step="4">④ 正式投入</a>
+    </div>
+
+    <!-- v0.5 事務員PCヘッダー（ログインUser表示） -->
+    <div class="prov-header">
+      <div class="prov-header-site">
+        <label class="site-label">事務員PC</label>
+        <span class="site-fixed">22項目データ投入</span>
+      </div>
+      <div class="prov-header-user" id="provHeaderUser">
+        <span class="user-icon">👤</span><span class="user-name">読込中…</span>
+      </div>
+    </div>
+
+    <h1>22項目データ投入</h1>
+    <p class="muted" id="topMeta">読込中…</p>
+
+    <div id="banners"></div>
+
+    <form id="form">
+      <!-- ===== 基本情報 ===== -->
+      <div class="card">
+        <h2>基本情報</h2>
+
+        <label>氏名 <span style="color:#991b1b">*</span> <span id="conf-name"></span></label>
+        <input type="text" name="name" required placeholder="OCR読取失敗時はここに手入力" data-field="name">
+        <div class="source-toggle" data-field="name">
+          <label><input type="radio" name="src_name" value="licence" checked>免許</label>
+          <label><input type="radio" name="src_name" value="paper">紙</label>
+          <label><input type="radio" name="src_name" value="manual">手入力</label>
+        </div>
+        <div class="source-values" data-field="name"></div>
+        <div class="source-comment-wrap" data-field="name">
+          <label style="font-size:11px; color:#856404;">採用ソース変更コメント（任意・監査ログに保存）</label>
+          <textarea name="comment_name" placeholder="例：住所と一致しないので紙の方を採用"></textarea>
+        </div>
+
+        <label>氏名カナ <span id="conf-nameKana"></span></label>
+        <input type="text" name="nameKana" placeholder="ヤマダ タロウ" data-field="nameKana">
+        <div class="source-toggle" data-field="nameKana">
+          <label><input type="radio" name="src_nameKana" value="licence" checked>免許</label>
+          <label><input type="radio" name="src_nameKana" value="paper">紙</label>
+          <label><input type="radio" name="src_nameKana" value="manual">手入力</label>
+        </div>
+        <div class="source-values" data-field="nameKana"></div>
+
+        <div class="row2">
+          <div>
+            <label>生年月日 <span style="color:#991b1b">*</span> <span id="conf-birthday"></span></label>
+            <input type="date" name="birthday" data-field="birthday">
+            <div class="source-toggle" data-field="birthday">
+              <label><input type="radio" name="src_birthday" value="licence" checked>免許</label>
+              <label><input type="radio" name="src_birthday" value="paper">紙</label>
+              <label><input type="radio" name="src_birthday" value="manual">手入力</label>
+            </div>
+            <div class="source-values" data-field="birthday"></div>
+          </div>
+          <div>
+            <label>性別</label>
+            <select name="gender" data-field="gender">
+              <option value="">-</option>
+              <option value="男性">男性</option>
+              <option value="女性">女性</option>
+            </select>
+          </div>
+        </div>
+
+        <label style="display:flex; align-items:center; gap:8px;">
+          <input type="checkbox" name="isForeigner"> 外国の方
+        </label>
+
+        <label>郵便番号 <span style="color:#991b1b">*</span> <span id="conf-postalCode"></span></label>
+        <input type="text" name="postalCode" placeholder="460-0003" data-field="postalCode">
+        <div class="source-toggle" data-field="postalCode">
+          <label><input type="radio" name="src_postalCode" value="licence" checked>免許</label>
+          <label><input type="radio" name="src_postalCode" value="paper">紙</label>
+          <label><input type="radio" name="src_postalCode" value="manual">手入力</label>
+        </div>
+        <div class="source-values" data-field="postalCode"></div>
+
+        <label>住所 <span style="color:#991b1b">*</span> <span id="conf-address"></span></label>
+        <input type="text" name="address" placeholder="愛知県名古屋市…" data-field="address">
+        <div class="source-toggle" data-field="address">
+          <label><input type="radio" name="src_address" value="licence" checked>免許</label>
+          <label><input type="radio" name="src_address" value="paper">紙</label>
+          <label><input type="radio" name="src_address" value="manual">手入力</label>
+        </div>
+        <div class="source-values" data-field="address"></div>
+        <div class="source-comment-wrap" data-field="address">
+          <label style="font-size:11px; color:#856404;">採用ソース変更コメント（任意・監査ログに保存）</label>
+          <textarea name="comment_address" placeholder="例：免許は転居前住所のため紙を採用"></textarea>
+        </div>
+
+        <label>電話番号 <span style="color:#991b1b">*</span> <span class="confidence-badge conf-manual">監督入力</span></label>
+        <input type="tel" name="phone" required placeholder="09012345678" data-field="phone">
+      </div>
+
+      <!-- ===== 緊急連絡先 ===== -->
+      <div class="card">
+        <h2>緊急連絡先（紙OCR・手書き精度中）</h2>
+        <label>氏名 <span style="color:#991b1b">*</span> <span id="conf-emergencyContactName"></span></label>
+        <input type="text" name="emergencyContactName" data-field="emergencyContactName">
+
+        <div class="row2">
+          <div>
+            <label>続柄 <span style="color:#991b1b">*</span> <span id="conf-emergencyContactRelation"></span></label>
+            <select name="emergencyContactRelation" data-field="emergencyContactRelation">
+              <option value="">-</option>
+              <option value="配偶者">配偶者</option>
+              <option value="父母">父母</option>
+              <option value="子">子</option>
+              <option value="兄弟">兄弟</option>
+              <option value="その他">その他</option>
+            </select>
+          </div>
+          <div>
+            <label>電話番号 <span style="color:#991b1b">*</span> <span id="conf-emergencyContactPhone"></span></label>
+            <input type="tel" name="emergencyContactPhone" data-field="emergencyContactPhone">
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== 所属・職種 ===== -->
+      <div class="card">
+        <h2>所属・職種</h2>
+        <label>主たる所属（取引先） <span style="color:#991b1b">*</span> <span id="conf-partnerName"></span></label>
+        <input type="text" name="partnerName" data-field="partnerName" placeholder="マスタとファジーマッチ予定">
+
+        <label>職種 <span style="color:#991b1b">*</span> <span id="conf-occupation"></span></label>
+        <input type="text" name="occupation" data-field="occupation" placeholder="例：土工／鳶／大工">
+      </div>
+
+      <!-- ===== 健康情報 ===== -->
+      <div class="card">
+        <h2>健康情報（紙OCR・手書き精度中）</h2>
+        <div class="row2">
+          <div>
+            <label>血液型 <span id="conf-bloodType"></span></label>
+            <select name="bloodType" data-field="bloodType">
+              <option value="">-</option>
+              <option value="A">A</option><option value="B">B</option>
+              <option value="O">O</option><option value="AB">AB</option>
+            </select>
+          </div>
+          <div>
+            <label>Rh <span id="conf-rh"></span></label>
+            <select name="rh" data-field="rh">
+              <option value="">-</option>
+              <option value="+">+</option><option value="-">−</option>
+            </select>
+          </div>
+        </div>
+
+        <label>直近健診日 <span id="conf-lastHealthCheckDate"></span></label>
+        <input type="date" name="lastHealthCheckDate" data-field="lastHealthCheckDate">
+
+        <label>特殊健康診断種類 <span id="conf-specialHealthCheck"></span></label>
+        <input type="text" name="specialHealthCheck" data-field="specialHealthCheck" placeholder="該当する場合のみ">
+
+        <label style="display:flex; align-items:center; gap:8px;">
+          <input type="checkbox" name="isSolo"> 1人親方
+        </label>
+        <label style="display:flex; align-items:center; gap:8px;">
+          <input type="checkbox" name="rosaiSpecial"> 労災特別加入
+        </label>
+      </div>
+
+      <!-- ===== 保有資格（OCR種別判定済） ===== -->
+      <div class="card">
+        <h2>保有資格（資格証OCR判定済）</h2>
+        <div id="certsList" class="muted">読込中…</div>
+        <div id="certWarning"></div>
+        <label style="display:flex; align-items:center; gap:8px; margin-top:10px;">
+          <input type="checkbox" id="ackNoCert" name="ackNoCert"> 資格なしで登録することを確認しました
+        </label>
+      </div>
+
+      <!-- ===== 顔写真（監督モバイル撮影） ===== -->
+      <div class="card">
+        <h2>顔写真（監督モバイル撮影済）</h2>
+        <div id="facePreviewWrap" style="text-align:center;">
+          <img id="facePreview" style="max-width:240px; max-height:240px; border-radius:8px; border:2px solid var(--nagaken-primary); object-fit:cover;" alt="顔写真">
+          <p class="muted" id="faceMeta"></p>
+        </div>
+      </div>
+
+      <!-- ===== 撮影元画像（参照のみ） ===== -->
+      <div class="card">
+        <h2>撮影元画像（参照）</h2>
+        <div class="ocr-shot-grid" id="shotThumbs"></div>
+      </div>
+
+      <div id="result" style="margin-top: 12px;"></div>
+
+      <div class="btn-group" style="margin-top: 16px;">
+        <button type="button" id="backBtn" class="btn btn-ghost">← OCRレビューへ戻る</button>
+        <button type="submit" class="btn btn-block" id="submitBtn">✅ APIM /api/addpersonalinfo へ正式投入（モック）</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    const qs = new URLSearchParams(location.search);
+    const provId = qs.get("id") || sessionStorage.getItem("currentProvId");
+
+    let current = null;
+
+    const $ = (sel) => document.querySelector(sel);
+    const esc = (s) => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+
+    // OCR結果1項目（{value, confidence}）をフィールドに流し込み
+    function hydrateField(name, ocrSrc, options = {}) {
+      const input = document.querySelector(`[data-field="${name}"]`);
+      const confSpan = document.getElementById(`conf-${name}`);
+      if (!input) return;
+
+      // 採用ソース選択は options.useSource で「licence/paper/manual」のいずれか
+      const useSource = options.useSource || "licence";
+      let chosen = null;
+      if (useSource !== "manual") {
+        chosen = ocrSrc[useSource];
+      }
+
+      if (chosen && chosen.value) {
+        input.value = chosen.value;
+        if (confSpan && !options.skipBadge) confSpan.innerHTML = ProvStore.confBadge(chosen.confidence);
+        if (chosen.confidence === "fail" || chosen.confidence === "low") {
+          input.classList.add("ocr-failed");
+        } else {
+          input.classList.add("ocr-hydrated");
+        }
+      } else {
+        if (confSpan && !options.skipBadge) confSpan.innerHTML = ProvStore.confBadge("fail");
+        input.classList.add("ocr-failed");
+        input.placeholder = "OCR読取失敗 — 手入力してください";
+      }
+
+      // source-values にコンフリクト時の両ソース値を表示
+      const sv = document.querySelector(`.source-values[data-field="${name}"]`);
+      if (sv) {
+        const lic = ocrSrc.licence?.value || "(なし)";
+        const pap = ocrSrc.paper?.value || "(なし)";
+        sv.innerHTML = `<span class="src-licence">免許: ${esc(lic)}</span> ｜ <span class="src-paper">紙: ${esc(pap)}</span>`;
+      }
+    }
+
+    function setSourceToggleActive(field, source) {
+      document.querySelectorAll(`.source-toggle[data-field="${field}"] label`).forEach(l => {
+        const radio = l.querySelector("input");
+        if (radio.value === source) {
+          radio.checked = true;
+          l.classList.add("active");
+        } else {
+          l.classList.remove("active");
+        }
+      });
+    }
+
+    // 採用ソース切替ハンドラ
+    function bindSourceToggles() {
+      document.querySelectorAll(".source-toggle").forEach(group => {
+        const field = group.dataset.field;
+        group.addEventListener("change", (e) => {
+          if (e.target.tagName !== "INPUT") return;
+          const source = e.target.value;
+          setSourceToggleActive(field, source);
+
+          // ソース切替時、フィールド値を該当ソースで再ハイドレート（手入力時はクリアしない）
+          if (current?.ocrResult && source !== "manual") {
+            const ocrSrc = {
+              licence: current.ocrResult.licence?.[field],
+              paper:   current.ocrResult.paper?.[field],
+            };
+            hydrateField(field, ocrSrc, { useSource: source, skipBadge: true });
+          }
+
+          // licence 以外を選んだら採用コメント欄を出す
+          const cw = document.querySelector(`.source-comment-wrap[data-field="${field}"]`);
+          if (cw) cw.classList.toggle("show", source !== "licence");
+        });
+      });
+    }
+
+    function renderCerts() {
+      const wrap = document.getElementById("certsList");
+      const warn = document.getElementById("certWarning");
+      const certs = current?.ocrResult?.certs || [];
+      if (!certs.length) {
+        wrap.innerHTML = '<p class="muted">資格証OCR結果なし。</p>';
+        warn.innerHTML = '<div class="banner-strong">⚠ 資格が登録されていません。本当に登録しますか？ 下のチェックを入れてください。</div>';
+        document.getElementById("ackNoCert").required = true;
+        return;
+      }
+      wrap.innerHTML = certs.map((c, i) => {
+        const fields = c.fields || {};
+        const fieldRows = Object.entries(fields).map(([k, v]) => {
+          return `<tr><th>${esc(k)}</th><td>${esc(v.value || "(なし)")} ${ProvStore.confBadge(v.confidence)}</td></tr>`;
+        }).join("");
+        return `
+          <div style="border:1px solid var(--nagaken-border); border-radius:6px; padding:10px; margin-bottom:8px; background:#fff;">
+            <div style="font-weight:700; color:var(--nagaken-primary-dark);">
+              📜 ${esc(c.kind || "種別不明")} ${ProvStore.confBadge(c.confidence)}
+            </div>
+            <table class="ocr-result-table" style="width:100%; margin-top:6px;">${fieldRows}</table>
+          </div>
+        `;
+      }).join("");
+      document.getElementById("ackNoCert").required = false;
+    }
+
+    function renderShotThumbs() {
+      const wrap = document.getElementById("shotThumbs");
+      if (!current?.shots) { wrap.innerHTML = "(画像なし)"; return; }
+      const cards = [];
+      if (current.shots.paper) {
+        cards.push(`<div class="ocr-shot-card"><div class="cap">紙の入場票</div><img alt="paper" src="${current.shots.paper.thumb || placeholderSvg('紙')}"></div>`);
+      }
+      if (current.shots.licence) {
+        cards.push(`<div class="ocr-shot-card"><div class="cap">運転免許証</div><img alt="licence" src="${current.shots.licence.thumb || placeholderSvg('免許')}"></div>`);
+      }
+      (current.shots.certs || []).forEach((c, i) => {
+        cards.push(`<div class="ocr-shot-card"><div class="cap">資格証 ${i+1}</div><img alt="cert" src="${c.thumb || placeholderSvg('資格')}"></div>`);
+      });
+      wrap.innerHTML = cards.join("");
+    }
+
+    function placeholderSvg(label) {
+      // 簡易プレースホルダー（薄緑背景＋日本語ラベル）
+      const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='200' height='140'><rect width='100%' height='100%' fill='%23F1F8E9' stroke='%23C5DCCA'/><text x='50%' y='50%' font-size='22' fill='%231E5F2A' text-anchor='middle' dominant-baseline='middle' font-family='sans-serif'>${label}</text></svg>`;
+      return "data:image/svg+xml;utf8," + svg;
+    }
+
+    function setFacePreview() {
+      const img = document.getElementById("facePreview");
+      img.src = current?.shots?.face?.thumb || placeholderSvg("顔写真");
+      document.getElementById("faceMeta").textContent =
+        "監督モバイルで撮影された顔写真。/api/addpersonalinfo 投入時に顔ベクトル登録が連鎖（FacePhoto:base64）";
+    }
+
+    async function init() {
+      await ProvStore.ensureSeed();
+      // v0.5: ログインUserヘッダー
+      const ctx = await ProvStore.ensureLoginContext();
+      const u = ctx.user;
+      const userBox = document.getElementById("provHeaderUser");
+      if (userBox) {
+        userBox.innerHTML = `<span class="user-icon">👤</span><span class="user-name">${u?.displayName || "(未ログイン)"}</span>`;
+      }
+      if (!provId) {
+        $("#topMeta").innerHTML = '<span style="color:#c00;">⚠ id パラメータがありません。<a href="/nextface/provisional-dashboard.html">仮登録一覧</a>からやり直してください。</span>';
+        return;
+      }
+      current = ProvStore.getById(provId);
+      if (!current) {
+        $("#topMeta").innerHTML = `<span style="color:#c00;">⚠ 仮登録 ${esc(provId)} が見つかりません。</span>`;
+        return;
+      }
+      sessionStorage.setItem("currentProvId", provId);
+
+      $("#topMeta").innerHTML =
+        `仮登録ID: <code>${esc(current.id)}</code> ｜ 電話番号: ${esc(current.phone)} ｜ 監督: ${esc(current.supervisorName)} ｜ 現場: ${esc(current.onsiteName)} ｜ ${ProvStore.statusBadge(current.status)}`;
+
+      // バナー
+      const banners = [];
+      if (current.status === "PROVISIONAL_DRAFT") {
+        banners.push('<div class="banner-strong">⚠ OCR未完。先に OCRレビュー画面でOCR実行してください。</div>');
+      }
+      if (current.status === "ACTIVE") {
+        banners.push(`<div class="alert alert-success">✅ すでに正式投入済み（PersonalInformationID: ${esc(current.personalInfoId || "?")}）。閲覧モードです。</div>`);
+      }
+      $("#banners").innerHTML = banners.join("");
+
+      // OCR結果でフィールドを流し込み（採用ソース選択は ProvStore に保存されていればそれを優先）
+      const sel = current.sourceSelection || {};
+      const ocr = current.ocrResult || { licence: {}, paper: {}, certs: [] };
+
+      // v0.5: 免許OCRが無い（=免許未撮影 or OCR失敗）場合は主ソースを「紙」に自動切替
+      const hasLicenceOcr = !!(ocr.licence && Object.keys(ocr.licence).length > 0);
+      const defaultSource = hasLicenceOcr ? "licence" : "paper";
+      if (!hasLicenceOcr) {
+        const banner = document.createElement("div");
+        banner.className = "banner-soft";
+        banner.innerHTML = "ℹ 免許OCRなし（免許未撮影 or 読取失敗）。主ソースを<strong>紙</strong>に自動切替しました。";
+        document.getElementById("banners").appendChild(banner);
+      }
+
+      const fieldsFromBothSources = ["name", "nameKana", "birthday", "address", "postalCode"];
+      fieldsFromBothSources.forEach(f => {
+        const useSource = sel[f] || defaultSource;
+        setSourceToggleActive(f, useSource);
+        hydrateField(f, {
+          licence: ocr.licence?.[f],
+          paper:   ocr.paper?.[f],
+        }, { useSource });
+        // 採用コメント欄の初期表示（デフォルトソース以外なら表示）
+        const cw = document.querySelector(`.source-comment-wrap[data-field="${f}"]`);
+        if (cw && useSource !== defaultSource) cw.classList.add("show");
+      });
+
+      // 紙のみ項目
+      const paperOnly = ["emergencyContactName", "emergencyContactRelation", "emergencyContactPhone", "occupation", "partnerName", "bloodType", "rh", "lastHealthCheckDate", "specialHealthCheck"];
+      paperOnly.forEach(f => {
+        const v = ocr.paper?.[f];
+        const input = document.querySelector(`[data-field="${f}"]`);
+        const confSpan = document.getElementById(`conf-${f}`);
+        if (v && v.value) {
+          input.value = v.value;
+          if (confSpan) confSpan.innerHTML = ProvStore.confBadge(v.confidence);
+          if (v.confidence === "fail" || v.confidence === "low") {
+            input.classList.add("ocr-failed");
+          } else {
+            input.classList.add("ocr-hydrated");
+          }
+        } else {
+          if (confSpan) confSpan.innerHTML = ProvStore.confBadge("fail");
+          input.classList.add("ocr-failed");
+        }
+      });
+
+      // 電話番号は監督入力（OCR対象外）
+      const phoneInput = document.querySelector("[data-field='phone']");
+      if (phoneInput) {
+        phoneInput.value = current.phone || "";
+        phoneInput.classList.add("ocr-hydrated");
+      }
+
+      // 採用コメント既存値
+      if (current.sourceChangeComment) {
+        // 簡易：address に入れる
+        const ta = document.querySelector("textarea[name='comment_address']");
+        if (ta) ta.value = current.sourceChangeComment;
+      }
+
+      // 資格・顔写真・撮影元画像
+      renderCerts();
+      renderShotThumbs();
+      setFacePreview();
+
+      // 採用ソーストグル
+      bindSourceToggles();
+
+      // ACTIVE 状態なら readonly 化
+      if (current.status === "ACTIVE") {
+        document.querySelectorAll("input, select, textarea").forEach(el => el.disabled = true);
+        document.getElementById("submitBtn").disabled = true;
+        document.getElementById("submitBtn").textContent = "✅ 投入済み";
+      }
+    }
+
+    document.getElementById("backBtn").onclick = () => {
+      location.href = `/provisional-review.html?id=${encodeURIComponent(provId)}`;
+    };
+
+    document.getElementById("form").onsubmit = async (e) => {
+      e.preventDefault();
+      if (current.status === "ACTIVE") return;
+
+      const fd = new FormData(e.target);
+      const data = Object.fromEntries(fd.entries());
+
+      // 採用ソース選択を保存（v0.5: 免許なし時は紙が既定）
+      const hasLicenceOcr = !!(current.ocrResult?.licence && Object.keys(current.ocrResult.licence).length > 0);
+      const defaultSource = hasLicenceOcr ? "licence" : "paper";
+      const sel = {};
+      const comments = [];
+      ["name", "nameKana", "birthday", "postalCode", "address"].forEach(f => {
+        sel[f] = data[`src_${f}`] || defaultSource;
+        const c = data[`comment_${f}`];
+        if (c && sel[f] !== defaultSource) {
+          comments.push(`【${f}】${c}`);
+        }
+      });
+
+      // /api/addpersonalinfo へのモック投入
+      const submitBtn = document.getElementById("submitBtn");
+      submitBtn.disabled = true;
+      const result = document.getElementById("result");
+      result.innerHTML = '<div class="alert alert-info">⏳ APIM /api/addpersonalinfo へ投入中（モック2秒待機）…</div>';
+
+      await new Promise(r => setTimeout(r, 1500));
+
+      // ストア更新：ACTIVE 昇格
+      const personalInfoId = "PI-2026-" + String(Math.floor(Math.random() * 90000) + 10000);
+      ProvStore.upsert({
+        ...current,
+        status: "ACTIVE",
+        sourceSelection: sel,
+        sourceChangeComment: comments.join(" ／ ") || null,
+        personalInfoId,
+        submittedAt: new Date().toISOString(),
+      });
+
+      result.innerHTML = `
+        <div class="alert alert-success">
+          ✅ 正式投入完了（モック）<br>
+          PersonalInformationID: <code>${esc(personalInfoId)}</code><br>
+          仮登録ID <code>${esc(current.id)}</code> を ACTIVE に昇格しました。<br>
+          顔ベクトル登録は <code>addpersonalinfo</code> 側で連鎖（モックでは省略）。<br>
+          <a href="/nextface/provisional-dashboard.html">→ 仮登録一覧に戻る</a>
+        </div>`;
+    };
+
+    document.addEventListener("DOMContentLoaded", init);
+  </script>
+</body>
+</html>

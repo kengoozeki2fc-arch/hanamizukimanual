@@ -1,0 +1,40 @@
+{
+  "_comment": "Gemini 2.5 Flash モック出力。仮登録 PROVISIONAL_DRAFT → OCR_REVIEWING 昇格時に provisional-store.js から呼ばれる。",
+  "defaultResult": {
+    "licence": {
+      "name":      { "value": "佐藤 健一", "confidence": "high" },
+      "nameKana":  { "value": "サトウ ケンイチ", "confidence": "mid" },
+      "birthday":  { "value": "1985-08-12", "confidence": "high" },
+      "address":   { "value": "愛知県名古屋市中区錦三丁目1-1", "confidence": "high" },
+      "postalCode":{ "value": "460-0003", "confidence": "high" },
+      "licenceNumber": { "value": "1234 5678 9012", "confidence": "high" },
+      "expireDate":{ "value": "2029-08-12", "confidence": "high" }
+    },
+    "paper": {
+      "name":      { "value": "佐藤 健一", "confidence": "mid" },
+      "nameKana":  { "value": "サトウ ケンイチ", "confidence": "mid" },
+      "birthday":  { "value": "1985-08-12", "confidence": "mid" },
+      "address":   { "value": "名古屋市中区錦3-1-1 グランドハイツ301", "confidence": "low" },
+      "postalCode":{ "value": "", "confidence": "fail" },
+      "emergencyContactName": { "value": "佐藤 美咲", "confidence": "mid" },
+      "emergencyContactRelation": { "value": "配偶者", "confidence": "high" },
+      "emergencyContactPhone": { "value": "09099998888", "confidence": "mid" },
+      "occupation": { "value": "鳶", "confidence": "high" },
+      "partnerName": { "value": "山田工業", "confidence": "mid" },
+      "bloodType":   { "value": "A", "confidence": "mid" },
+      "rh":          { "value": "+", "confidence": "low" }
+    },
+    "certs": [
+      {
+        "kind": "玉掛", "confidence": "high",
+        "fields": {
+          "name": { "value": "佐藤 健一", "confidence": "high" },
+          "birthday": { "value": "1985-08-12", "confidence": "high" },
+          "certNumber": { "value": "TK-2022-0123", "confidence": "high" },
+          "issueDate": { "value": "2022-06-10", "confidence": "high" },
+          "issuer": { "value": "中部労務安全衛生協会", "confidence": "high" }
+        }
+      }
+    ]
+  }
+}

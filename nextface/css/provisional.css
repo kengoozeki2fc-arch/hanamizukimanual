@@ -1,0 +1,422 @@
+/* 顔認証初期登録フロー v0.5 専用スタイル
+   建設業グリーン #2E8B3E（CLOUDPOWER Palette例外）を継承し、
+   3段ステータスバッジ・信頼度バッジ・OCRうすいグレー・採用ソーストグル＋
+   v0.5: 監督・現場ヘッダー（ログインUser自動取得＋現場固定/選択） */
+
+/* ====== 3段ステータスバッジ（PROVISIONAL_DRAFT / OCR_REVIEWING / ACTIVE） ====== */
+.status-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.status-draft   { background: #FDECEA; color: #B71C1C; border: 1px solid #E57373; } /* 赤 */
+.status-review  { background: #FFF8E1; color: #8D6E00; border: 1px solid #FFD54F; } /* 黄 */
+.status-active  { background: #E2F0E5; color: #155724; border: 1px solid #66BB6A; } /* 緑 */
+
+/* ====== 信頼度バッジ（OCR項目ごと） ====== */
+.confidence-badge {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+.conf-high { background: #D4EDDA; color: #155724; }
+.conf-mid  { background: #FFF3CD; color: #856404; }
+.conf-low  { background: #F8D7DA; color: #721C24; }
+.conf-fail { background: #6c757d; color: #fff; }
+.conf-manual { background: #E0E0E0; color: #333; }
+
+/* ====== OCR読取失敗：うすいグレーで生データ提示 ====== */
+.ocr-failed {
+  background: #F4F4F4 !important;
+  color: #999 !important;
+  font-style: italic;
+}
+.ocr-failed::placeholder { color: #bbb; }
+
+/* OCRハイドレート済（自動入力＝薄い緑バック） */
+.ocr-hydrated {
+  background: #F1F8E9 !important;
+}
+
+/* ====== 免許／紙 採用ソーストグル ====== */
+.source-toggle {
+  margin: 4px 0 0;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.source-toggle label {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 12px;
+  background: #fff;
+  border: 1px solid var(--nagaken-border);
+  padding: 3px 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  margin: 0;
+  color: #555;
+}
+.source-toggle label.active {
+  background: var(--nagaken-primary);
+  color: #fff;
+  border-color: var(--nagaken-primary);
+  font-weight: 600;
+}
+.source-toggle input[type=radio] { display: none; }
+
+.source-values {
+  font-size: 11px;
+  color: #777;
+  margin-top: 3px;
+  line-height: 1.5;
+}
+.source-values .src-licence { color: #1B5E20; }
+.source-values .src-paper   { color: #B85C00; }
+
+.source-comment-wrap {
+  margin-top: 6px;
+  display: none;
+}
+.source-comment-wrap.show { display: block; }
+.source-comment-wrap textarea {
+  width: 100%;
+  min-height: 50px;
+  padding: 6px;
+  font-size: 12px;
+  border: 1px dashed var(--nagaken-accent);
+  border-radius: 4px;
+  background: #FFFCF3;
+}
+
+/* ====== 5点撮影UI（仮登録メニュー） ====== */
+.shoot-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin: 12px 0;
+}
+@media (max-width: 480px) {
+  .shoot-grid { grid-template-columns: 1fr; }
+}
+.shoot-cell {
+  border: 2px dashed var(--nagaken-border);
+  border-radius: 8px;
+  padding: 12px 10px;
+  background: #fff;
+  text-align: center;
+  position: relative;
+  min-height: 130px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.shoot-cell.done {
+  border: 2px solid var(--nagaken-primary);
+  background: #F1F8E9;
+}
+.shoot-cell.required-empty {
+  border-color: var(--nagaken-safety-red);
+  background: #FFF5F5;
+}
+.shoot-cell .step-no {
+  position: absolute;
+  top: 6px; left: 8px;
+  background: var(--nagaken-primary-dark);
+  color: #fff;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+}
+.shoot-cell.done .step-no { background: var(--nagaken-primary); }
+.shoot-cell .label { font-size: 13px; font-weight: 600; color: var(--nagaken-primary-dark); margin-bottom: 6px; }
+.shoot-cell .thumb-area {
+  width: 100%;
+  display: flex; flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+  margin-top: 4px;
+}
+.shoot-cell .thumb-area img {
+  max-width: 90px; max-height: 64px;
+  border-radius: 4px; border: 1px solid #ddd;
+  object-fit: cover;
+}
+.shoot-cell input[type=file] { display: none; }
+.shoot-cell .pick-btn {
+  padding: 6px 12px;
+  background: var(--nagaken-primary);
+  color: #fff;
+  border-radius: 6px;
+  font-size: 12px;
+  border: none;
+  cursor: pointer;
+}
+.shoot-cell.done .pick-btn { background: var(--nagaken-primary-deep); }
+.shoot-cell .hint { font-size: 11px; color: #888; margin-top: 4px; }
+
+/* ====== 仮登録一覧テーブル ====== */
+.prov-table-wrap {
+  background: #fff;
+  border: 1px solid var(--nagaken-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.prov-table-wrap table { min-width: 720px; }
+.prov-table-wrap tr.row-draft   { background: #FFF8F7; }
+.prov-table-wrap tr.row-review  { background: #FFFCEF; }
+.prov-table-wrap tr.row-active  { background: #F4F9F5; }
+.prov-table-wrap tr:hover { background: #EAF4EC; cursor: pointer; }
+
+.filter-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 10px;
+  background: #fff;
+  padding: 10px;
+  border: 1px solid var(--nagaken-border);
+  border-radius: 8px;
+}
+.filter-bar input[type=text] { min-width: 200px; flex: 1; min-height: 36px; }
+.filter-bar select { min-height: 36px; }
+.filter-bar .status-tab {
+  padding: 5px 10px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  background: #fff;
+  color: #555;
+}
+.filter-bar .status-tab.active {
+  background: var(--nagaken-primary-dark);
+  color: #fff;
+  border-color: var(--nagaken-primary-dark);
+}
+
+/* ====== OCRレビュー画面 ====== */
+.ocr-shot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+.ocr-shot-card {
+  border: 1px solid var(--nagaken-border);
+  border-radius: 6px;
+  padding: 8px;
+  background: #fff;
+  text-align: center;
+}
+.ocr-shot-card img {
+  max-width: 100%;
+  max-height: 140px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+.ocr-shot-card .cap {
+  font-size: 12px;
+  color: var(--nagaken-primary-dark);
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.ocr-result-table th {
+  text-align: left;
+  white-space: nowrap;
+  width: 130px;
+  background: #f7faf7;
+}
+.ocr-result-table td {
+  font-size: 13px;
+}
+
+/* ====== 警告バナー強調 ====== */
+.banner-strong {
+  background: #FDECEA;
+  color: #721C24;
+  padding: 10px 12px;
+  border-left: 5px solid var(--nagaken-safety-red);
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  margin: 10px 0;
+}
+.banner-soft {
+  background: #FFF3CD;
+  color: #856404;
+  padding: 8px 10px;
+  border-left: 4px solid var(--nagaken-accent);
+  border-radius: 4px;
+  font-size: 12px;
+  margin: 8px 0;
+}
+
+/* ====== v0.5: 仮登録画面 監督・現場ヘッダー ====== */
+.prov-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 6px 0 14px;
+  padding: 10px 14px;
+  background: var(--nagaken-primary);
+  color: #fff;
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+.prov-header .prov-header-site {
+  display: flex; align-items: center; gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+.prov-header .site-label {
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(255,255,255,0.18);
+  padding: 2px 8px;
+  border-radius: 10px;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  margin: 0;
+  color: #fff;
+}
+.prov-header .site-fixed {
+  font-size: 15px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.prov-header .site-loading,
+.prov-header .site-none {
+  font-size: 13px;
+  opacity: 0.85;
+  font-style: italic;
+}
+.prov-header .site-select {
+  flex: 1;
+  min-width: 0;
+  min-height: 36px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 2px solid #fff;
+  background: #fff;
+  color: var(--nagaken-primary-dark);
+  font-size: 14px;
+  font-weight: 700;
+}
+.prov-header .prov-header-user {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.18);
+  padding: 5px 12px;
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.prov-header .user-icon { font-size: 16px; }
+@media (max-width: 600px) {
+  .prov-header {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 10px 12px;
+    gap: 6px;
+  }
+  .prov-header .prov-header-user { align-self: flex-end; font-size: 12px; }
+  .prov-header .site-fixed { white-space: normal; }
+}
+
+/* ====== ステップヘッダ（フロー進行表示） ====== */
+.flow-steps {
+  display: flex;
+  gap: 4px;
+  margin: 10px 0 16px;
+  font-size: 12px;
+  flex-wrap: wrap;
+}
+.flow-steps .step {
+  padding: 4px 10px;
+  background: #fff;
+  border: 1px solid var(--nagaken-border);
+  border-radius: 14px;
+  color: #888;
+}
+.flow-steps .step.active {
+  background: var(--nagaken-primary);
+  color: #fff;
+  border-color: var(--nagaken-primary);
+  font-weight: 600;
+}
+.flow-steps .step.done {
+  background: #E2F0E5;
+  color: var(--nagaken-primary-dark);
+  border-color: var(--nagaken-primary);
+}
+.flow-steps .sep { color: #ccc; padding: 4px 0; }
+
+/* リンク化したステップ（a.step）— 既存 .step スタイルを継承しつつポインタ/ホバー */
+.flow-steps a.step {
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+.flow-steps a.step:hover {
+  background: var(--nagaken-primary);
+  color: #fff;
+  border-color: var(--nagaken-primary);
+}
+.flow-steps a.step.active:hover {
+  background: var(--nagaken-primary-dark);
+}
+.flow-steps a.step.done:hover {
+  background: var(--nagaken-primary);
+  color: #fff;
+}
+
+/* ====== 共通ナビバー（v0.5+ 画面遷移ショートカット） ====== */
+.prov-nav {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 0 0 10px;
+  padding: 6px 0;
+  font-size: 12px;
+}
+.prov-nav a.prov-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: #fff;
+  border: 1px solid var(--nagaken-border);
+  border-radius: 14px;
+  color: var(--nagaken-primary-dark);
+  text-decoration: none;
+  font-weight: 600;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+.prov-nav a.prov-nav-btn:hover {
+  background: var(--nagaken-primary);
+  color: #fff;
+  border-color: var(--nagaken-primary);
+}
+.prov-nav .prov-nav-spacer { flex: 1; }
+.prov-nav .prov-nav-hint {
+  color: #888;
+  font-size: 11px;
+}
