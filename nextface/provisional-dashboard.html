@@ -9,12 +9,12 @@
   <script src="/nextface/js/provisional-store.js" defer></script>
   <script src="/nextface/js/prov-nav.js" defer></script>
   <style>
-    /* dashboard.html 本体UIを踏襲したレイアウト */
+    /* === 本体 dashboard.html からそのままコピーした基礎レイアウト === */
     .wrap-dash { max-width: 1100px; margin: 0 auto; padding: 16px; }
     .dash-head {
       display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
       background: #fff; border: 1px solid var(--nagaken-border);
-      border-radius: 8px; padding: 12px 14px; margin-bottom: 14px;
+      border-radius: 8px; padding: 12px 14px; margin-bottom: 16px;
     }
     .dash-head h1 {
       margin: 0; padding: 0; border: none; font-size: 18px;
@@ -24,14 +24,6 @@
       font-size: 15px; font-weight: 600; color: var(--nagaken-primary-deep);
     }
     .dash-head .onsite { color: #555; font-size: 13px; }
-    .dash-head .user-chip {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 4px 10px; border: 1px solid var(--nagaken-border);
-      border-radius: 999px; background: #fafafa;
-      font-size: 13px; color: #333;
-    }
-    .dash-head .user-chip .user-icon { font-size: 14px; }
-
     .dash-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -41,7 +33,7 @@
       background: #fff; border: 1px solid var(--nagaken-border);
       border-radius: 10px; padding: 18px 18px 16px;
       display: flex; flex-direction: column; gap: 8px;
-      transition: all 0.15s ease;
+      cursor: pointer; transition: all 0.15s ease;
       text-decoration: none; color: inherit;
     }
     .stat-card:hover {
@@ -56,21 +48,23 @@
     }
     .stat-card .num {
       font-size: 40px; font-weight: 800; line-height: 1;
+      color: var(--nagaken-primary-dark);
     }
     .stat-card .unit { font-size: 15px; color: #666; margin-left: 4px; font-weight: 500; }
     .stat-card .more {
       font-size: 12px; color: var(--nagaken-primary-deep);
       margin-top: auto; text-align: right;
     }
-    /* 3段ステータスカラー */
+    /* === 本体は new-entry/entry/ky の3色 → provisional は draft/review/active の3色に置き換え === */
     .stat-card.draft  { border-left: 5px solid #B71C1C; }
     .stat-card.draft  .num { color: #B71C1C; }
     .stat-card.review { border-left: 5px solid #8D6E00; }
     .stat-card.review .num { color: #8D6E00; }
     .stat-card.active { border-left: 5px solid #155724; }
     .stat-card.active .num { color: #155724; }
+    .stat-card.new-entry-card { border-left: 5px solid var(--nagaken-accent); }
 
-    /* リストセクション（本体 unexited-section 流用） */
+    /* === 本体 unexited-section をそのまま list-section にリネームして流用 === */
     .list-section {
       background: #fff; border: 1px solid var(--nagaken-border);
       border-radius: 10px; padding: 16px; margin-top: 12px;
@@ -85,29 +79,42 @@
     }
     .list-section .filter-bar input[type="text"] { flex: 1 1 220px; min-width: 0; }
     .list-section .filter-bar select { flex: 0 0 auto; }
-    .list-section table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    .list-section th, .list-section td {
+    table.mini {
+      width: 100%; border-collapse: collapse; font-size: 13px;
+    }
+    table.mini th, table.mini td {
       padding: 8px 10px; text-align: left;
       border-bottom: 1px solid #eee;
     }
-    .list-section th { background: var(--nagaken-bg); font-weight: 600; }
-    .list-section tbody tr { cursor: pointer; transition: background 0.1s ease; }
-    .list-section tbody tr:hover { background: #f7fbf6; }
-    .list-section .empty {
+    table.mini th { background: var(--nagaken-bg); font-weight: 600; }
+    table.mini tbody tr { cursor: pointer; transition: background 0.1s ease; }
+    table.mini tbody tr:hover { background: #f7fbf6; }
+    .empty-cell {
       padding: 30px; text-align: center; color: #888; font-size: 13px;
       background: #fafafa; border-radius: 6px;
     }
     .table-scroll-x { overflow-x: auto; }
-
-    .new-entry-card {
-      border-left: 5px solid var(--nagaken-accent);
-      cursor: pointer;
+    .muted-right { text-align: right; font-size: 12px; color: #888; }
+    .refresh-btn {
+      padding: 4px 12px; min-height: 30px; font-size: 12px;
+      background: transparent; color: var(--nagaken-primary-deep);
+      border: 1px solid var(--nagaken-primary);
     }
+
+    /* === v0.5 ヘッダー右側ログインUserチップ（本体には無いが指示で必須） === */
+    .dash-head .user-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 10px; border: 1px solid var(--nagaken-border);
+      border-radius: 999px; background: #fafafa;
+      font-size: 13px; color: #333;
+    }
+    .dash-head .user-chip .user-icon { font-size: 14px; }
   </style>
 </head>
 <body>
+  <!-- 本体と同じ .nav バー（h3＋メニューリンク） -->
   <div class="nav">
-    <h3>② 仮登録ダッシュボード</h3>
+    <h3>仮登録ダッシュボード</h3>
     <a href="/nextface/">メニュー</a>
   </div>
 
@@ -120,7 +127,7 @@
       <span class="prov-nav-hint">パンくずクリックで各画面へジャンプ</span>
     </div>
 
-    <!-- パンくず（4ステップ全リンク） -->
+    <!-- パンくず（4ステップ全リンク・prov-nav.js が data-step を解釈してリンク化） -->
     <div class="flow-steps">
       <a class="step done" data-step="1">① 仮登録</a><span class="sep">›</span>
       <a class="step active" data-step="2">② OCRレビュー〜投入</a><span class="sep">›</span>
@@ -128,7 +135,7 @@
       <a class="step" data-step="4">④ 正式投入</a>
     </div>
 
-    <!-- 本体 dashboard 風ヘッダー：タイトル＋日付＋現場名＋ログインUser -->
+    <!-- 本体 dashboard.html と同じ dash-head 構造：タイトル＋日付＋現場名＋更新ボタン＋(v0.5)ログインUser -->
     <div class="dash-head">
       <h1>📋 仮登録ダッシュボード</h1>
       <span class="today" id="todayLabel"></span>
@@ -137,9 +144,10 @@
       <span class="user-chip" id="provHeaderUser">
         <span class="user-icon">👤</span><span class="user-name">読込中…</span>
       </span>
+      <button type="button" class="btn refresh-btn" id="refreshBtn">🔄 更新</button>
     </div>
 
-    <!-- 3段カウンタ（本体 dash-grid + stat-card 構造を流用） -->
+    <!-- 3段カウンタ（本体 dash-grid + stat-card 構造そのまま・色だけ差し替え） -->
     <div class="dash-grid">
       <a href="#" class="stat-card draft" id="card-draft" data-status="PROVISIONAL_DRAFT">
         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
@@ -167,7 +175,7 @@
       </a>
     </div>
 
-    <!-- 仮登録一覧セクション -->
+    <!-- 仮登録一覧セクション（本体 unexited-section の流用） -->
     <div class="list-section">
       <h2>📋 仮登録一覧 <span class="muted" style="font-size:12px; font-weight:400;">監督モバイルから上がってきたドラフト</span></h2>
 
@@ -187,7 +195,7 @@
       </div>
 
       <div class="table-scroll-x">
-        <table id="provTable">
+        <table class="mini" id="provTable">
           <thead>
             <tr>
               <th>ステータス</th>
@@ -205,7 +213,7 @@
       </div>
     </div>
 
-    <!-- 新規仮登録ショートカット -->
+    <!-- 本体の「社員メニュー」セクションを踏襲しつつ、仮登録ショートカットに差し替え -->
     <h2 style="margin-top:24px; font-size:16px; color:var(--nagaken-primary-dark); border-bottom:1px solid var(--nagaken-border); padding-bottom:6px;">📱 監督モバイル ショートカット</h2>
     <div class="dash-grid">
       <a href="/nextface/provisional-entry.html" class="stat-card new-entry-card">
@@ -269,7 +277,7 @@
 
       const tbody = document.querySelector("#provTable tbody");
       if (!rows.length) {
-        tbody.innerHTML = `<tr><td colspan="8"><div class="empty">該当する仮登録はありません</div></td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8"><div class="empty-cell">該当する仮登録はありません</div></td></tr>`;
       } else {
         tbody.innerHTML = rows.map(item => `
           <tr class="${statusRowClass(item.status)}" data-id="${esc(item.id)}">
@@ -295,7 +303,7 @@
         });
       }
 
-      // カウント
+      // カウンタ
       document.getElementById("cnt-draft").textContent = all.filter(x => x.status === "PROVISIONAL_DRAFT").length;
       document.getElementById("cnt-review").textContent = all.filter(x => x.status === "OCR_REVIEWING").length;
       document.getElementById("cnt-active").textContent = all.filter(x => x.status === "ACTIVE").length;
@@ -310,27 +318,31 @@
           e.preventDefault();
           const sel = document.getElementById("filterStatus");
           const want = card.dataset.status;
-          sel.value = (sel.value === want) ? "" : want; // 同じカードもう一度なら解除
+          sel.value = (sel.value === want) ? "" : want; // 同じカード2回目で解除
           renderRows();
-          // 一覧にスクロール
           document.querySelector(".list-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
         });
       });
     }
 
-    // 現場名表示（onsiteId クエリ or 既定）
+    // 現場名表示（本体 dashboard と同じ onsiteId クエリ参照）
     async function loadOnsiteLabel() {
       const qs = new URLSearchParams(location.search);
       const onsiteId = Number(qs.get("onsiteId") || 1);
       try {
-        const on = await fetch("/nextface/api/onsites").then(r => r.json()).catch(() => ({onsites:[]}));
+        const on = await fetch("/api/onsites").then(r => r.json()).catch(() => ({onsites:[]}));
         const site = (on.onsites || []).find(o => o.id === onsiteId) || (on.onsites || [])[0];
         document.getElementById("onsiteLabel").textContent = site ? `🏗 ${site.name}` : "";
       } catch (_) { /* noop */ }
     }
 
+    function reload() {
+      renderRows();
+      loadOnsiteLabel();
+    }
+
     document.addEventListener("DOMContentLoaded", async () => {
-      // 日付ラベル（本体 dashboard と同等）
+      // 日付ラベル（本体 dashboard と同形式）
       document.getElementById("todayLabel").textContent = new Date().toLocaleDateString("ja-JP", { year:"numeric", month:"long", day:"numeric", weekday:"short" });
       loadOnsiteLabel();
 
@@ -350,6 +362,8 @@
         document.getElementById(id).addEventListener("input", renderRows);
         document.getElementById(id).addEventListener("change", renderRows);
       });
+
+      document.getElementById("refreshBtn").onclick = reload;
     });
   </script>
 </body>
