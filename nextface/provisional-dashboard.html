@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>仮登録ダッシュボード | 永賢組 顔認証初期登録 v0.5</title>
+  <title>現場ダッシュボード | 永賢組 顔認証初期登録 v0.5</title>
   <link rel="stylesheet" href="/nextface/css/common.css">
   <link rel="stylesheet" href="/nextface/css/provisional.css">
   <script src="/nextface/js/provisional-store.js" defer></script>
   <script src="/nextface/js/prov-nav.js" defer></script>
   <style>
-    /* === 本体 dashboard.html からそのままコピーした基礎レイアウト === */
+    /* === 本体 dashboard.html から忠実コピー === */
     .wrap-dash { max-width: 1100px; margin: 0 auto; padding: 16px; }
     .dash-head {
       display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
@@ -55,36 +55,33 @@
       font-size: 12px; color: var(--nagaken-primary-deep);
       margin-top: auto; text-align: right;
     }
-    /* === 本体は new-entry/entry/ky の3色 → provisional は draft/review/active の3色に置き換え === */
-    .stat-card.draft  { border-left: 5px solid #B71C1C; }
-    .stat-card.draft  .num { color: #B71C1C; }
-    .stat-card.review { border-left: 5px solid #8D6E00; }
-    .stat-card.review .num { color: #8D6E00; }
-    .stat-card.active { border-left: 5px solid #155724; }
-    .stat-card.active .num { color: #155724; }
-    .stat-card.new-entry-card { border-left: 5px solid var(--nagaken-accent); }
+    /* 本体3カードの左枠色（そのまま再現） */
+    .stat-card.new-entry { border-left: 5px solid var(--nagaken-accent); }
+    .stat-card.entry     { border-left: 5px solid var(--nagaken-primary); }
+    .stat-card.ky        { border-left: 5px solid #5BC0DE; }
 
-    /* === 本体 unexited-section をそのまま list-section にリネームして流用 === */
-    .list-section {
+    /* === 共通セクション枠（本体 unexited-section と同形） === */
+    .section-card {
       background: #fff; border: 1px solid var(--nagaken-border);
       border-radius: 10px; padding: 16px; margin-top: 12px;
     }
-    .list-section h2 {
+    .section-card h2 {
       margin: 0 0 10px; font-size: 16px; color: var(--nagaken-primary-dark);
       border-bottom: 1px solid var(--nagaken-border); padding-bottom: 6px;
-      display: flex; align-items: center; gap: 8px;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
     }
-    .list-section .filter-bar {
+    .section-card h2 .count {
+      font-size: 13px; font-weight: 500; color: var(--nagaken-primary-deep);
+    }
+    .section-card .filter-bar {
       display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0 12px;
     }
-    .list-section .filter-bar input[type="text"] { flex: 1 1 220px; min-width: 0; }
-    .list-section .filter-bar select { flex: 0 0 auto; }
-    table.mini {
-      width: 100%; border-collapse: collapse; font-size: 13px;
-    }
+    .section-card .filter-bar input[type="text"] { flex: 1 1 220px; min-width: 0; }
+    .section-card .filter-bar select { flex: 0 0 auto; }
+
+    table.mini { width: 100%; border-collapse: collapse; font-size: 13px; }
     table.mini th, table.mini td {
-      padding: 8px 10px; text-align: left;
-      border-bottom: 1px solid #eee;
+      padding: 8px 10px; text-align: left; border-bottom: 1px solid #eee;
     }
     table.mini th { background: var(--nagaken-bg); font-weight: 600; }
     table.mini tbody tr { cursor: pointer; transition: background 0.1s ease; }
@@ -94,14 +91,18 @@
       background: #fafafa; border-radius: 6px;
     }
     .table-scroll-x { overflow-x: auto; }
-    .muted-right { text-align: right; font-size: 12px; color: #888; }
+    .unexited-locked {
+      padding: 20px; text-align: center; color: #888; font-size: 14px;
+      background: #fafafa; border-radius: 6px;
+    }
+    .unexited-locked strong { color: var(--nagaken-primary-dark); }
     .refresh-btn {
       padding: 4px 12px; min-height: 30px; font-size: 12px;
       background: transparent; color: var(--nagaken-primary-deep);
       border: 1px solid var(--nagaken-primary);
     }
 
-    /* === v0.5 ヘッダー右側ログインUserチップ（本体には無いが指示で必須） === */
+    /* v0.5：dash-head にログインUserチップ／現場切替プルダウン */
     .dash-head .user-chip {
       display: inline-flex; align-items: center; gap: 6px;
       padding: 4px 10px; border: 1px solid var(--nagaken-border);
@@ -109,78 +110,109 @@
       font-size: 13px; color: #333;
     }
     .dash-head .user-chip .user-icon { font-size: 14px; }
+    .dash-head select.site-picker {
+      min-height: 30px; padding: 2px 8px; font-size: 13px;
+      border: 1px solid var(--nagaken-border); border-radius: 6px; background: #fff;
+    }
+    .dash-head .cta-camera {
+      padding: 6px 12px; min-height: 32px; font-size: 13px; font-weight: 600;
+      background: var(--nagaken-primary); color: #fff;
+      border: 1px solid var(--nagaken-primary-deep); border-radius: 6px;
+      text-decoration: none;
+    }
+    .dash-head .cta-camera:hover { background: var(--nagaken-primary-deep); }
+
+    /* 社員メニュー Coming Soon プレースホルダー */
+    .coming-soon {
+      background: linear-gradient(135deg, #f5f7f5 0%, #e9ece9 100%);
+      border: 1px dashed #b5beb5; border-radius: 10px;
+      padding: 28px 20px; text-align: center; color: #5a6a5c;
+    }
+    .coming-soon .cs-icon { font-size: 36px; line-height: 1; margin-bottom: 8px; }
+    .coming-soon .cs-title { font-size: 15px; font-weight: 700; color: #3a4a3c; margin-bottom: 6px; }
+    .coming-soon .cs-desc { font-size: 12px; color: #777; }
+    .coming-soon .cs-items {
+      margin-top: 14px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+      font-size: 12px; color: #666;
+    }
+    .coming-soon .cs-items span {
+      padding: 4px 10px; background: rgba(255,255,255,0.7); border: 1px solid #cfd4cf;
+      border-radius: 999px; cursor: not-allowed;
+    }
+
+    /* 仮入場者リストのステータス行色（淡め） */
+    .row-draft  td:first-child { box-shadow: inset 4px 0 0 #B71C1C; }
+    .row-review td:first-child { box-shadow: inset 4px 0 0 #8D6E00; }
+    .row-active td:first-child { box-shadow: inset 4px 0 0 #155724; }
   </style>
 </head>
 <body>
-  <!-- 本体と同じ .nav バー（h3＋メニューリンク） -->
+  <!-- 本体と同じ .nav バー -->
   <div class="nav">
-    <h3>仮登録ダッシュボード</h3>
+    <h3>現場ダッシュボード</h3>
     <a href="/nextface/">メニュー</a>
   </div>
 
   <div class="wrap-dash">
-    <!-- 共通ナビバー（prov-nav.js が拡張） -->
+    <!-- 共通ナビバー（仮登録フロー4画面のジャンプ用・このダッシュボード本体ではパンくず非表示） -->
     <div class="prov-nav">
       <a class="prov-nav-btn" href="/nextface/">← メニューへ戻る</a>
-      <a class="prov-nav-btn" href="/nextface/provisional-dashboard.html">📋 ダッシュボードへ</a>
       <span class="prov-nav-spacer"></span>
-      <span class="prov-nav-hint">パンくずクリックで各画面へジャンプ</span>
+      <span class="prov-nav-hint">仮入場者リストは所属現場のみ表示されます</span>
     </div>
 
-    <!-- パンくず（4ステップ全リンク・prov-nav.js が data-step を解釈してリンク化） -->
-    <div class="flow-steps">
-      <a class="step done" data-step="1">① 仮登録</a><span class="sep">›</span>
-      <a class="step active" data-step="2">② OCRレビュー〜投入</a><span class="sep">›</span>
-      <a class="step" data-step="3">③ 22項目最終確認</a><span class="sep">›</span>
-      <a class="step" data-step="4">④ 正式投入</a>
-    </div>
-
-    <!-- 本体 dashboard.html と同じ dash-head 構造：タイトル＋日付＋現場名＋更新ボタン＋(v0.5)ログインUser -->
+    <!-- 本体と同じ dash-head：タイトル＋日付＋現場名（プルダウン）＋更新ボタン -->
     <div class="dash-head">
-      <h1>📋 仮登録ダッシュボード</h1>
+      <h1>📊 現場ダッシュボード</h1>
       <span class="today" id="todayLabel"></span>
       <span class="onsite" id="onsiteLabel"></span>
+      <select class="site-picker" id="sitePicker" style="display:none;"></select>
       <span style="flex:1 1 30px;"></span>
+      <a href="/nextface/provisional-entry.html" class="cta-camera">📷 仮登録（5点撮影）</a>
       <span class="user-chip" id="provHeaderUser">
         <span class="user-icon">👤</span><span class="user-name">読込中…</span>
       </span>
       <button type="button" class="btn refresh-btn" id="refreshBtn">🔄 更新</button>
     </div>
 
-    <!-- 3段カウンタ（本体 dash-grid + stat-card 構造そのまま・色だけ差し替え） -->
+    <!-- 本体3カード（今日の新規入場者／今日の入場者／今日のKY活動）はそのまま維持 -->
     <div class="dash-grid">
-      <a href="#" class="stat-card draft" id="card-draft" data-status="PROVISIONAL_DRAFT">
+      <a href="#" class="stat-card new-entry" id="card-newEntries">
         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-          <div class="label">🔴 仮登録（OCR待ち）</div>
-          <div class="icon">📝</div>
+          <div class="label">🆕 今日の新規入場者</div>
+          <div class="icon">🪪</div>
         </div>
-        <div><span class="num" id="cnt-draft">0</span><span class="unit">件</span></div>
-        <div class="more">この絞り込みで表示 →</div>
+        <div><span class="num" id="n-newEntries">0</span><span class="unit">名</span></div>
+        <div class="more">明細を見る →</div>
       </a>
-      <a href="#" class="stat-card review" id="card-review" data-status="OCR_REVIEWING">
+      <a href="#" class="stat-card entry" id="card-entries">
         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-          <div class="label">🟡 レビュー待ち</div>
-          <div class="icon">🔍</div>
+          <div class="label">🚪 今日の入場者</div>
+          <div class="icon">👷</div>
         </div>
-        <div><span class="num" id="cnt-review">0</span><span class="unit">件</span></div>
-        <div class="more">この絞り込みで表示 →</div>
+        <div><span class="num" id="n-entries">0</span><span class="unit">名</span></div>
+        <div class="more">明細を見る →</div>
       </a>
-      <a href="#" class="stat-card active" id="card-active" data-status="ACTIVE">
+      <a href="#" class="stat-card ky" id="card-ky">
         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-          <div class="label">🟢 正式登録済み</div>
-          <div class="icon">✅</div>
+          <div class="label">⚠ 今日のKY活動</div>
+          <div class="icon">📋</div>
         </div>
-        <div><span class="num" id="cnt-active">0</span><span class="unit">件</span></div>
-        <div class="more">この絞り込みで表示 →</div>
+        <div><span class="num" id="n-ky">0</span><span class="unit">件</span></div>
+        <div class="more">KY帳票ビュー →</div>
       </a>
     </div>
 
-    <!-- 仮登録一覧セクション（本体 unexited-section の流用） -->
-    <div class="list-section">
-      <h2>📋 仮登録一覧 <span class="muted" style="font-size:12px; font-weight:400;">監督モバイルから上がってきたドラフト</span></h2>
+    <!-- 新規追加：仮入場者リスト（所属現場フィルタ済み） -->
+    <div class="section-card">
+      <h2>
+        ⏳ 仮入場者リスト
+        <span class="count" id="provCount">（0件）</span>
+        <span class="muted" style="font-size:12px; font-weight:400;">自分の所属現場のみ表示</span>
+      </h2>
 
       <div class="filter-bar">
-        <input type="text" id="filterText" placeholder="🔍 電話／監督／現場で絞り込み">
+        <input type="text" id="filterText" placeholder="🔍 電話／監督で絞り込み">
         <select id="filterStatus">
           <option value="">全ステータス</option>
           <option value="PROVISIONAL_DRAFT">🔴 仮登録（OCR待ち）</option>
@@ -199,9 +231,8 @@
           <thead>
             <tr>
               <th>ステータス</th>
-              <th>仮登録ID</th>
               <th>電話番号</th>
-              <th>監督</th>
+              <th>担当監督</th>
               <th>現場</th>
               <th>撮影点数</th>
               <th>仮登録日時</th>
@@ -213,17 +244,23 @@
       </div>
     </div>
 
-    <!-- 本体の「社員メニュー」セクションを踏襲しつつ、仮登録ショートカットに差し替え -->
-    <h2 style="margin-top:24px; font-size:16px; color:var(--nagaken-primary-dark); border-bottom:1px solid var(--nagaken-border); padding-bottom:6px;">📱 監督モバイル ショートカット</h2>
-    <div class="dash-grid">
-      <a href="/nextface/provisional-entry.html" class="stat-card new-entry-card">
-        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-          <div class="label">➕ 新規仮登録（監督モバイル想定）</div>
-          <div class="icon">📱</div>
-        </div>
-        <div class="muted" style="font-size:13px;">現場で受領した書類を撮影してドラフトを起票</div>
-        <div class="more">仮登録画面を開く →</div>
-      </a>
+    <!-- 未退場者リスト（本体機能そのまま：17:30以降に表示） -->
+    <div class="section-card">
+      <h2>⏳ 未退場者リスト <span class="muted" style="font-size:12px; font-weight:400;">（17:30以降に表示）</span></h2>
+      <div id="unexitedBody" class="unexited-locked">読込中…</div>
+    </div>
+
+    <!-- 社員メニュー：Coming Soon プレースホルダー -->
+    <h2 style="margin-top:24px; font-size:16px; color:var(--nagaken-primary-dark); border-bottom:1px solid var(--nagaken-border); padding-bottom:6px;">🧑‍💼 社員メニュー</h2>
+    <div class="coming-soon">
+      <div class="cs-icon">🚧</div>
+      <div class="cs-title">Coming Soon</div>
+      <div class="cs-desc">社員向けメニュー（施工体制図／管理画面／KY裏面エディタ等）は順次開放予定です</div>
+      <div class="cs-items">
+        <span>Ⓔ 施工体制図作成</span>
+        <span>Ⓓ 管理画面</span>
+        <span>Ⓒ KY裏面エディタ</span>
+      </div>
     </div>
 
     <p class="muted" style="text-align:center; margin-top:24px; font-size:12px;">
@@ -231,140 +268,196 @@
     </p>
   </div>
 
-  <script>
-    const esc = (s) => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+<script>
+  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
 
-    function statusRowClass(s) {
-      return { PROVISIONAL_DRAFT: "row-draft", OCR_REVIEWING: "row-review", ACTIVE: "row-active" }[s] || "";
+  const qs = new URLSearchParams(location.search);
+  const FORCE_UNEXITED = qs.get("force") === "1"; // ?force=1 で17:30制約バイパス（動作確認）
+  const FORCE_AFTER_HOURS = qs.get("after") === "1"; // ?after=1 で未退場者リストにダミー1件
+
+  function isAfter1730() {
+    if (FORCE_UNEXITED || FORCE_AFTER_HOURS) return true;
+    const now = new Date();
+    return now.getHours() > 17 || (now.getHours() === 17 && now.getMinutes() >= 30);
+  }
+
+  function statusRowClass(s) {
+    return { PROVISIONAL_DRAFT: "row-draft", OCR_REVIEWING: "row-review", ACTIVE: "row-active" }[s] || "";
+  }
+
+  function shotCount(item) {
+    const s = item.shots || {};
+    const a = (s.paper ? 1 : 0) + (s.licence ? 1 : 0) + (s.face ? 1 : 0) + (s.certs?.length || 0);
+    return `${a}点 (資格証 ${s.certs?.length || 0})`;
+  }
+
+  function actionBtn(item) {
+    if (item.status === "PROVISIONAL_DRAFT") {
+      return `<a href="/nextface/provisional-review.html?id=${encodeURIComponent(item.id)}" class="btn btn-accent" style="padding:6px 12px; min-height:32px; font-size:12px;">OCR実行→レビュー</a>`;
     }
-
-    function shotCount(item) {
-      const s = item.shots || {};
-      const a = (s.paper ? 1 : 0) + (s.licence ? 1 : 0) + (s.face ? 1 : 0) + (s.certs?.length || 0);
-      return `${a}点 (資格証 ${s.certs?.length || 0})`;
+    if (item.status === "OCR_REVIEWING") {
+      return `<a href="/nextface/provisional-review.html?id=${encodeURIComponent(item.id)}" class="btn" style="padding:6px 12px; min-height:32px; font-size:12px;">レビュー</a>`;
     }
+    return `<a href="/nextface/provisional-data-entry.html?id=${encodeURIComponent(item.id)}" class="btn btn-ghost" style="padding:6px 12px; min-height:32px; font-size:12px;">閲覧</a>`;
+  }
 
-    function actionBtn(item) {
-      if (item.status === "PROVISIONAL_DRAFT") {
-        return `<a href="/nextface/provisional-review.html?id=${encodeURIComponent(item.id)}" class="btn btn-accent" style="padding:6px 12px; min-height:32px; font-size:12px;">OCR実行→レビュー</a>`;
-      }
-      if (item.status === "OCR_REVIEWING") {
-        return `<a href="/nextface/provisional-review.html?id=${encodeURIComponent(item.id)}" class="btn" style="padding:6px 12px; min-height:32px; font-size:12px;">レビュー</a>`;
-      }
-      return `<a href="/nextface/provisional-data-entry.html?id=${encodeURIComponent(item.id)}" class="btn btn-ghost" style="padding:6px 12px; min-height:32px; font-size:12px;">閲覧</a>`;
+  // 現場フィルタ：選択中現場 or ログインUser所属現場（複数可）に該当する仮入場者だけ返す
+  function filterBySite(all) {
+    const userSites = ProvStore.getUserSites() || [];
+    if (userSites.length === 0) return all; // フォールバック：全件
+    const picker = document.getElementById("sitePicker");
+    const selected = picker && picker.value ? Number(picker.value) : null;
+    const allowedIds = selected ? [selected] : userSites.map(s => s.onsiteId);
+    return all.filter(x => allowedIds.includes(x.onsiteId));
+  }
+
+  function renderProvList() {
+    const all = ProvStore.list();
+    const mine = filterBySite(all);
+
+    const kw = document.getElementById("filterText").value.trim();
+    const st = document.getElementById("filterStatus").value;
+    const sort = document.getElementById("filterSort").value;
+
+    let rows = mine;
+    if (kw) {
+      rows = rows.filter(x =>
+        (x.phone || "").includes(kw) ||
+        (x.supervisorName || "").includes(kw)
+      );
     }
+    if (st) rows = rows.filter(x => x.status === st);
 
-    function renderRows() {
-      const all = ProvStore.list();
-      const kw = document.getElementById("filterText").value.trim();
-      const st = document.getElementById("filterStatus").value;
-      const sort = document.getElementById("filterSort").value;
+    const order = { PROVISIONAL_DRAFT: 0, OCR_REVIEWING: 1, ACTIVE: 2 };
+    if (sort === "newest") rows.sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
+    else if (sort === "oldest") rows.sort((a, b) => (a.createdAt || "").localeCompare(b.createdAt || ""));
+    else if (sort === "status") rows.sort((a, b) => (order[a.status] ?? 9) - (order[b.status] ?? 9));
 
-      let rows = all;
-      if (kw) {
-        rows = rows.filter(x =>
-          (x.phone || "").includes(kw) ||
-          (x.supervisorName || "").includes(kw) ||
-          (x.onsiteName || "").includes(kw)
-        );
-      }
-      if (st) rows = rows.filter(x => x.status === st);
+    const tbody = document.querySelector("#provTable tbody");
+    if (!rows.length) {
+      tbody.innerHTML = `<tr><td colspan="7"><div class="empty-cell">該当する仮入場者はいません</div></td></tr>`;
+    } else {
+      tbody.innerHTML = rows.map(item => `
+        <tr class="${statusRowClass(item.status)}" data-id="${esc(item.id)}">
+          <td>${ProvStore.statusBadge(item.status)}</td>
+          <td>${esc(item.phone)}</td>
+          <td>${esc(item.supervisorName)}</td>
+          <td>${esc(item.onsiteName)}</td>
+          <td>${esc(shotCount(item))}</td>
+          <td>${ProvStore.fmtDateTime(item.createdAt)}</td>
+          <td>${actionBtn(item)}</td>
+        </tr>`).join("");
 
-      const order = { PROVISIONAL_DRAFT: 0, OCR_REVIEWING: 1, ACTIVE: 2 };
-      if (sort === "newest") rows.sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
-      else if (sort === "oldest") rows.sort((a, b) => (a.createdAt || "").localeCompare(b.createdAt || ""));
-      else if (sort === "status") rows.sort((a, b) => (order[a.status] ?? 9) - (order[b.status] ?? 9));
-
-      const tbody = document.querySelector("#provTable tbody");
-      if (!rows.length) {
-        tbody.innerHTML = `<tr><td colspan="8"><div class="empty-cell">該当する仮登録はありません</div></td></tr>`;
-      } else {
-        tbody.innerHTML = rows.map(item => `
-          <tr class="${statusRowClass(item.status)}" data-id="${esc(item.id)}">
-            <td>${ProvStore.statusBadge(item.status)}</td>
-            <td><code style="font-size:11px;">${esc(item.id)}</code></td>
-            <td>${esc(item.phone)}</td>
-            <td>${esc(item.supervisorName)}</td>
-            <td>${esc(item.onsiteName)}</td>
-            <td>${esc(shotCount(item))}</td>
-            <td>${ProvStore.fmtDateTime(item.createdAt)}</td>
-            <td>${actionBtn(item)}</td>
-          </tr>`).join("");
-
-        // 行クリックでもレビューへ
-        tbody.querySelectorAll("tr").forEach(tr => {
-          tr.addEventListener("click", (e) => {
-            if (e.target.closest("a")) return;
-            const id = tr.dataset.id;
-            const item = ProvStore.getById(id);
-            if (!item) return;
-            location.href = (item.status === "ACTIVE" ? "/nextface/provisional-data-entry.html" : "/nextface/provisional-review.html") + "?id=" + encodeURIComponent(id);
-          });
-        });
-      }
-
-      // カウンタ
-      document.getElementById("cnt-draft").textContent = all.filter(x => x.status === "PROVISIONAL_DRAFT").length;
-      document.getElementById("cnt-review").textContent = all.filter(x => x.status === "OCR_REVIEWING").length;
-      document.getElementById("cnt-active").textContent = all.filter(x => x.status === "ACTIVE").length;
-
-      document.getElementById("lastUpdated").textContent = new Date().toLocaleTimeString("ja-JP");
-    }
-
-    // 3段カードクリック→ステータス絞り込み
-    function bindStatusCards() {
-      document.querySelectorAll(".stat-card[data-status]").forEach(card => {
-        card.addEventListener("click", (e) => {
-          e.preventDefault();
-          const sel = document.getElementById("filterStatus");
-          const want = card.dataset.status;
-          sel.value = (sel.value === want) ? "" : want; // 同じカード2回目で解除
-          renderRows();
-          document.querySelector(".list-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      tbody.querySelectorAll("tr").forEach(tr => {
+        tr.addEventListener("click", (e) => {
+          if (e.target.closest("a")) return;
+          const id = tr.dataset.id;
+          const item = ProvStore.getById(id);
+          if (!item) return;
+          location.href = (item.status === "ACTIVE" ? "/nextface/provisional-data-entry.html" : "/nextface/provisional-review.html") + "?id=" + encodeURIComponent(id);
         });
       });
     }
 
-    // 現場名表示（本体 dashboard と同じ onsiteId クエリ参照）
-    async function loadOnsiteLabel() {
-      const qs = new URLSearchParams(location.search);
-      const onsiteId = Number(qs.get("onsiteId") || 1);
-      try {
-        const on = await fetch("/api/onsites").then(r => r.json()).catch(() => ({onsites:[]}));
-        const site = (on.onsites || []).find(o => o.id === onsiteId) || (on.onsites || [])[0];
-        document.getElementById("onsiteLabel").textContent = site ? `🏗 ${site.name}` : "";
-      } catch (_) { /* noop */ }
+    // 件数表示
+    document.getElementById("provCount").textContent = `（${mine.length}件 / 表示 ${rows.length}件）`;
+  }
+
+  // 未退場者リスト：本体仕様そのまま（モックなのでAPIは叩かず時刻判定だけ再現）
+  function renderUnexited() {
+    const box = document.getElementById("unexitedBody");
+    if (!isAfter1730()) {
+      box.className = "unexited-locked";
+      box.innerHTML = `
+        <div style="font-size:32px; margin-bottom:6px;">🔒</div>
+        <strong>17:30 以降に表示されます</strong><br>
+        <span class="muted">（現在時刻: ${new Date().toLocaleTimeString("ja-JP")}）</span><br>
+        <span class="muted" style="font-size:11px;">一日の作業時間中は誤解を招くので非表示にしています</span>
+      `;
+      return;
     }
+    box.className = "";
+    box.innerHTML = `<div class="alert alert-success" style="padding:10px;">✅ 未退場者はいません（モック環境のためダミー表示）</div>`;
+  }
 
-    function reload() {
-      renderRows();
-      loadOnsiteLabel();
+  // 現場ラベル＆プルダウン（複数現場ユーザーの場合プルダウン出現）
+  function renderSitePicker(sites) {
+    const label = document.getElementById("onsiteLabel");
+    const picker = document.getElementById("sitePicker");
+    if (!sites || sites.length === 0) {
+      label.textContent = "🏗 (現場未割当)";
+      picker.style.display = "none";
+      return;
     }
+    if (sites.length === 1) {
+      label.textContent = `🏗 ${sites[0].name}`;
+      picker.style.display = "none";
+      return;
+    }
+    // 複数現場：プルダウン
+    label.textContent = "🏗";
+    picker.style.display = "";
+    picker.innerHTML = `<option value="">全所属現場（${sites.length}件）</option>` +
+      sites.map(s => `<option value="${s.onsiteId}">${esc(s.name)}</option>`).join("");
+  }
 
-    document.addEventListener("DOMContentLoaded", async () => {
-      // 日付ラベル（本体 dashboard と同形式）
-      document.getElementById("todayLabel").textContent = new Date().toLocaleDateString("ja-JP", { year:"numeric", month:"long", day:"numeric", weekday:"short" });
-      loadOnsiteLabel();
+  function reload() {
+    renderProvList();
+    renderUnexited();
+    document.getElementById("lastUpdated").textContent = new Date().toLocaleTimeString("ja-JP");
+  }
 
-      await ProvStore.ensureSeed();
-      // v0.5: ログインUserヘッダー
-      const ctx = await ProvStore.ensureLoginContext();
-      const u = ctx.user;
-      const userBox = document.getElementById("provHeaderUser");
-      if (userBox) {
-        userBox.innerHTML = `<span class="user-icon">👤</span><span class="user-name">${u?.displayName || "(未ログイン)"}</span>`;
-      }
+  document.addEventListener("DOMContentLoaded", async () => {
+    // 日付ラベル（本体と同形式）
+    document.getElementById("todayLabel").textContent = new Date().toLocaleDateString("ja-JP", { year:"numeric", month:"long", day:"numeric", weekday:"short" });
 
-      renderRows();
-      bindStatusCards();
+    await ProvStore.ensureSeed();
+    const ctx = await ProvStore.ensureLoginContext();
+    const u = ctx.user;
+    const userBox = document.getElementById("provHeaderUser");
+    if (userBox) {
+      userBox.innerHTML = `<span class="user-icon">👤</span><span class="user-name">${esc(u?.displayName || "(未ログイン)")}</span>`;
+    }
+    renderSitePicker(ctx.sites || []);
 
-      ["filterText", "filterStatus", "filterSort"].forEach(id => {
-        document.getElementById(id).addEventListener("input", renderRows);
-        document.getElementById(id).addEventListener("change", renderRows);
-      });
+    reload();
 
-      document.getElementById("refreshBtn").onclick = reload;
+    document.getElementById("sitePicker").addEventListener("change", renderProvList);
+    ["filterText", "filterStatus", "filterSort"].forEach(id => {
+      document.getElementById(id).addEventListener("input", renderProvList);
+      document.getElementById(id).addEventListener("change", renderProvList);
     });
-  </script>
+
+    // 本体3カードクリックでステータス絞り込み連動（仮入場リスト側に反映）
+    // ※「今日の新規入場者」→ DRAFT寄せ、「今日の入場者」→ ACTIVE寄せ、「KY」→ そのまま遷移先なし（モック）
+    const cardToStatus = {
+      "card-newEntries": "PROVISIONAL_DRAFT",
+      "card-entries": "ACTIVE",
+    };
+    Object.entries(cardToStatus).forEach(([cardId, status]) => {
+      const el = document.getElementById(cardId);
+      if (!el) return;
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        const sel = document.getElementById("filterStatus");
+        sel.value = (sel.value === status) ? "" : status;
+        renderProvList();
+        document.querySelector(".section-card")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+    // KYカードは別画面リンクのまま（モックなのでアラート）
+    const kyCard = document.getElementById("card-ky");
+    if (kyCard) {
+      kyCard.addEventListener("click", (e) => {
+        e.preventDefault();
+        alert("KY帳票ビューはモック対象外です。本体ダッシュボードの ky-sheet.html を参照してください。");
+      });
+    }
+
+    document.getElementById("refreshBtn").onclick = reload;
+    // 5分自動更新
+    setInterval(reload, 5 * 60 * 1000);
+  });
+</script>
 </body>
 </html>
