@@ -8,6 +8,102 @@
   <link rel="stylesheet" href="/nextface/css/provisional.css">
   <script src="/nextface/js/provisional-store.js" defer></script>
   <script src="/nextface/js/prov-nav.js" defer></script>
+  <style>
+    /* dashboard.html 本体UIを踏襲したレイアウト */
+    .wrap-dash { max-width: 1100px; margin: 0 auto; padding: 16px; }
+    .dash-head {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      background: #fff; border: 1px solid var(--nagaken-border);
+      border-radius: 8px; padding: 12px 14px; margin-bottom: 14px;
+    }
+    .dash-head h1 {
+      margin: 0; padding: 0; border: none; font-size: 18px;
+      color: var(--nagaken-primary-dark);
+    }
+    .dash-head .today {
+      font-size: 15px; font-weight: 600; color: var(--nagaken-primary-deep);
+    }
+    .dash-head .onsite { color: #555; font-size: 13px; }
+    .dash-head .user-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 10px; border: 1px solid var(--nagaken-border);
+      border-radius: 999px; background: #fafafa;
+      font-size: 13px; color: #333;
+    }
+    .dash-head .user-chip .user-icon { font-size: 14px; }
+
+    .dash-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px; margin-bottom: 20px;
+    }
+    .stat-card {
+      background: #fff; border: 1px solid var(--nagaken-border);
+      border-radius: 10px; padding: 18px 18px 16px;
+      display: flex; flex-direction: column; gap: 8px;
+      transition: all 0.15s ease;
+      text-decoration: none; color: inherit;
+    }
+    .stat-card:hover {
+      border-color: var(--nagaken-primary);
+      box-shadow: 0 4px 14px rgba(46, 139, 62, 0.18);
+      transform: translateY(-1px);
+    }
+    .stat-card .icon { font-size: 28px; line-height: 1; }
+    .stat-card .label {
+      font-size: 13px; font-weight: 600; color: #5a6a5c;
+      letter-spacing: 0.02em;
+    }
+    .stat-card .num {
+      font-size: 40px; font-weight: 800; line-height: 1;
+    }
+    .stat-card .unit { font-size: 15px; color: #666; margin-left: 4px; font-weight: 500; }
+    .stat-card .more {
+      font-size: 12px; color: var(--nagaken-primary-deep);
+      margin-top: auto; text-align: right;
+    }
+    /* 3段ステータスカラー */
+    .stat-card.draft  { border-left: 5px solid #B71C1C; }
+    .stat-card.draft  .num { color: #B71C1C; }
+    .stat-card.review { border-left: 5px solid #8D6E00; }
+    .stat-card.review .num { color: #8D6E00; }
+    .stat-card.active { border-left: 5px solid #155724; }
+    .stat-card.active .num { color: #155724; }
+
+    /* リストセクション（本体 unexited-section 流用） */
+    .list-section {
+      background: #fff; border: 1px solid var(--nagaken-border);
+      border-radius: 10px; padding: 16px; margin-top: 12px;
+    }
+    .list-section h2 {
+      margin: 0 0 10px; font-size: 16px; color: var(--nagaken-primary-dark);
+      border-bottom: 1px solid var(--nagaken-border); padding-bottom: 6px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .list-section .filter-bar {
+      display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0 12px;
+    }
+    .list-section .filter-bar input[type="text"] { flex: 1 1 220px; min-width: 0; }
+    .list-section .filter-bar select { flex: 0 0 auto; }
+    .list-section table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .list-section th, .list-section td {
+      padding: 8px 10px; text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+    .list-section th { background: var(--nagaken-bg); font-weight: 600; }
+    .list-section tbody tr { cursor: pointer; transition: background 0.1s ease; }
+    .list-section tbody tr:hover { background: #f7fbf6; }
+    .list-section .empty {
+      padding: 30px; text-align: center; color: #888; font-size: 13px;
+      background: #fafafa; border-radius: 6px;
+    }
+    .table-scroll-x { overflow-x: auto; }
+
+    .new-entry-card {
+      border-left: 5px solid var(--nagaken-accent);
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
   <div class="nav">
@@ -15,13 +111,16 @@
     <a href="/nextface/">メニュー</a>
   </div>
 
-  <div class="wrap">
+  <div class="wrap-dash">
+    <!-- 共通ナビバー（prov-nav.js が拡張） -->
     <div class="prov-nav">
       <a class="prov-nav-btn" href="/nextface/">← メニューへ戻る</a>
       <a class="prov-nav-btn" href="/nextface/provisional-dashboard.html">📋 ダッシュボードへ</a>
       <span class="prov-nav-spacer"></span>
       <span class="prov-nav-hint">パンくずクリックで各画面へジャンプ</span>
     </div>
+
+    <!-- パンくず（4ステップ全リンク） -->
     <div class="flow-steps">
       <a class="step done" data-step="1">① 仮登録</a><span class="sep">›</span>
       <a class="step active" data-step="2">② OCRレビュー〜投入</a><span class="sep">›</span>
@@ -29,73 +128,99 @@
       <a class="step" data-step="4">④ 正式投入</a>
     </div>
 
-    <!-- v0.5 事務員PCヘッダー -->
-    <div class="prov-header">
-      <div class="prov-header-site">
-        <label class="site-label">事務員PC</label>
-        <span class="site-fixed">仮登録ダッシュボード</span>
-      </div>
-      <div class="prov-header-user" id="provHeaderUser">
+    <!-- 本体 dashboard 風ヘッダー：タイトル＋日付＋現場名＋ログインUser -->
+    <div class="dash-head">
+      <h1>📋 仮登録ダッシュボード</h1>
+      <span class="today" id="todayLabel"></span>
+      <span class="onsite" id="onsiteLabel"></span>
+      <span style="flex:1 1 30px;"></span>
+      <span class="user-chip" id="provHeaderUser">
         <span class="user-icon">👤</span><span class="user-name">読込中…</span>
+      </span>
+    </div>
+
+    <!-- 3段カウンタ（本体 dash-grid + stat-card 構造を流用） -->
+    <div class="dash-grid">
+      <a href="#" class="stat-card draft" id="card-draft" data-status="PROVISIONAL_DRAFT">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div class="label">🔴 仮登録（OCR待ち）</div>
+          <div class="icon">📝</div>
+        </div>
+        <div><span class="num" id="cnt-draft">0</span><span class="unit">件</span></div>
+        <div class="more">この絞り込みで表示 →</div>
+      </a>
+      <a href="#" class="stat-card review" id="card-review" data-status="OCR_REVIEWING">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div class="label">🟡 レビュー待ち</div>
+          <div class="icon">🔍</div>
+        </div>
+        <div><span class="num" id="cnt-review">0</span><span class="unit">件</span></div>
+        <div class="more">この絞り込みで表示 →</div>
+      </a>
+      <a href="#" class="stat-card active" id="card-active" data-status="ACTIVE">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div class="label">🟢 正式登録済み</div>
+          <div class="icon">✅</div>
+        </div>
+        <div><span class="num" id="cnt-active">0</span><span class="unit">件</span></div>
+        <div class="more">この絞り込みで表示 →</div>
+      </a>
+    </div>
+
+    <!-- 仮登録一覧セクション -->
+    <div class="list-section">
+      <h2>📋 仮登録一覧 <span class="muted" style="font-size:12px; font-weight:400;">監督モバイルから上がってきたドラフト</span></h2>
+
+      <div class="filter-bar">
+        <input type="text" id="filterText" placeholder="🔍 電話／監督／現場で絞り込み">
+        <select id="filterStatus">
+          <option value="">全ステータス</option>
+          <option value="PROVISIONAL_DRAFT">🔴 仮登録（OCR待ち）</option>
+          <option value="OCR_REVIEWING">🟡 レビュー待ち</option>
+          <option value="ACTIVE">🟢 正式登録済み</option>
+        </select>
+        <select id="filterSort">
+          <option value="newest">新しい順</option>
+          <option value="oldest">古い順</option>
+          <option value="status">ステータス順</option>
+        </select>
+      </div>
+
+      <div class="table-scroll-x">
+        <table id="provTable">
+          <thead>
+            <tr>
+              <th>ステータス</th>
+              <th>仮登録ID</th>
+              <th>電話番号</th>
+              <th>監督</th>
+              <th>現場</th>
+              <th>撮影点数</th>
+              <th>仮登録日時</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
       </div>
     </div>
 
-    <h1>仮登録一覧（事務員PC）</h1>
-    <p class="muted">監督モバイルから上がってきた仮登録ドラフトをここから処理します。</p>
-
-    <!-- ステータス別カウント -->
-    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-bottom:14px;">
-      <div class="card" style="margin:0; text-align:center; padding:12px;">
-        <div class="status-badge status-draft" style="margin-bottom:6px;">仮登録（OCR待ち）</div>
-        <div style="font-size:26px; font-weight:700; color:#B71C1C;" id="cnt-draft">0</div>
-      </div>
-      <div class="card" style="margin:0; text-align:center; padding:12px;">
-        <div class="status-badge status-review" style="margin-bottom:6px;">レビュー待ち</div>
-        <div style="font-size:26px; font-weight:700; color:#8D6E00;" id="cnt-review">0</div>
-      </div>
-      <div class="card" style="margin:0; text-align:center; padding:12px;">
-        <div class="status-badge status-active" style="margin-bottom:6px;">正式登録済み</div>
-        <div style="font-size:26px; font-weight:700; color:#155724;" id="cnt-active">0</div>
-      </div>
+    <!-- 新規仮登録ショートカット -->
+    <h2 style="margin-top:24px; font-size:16px; color:var(--nagaken-primary-dark); border-bottom:1px solid var(--nagaken-border); padding-bottom:6px;">📱 監督モバイル ショートカット</h2>
+    <div class="dash-grid">
+      <a href="/nextface/provisional-entry.html" class="stat-card new-entry-card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div class="label">➕ 新規仮登録（監督モバイル想定）</div>
+          <div class="icon">📱</div>
+        </div>
+        <div class="muted" style="font-size:13px;">現場で受領した書類を撮影してドラフトを起票</div>
+        <div class="more">仮登録画面を開く →</div>
+      </a>
     </div>
 
-    <!-- フィルタ -->
-    <div class="filter-bar">
-      <input type="text" id="filterText" placeholder="🔍 電話／監督／現場で絞り込み">
-      <select id="filterStatus">
-        <option value="">全ステータス</option>
-        <option value="PROVISIONAL_DRAFT">仮登録（OCR待ち）</option>
-        <option value="OCR_REVIEWING">レビュー待ち</option>
-        <option value="ACTIVE">正式登録済み</option>
-      </select>
-      <select id="filterSort">
-        <option value="newest">新しい順</option>
-        <option value="oldest">古い順</option>
-        <option value="status">ステータス順</option>
-      </select>
-    </div>
-
-    <div class="prov-table-wrap table-scroll">
-      <table id="provTable">
-        <thead>
-          <tr>
-            <th>ステータス</th>
-            <th>仮登録ID</th>
-            <th>電話番号</th>
-            <th>監督</th>
-            <th>現場</th>
-            <th>撮影点数</th>
-            <th>仮登録日時</th>
-            <th>操作</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-
-    <div style="margin-top:16px;">
-      <a href="/nextface/provisional-entry.html" class="btn btn-block">＋ 新規仮登録（監督モバイル想定）</a>
-    </div>
+    <p class="muted" style="text-align:center; margin-top:24px; font-size:12px;">
+      最終更新: <span id="lastUpdated">-</span>
+    </p>
   </div>
 
   <script>
@@ -144,7 +269,7 @@
 
       const tbody = document.querySelector("#provTable tbody");
       if (!rows.length) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:#888;">該当する仮登録はありません</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8"><div class="empty">該当する仮登録はありません</div></td></tr>`;
       } else {
         tbody.innerHTML = rows.map(item => `
           <tr class="${statusRowClass(item.status)}" data-id="${esc(item.id)}">
@@ -165,7 +290,7 @@
             const id = tr.dataset.id;
             const item = ProvStore.getById(id);
             if (!item) return;
-            location.href = (item.status === "ACTIVE" ? "/provisional-data-entry.html" : "/provisional-review.html") + "?id=" + encodeURIComponent(id);
+            location.href = (item.status === "ACTIVE" ? "/nextface/provisional-data-entry.html" : "/nextface/provisional-review.html") + "?id=" + encodeURIComponent(id);
           });
         });
       }
@@ -174,9 +299,41 @@
       document.getElementById("cnt-draft").textContent = all.filter(x => x.status === "PROVISIONAL_DRAFT").length;
       document.getElementById("cnt-review").textContent = all.filter(x => x.status === "OCR_REVIEWING").length;
       document.getElementById("cnt-active").textContent = all.filter(x => x.status === "ACTIVE").length;
+
+      document.getElementById("lastUpdated").textContent = new Date().toLocaleTimeString("ja-JP");
+    }
+
+    // 3段カードクリック→ステータス絞り込み
+    function bindStatusCards() {
+      document.querySelectorAll(".stat-card[data-status]").forEach(card => {
+        card.addEventListener("click", (e) => {
+          e.preventDefault();
+          const sel = document.getElementById("filterStatus");
+          const want = card.dataset.status;
+          sel.value = (sel.value === want) ? "" : want; // 同じカードもう一度なら解除
+          renderRows();
+          // 一覧にスクロール
+          document.querySelector(".list-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      });
+    }
+
+    // 現場名表示（onsiteId クエリ or 既定）
+    async function loadOnsiteLabel() {
+      const qs = new URLSearchParams(location.search);
+      const onsiteId = Number(qs.get("onsiteId") || 1);
+      try {
+        const on = await fetch("/nextface/api/onsites").then(r => r.json()).catch(() => ({onsites:[]}));
+        const site = (on.onsites || []).find(o => o.id === onsiteId) || (on.onsites || [])[0];
+        document.getElementById("onsiteLabel").textContent = site ? `🏗 ${site.name}` : "";
+      } catch (_) { /* noop */ }
     }
 
     document.addEventListener("DOMContentLoaded", async () => {
+      // 日付ラベル（本体 dashboard と同等）
+      document.getElementById("todayLabel").textContent = new Date().toLocaleDateString("ja-JP", { year:"numeric", month:"long", day:"numeric", weekday:"short" });
+      loadOnsiteLabel();
+
       await ProvStore.ensureSeed();
       // v0.5: ログインUserヘッダー
       const ctx = await ProvStore.ensureLoginContext();
@@ -185,7 +342,10 @@
       if (userBox) {
         userBox.innerHTML = `<span class="user-icon">👤</span><span class="user-name">${u?.displayName || "(未ログイン)"}</span>`;
       }
+
       renderRows();
+      bindStatusCards();
+
       ["filterText", "filterStatus", "filterSort"].forEach(id => {
         document.getElementById(id).addEventListener("input", renderRows);
         document.getElementById(id).addEventListener("change", renderRows);
