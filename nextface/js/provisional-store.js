@@ -147,6 +147,139 @@
     }
   }
 
+  // ====== v0.6: 実Gemini OCR（GAS Web App 呼び出し） ======
+  //
+  // GAS デプロイ URL を埋め込み or sessionStorage / URLパラメータで上書き可能。
+  // 流れ:
+  //   1. ?ocrEndpoint=https://script.google.com/...exec で上書き
+  //   2. sessionStorage.nagaken_ocr_endpoint があれば次回以降そっち
+  //   3. 既定値（後で大関さん側で値差し替え）
+  //
+  // ?mock=1 が付いていれば常にモック動作（GAS呼ばず ocr-mocks.json を返す）
+  //
+  const OCR_ENDPOINT_DEFAULT = ""; // 大関さんが GAS デプロイ後に貼る
+  const SS_OCR_ENDPOINT = "nagaken_ocr_endpoint";
+
+  function getOcrEndpoint() {
+    const qs = new URLSearchParams(location.search);
+    const fromQs = qs.get("ocrEndpoint");
+    if (fromQs) {
+      sessionStorage.setItem(SS_OCR_ENDPOINT, fromQs);
+      return fromQs;
+    }
+    return sessionStorage.getItem(SS_OCR_ENDPOINT) || OCR_ENDPOINT_DEFAULT;
+  }
+  function isMockForced() {
+    const qs = new URLSearchParams(location.search);
+    return qs.get("mock") === "1";
+  }
+
+  // shots を GAS が期待する形（dataURL）に変換
+  function shotsToPayload(shots) {
+    if (!shots) return {};
+    return {
+      paper:   shots.paper?.thumb   || null,
+      licence: shots.licence?.thumb || null,
+      qualifications: (shots.certs || []).map(c => c.thumb).filter(Boolean),
+      face:    shots.face?.thumb    || null, // 参考送信のみ・OCR対象外
+    };
+  }
+
+  // GAS の results を v0.5/v0.6 フォーマット {licence:{...}, paper:{...}, certs:[]}
+  // に変換する。GAS は {fields:{...}} で返してくるので１段剥がす。
+  function adaptGasResults(gas) {
+    if (!gas) return { licence: {}, paper: {}, certs: [] };
+    const out = { licence: {}, paper: {}, certs: [] };
+    if (gas.licence && gas.licence.fields) out.licence = gas.licence.fields;
+    if (gas.paper   && gas.paper.fields)   out.paper   = gas.paper.fields;
+    if (Array.isArray(gas.qualifications)) {
+      out.certs = gas.qualifications.map(q => ({
+        kind: q.type || "不明",
+        confidence: q.confidence || "mid",
+        fields: (q.fields || {}),
+      }));
+    }
+    return out;
+  }
+
+  async function runRealOcr(id) {
+    const items = list();
+    const idx = items.findIndex((x) => x.id === id);
+    if (idx < 0) return { ok: false, error: "draft not found" };
+
+    const draft = items[idx];
+
+    // モック強制 or エンドポイント未設定なら mock fallback
+    const endpoint = getOcrEndpoint();
+    if (isMockForced() || !endpoint) {
+      const updated = await runMockOcr(id);
+      return {
+        ok: true,
+        item: updated,
+        usedMock: true,
+        endpoint: endpoint || "(未設定)",
+      };
+    }
+
+    const payload = {
+      provId: id,
+      shots: shotsToPayload(draft.shots),
+    };
+
+    // 60秒タイムアウト
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 60000);
+    try {
+      const res = await fetch(endpoint, {
+        method: "POST",
+        // GAS Web App は標準で text/plain でも application/json でも受けるが
+        // CORS preflight 回避のため text/plain にしておく（GAS側は contentText を JSON.parse）
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload),
+        signal: controller.signal,
+      });
+      clearTimeout(timer);
+      const text = await res.text();
+      let json;
+      try { json = JSON.parse(text); } catch { json = null; }
+      if (!res.ok || !json || json.ok === false) {
+        // フォールバック: モックで埋める
+        const updated = await runMockOcr(id);
+        return {
+          ok: false,
+          error: (json && json.error) || `HTTP ${res.status}`,
+          fallbackToMock: true,
+          item: updated,
+          rawText: text.slice(0, 500),
+        };
+      }
+      // 成功 → ストア更新
+      const adapted = adaptGasResults(json.results);
+      items[idx].ocrResult = adapted;
+      items[idx].status = "OCR_REVIEWING";
+      items[idx].ocrElapsedMs = json.elapsedMs || null;
+      items[idx].ocrUsedEndpoint = endpoint;
+      items[idx].updatedAt = new Date().toISOString();
+      save(items);
+      return { ok: true, item: items[idx], elapsedMs: json.elapsedMs, usedMock: false };
+    } catch (e) {
+      clearTimeout(timer);
+      // ネットワークエラー等 → モックフォールバック
+      const updated = await runMockOcr(id);
+      return {
+        ok: false,
+        error: String(e && e.message || e),
+        fallbackToMock: true,
+        item: updated,
+      };
+    }
+  }
+
+  function setOcrEndpoint(url) {
+    if (url) sessionStorage.setItem(SS_OCR_ENDPOINT, url);
+    else sessionStorage.removeItem(SS_OCR_ENDPOINT);
+  }
+
   function newDraftId() {
     return "prov-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 6);
   }
@@ -189,5 +322,7 @@
     STATUS_LABEL,
     // v0.5: ログインUser／現場マスタ
     ensureLoginContext, getLoginUser, getUserSites,
+    // v0.6: 実 OCR（Gemini 2.5 Flash via GAS）
+    runRealOcr, getOcrEndpoint, setOcrEndpoint, isMockForced,
   };
 })();

@@ -384,32 +384,71 @@
 
       // バナー
       const banners = [];
+      const endpoint = ProvStore.getOcrEndpoint();
+      const mockForced = ProvStore.isMockForced();
+      const endpointSet = !!endpoint && !mockForced;
+      const modeLabel = mockForced
+        ? "強制モック（?mock=1）"
+        : endpointSet ? `実Gemini OCR（${endpoint.slice(0, 60)}…）` : "モック動作（GASエンドポイント未設定）";
+
       if (current.status === "PROVISIONAL_DRAFT") {
         banners.push(`
           <div class="banner-strong" style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-            <span>⚠ OCR未実行（PROVISIONAL_DRAFT）。下のボタンで Gemini 2.5 Flash モック実行→ OCR_REVIEWING に昇格＋22項目フォームへ自動流し込みします。</span>
-            <button type="button" id="runOcrBtn" class="btn btn-accent" style="padding:6px 14px; min-height:32px; font-size:13px;">🤖 OCR実行（モック・2秒）</button>
+            <span>⚠ OCR未実行（PROVISIONAL_DRAFT）。下のボタンで Gemini 2.5 Flash を実行→ OCR_REVIEWING に昇格＋22項目フォームへ自動流し込みします。</span>
+            <button type="button" id="runOcrBtn" class="btn btn-accent" style="padding:6px 14px; min-height:32px; font-size:13px;">🤖 OCR実行</button>
+            <details style="flex-basis:100%; margin-top:4px;">
+              <summary style="cursor:pointer; font-size:12px; color:#1B5E20;">OCRエンドポイント設定 (現在: ${esc(modeLabel)})</summary>
+              <div style="display:flex; gap:8px; align-items:center; margin-top:6px;">
+                <input type="text" id="ocrEndpointInput" placeholder="https://script.google.com/.../exec" style="flex:1; padding:4px 8px; font-size:12px;" value="${esc(endpoint || "")}">
+                <button type="button" id="saveOcrEndpointBtn" class="btn btn-ghost" style="padding:4px 10px; font-size:12px;">保存</button>
+                <button type="button" id="clearOcrEndpointBtn" class="btn btn-ghost" style="padding:4px 10px; font-size:12px;">クリア（モックに戻す）</button>
+              </div>
+              <p style="font-size:11px; color:#666; margin-top:4px;">※ ?ocrEndpoint=URL でも上書き可能。?mock=1 で強制モック。</p>
+            </details>
           </div>`);
+      }
+      if (current.status === "OCR_REVIEWING" && current.ocrElapsedMs) {
+        banners.push(`<div class="alert alert-info">🤖 Gemini OCR 完了 — 経過 ${current.ocrElapsedMs}ms。下記カードで採用ソースを設定してください。</div>`);
       }
       if (current.status === "ACTIVE") {
         banners.push(`<div class="alert alert-success">✅ すでに正式投入済み（PersonalInformationID: ${esc(current.personalInfoId || "?")}）。閲覧モードです。</div>`);
       }
       $("#banners").innerHTML = banners.join("");
 
-      // PROVISIONAL_DRAFT 時の OCR モック実行ボタン
+      // エンドポイント設定UI
+      const saveBtn = document.getElementById("saveOcrEndpointBtn");
+      const clearBtn = document.getElementById("clearOcrEndpointBtn");
+      if (saveBtn) {
+        saveBtn.onclick = () => {
+          const v = document.getElementById("ocrEndpointInput").value.trim();
+          ProvStore.setOcrEndpoint(v);
+          location.reload();
+        };
+      }
+      if (clearBtn) {
+        clearBtn.onclick = () => {
+          ProvStore.setOcrEndpoint(null);
+          location.reload();
+        };
+      }
+
+      // PROVISIONAL_DRAFT 時の OCR 実行ボタン
       const runBtn = document.getElementById("runOcrBtn");
       if (runBtn) {
         runBtn.onclick = async () => {
           runBtn.disabled = true;
           runBtn.textContent = "⏳ Gemini 2.5 Flash 実行中…";
-          await new Promise(r => setTimeout(r, 2000));
-          const updated = await ProvStore.runMockOcr(current.id);
-          if (updated) {
-            // 状態を更新してフォーム再ハイドレート
+          const res = await ProvStore.runRealOcr(current.id);
+          if (res.ok) {
+            // 成功 → リロードして22項目フォームへ
+            location.reload();
+          } else if (res.fallbackToMock) {
+            alert(`⚠ Gemini OCR 失敗のためモックでフォールバックしました。\nerror: ${res.error}`);
             location.reload();
           } else {
             runBtn.disabled = false;
-            runBtn.textContent = "🤖 OCR実行（モック・2秒）";
+            runBtn.textContent = "🤖 OCR実行";
+            alert(`OCR 失敗: ${res.error || "(unknown)"}`);
           }
         };
       }
