@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>仮登録（5点撮影） | 永賢組 顔認証初期登録 v0.5</title>
+  <title>仮登録（5点撮影） | 永賢組 顔認証初期登録 v0.6</title>
   <link rel="stylesheet" href="/nextface/css/common.css">
   <link rel="stylesheet" href="/nextface/css/provisional.css">
   <script src="/nextface/js/provisional-store.js" defer></script>
@@ -11,22 +11,16 @@
 </head>
 <body>
   <div class="nav">
-    <h3>① 仮登録：監督モバイル5点撮影</h3>
+    <h3>仮登録：監督モバイル5点撮影</h3>
     <a href="/nextface/">メニュー</a>
   </div>
 
   <div class="wrap">
     <div class="prov-nav">
+      <a class="prov-nav-btn" href="/nextface/provisional-dashboard.html">← ダッシュボードへ戻る</a>
       <a class="prov-nav-btn" href="/nextface/">← メニューへ戻る</a>
-      <a class="prov-nav-btn" href="/nextface/provisional-dashboard.html">📋 ダッシュボードへ</a>
       <span class="prov-nav-spacer"></span>
-      <span class="prov-nav-hint">パンくずクリックで各画面へジャンプ</span>
-    </div>
-    <div class="flow-steps">
-      <a class="step active" data-step="1">① 仮登録</a><span class="sep">›</span>
-      <a class="step" data-step="2">② OCRレビュー</a><span class="sep">›</span>
-      <a class="step" data-step="3">③ 22項目最終確認</a><span class="sep">›</span>
-      <a class="step" data-step="4">④ 正式投入</a>
+      <span class="prov-nav-hint">監督モバイル：5点撮影（必須＝紙／顔／電話番号）</span>
     </div>
 
     <h1>新規作業員 仮登録</h1>
@@ -285,7 +279,8 @@
           ✅ 仮登録完了（モック）<br>
           ドラフトID: <code>${id}</code><br>
           サーバ側でOCRが非同期実行され、完了次第「OCR_REVIEWING」に昇格します。<br>
-          <a href="/nextface/provisional-dashboard.html">→ 仮登録一覧（事務員PC）</a>
+          <a href="/nextface/provisional-dashboard.html">→ ダッシュボードへ</a> ｜
+          <a href="/nextface/provisional-list.html">→ 仮登録者リスト（事務員PC）</a>
         </div>
         <button type="button" class="btn btn-ghost btn-block" id="newOneBtn" style="margin-top:8px;">続けてもう1人 仮登録</button>
       `;

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>現場ダッシュボード | 永賢組 顔認証初期登録 v0.5</title>
+  <title>現場ダッシュボード（ハブ） | 永賢組 顔認証初期登録 v0.6</title>
   <link rel="stylesheet" href="/nextface/css/common.css">
   <link rel="stylesheet" href="/nextface/css/provisional.css">
   <script src="/nextface/js/provisional-store.js" defer></script>
@@ -122,28 +122,46 @@
     }
     .dash-head .cta-camera:hover { background: var(--nagaken-primary-deep); }
 
-    /* 社員メニュー Coming Soon プレースホルダー */
-    .coming-soon {
-      background: linear-gradient(135deg, #f5f7f5 0%, #e9ece9 100%);
-      border: 1px dashed #b5beb5; border-radius: 10px;
-      padding: 28px 20px; text-align: center; color: #5a6a5c;
+    /* v0.6 社員メニュー（スポーク5項目） */
+    .staff-menu {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
     }
-    .coming-soon .cs-icon { font-size: 36px; line-height: 1; margin-bottom: 8px; }
-    .coming-soon .cs-title { font-size: 15px; font-weight: 700; color: #3a4a3c; margin-bottom: 6px; }
-    .coming-soon .cs-desc { font-size: 12px; color: #777; }
-    .coming-soon .cs-items {
-      margin-top: 14px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
-      font-size: 12px; color: #666;
+    .staff-menu-item {
+      display: flex; flex-direction: column; gap: 6px;
+      background: #fff; border: 1px solid var(--nagaken-border);
+      border-radius: 10px; padding: 16px 14px;
+      text-decoration: none; color: inherit;
+      cursor: pointer; transition: all 0.15s ease;
+      min-height: 110px;
+      position: relative;
     }
-    .coming-soon .cs-items span {
-      padding: 4px 10px; background: rgba(255,255,255,0.7); border: 1px solid #cfd4cf;
-      border-radius: 999px; cursor: not-allowed;
+    .staff-menu-item:hover {
+      border-color: var(--nagaken-primary);
+      box-shadow: 0 4px 14px rgba(46, 139, 62, 0.18);
+      transform: translateY(-1px);
     }
-
-    /* 仮入場者リストのステータス行色（淡め） */
-    .row-draft  td:first-child { box-shadow: inset 4px 0 0 #B71C1C; }
-    .row-review td:first-child { box-shadow: inset 4px 0 0 #8D6E00; }
-    .row-active td:first-child { box-shadow: inset 4px 0 0 #155724; }
+    .staff-menu-item .sm-icon { font-size: 28px; line-height: 1; }
+    .staff-menu-item .sm-title {
+      font-size: 14px; font-weight: 700; color: var(--nagaken-primary-dark);
+    }
+    .staff-menu-item .sm-desc { font-size: 11px; color: #666; line-height: 1.5; }
+    .staff-menu-item.primary {
+      border-left: 5px solid var(--nagaken-accent);
+      background: #FFFCF3;
+    }
+    .staff-menu-item.existing { border-left: 5px solid var(--nagaken-primary-deep); }
+    .staff-menu-item.new-v06  { border-left: 5px solid var(--nagaken-accent); }
+    .staff-menu-item .sm-badge {
+      position: absolute; top: 10px; right: 10px;
+      display: inline-flex; gap: 4px; flex-wrap: wrap;
+      font-size: 11px; font-weight: 700;
+    }
+    .sm-badge .b-draft { background: #FDECEA; color: #B71C1C; padding: 2px 6px; border-radius: 8px; }
+    .sm-badge .b-review { background: #FFF8E1; color: #8D6E00; padding: 2px 6px; border-radius: 8px; }
+    .sm-badge .b-active { background: #E2F0E5; color: #155724; padding: 2px 6px; border-radius: 8px; }
   </style>
 </head>
 <body>
@@ -154,11 +172,11 @@
   </div>
 
   <div class="wrap-dash">
-    <!-- 共通ナビバー（仮登録フロー4画面のジャンプ用・このダッシュボード本体ではパンくず非表示） -->
+    <!-- 共通ナビバー（v0.6 ハブ&スポーク・このダッシュボード本体ではパンくず非表示） -->
     <div class="prov-nav">
       <a class="prov-nav-btn" href="/nextface/">← メニューへ戻る</a>
       <span class="prov-nav-spacer"></span>
-      <span class="prov-nav-hint">仮入場者リストは所属現場のみ表示されます</span>
+      <span class="prov-nav-hint">ハブ：当日サマリ／クイック導線／社員メニュー5項目</span>
     </div>
 
     <!-- 本体と同じ dash-head：タイトル＋日付＋現場名（プルダウン）＋更新ボタン -->
@@ -203,64 +221,42 @@
       </a>
     </div>
 
-    <!-- 新規追加：仮入場者リスト（所属現場フィルタ済み） -->
-    <div class="section-card">
-      <h2>
-        ⏳ 仮入場者リスト
-        <span class="count" id="provCount">（0件）</span>
-        <span class="muted" style="font-size:12px; font-weight:400;">自分の所属現場のみ表示</span>
-      </h2>
-
-      <div class="filter-bar">
-        <input type="text" id="filterText" placeholder="🔍 電話／監督で絞り込み">
-        <select id="filterStatus">
-          <option value="">全ステータス</option>
-          <option value="PROVISIONAL_DRAFT">🔴 仮登録（OCR待ち）</option>
-          <option value="OCR_REVIEWING">🟡 レビュー待ち</option>
-          <option value="ACTIVE">🟢 正式登録済み</option>
-        </select>
-        <select id="filterSort">
-          <option value="newest">新しい順</option>
-          <option value="oldest">古い順</option>
-          <option value="status">ステータス順</option>
-        </select>
-      </div>
-
-      <div class="table-scroll-x">
-        <table class="mini" id="provTable">
-          <thead>
-            <tr>
-              <th>ステータス</th>
-              <th>電話番号</th>
-              <th>担当監督</th>
-              <th>現場</th>
-              <th>撮影点数</th>
-              <th>仮登録日時</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </div>
-
     <!-- 未退場者リスト（本体機能そのまま：17:30以降に表示） -->
     <div class="section-card">
       <h2>⏳ 未退場者リスト <span class="muted" style="font-size:12px; font-weight:400;">（17:30以降に表示）</span></h2>
       <div id="unexitedBody" class="unexited-locked">読込中…</div>
     </div>
 
-    <!-- 社員メニュー：Coming Soon プレースホルダー -->
-    <h2 style="margin-top:24px; font-size:16px; color:var(--nagaken-primary-dark); border-bottom:1px solid var(--nagaken-border); padding-bottom:6px;">🧑‍💼 社員メニュー</h2>
-    <div class="coming-soon">
-      <div class="cs-icon">🚧</div>
-      <div class="cs-title">Coming Soon</div>
-      <div class="cs-desc">社員向けメニュー（施工体制図／管理画面／KY裏面エディタ等）は順次開放予定です</div>
-      <div class="cs-items">
-        <span>Ⓔ 施工体制図作成</span>
-        <span>Ⓓ 管理画面</span>
-        <span>Ⓒ KY裏面エディタ</span>
-      </div>
+    <!-- v0.6 社員メニュー（5項目=スポーク） -->
+    <h2 style="margin-top:24px; font-size:16px; color:var(--nagaken-primary-dark); border-bottom:1px solid var(--nagaken-border); padding-bottom:6px;">🧑‍💼 社員メニュー <span class="muted" style="font-size:12px; font-weight:400;">（v0.6 ハブ&スポーク）</span></h2>
+    <div class="staff-menu">
+      <a class="staff-menu-item new-v06 primary" href="/nextface/provisional-data-entry.html" id="smReview">
+        <div class="sm-icon">📋</div>
+        <div class="sm-title">本登録（OCR結果確認＋22項目データ投入）</div>
+        <div class="sm-desc">仮登録者を選んで OCR マッピング済みの22項目フォームを確認・補正して正式投入</div>
+        <div class="sm-badge" id="smReviewBadge"></div>
+      </a>
+      <a class="staff-menu-item existing" href="https://www.face.gemba-ai.cloud/" target="_blank" rel="noopener">
+        <div class="sm-icon">👷</div>
+        <div class="sm-title">新規入場者</div>
+        <div class="sm-desc">既存：永賢組 新規入場者登録（事前登録パターン）<br><span class="muted" style="font-size:10px;">→ face.gemba-ai.cloud</span></div>
+      </a>
+      <a class="staff-menu-item existing" href="https://www.face.gemba-ai.cloud/admin.html" target="_blank" rel="noopener">
+        <div class="sm-icon">🛡</div>
+        <div class="sm-title">入場管理</div>
+        <div class="sm-desc">既存：入退場ログ・管理画面<br><span class="muted" style="font-size:10px;">→ face.gemba-ai.cloud/admin.html</span></div>
+      </a>
+      <a class="staff-menu-item existing" href="https://www.face.gemba-ai.cloud/ky-sheet.html" target="_blank" rel="noopener">
+        <div class="sm-icon">⚠️</div>
+        <div class="sm-title">KY記録</div>
+        <div class="sm-desc">既存：KY帳票ビュー・3画面連動（指示書/KY/KY裏面）<br><span class="muted" style="font-size:10px;">→ face.gemba-ai.cloud/ky-sheet.html</span></div>
+      </a>
+      <a class="staff-menu-item new-v06" href="/nextface/provisional-list.html" id="smList">
+        <div class="sm-icon">📃</div>
+        <div class="sm-title">仮登録者リスト</div>
+        <div class="sm-desc">PROVISIONAL_DRAFT / OCR_REVIEWING / ACTIVE の3段バッジ＋現場フィルタ</div>
+        <div class="sm-badge" id="smListBadge"></div>
+      </a>
     </div>
 
     <p class="muted" style="text-align:center; margin-top:24px; font-size:12px;">
@@ -281,86 +277,39 @@
     return now.getHours() > 17 || (now.getHours() === 17 && now.getMinutes() >= 30);
   }
 
-  function statusRowClass(s) {
-    return { PROVISIONAL_DRAFT: "row-draft", OCR_REVIEWING: "row-review", ACTIVE: "row-active" }[s] || "";
-  }
-
-  function shotCount(item) {
-    const s = item.shots || {};
-    const a = (s.paper ? 1 : 0) + (s.licence ? 1 : 0) + (s.face ? 1 : 0) + (s.certs?.length || 0);
-    return `${a}点 (資格証 ${s.certs?.length || 0})`;
-  }
-
-  function actionBtn(item) {
-    if (item.status === "PROVISIONAL_DRAFT") {
-      return `<a href="/nextface/provisional-review.html?id=${encodeURIComponent(item.id)}" class="btn btn-accent" style="padding:6px 12px; min-height:32px; font-size:12px;">OCR実行→レビュー</a>`;
-    }
-    if (item.status === "OCR_REVIEWING") {
-      return `<a href="/nextface/provisional-review.html?id=${encodeURIComponent(item.id)}" class="btn" style="padding:6px 12px; min-height:32px; font-size:12px;">レビュー</a>`;
-    }
-    return `<a href="/nextface/provisional-data-entry.html?id=${encodeURIComponent(item.id)}" class="btn btn-ghost" style="padding:6px 12px; min-height:32px; font-size:12px;">閲覧</a>`;
-  }
-
   // 現場フィルタ：選択中現場 or ログインUser所属現場（複数可）に該当する仮入場者だけ返す
   function filterBySite(all) {
     const userSites = ProvStore.getUserSites() || [];
-    if (userSites.length === 0) return all; // フォールバック：全件
+    if (userSites.length === 0) return all;
     const picker = document.getElementById("sitePicker");
     const selected = picker && picker.value ? Number(picker.value) : null;
     const allowedIds = selected ? [selected] : userSites.map(s => s.onsiteId);
     return all.filter(x => allowedIds.includes(x.onsiteId));
   }
 
-  function renderProvList() {
+  // v0.6: 社員メニュー2項目のバッジ件数（本登録待ち＋仮登録者リスト3段）
+  function renderStaffMenuBadges() {
     const all = ProvStore.list();
     const mine = filterBySite(all);
+    const counts = { PROVISIONAL_DRAFT: 0, OCR_REVIEWING: 0, ACTIVE: 0 };
+    mine.forEach(x => { counts[x.status] = (counts[x.status] || 0) + 1; });
 
-    const kw = document.getElementById("filterText").value.trim();
-    const st = document.getElementById("filterStatus").value;
-    const sort = document.getElementById("filterSort").value;
-
-    let rows = mine;
-    if (kw) {
-      rows = rows.filter(x =>
-        (x.phone || "").includes(kw) ||
-        (x.supervisorName || "").includes(kw)
-      );
+    // 本登録待ち＝OCR_REVIEWING
+    const reviewBadge = document.getElementById("smReviewBadge");
+    if (reviewBadge) {
+      reviewBadge.innerHTML = counts.OCR_REVIEWING > 0
+        ? `<span class="b-review">本登録待ち ${counts.OCR_REVIEWING}件</span>`
+        : "";
     }
-    if (st) rows = rows.filter(x => x.status === st);
-
-    const order = { PROVISIONAL_DRAFT: 0, OCR_REVIEWING: 1, ACTIVE: 2 };
-    if (sort === "newest") rows.sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
-    else if (sort === "oldest") rows.sort((a, b) => (a.createdAt || "").localeCompare(b.createdAt || ""));
-    else if (sort === "status") rows.sort((a, b) => (order[a.status] ?? 9) - (order[b.status] ?? 9));
-
-    const tbody = document.querySelector("#provTable tbody");
-    if (!rows.length) {
-      tbody.innerHTML = `<tr><td colspan="7"><div class="empty-cell">該当する仮入場者はいません</div></td></tr>`;
-    } else {
-      tbody.innerHTML = rows.map(item => `
-        <tr class="${statusRowClass(item.status)}" data-id="${esc(item.id)}">
-          <td>${ProvStore.statusBadge(item.status)}</td>
-          <td>${esc(item.phone)}</td>
-          <td>${esc(item.supervisorName)}</td>
-          <td>${esc(item.onsiteName)}</td>
-          <td>${esc(shotCount(item))}</td>
-          <td>${ProvStore.fmtDateTime(item.createdAt)}</td>
-          <td>${actionBtn(item)}</td>
-        </tr>`).join("");
-
-      tbody.querySelectorAll("tr").forEach(tr => {
-        tr.addEventListener("click", (e) => {
-          if (e.target.closest("a")) return;
-          const id = tr.dataset.id;
-          const item = ProvStore.getById(id);
-          if (!item) return;
-          location.href = (item.status === "ACTIVE" ? "/nextface/provisional-data-entry.html" : "/nextface/provisional-review.html") + "?id=" + encodeURIComponent(id);
-        });
-      });
+    // 仮登録者リスト＝3段バッジ
+    const listBadge = document.getElementById("smListBadge");
+    if (listBadge) {
+      const parts = [];
+      if (counts.PROVISIONAL_DRAFT > 0) parts.push(`<span class="b-draft">🔴 ${counts.PROVISIONAL_DRAFT}</span>`);
+      if (counts.OCR_REVIEWING > 0)     parts.push(`<span class="b-review">🟡 ${counts.OCR_REVIEWING}</span>`);
+      if (counts.ACTIVE > 0)            parts.push(`<span class="b-active">🟢 ${counts.ACTIVE}</span>`);
+      listBadge.innerHTML = parts.join(" ");
     }
-
-    // 件数表示
-    document.getElementById("provCount").textContent = `（${mine.length}件 / 表示 ${rows.length}件）`;
   }
 
   // 未退場者リスト：本体仕様そのまま（モックなのでAPIは叩かず時刻判定だけ再現）
@@ -401,8 +350,23 @@
       sites.map(s => `<option value="${s.onsiteId}">${esc(s.name)}</option>`).join("");
   }
 
+  // v0.6: 本体3カードの数値モック（実装は本体側 dashboard.html）
+  function renderStatCards() {
+    const all = ProvStore.list();
+    const mine = filterBySite(all);
+    // 今日の新規入場者 = 仮登録ステータスの件数（DRAFT＋REVIEWING）
+    const newEntries = mine.filter(x => x.status === "PROVISIONAL_DRAFT" || x.status === "OCR_REVIEWING").length;
+    // 今日の入場者 = ACTIVE件数（モック）
+    const entries = mine.filter(x => x.status === "ACTIVE").length;
+    // 今日のKY活動 = 0（モック）
+    document.getElementById("n-newEntries").textContent = newEntries;
+    document.getElementById("n-entries").textContent = entries;
+    document.getElementById("n-ky").textContent = 0;
+  }
+
   function reload() {
-    renderProvList();
+    renderStatCards();
+    renderStaffMenuBadges();
     renderUnexited();
     document.getElementById("lastUpdated").textContent = new Date().toLocaleTimeString("ja-JP");
   }
@@ -422,14 +386,9 @@
 
     reload();
 
-    document.getElementById("sitePicker").addEventListener("change", renderProvList);
-    ["filterText", "filterStatus", "filterSort"].forEach(id => {
-      document.getElementById(id).addEventListener("input", renderProvList);
-      document.getElementById(id).addEventListener("change", renderProvList);
-    });
+    document.getElementById("sitePicker").addEventListener("change", reload);
 
-    // 本体3カードクリックでステータス絞り込み連動（仮入場リスト側に反映）
-    // ※「今日の新規入場者」→ DRAFT寄せ、「今日の入場者」→ ACTIVE寄せ、「KY」→ そのまま遷移先なし（モック）
+    // v0.6: 本体3カードクリック→ 仮登録者リストへ遷移（ステータス絞り込みパラメータ付き）
     const cardToStatus = {
       "card-newEntries": "PROVISIONAL_DRAFT",
       "card-entries": "ACTIVE",
@@ -439,18 +398,15 @@
       if (!el) return;
       el.addEventListener("click", (e) => {
         e.preventDefault();
-        const sel = document.getElementById("filterStatus");
-        sel.value = (sel.value === status) ? "" : status;
-        renderProvList();
-        document.querySelector(".section-card")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        location.href = `/nextface/provisional-list.html?status=${status}`;
       });
     });
-    // KYカードは別画面リンクのまま（モックなのでアラート）
+    // KYカードは既存のKY記録画面へ
     const kyCard = document.getElementById("card-ky");
     if (kyCard) {
       kyCard.addEventListener("click", (e) => {
         e.preventDefault();
-        alert("KY帳票ビューはモック対象外です。本体ダッシュボードの ky-sheet.html を参照してください。");
+        location.href = "https://www.face.gemba-ai.cloud/ky-sheet.html";
       });
     }
 

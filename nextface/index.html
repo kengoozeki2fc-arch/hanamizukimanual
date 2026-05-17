@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>永賢組 顔認証フロー見直し v0.5 モック</title>
+  <title>永賢組 顔認証フロー見直し v0.6 モック</title>
   <link rel="stylesheet" href="/nextface/css/common.css">
   <link rel="stylesheet" href="/nextface/css/provisional.css">
   <style>
@@ -26,101 +26,156 @@
       margin-bottom: 6px;
     }
     .hero p { margin: 0; opacity: 0.95; font-size: 13px; line-height: 1.6; }
-    .step-card {
-      background: #fff;
-      border: 1px solid var(--nagaken-border);
-      border-left: 5px solid var(--nagaken-primary);
-      border-radius: 8px;
-      padding: 14px 16px;
-      margin-bottom: 14px;
-    }
-    .step-card.supervisor { border-left-color: var(--nagaken-primary); }
-    .step-card.office { border-left-color: var(--nagaken-primary-deep); }
-    .step-card.office-final { border-left-color: var(--nagaken-accent); }
-    .step-num {
-      display: inline-block;
-      width: 28px; height: 28px; line-height: 28px; text-align: center;
-      background: var(--nagaken-primary); color: #fff; border-radius: 50%;
-      font-weight: 700; font-size: 14px; margin-right: 8px;
-    }
-    .step-card.office .step-num { background: var(--nagaken-primary-deep); }
-    .step-card.office-final .step-num { background: var(--nagaken-accent); color: var(--nagaken-primary-dark); }
-    .step-card h2 {
-      margin: 0 0 6px;
-      font-size: 15px;
-      color: var(--nagaken-primary-dark);
-      display: flex; align-items: center;
-    }
-    .step-card .role {
-      display: inline-block; padding: 2px 8px; border-radius: 4px;
-      background: var(--nagaken-bg); color: var(--nagaken-primary-dark);
-      font-size: 11px; font-weight: 600; margin-left: 8px;
-    }
-    .step-card p { margin: 6px 0 10px; font-size: 13px; line-height: 1.65; color: var(--nagaken-body); }
-    .step-card .key { color: var(--nagaken-primary-deep); font-weight: 700; }
-    .btn-block { display: block; width: 100%; }
+
     .section-label {
       margin: 22px 0 10px; padding: 6px 12px; border-radius: 4px;
       background: var(--nagaken-primary-dark); color: #fff;
       font-size: 13px; font-weight: 700; letter-spacing: 0.05em;
     }
+
+    .entry-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    @media (min-width: 720px) {
+      .entry-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    .entry-card {
+      background: #fff;
+      border: 1px solid var(--nagaken-border);
+      border-left: 5px solid var(--nagaken-primary);
+      border-radius: 8px;
+      padding: 14px 16px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .entry-card.primary { border-left-color: var(--nagaken-accent); background: #FFFCF3; }
+    .entry-card h2 {
+      margin: 0; font-size: 15px; color: var(--nagaken-primary-dark);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .entry-card .role {
+      display: inline-block; padding: 2px 8px; border-radius: 4px;
+      background: var(--nagaken-bg); color: var(--nagaken-primary-dark);
+      font-size: 11px; font-weight: 600;
+    }
+    .entry-card p { margin: 0; font-size: 13px; line-height: 1.6; color: var(--nagaken-body); }
+    .entry-card .key { color: var(--nagaken-primary-deep); font-weight: 700; }
+    .btn-block { display: block; width: 100%; }
+
     .footnote {
       margin-top: 28px; padding: 14px;
       background: var(--nagaken-bg); border-radius: 8px;
       font-size: 12px; line-height: 1.7; color: var(--nagaken-body);
     }
     .footnote strong { color: var(--nagaken-primary-dark); }
-    .badge-mock {
+    .badge-v06 {
       display: inline-block; padding: 2px 8px; border-radius: 4px;
       background: var(--nagaken-accent); color: var(--nagaken-primary-dark);
       font-size: 11px; font-weight: 700; margin-left: 6px;
+    }
+    .badge-existing {
+      display: inline-block; padding: 2px 8px; border-radius: 4px;
+      background: #e8e8e8; color: #555;
+      font-size: 11px; font-weight: 700; margin-left: 6px;
+    }
+
+    .topology {
+      background: #fff;
+      border: 1px solid var(--nagaken-border);
+      border-radius: 8px;
+      padding: 14px;
+      font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+      font-size: 11px;
+      line-height: 1.5;
+      color: #333;
+      white-space: pre;
+      overflow-x: auto;
     }
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="hero">
-      <span class="ver">v0.5 モック</span>
+      <span class="ver">v0.6 モック（ハブ&スポーク）</span>
       <h1>永賢組 顔認証 初期登録フロー見直し</h1>
-      <p>当日飛び込み作業員の <strong>仮登録 → 翌朝正式登録</strong> までを4画面でデモ。必須撮影は<strong>紙／顔／電話番号</strong>、免許・資格証は任意。</p>
+      <p>v0.5 線形4ステップを廃止し、ダッシュボードを<strong>ハブ</strong>、社員メニュー5項目を<strong>スポーク</strong>とする構造に再構築。OCRレビュー画面は本登録画面に統合。</p>
     </div>
 
-    <div class="section-label">🧑‍🔧 監督モバイル（現場）</div>
+    <div class="section-label">🧭 v0.6 画面構成（ハブ&スポーク）</div>
 
-    <div class="step-card supervisor">
-      <h2><span class="step-num">1</span>仮登録（5点撮影）<span class="role">監督</span></h2>
-      <p>当日飛び込み作業員に対し、監督がスマホで <span class="key">紙の入場票・顔・電話番号</span>（必須）と <span class="key">免許・資格証</span>（任意）を撮影。サーバOCRキューへ投入し、<strong>仮入場ステータス</strong>で当日入場OK。</p>
-      <a href="/nextface/provisional-entry.html" class="btn btn-accent btn-block">📷 仮登録（5点撮影）を開く</a>
+    <div class="topology">                        ┌──────────────────────────┐
+                        │ ダッシュボード（ハブ）   │
+                        │ provisional-dashboard    │
+                        └──────────┬───────────────┘
+                                   │
+   ┌──────────┬──────────┬─────────┼─────────┬──────────┬──────────┐
+   ▼          ▼          ▼         ▼         ▼          ▼          ▼
+ 仮登録    本登録    新規入場者  入場管理   KY記録   仮登録者
+ (監督)    (事務)    (既存)      (既存)     (既存)    リスト
+ entry     data-entry                                 list</div>
+
+    <div class="section-label">🚪 入口</div>
+
+    <div class="entry-grid">
+      <div class="entry-card primary">
+        <h2>📋 ダッシュボード（ハブ）<span class="badge-v06">v0.6</span></h2>
+        <p>当日サマリ／クイック導線／社員メニュー5項目（スポーク）。<strong>まずここから始める</strong>。</p>
+        <a href="/nextface/provisional-dashboard.html" class="btn btn-block">📋 ダッシュボードを開く</a>
+      </div>
+
+      <div class="entry-card">
+        <h2>📷 仮登録（5点撮影）<span class="role">監督モバイル</span></h2>
+        <p>当日飛び込み作業員に対し、監督がスマホで <span class="key">紙・顔・電話番号</span>（必須）と <span class="key">免許・資格証</span>（任意）を撮影。OCRサーバに送信し<strong>仮入場ステータス</strong>で当日入場OK。</p>
+        <a href="/nextface/provisional-entry.html" class="btn btn-accent btn-block">📷 仮登録を開く</a>
+      </div>
     </div>
 
-    <div class="section-label">🧑‍💼 事務員PC（翌朝・本登録）</div>
+    <div class="section-label">🧑‍💼 スポーク（社員メニュー5項目）</div>
 
-    <div class="step-card office">
-      <h2><span class="step-num">2</span>仮登録ダッシュボード<span class="role">事務員</span></h2>
-      <p>監督モバイルから上がった仮登録ドラフトの一覧。OCRステータス（未処理／処理中／レビュー待ち／本登録済）で絞り込み、レビュー対象を選択。</p>
-      <a href="/nextface/provisional-dashboard.html" class="btn btn-block">📋 仮登録ダッシュボードを開く</a>
-    </div>
+    <div class="entry-grid">
+      <div class="entry-card">
+        <h2>📋 本登録（OCR結果確認＋22項目データ投入）<span class="badge-v06">v0.6</span></h2>
+        <p>仮登録者リストから対象を選んで開く。OCR マッピング済みの22項目フォームが初期表示され、<strong>免許／紙／手入力トグル</strong>で採用ソースを選択。「正式投入」で ACTIVE 昇格＋PI-2026 採番。</p>
+        <a href="/nextface/provisional-data-entry.html" class="btn btn-block">📋 本登録画面を開く</a>
+      </div>
 
-    <div class="step-card office">
-      <h2><span class="step-num">3</span>OCRレビュー<span class="role">事務員</span></h2>
-      <p>5点撮影サムネ＋OCR抽出結果を画面表示。氏名・生年月日・電話番号・免許番号など <strong>22項目</strong> の誤読を修正し、22項目データ投入画面へ送る。</p>
-      <p class="muted" style="font-size:12px;">※ ダッシュボードから対象を選んで遷移します。直接アクセスでは id 不足で起動できません。</p>
-    </div>
+      <div class="entry-card">
+        <h2>📃 仮登録者リスト<span class="badge-v06">v0.6</span></h2>
+        <p>PROVISIONAL_DRAFT / OCR_REVIEWING / ACTIVE の3段バッジ＋検索＋ステータス絞り込み。行クリックで本登録画面（OCRマッピング統合）へ遷移。</p>
+        <a href="/nextface/provisional-list.html" class="btn btn-block">📃 仮登録者リストを開く</a>
+      </div>
 
-    <div class="step-card office-final">
-      <h2><span class="step-num">4</span>22項目データ投入<span class="role">事務員</span><span class="badge-mock">最終</span></h2>
-      <p>レビュー済みデータを最終確認し、APIM <code>/api/addpersonalinfo</code> へ正式投入。<strong>免許なし時は主ソース＝紙へ自動切替</strong>＋バナー表示。投入完了で仮入場→本入場へ昇格。</p>
-      <p class="muted" style="font-size:12px;">※ ダッシュボードから対象を選んで遷移します。</p>
+      <div class="entry-card">
+        <h2>👷 新規入場者<span class="badge-existing">既存</span></h2>
+        <p>永賢組 既存の事前登録パターン（face.gemba-ai.cloud）。本モックではリンクのみ。</p>
+        <a href="https://www.face.gemba-ai.cloud/" target="_blank" rel="noopener" class="btn btn-ghost btn-block">→ 既存サイトへ</a>
+      </div>
+
+      <div class="entry-card">
+        <h2>🛡 入場管理<span class="badge-existing">既存</span></h2>
+        <p>既存：入退場ログ・管理画面。</p>
+        <a href="https://www.face.gemba-ai.cloud/admin.html" target="_blank" rel="noopener" class="btn btn-ghost btn-block">→ admin.html へ</a>
+      </div>
+
+      <div class="entry-card">
+        <h2>⚠️ KY記録<span class="badge-existing">既存</span></h2>
+        <p>既存：KY帳票ビュー・3画面連動（指示書/KY/KY裏面）。</p>
+        <a href="https://www.face.gemba-ai.cloud/ky-sheet.html" target="_blank" rel="noopener" class="btn btn-ghost btn-block">→ ky-sheet.html へ</a>
+      </div>
     </div>
 
     <div class="footnote">
       <p><strong>このモックについて</strong></p>
-      <p>本サイトは <strong>永賢組 顔認証初期登録フロー見直し案 v0.5</strong>（2026-05-15 確定）の動作確認用モックです。実データ書き込みは行わず、ブラウザの localStorage に保存します。</p>
-      <p style="margin-top:8px;">＜v0.5 主要確定事項＞<br>
-      ① 撮影必須＝<span class="key">紙／顔／電話番号</span>、任意＝免許・資格証<br>
-      ② ヘッダー＝ログインUser自動取得（監督氏名手入力廃止）、現場名は1現場固定／複数兼任時のみドロップダウン<br>
-      ③ 免許なし時は主ソース＝紙へ自動切替＋バナー</p>
-      <p style="margin-top:8px;">設計書: <code>MyBrain/20_Projects/永賢組/02_基本設計/顔認証初期登録フロー見直し案_v0.5_20260515.{md,pdf}</code></p>
+      <p>本サイトは <strong>永賢組 顔認証初期登録フロー見直し案 v0.6</strong>（2026-05-17 確定）の動作確認用モックです。実データ書き込みは行わず、ブラウザの sessionStorage に保存します。</p>
+      <p style="margin-top:8px;">＜v0.6 主要確定事項＞<br>
+      ① <span class="key">OCRレビュー画面廃止</span>＝本登録画面に統合（22項目フォーム＋免許/紙/手入力トグル＋採用コメント）<br>
+      ② <span class="key">ハブ&スポーク構造</span>＝ダッシュボードをハブ、社員メニュー5項目をスポーク<br>
+      ③ <span class="key">仮登録者リスト独立化</span>＝3段バッジ＋現場フィルタ＋行クリックで本登録画面へ<br>
+      ④ <span class="key">パンくず4ステップ廃止</span>＝戻りリンクのみのシンプル遷移<br>
+      ⑤ 認証＝Entra直結（Keycloak不採用）／デプロイ＝nface.gemba-ai.cloud 新規SWA</p>
+      <p style="margin-top:8px;">設計書: <code>MyBrain/20_Projects/永賢組/02_基本設計/顔認証初期登録フロー見直し案_v0.6_20260517.{md,pdf}</code></p>
     </div>
   </div>
 </body>

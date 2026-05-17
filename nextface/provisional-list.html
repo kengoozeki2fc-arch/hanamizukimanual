@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>仮登録者リスト | 永賢組 顔認証初期登録 v0.6</title>
+  <link rel="stylesheet" href="/nextface/css/common.css">
+  <link rel="stylesheet" href="/nextface/css/provisional.css">
+  <script src="/nextface/js/provisional-store.js" defer></script>
+  <script src="/nextface/js/prov-nav.js" defer></script>
+  <style>
+    .wrap-list { max-width: 1100px; margin: 0 auto; padding: 16px; }
+    .list-head {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      background: #fff; border: 1px solid var(--nagaken-border);
+      border-radius: 8px; padding: 12px 14px; margin-bottom: 16px;
+    }
+    .list-head h1 {
+      margin: 0; padding: 0; border: none; font-size: 18px;
+      color: var(--nagaken-primary-dark);
+    }
+    .list-head .onsite { color: #555; font-size: 13px; }
+    .list-head select.site-picker {
+      min-height: 30px; padding: 2px 8px; font-size: 13px;
+      border: 1px solid var(--nagaken-border); border-radius: 6px; background: #fff;
+    }
+    .list-head .user-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 10px; border: 1px solid var(--nagaken-border);
+      border-radius: 999px; background: #fafafa;
+      font-size: 13px; color: #333;
+    }
+    .list-head .user-chip .user-icon { font-size: 14px; }
+
+    /* 3段バッジカウンタ */
+    .badge-counters {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .badge-counter {
+      background: #fff; border: 1px solid var(--nagaken-border);
+      border-radius: 10px; padding: 14px 16px;
+      display: flex; flex-direction: column; gap: 6px;
+      cursor: pointer; transition: all 0.15s ease;
+    }
+    .badge-counter:hover {
+      box-shadow: 0 4px 14px rgba(46, 139, 62, 0.18);
+      transform: translateY(-1px);
+    }
+    .badge-counter.active { box-shadow: 0 0 0 2px var(--nagaken-primary) inset; }
+    .badge-counter.draft  { border-left: 5px solid #B71C1C; }
+    .badge-counter.review { border-left: 5px solid #8D6E00; }
+    .badge-counter.active-status { border-left: 5px solid #155724; }
+    .badge-counter .label {
+      font-size: 12px; font-weight: 600; color: #5a6a5c;
+    }
+    .badge-counter .num {
+      font-size: 32px; font-weight: 800; line-height: 1;
+      color: var(--nagaken-primary-dark);
+    }
+    .badge-counter .unit { font-size: 13px; color: #666; margin-left: 4px; font-weight: 500; }
+
+    .section-card {
+      background: #fff; border: 1px solid var(--nagaken-border);
+      border-radius: 10px; padding: 16px; margin-top: 12px;
+    }
+    .section-card h2 {
+      margin: 0 0 10px; font-size: 16px; color: var(--nagaken-primary-dark);
+      border-bottom: 1px solid var(--nagaken-border); padding-bottom: 6px;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    .section-card .filter-bar {
+      display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0 12px;
+      background: transparent; padding: 0; border: none;
+    }
+    .section-card .filter-bar input[type="text"] { flex: 1 1 220px; min-width: 0; min-height: 32px; }
+    .section-card .filter-bar select { flex: 0 0 auto; min-height: 32px; }
+
+    table.mini { width: 100%; border-collapse: collapse; font-size: 13px; }
+    table.mini th, table.mini td {
+      padding: 8px 10px; text-align: left; border-bottom: 1px solid #eee;
+    }
+    table.mini th { background: var(--nagaken-bg); font-weight: 600; }
+    table.mini tbody tr { cursor: pointer; transition: background 0.1s ease; }
+    table.mini tbody tr:hover { background: #f7fbf6; }
+    .empty-cell {
+      padding: 30px; text-align: center; color: #888; font-size: 13px;
+      background: #fafafa; border-radius: 6px;
+    }
+    .table-scroll-x { overflow-x: auto; }
+
+    .row-draft  td:first-child { box-shadow: inset 4px 0 0 #B71C1C; }
+    .row-review td:first-child { box-shadow: inset 4px 0 0 #8D6E00; }
+    .row-active td:first-child { box-shadow: inset 4px 0 0 #155724; }
+  </style>
+</head>
+<body>
+  <div class="nav">
+    <h3>仮登録者リスト</h3>
+    <a href="/nextface/">メニュー</a>
+  </div>
+
+  <div class="wrap-list">
+    <!-- 共通ナビバー -->
+    <div class="prov-nav">
+      <a class="prov-nav-btn" href="/nextface/">← メニューへ戻る</a>
+      <a class="prov-nav-btn" href="/nextface/provisional-dashboard.html">← ダッシュボードへ戻る</a>
+      <span class="prov-nav-spacer"></span>
+      <span class="prov-nav-hint">行クリックで本登録画面（22項目データ投入）へ</span>
+    </div>
+
+    <!-- ヘッダー -->
+    <div class="list-head">
+      <h1>📃 仮登録者リスト</h1>
+      <span class="onsite" id="onsiteLabel"></span>
+      <select class="site-picker" id="sitePicker" style="display:none;"></select>
+      <span style="flex:1 1 30px;"></span>
+      <span class="user-chip" id="provHeaderUser">
+        <span class="user-icon">👤</span><span class="user-name">読込中…</span>
+      </span>
+    </div>
+
+    <!-- 3段バッジカウンタ -->
+    <div class="badge-counters">
+      <div class="badge-counter draft" data-status="PROVISIONAL_DRAFT">
+        <span class="label">🔴 仮登録（OCR待ち）</span>
+        <div><span class="num" id="cnt-draft">0</span><span class="unit">件</span></div>
+      </div>
+      <div class="badge-counter review" data-status="OCR_REVIEWING">
+        <span class="label">🟡 レビュー待ち（本登録未）</span>
+        <div><span class="num" id="cnt-review">0</span><span class="unit">件</span></div>
+      </div>
+      <div class="badge-counter active-status" data-status="ACTIVE">
+        <span class="label">🟢 正式登録済み</span>
+        <div><span class="num" id="cnt-active">0</span><span class="unit">件</span></div>
+      </div>
+    </div>
+
+    <!-- 一覧テーブル -->
+    <div class="section-card">
+      <h2>
+        一覧
+        <span class="muted" style="font-size:12px; font-weight:400;" id="listSummary">自分の所属現場のみ</span>
+      </h2>
+
+      <div class="filter-bar">
+        <input type="text" id="filterText" placeholder="🔍 電話／監督で絞り込み">
+        <select id="filterStatus">
+          <option value="">全ステータス</option>
+          <option value="PROVISIONAL_DRAFT">🔴 仮登録（OCR待ち）</option>
+          <option value="OCR_REVIEWING">🟡 レビュー待ち</option>
+          <option value="ACTIVE">🟢 正式登録済み</option>
+        </select>
+        <select id="filterSort">
+          <option value="newest">新しい順</option>
+          <option value="oldest">古い順</option>
+          <option value="status">ステータス順</option>
+        </select>
+      </div>
+
+      <div class="table-scroll-x">
+        <table class="mini" id="provTable">
+          <thead>
+            <tr>
+              <th>ステータス</th>
+              <th>電話番号</th>
+              <th>担当監督</th>
+              <th>現場</th>
+              <th>撮影点数</th>
+              <th>仮登録日時</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <p class="muted" style="text-align:center; margin-top:24px; font-size:12px;">
+      v0.6 ハブ&スポーク構成・行クリックで本登録画面に遷移
+    </p>
+  </div>
+
+  <script>
+    const esc = (s) => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+
+    function statusRowClass(s) {
+      return { PROVISIONAL_DRAFT: "row-draft", OCR_REVIEWING: "row-review", ACTIVE: "row-active" }[s] || "";
+    }
+
+    function shotCount(item) {
+      const s = item.shots || {};
+      const a = (s.paper ? 1 : 0) + (s.licence ? 1 : 0) + (s.face ? 1 : 0) + (s.certs?.length || 0);
+      return `${a}点 (資格証 ${s.certs?.length || 0})`;
+    }
+
+    function actionBtn(item) {
+      // v0.6: 本登録画面に統合された（旧 OCRレビュー画面廃止）
+      if (item.status === "ACTIVE") {
+        return `<a href="/nextface/provisional-data-entry.html?id=${encodeURIComponent(item.id)}" class="btn btn-ghost" style="padding:6px 12px; min-height:32px; font-size:12px;">閲覧</a>`;
+      }
+      return `<a href="/nextface/provisional-data-entry.html?id=${encodeURIComponent(item.id)}" class="btn btn-block" style="padding:6px 12px; min-height:32px; font-size:12px; width:auto;">本登録へ</a>`;
+    }
+
+    // 現場フィルタ：選択中現場 or ログインUser所属現場（複数可）に該当する仮入場者だけ返す
+    function filterBySite(all) {
+      const userSites = ProvStore.getUserSites() || [];
+      if (userSites.length === 0) return all;
+      const picker = document.getElementById("sitePicker");
+      const selected = picker && picker.value ? Number(picker.value) : null;
+      const allowedIds = selected ? [selected] : userSites.map(s => s.onsiteId);
+      return all.filter(x => allowedIds.includes(x.onsiteId));
+    }
+
+    function renderBadgeCounters(mine) {
+      const counts = { PROVISIONAL_DRAFT: 0, OCR_REVIEWING: 0, ACTIVE: 0 };
+      mine.forEach(x => { counts[x.status] = (counts[x.status] || 0) + 1; });
+      document.getElementById("cnt-draft").textContent = counts.PROVISIONAL_DRAFT;
+      document.getElementById("cnt-review").textContent = counts.OCR_REVIEWING;
+      document.getElementById("cnt-active").textContent = counts.ACTIVE;
+
+      // active状態反映
+      const filterStatus = document.getElementById("filterStatus").value;
+      document.querySelectorAll(".badge-counter").forEach(el => {
+        el.classList.toggle("active", el.dataset.status === filterStatus);
+      });
+    }
+
+    function renderList() {
+      const all = ProvStore.list();
+      const mine = filterBySite(all);
+
+      renderBadgeCounters(mine);
+
+      const kw = document.getElementById("filterText").value.trim();
+      const st = document.getElementById("filterStatus").value;
+      const sort = document.getElementById("filterSort").value;
+
+      let rows = mine;
+      if (kw) {
+        rows = rows.filter(x =>
+          (x.phone || "").includes(kw) ||
+          (x.supervisorName || "").includes(kw)
+        );
+      }
+      if (st) rows = rows.filter(x => x.status === st);
+
+      const order = { PROVISIONAL_DRAFT: 0, OCR_REVIEWING: 1, ACTIVE: 2 };
+      if (sort === "newest") rows.sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
+      else if (sort === "oldest") rows.sort((a, b) => (a.createdAt || "").localeCompare(b.createdAt || ""));
+      else if (sort === "status") rows.sort((a, b) => (order[a.status] ?? 9) - (order[b.status] ?? 9));
+
+      const tbody = document.querySelector("#provTable tbody");
+      if (!rows.length) {
+        tbody.innerHTML = `<tr><td colspan="7"><div class="empty-cell">該当する仮登録者はいません</div></td></tr>`;
+      } else {
+        tbody.innerHTML = rows.map(item => `
+          <tr class="${statusRowClass(item.status)}" data-id="${esc(item.id)}">
+            <td>${ProvStore.statusBadge(item.status)}</td>
+            <td>${esc(item.phone)}</td>
+            <td>${esc(item.supervisorName)}</td>
+            <td>${esc(item.onsiteName)}</td>
+            <td>${esc(shotCount(item))}</td>
+            <td>${ProvStore.fmtDateTime(item.createdAt)}</td>
+            <td>${actionBtn(item)}</td>
+          </tr>`).join("");
+
+        tbody.querySelectorAll("tr").forEach(tr => {
+          tr.addEventListener("click", (e) => {
+            if (e.target.closest("a")) return;
+            const id = tr.dataset.id;
+            // v0.6: 全ステータス本登録画面へ遷移（OCRマッピング統合済）
+            location.href = "/nextface/provisional-data-entry.html?id=" + encodeURIComponent(id);
+          });
+        });
+      }
+
+      document.getElementById("listSummary").textContent =
+        `自分の所属現場のみ ｜ 合計 ${mine.length}件 / 表示 ${rows.length}件`;
+    }
+
+    // 現場ラベル＆プルダウン
+    function renderSitePicker(sites) {
+      const label = document.getElementById("onsiteLabel");
+      const picker = document.getElementById("sitePicker");
+      if (!sites || sites.length === 0) {
+        label.textContent = "🏗 (現場未割当)";
+        picker.style.display = "none";
+        return;
+      }
+      if (sites.length === 1) {
+        label.textContent = `🏗 ${sites[0].name}`;
+        picker.style.display = "none";
+        return;
+      }
+      label.textContent = "🏗";
+      picker.style.display = "";
+      picker.innerHTML = `<option value="">全所属現場（${sites.length}件）</option>` +
+        sites.map(s => `<option value="${s.onsiteId}">${esc(s.name)}</option>`).join("");
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      await ProvStore.ensureSeed();
+      const ctx = await ProvStore.ensureLoginContext();
+      const u = ctx.user;
+      const userBox = document.getElementById("provHeaderUser");
+      if (userBox) {
+        userBox.innerHTML = `<span class="user-icon">👤</span><span class="user-name">${esc(u?.displayName || "(未ログイン)")}</span>`;
+      }
+      renderSitePicker(ctx.sites || []);
+
+      // ?status=PROVISIONAL_DRAFT/OCR_REVIEWING/ACTIVE クエリ反映（ダッシュボードからの遷移用）
+      const queryStatus = new URLSearchParams(location.search).get("status");
+      if (queryStatus && ["PROVISIONAL_DRAFT", "OCR_REVIEWING", "ACTIVE"].includes(queryStatus)) {
+        document.getElementById("filterStatus").value = queryStatus;
+      }
+
+      renderList();
+
+      document.getElementById("sitePicker").addEventListener("change", renderList);
+      ["filterText", "filterStatus", "filterSort"].forEach(id => {
+        document.getElementById(id).addEventListener("input", renderList);
+        document.getElementById(id).addEventListener("change", renderList);
+      });
+
+      // バッジカウンタクリックでステータス絞り込みトグル
+      document.querySelectorAll(".badge-counter").forEach(el => {
+        el.addEventListener("click", () => {
+          const sel = document.getElementById("filterStatus");
+          const status = el.dataset.status;
+          sel.value = (sel.value === status) ? "" : status;
+          renderList();
+        });
+      });
+    });
+  </script>
+</body>
+</html>

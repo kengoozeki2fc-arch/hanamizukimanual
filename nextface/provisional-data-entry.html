@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>22項目データ投入 | 永賢組 顔認証初期登録 v0.5</title>
+  <title>本登録（OCR結果確認＋22項目データ投入） | 永賢組 顔認証初期登録 v0.6</title>
   <link rel="stylesheet" href="/nextface/css/common.css">
   <link rel="stylesheet" href="/nextface/css/provisional.css">
   <script src="/nextface/js/provisional-store.js" defer></script>
@@ -11,36 +11,30 @@
 </head>
 <body>
   <div class="nav">
-    <h3>② データ投入：22項目最終確認</h3>
-    <a href="/nextface/provisional-dashboard.html">← 仮登録一覧</a>
+    <h3>本登録（OCR結果確認＋22項目データ投入）</h3>
+    <a href="/nextface/provisional-dashboard.html">← ダッシュボード</a>
   </div>
 
   <div class="wrap">
     <div class="prov-nav">
-      <a class="prov-nav-btn" href="/nextface/">← メニューへ戻る</a>
-      <a class="prov-nav-btn" href="/nextface/provisional-dashboard.html">📋 ダッシュボードへ</a>
+      <a class="prov-nav-btn" href="/nextface/provisional-dashboard.html">← ダッシュボードへ戻る</a>
+      <a class="prov-nav-btn" href="/nextface/provisional-list.html">📃 仮登録者リストへ</a>
       <span class="prov-nav-spacer"></span>
-      <span class="prov-nav-hint">パンくずクリックで各画面へジャンプ</span>
-    </div>
-    <div class="flow-steps">
-      <a class="step done" data-step="1">① 仮登録</a><span class="sep">›</span>
-      <a class="step done" data-step="2">② OCRレビュー</a><span class="sep">›</span>
-      <a class="step active" data-step="3">③ 22項目最終確認</a><span class="sep">›</span>
-      <a class="step" data-step="4">④ 正式投入</a>
+      <span class="prov-nav-hint">v0.6 ハブ&スポーク：OCRレビューは本画面に統合済</span>
     </div>
 
-    <!-- v0.5 事務員PCヘッダー（ログインUser表示） -->
+    <!-- v0.6 事務員PCヘッダー（ログインUser表示） -->
     <div class="prov-header">
       <div class="prov-header-site">
         <label class="site-label">事務員PC</label>
-        <span class="site-fixed">22項目データ投入</span>
+        <span class="site-fixed">本登録（OCR結果確認＋22項目データ投入）</span>
       </div>
       <div class="prov-header-user" id="provHeaderUser">
         <span class="user-icon">👤</span><span class="user-name">読込中…</span>
       </div>
     </div>
 
-    <h1>22項目データ投入</h1>
+    <h1>本登録（OCR結果確認＋22項目データ投入）</h1>
     <p class="muted" id="topMeta">読込中…</p>
 
     <div id="banners"></div>
@@ -221,8 +215,8 @@
       <div id="result" style="margin-top: 12px;"></div>
 
       <div class="btn-group" style="margin-top: 16px;">
-        <button type="button" id="backBtn" class="btn btn-ghost">← OCRレビューへ戻る</button>
-        <button type="submit" class="btn btn-block" id="submitBtn">✅ APIM /api/addpersonalinfo へ正式投入（モック）</button>
+        <button type="button" id="backBtn" class="btn btn-ghost">← 仮登録者リストへ戻る</button>
+        <button type="submit" class="btn btn-block" id="submitBtn">✅ 正式投入（APIM /api/addpersonalinfo モック）</button>
       </div>
     </form>
   </div>
@@ -391,12 +385,34 @@
       // バナー
       const banners = [];
       if (current.status === "PROVISIONAL_DRAFT") {
-        banners.push('<div class="banner-strong">⚠ OCR未完。先に OCRレビュー画面でOCR実行してください。</div>');
+        banners.push(`
+          <div class="banner-strong" style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+            <span>⚠ OCR未実行（PROVISIONAL_DRAFT）。下のボタンで Gemini 2.5 Flash モック実行→ OCR_REVIEWING に昇格＋22項目フォームへ自動流し込みします。</span>
+            <button type="button" id="runOcrBtn" class="btn btn-accent" style="padding:6px 14px; min-height:32px; font-size:13px;">🤖 OCR実行（モック・2秒）</button>
+          </div>`);
       }
       if (current.status === "ACTIVE") {
         banners.push(`<div class="alert alert-success">✅ すでに正式投入済み（PersonalInformationID: ${esc(current.personalInfoId || "?")}）。閲覧モードです。</div>`);
       }
       $("#banners").innerHTML = banners.join("");
+
+      // PROVISIONAL_DRAFT 時の OCR モック実行ボタン
+      const runBtn = document.getElementById("runOcrBtn");
+      if (runBtn) {
+        runBtn.onclick = async () => {
+          runBtn.disabled = true;
+          runBtn.textContent = "⏳ Gemini 2.5 Flash 実行中…";
+          await new Promise(r => setTimeout(r, 2000));
+          const updated = await ProvStore.runMockOcr(current.id);
+          if (updated) {
+            // 状態を更新してフォーム再ハイドレート
+            location.reload();
+          } else {
+            runBtn.disabled = false;
+            runBtn.textContent = "🤖 OCR実行（モック・2秒）";
+          }
+        };
+      }
 
       // OCR結果でフィールドを流し込み（採用ソース選択は ProvStore に保存されていればそれを優先）
       const sel = current.sourceSelection || {};
@@ -476,7 +492,7 @@
     }
 
     document.getElementById("backBtn").onclick = () => {
-      location.href = `/provisional-review.html?id=${encodeURIComponent(provId)}`;
+      location.href = "/nextface/provisional-list.html";
     };
 
     document.getElementById("form").onsubmit = async (e) => {
@@ -524,7 +540,8 @@
           PersonalInformationID: <code>${esc(personalInfoId)}</code><br>
           仮登録ID <code>${esc(current.id)}</code> を ACTIVE に昇格しました。<br>
           顔ベクトル登録は <code>addpersonalinfo</code> 側で連鎖（モックでは省略）。<br>
-          <a href="/nextface/provisional-dashboard.html">→ 仮登録一覧に戻る</a>
+          <a href="/nextface/provisional-list.html">→ 仮登録者リストに戻る</a> ｜
+          <a href="/nextface/provisional-dashboard.html">→ ダッシュボードに戻る</a>
         </div>`;
     };
 
