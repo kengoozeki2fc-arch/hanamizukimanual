@@ -1,21 +1,322 @@
 {
   "_meta": {
-    "description": "永賢組 仮登録モック用 OccupationMaster（v0.6 fix4）。実体は OccupationMaster.OccupationID/OccupationName 想定（解析レポート01 上 62件）。",
+    "description": "永賢組 OccupationMaster 本番データ（sqldb-prod-nagaken より SELECT のみ）。",
     "schemaVersion": "occupation-master-mock/v1",
-    "note": "PoC モックのため代表12件。実運用では /api/getoccupations 等に差し替え。"
+    "source": "sqldb-prod-nagaken.OccupationMaster",
+    "fetchedAt": "2026-05-18",
+    "count": 62,
+    "note": "v0.6 PoC モックを本番マスタで上書き。SELECT-only 取得。"
   },
   "occupations": [
-    { "occupationId": 1,  "name": "土工" },
-    { "occupationId": 2,  "name": "鳶工" },
-    { "occupationId": 3,  "name": "大工" },
-    { "occupationId": 4,  "name": "鉄筋工" },
-    { "occupationId": 5,  "name": "型枠大工" },
-    { "occupationId": 6,  "name": "左官工" },
-    { "occupationId": 7,  "name": "塗装工" },
-    { "occupationId": 8,  "name": "電工" },
-    { "occupationId": 9,  "name": "配管工" },
-    { "occupationId": 10, "name": "重機オペレーター" },
-    { "occupationId": 11, "name": "現場監督" },
-    { "occupationId": 12, "name": "その他" }
+    {
+      "occupationId": 1,
+      "name": "型枠大工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 2,
+      "name": "型枠解体工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 3,
+      "name": "造作大工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 4,
+      "name": "造作荷揚工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 5,
+      "name": "左官工事業",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 6,
+      "name": "左官工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 7,
+      "name": "土間工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 8,
+      "name": "左官荷揚工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 9,
+      "name": "足場とび",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 10,
+      "name": "鉄骨とび",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 11,
+      "name": "土工",
+      "specialHealthCheckRequired": true
+    },
+    {
+      "occupationId": 12,
+      "name": "コンクリート圧送工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 13,
+      "name": "コンクリート試験工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 14,
+      "name": "石工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 15,
+      "name": "屋根工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 16,
+      "name": "電工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 17,
+      "name": "弱電工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 18,
+      "name": "管工事業",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 19,
+      "name": "タイル工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 20,
+      "name": "タイル目地工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 21,
+      "name": "タイルクリーニング工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 22,
+      "name": "ブロック工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 23,
+      "name": "レンガ工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 24,
+      "name": "溶接工",
+      "specialHealthCheckRequired": true
+    },
+    {
+      "occupationId": 25,
+      "name": "鉄骨工",
+      "specialHealthCheckRequired": true
+    },
+    {
+      "occupationId": 26,
+      "name": "鉄筋工事業",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 27,
+      "name": "鉄筋工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 28,
+      "name": "鉄筋圧接工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 29,
+      "name": "舗装工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 30,
+      "name": "板金工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 31,
+      "name": "ガラス工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 32,
+      "name": "塗装工",
+      "specialHealthCheckRequired": true
+    },
+    {
+      "occupationId": 33,
+      "name": "吹付工",
+      "specialHealthCheckRequired": true
+    },
+    {
+      "occupationId": 34,
+      "name": "アスファルト防水工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 35,
+      "name": "シール工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 36,
+      "name": "ウレタン防水工",
+      "specialHealthCheckRequired": true
+    },
+    {
+      "occupationId": 37,
+      "name": "シート防水工",
+      "specialHealthCheckRequired": true
+    },
+    {
+      "occupationId": 38,
+      "name": "その他防水工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 39,
+      "name": "置床工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 40,
+      "name": "ボード工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 41,
+      "name": "軽鉄工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 42,
+      "name": "クロス工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 43,
+      "name": "床工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 44,
+      "name": "内装荷揚工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 45,
+      "name": "什設工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 46,
+      "name": "什設荷揚工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 47,
+      "name": "機械器具設置工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 48,
+      "name": "熱絶縁工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 49,
+      "name": "電気通信工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 50,
+      "name": "造園工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 51,
+      "name": "さく井工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 52,
+      "name": "木製建具工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 53,
+      "name": "鋼製建具工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 54,
+      "name": "建具荷揚工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 55,
+      "name": "設備工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 56,
+      "name": "消防設備工",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 57,
+      "name": "清掃施設工事業",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 58,
+      "name": "解体工",
+      "specialHealthCheckRequired": true
+    },
+    {
+      "occupationId": 59,
+      "name": "砕り工",
+      "specialHealthCheckRequired": true
+    },
+    {
+      "occupationId": 60,
+      "name": "定置式クレーン運転士",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 61,
+      "name": "移動式クレーン運転士",
+      "specialHealthCheckRequired": false
+    },
+    {
+      "occupationId": 62,
+      "name": "警備員",
+      "specialHealthCheckRequired": false
+    }
   ]
 }
