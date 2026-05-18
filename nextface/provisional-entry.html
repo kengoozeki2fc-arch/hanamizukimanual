@@ -140,10 +140,29 @@
       validate();
     }
 
+    // 画像をリサイズして base64 化（sessionStorage 容量対策・最大1600px・JPEG quality 0.8）
     function readDataUrl(file) {
       return new Promise((resolve, reject) => {
         const r = new FileReader();
-        r.onload = () => resolve(String(r.result));
+        r.onload = () => {
+          const img = new Image();
+          img.onload = () => {
+            const MAX = 1600;
+            let w = img.naturalWidth, h = img.naturalHeight;
+            if (w > MAX || h > MAX) {
+              const ratio = Math.min(MAX / w, MAX / h);
+              w = Math.round(w * ratio);
+              h = Math.round(h * ratio);
+            }
+            const cv = document.createElement("canvas");
+            cv.width = w; cv.height = h;
+            const ctx = cv.getContext("2d");
+            ctx.drawImage(img, 0, 0, w, h);
+            resolve(cv.toDataURL("image/jpeg", 0.8));
+          };
+          img.onerror = reject;
+          img.src = String(r.result);
+        };
         r.onerror = reject;
         r.readAsDataURL(file);
       });
