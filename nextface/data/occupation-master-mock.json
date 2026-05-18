@@ -1,0 +1,21 @@
+{
+  "_meta": {
+    "description": "永賢組 仮登録モック用 OccupationMaster（v0.6 fix4）。実体は OccupationMaster.OccupationID/OccupationName 想定（解析レポート01 上 62件）。",
+    "schemaVersion": "occupation-master-mock/v1",
+    "note": "PoC モックのため代表12件。実運用では /api/getoccupations 等に差し替え。"
+  },
+  "occupations": [
+    { "occupationId": 1,  "name": "土工" },
+    { "occupationId": 2,  "name": "鳶工" },
+    { "occupationId": 3,  "name": "大工" },
+    { "occupationId": 4,  "name": "鉄筋工" },
+    { "occupationId": 5,  "name": "型枠大工" },
+    { "occupationId": 6,  "name": "左官工" },
+    { "occupationId": 7,  "name": "塗装工" },
+    { "occupationId": 8,  "name": "電工" },
+    { "occupationId": 9,  "name": "配管工" },
+    { "occupationId": 10, "name": "重機オペレーター" },
+    { "occupationId": 11, "name": "現場監督" },
+    { "occupationId": 12, "name": "その他" }
+  ]
+}

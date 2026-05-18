@@ -10,6 +10,8 @@
   const SS_LOGIN_USER  = "nagaken_login_user";   // { userId, displayName, email }
   const SS_USER_SITES  = "nagaken_user_sites";   // [{ onsiteId, name, clientId, clientName }]
   const SS_SITES_ALL   = "nagaken_sites_all";    // 全現場マスタキャッシュ
+  const SS_PARTNERS    = "nagaken_partners";     // 取引先マスタキャッシュ
+  const SS_OCCUPATIONS = "nagaken_occupations";  // 職種マスタキャッシュ
 
   // 起動時：sessionStorage が空ならモックJSONをロード
   async function ensureSeed() {
@@ -87,6 +89,70 @@
     const raw = sessionStorage.getItem(SS_LOGIN_USER);
     if (!raw) return null;
     try { return JSON.parse(raw); } catch { return null; }
+  }
+
+  // ====== v0.6 fix4: 取引先・職種マスタ ======
+  async function loadPartners() {
+    const cached = sessionStorage.getItem(SS_PARTNERS);
+    if (cached) {
+      try { return JSON.parse(cached); } catch {}
+    }
+    try {
+      const res = await fetch("/nextface/data/partner-master-mock.json");
+      const j = await res.json();
+      const arr = j.partners || [];
+      sessionStorage.setItem(SS_PARTNERS, JSON.stringify(arr));
+      return arr;
+    } catch (e) {
+      console.warn("partner-master-mock.json 読み込み失敗", e);
+      return [];
+    }
+  }
+  async function loadOccupations() {
+    const cached = sessionStorage.getItem(SS_OCCUPATIONS);
+    if (cached) {
+      try { return JSON.parse(cached); } catch {}
+    }
+    try {
+      const res = await fetch("/nextface/data/occupation-master-mock.json");
+      const j = await res.json();
+      const arr = j.occupations || [];
+      sessionStorage.setItem(SS_OCCUPATIONS, JSON.stringify(arr));
+      return arr;
+    } catch (e) {
+      console.warn("occupation-master-mock.json 読み込み失敗", e);
+      return [];
+    }
+  }
+
+  // OCR結果文字列をマスタとファジーマッチ。
+  // 戻り値: { matched: <master行 or null>, score: 0..1, mode: "exact"|"includes"|"none" }
+  function matchMaster(value, master, keys = ["name", "kana"]) {
+    const v = String(value || "").trim();
+    if (!v || !master?.length) return { matched: null, score: 0, mode: "none" };
+    // 1. 完全一致
+    for (const row of master) {
+      for (const k of keys) {
+        if (row[k] && String(row[k]).trim() === v) {
+          return { matched: row, score: 1, mode: "exact" };
+        }
+      }
+    }
+    // 2. 部分一致（OCR値 ⊂ master 名 / または master 名 ⊂ OCR値）
+    let best = null;
+    let bestScore = 0;
+    for (const row of master) {
+      for (const k of keys) {
+        const mv = String(row[k] || "").trim();
+        if (!mv) continue;
+        if (mv.includes(v) || v.includes(mv)) {
+          const score = Math.min(v.length, mv.length) / Math.max(v.length, mv.length);
+          if (score > bestScore) { best = row; bestScore = score; }
+        }
+      }
+    }
+    if (best) return { matched: best, score: bestScore, mode: "includes" };
+    return { matched: null, score: 0, mode: "none" };
   }
   function getUserSites() {
     const raw = sessionStorage.getItem(SS_USER_SITES);
@@ -324,5 +390,7 @@
     ensureLoginContext, getLoginUser, getUserSites,
     // v0.6: 実 OCR（Gemini 2.5 Flash via GAS）
     runRealOcr, getOcrEndpoint, setOcrEndpoint, isMockForced,
+    // v0.6 fix4: 取引先・職種マスタ
+    loadPartners, loadOccupations, matchMaster,
   };
 })();

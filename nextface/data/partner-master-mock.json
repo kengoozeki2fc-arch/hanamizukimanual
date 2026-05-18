@@ -1,0 +1,19 @@
+{
+  "_meta": {
+    "description": "永賢組 仮登録モック用 PartnerMaster（v0.6 fix4）。実体は PartnerMaster.PartnerID/PartnerName/PartnerKana 想定。",
+    "schemaVersion": "partner-master-mock/v1",
+    "note": "PoC モックのため代表10件。実運用では取引先マスタAPI（/api/getpartners 等）に差し替え。"
+  },
+  "partners": [
+    { "partnerId": 1,  "name": "クラウドパワー株式会社",           "kana": "クラウドパワー" },
+    { "partnerId": 2,  "name": "山田工業株式会社",                 "kana": "ヤマダコウギョウ" },
+    { "partnerId": 3,  "name": "佐藤建設株式会社",                 "kana": "サトウケンセツ" },
+    { "partnerId": 4,  "name": "中部鳶工業",                       "kana": "チュウブトビコウギョウ" },
+    { "partnerId": 5,  "name": "東海土木",                         "kana": "トウカイドボク" },
+    { "partnerId": 6,  "name": "名古屋鉄筋工業",                   "kana": "ナゴヤテッキンコウギョウ" },
+    { "partnerId": 7,  "name": "丸八建材株式会社",                 "kana": "マルハチケンザイ" },
+    { "partnerId": 8,  "name": "栄電設サービス",                   "kana": "サカエデンセツサービス" },
+    { "partnerId": 9,  "name": "九州永賢組合資",                   "kana": "キュウシュウナガケン" },
+    { "partnerId": 10, "name": "守山左官工業所",                   "kana": "モリヤマサカンコウギョウショ" }
+  ]
+}
