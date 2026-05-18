@@ -140,14 +140,15 @@
       validate();
     }
 
-    // 画像をリサイズして base64 化（sessionStorage 容量対策・最大1600px・JPEG quality 0.8）
+    // 画像をリサイズして base64 化（sessionStorage 容量対策・最大2400px・JPEG quality 0.9）
+    // 細かい手書き文字のOCR精度確保のため高画質寄り
     function readDataUrl(file) {
       return new Promise((resolve, reject) => {
         const r = new FileReader();
         r.onload = () => {
           const img = new Image();
           img.onload = () => {
-            const MAX = 1600;
+            const MAX = 2400;
             let w = img.naturalWidth, h = img.naturalHeight;
             if (w > MAX || h > MAX) {
               const ratio = Math.min(MAX / w, MAX / h);
@@ -158,7 +159,7 @@
             cv.width = w; cv.height = h;
             const ctx = cv.getContext("2d");
             ctx.drawImage(img, 0, 0, w, h);
-            resolve(cv.toDataURL("image/jpeg", 0.8));
+            resolve(cv.toDataURL("image/jpeg", 0.9));
           };
           img.onerror = reject;
           img.src = String(r.result);
