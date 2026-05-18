@@ -223,7 +223,7 @@
   //
   // ?mock=1 が付いていれば常にモック動作（GAS呼ばず ocr-mocks.json を返す）
   //
-  const OCR_ENDPOINT_DEFAULT = "https://script.google.com/macros/s/AKfycbx8mumfpFKf33Peyw79-fmTvl4CyMF6pi87WJDezSgxoKcu7P-1_DlFl98B2HtEAkY/exec"; // 2026-05-18 PoC GAS デプロイ済
+  const OCR_ENDPOINT_DEFAULT = "https://script.google.com/macros/s/AKfycbwgVHVYmlzYvsjnSLhDmn9Kh8nq5RGBrsgyy3KtGhyFHsyQUBnV7CRecgdPI6fB1RM/exec"; // 2026-05-18 v0.2 Few-shot 反映版（公式アンケート全面対応）
   const SS_OCR_ENDPOINT = "nagaken_ocr_endpoint";
 
   function getOcrEndpoint() {
