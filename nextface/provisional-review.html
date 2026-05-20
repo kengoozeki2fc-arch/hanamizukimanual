@@ -69,14 +69,19 @@
       <div id="realOcrResultArea" style="display:none; margin-top:16px;">
         <h3 id="realOcrResultTitle">実OCR結果</h3>
         <div id="realOcrSummary" style="margin-bottom:8px; padding:8px; background:#F1F8E9; border-radius:4px; font-size:13px;"></div>
-        <details open><summary style="cursor:pointer;">📋 V2 書き起こし生テキスト（compare/v2のみ）</summary>
-          <pre id="realOcrTranscription" style="background:#F5F5F5; padding:8px; border-radius:4px; white-space:pre-wrap; max-height:200px; overflow:auto; font-size:12px;"></pre>
+        <div class="btn-group" style="display:flex; gap:8px; margin-bottom:8px; flex-wrap:wrap;">
+          <button class="btn btn-ghost" id="downloadJsonBtn" style="font-size:13px;">📥 JSON ダウンロード</button>
+          <button class="btn btn-ghost" id="downloadTxtBtn" style="font-size:13px;">📥 生テキスト (.txt)</button>
+          <button class="btn btn-ghost" id="copyJsonBtn" style="font-size:13px;">📋 JSONコピー</button>
+        </div>
+        <details open><summary style="cursor:pointer;">📋 V2/Azure DI 書き起こし生テキスト</summary>
+          <pre id="realOcrTranscription" style="background:#F5F5F5; padding:8px; border-radius:4px; white-space:pre-wrap; max-height:300px; overflow:auto; font-size:12px;"></pre>
         </details>
         <details open><summary style="cursor:pointer;">📊 13フィールド差分テーブル（compareのみ）</summary>
           <div id="realOcrDiffTable" style="overflow-x:auto;"></div>
         </details>
-        <details><summary style="cursor:pointer;">🪵 生JSON</summary>
-          <textarea id="realOcrRawJson" readonly style="width:100%; height:240px; font-family:monospace; font-size:11px;"></textarea>
+        <details open><summary style="cursor:pointer;">🪵 生JSON（全レスポンス）</summary>
+          <pre id="realOcrRawJson" style="background:#F5F5F5; padding:8px; border-radius:4px; white-space:pre-wrap; max-height:400px; overflow:auto; font-family:monospace; font-size:11px;"></pre>
         </details>
       </div>
     </div>
@@ -342,11 +347,17 @@
         summary.innerHTML = `V1 [high:${counts.high} mid:${counts.mid} low:${counts.low} fail:${counts.fail}] ｜ 経過: ${updated.ocrElapsedMs}ms`;
       }
 
-      // V2 生書き起こし
-      const transcription = mode === "compare" ? paper.v2?._rawTranscription
-                          : mode === "v2"      ? paper._rawTranscription
-                          : "";
-      document.getElementById("realOcrTranscription").textContent = transcription || "(V2モードでのみ取得)";
+      // 生書き起こし
+      // - Azure DI 経路: paper._rawDi / licence._rawDi （prebuilt-read 純OCR）
+      // - GAS V2/compare 経路: paper._rawTranscription or paper.v2._rawTranscription
+      const parts = [];
+      if (paper._rawDi) parts.push("=== 紙の入場票（Azure DI prebuilt-read）===\n" + paper._rawDi);
+      if (results.licence?._rawDi) parts.push("\n=== 運転免許証（Azure DI prebuilt-read）===\n" + results.licence._rawDi);
+      const rawTr = mode === "compare" ? paper.v2?._rawTranscription
+                  : mode === "v2"      ? paper._rawTranscription
+                  : "";
+      if (rawTr) parts.push((parts.length ? "\n" : "") + "=== GAS V2 書き起こし ===\n" + rawTr);
+      document.getElementById("realOcrTranscription").textContent = parts.length ? parts.join("\n") : "(Azure DI 経路 or V2/compareモードでのみ取得)";
 
       // 13フィールド差分テーブル（compareのみ）
       if (mode === "compare" && paper.diff) {
@@ -368,8 +379,28 @@
         document.getElementById("realOcrDiffTable").innerHTML = "(compareモードでのみ表示)";
       }
 
-      // 生JSON
-      document.getElementById("realOcrRawJson").value = JSON.stringify(results, null, 2);
+      // 生JSON（pre なので textContent）
+      const jsonText = JSON.stringify(results, null, 2);
+      document.getElementById("realOcrRawJson").textContent = jsonText;
+
+      // DL / コピー ハンドラ（最新結果を掴むため毎回バインド）
+      const engine = updated.ocrEngine || "gemini";
+      const baseName = `ocr_${updated.id}_${engine}_${mode}_${Date.now()}`;
+      const triggerDownload = (filename, content, mime) => {
+        const blob = new Blob([content], { type: mime });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url; a.download = filename;
+        document.body.appendChild(a); a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      };
+      document.getElementById("downloadJsonBtn").onclick = () => triggerDownload(`${baseName}.json`, jsonText, "application/json");
+      document.getElementById("downloadTxtBtn").onclick  = () => triggerDownload(`${baseName}.txt`,  document.getElementById("realOcrTranscription").textContent || "(no rawText)", "text/plain;charset=utf-8");
+      document.getElementById("copyJsonBtn").onclick = async () => {
+        try { await navigator.clipboard.writeText(jsonText); alert("✅ JSON コピーしました"); }
+        catch (e) { alert("コピー失敗: " + (e && e.message || e)); }
+      };
     }
 
     function countConfidences(fields) {
