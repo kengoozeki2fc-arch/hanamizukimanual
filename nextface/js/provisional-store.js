@@ -10,15 +10,13 @@
   const SS_LOGIN_USER  = "nagaken_login_user";   // { userId, displayName, email }
   const SS_USER_SITES  = "nagaken_user_sites";   // [{ onsiteId, name, clientId, clientName }]
   const SS_SITES_ALL   = "nagaken_sites_all";    // 全現場マスタキャッシュ
-  const SS_PARTNERS    = "nagaken_partners";     // 取引先マスタキャッシュ
-  const SS_OCCUPATIONS = "nagaken_occupations";  // 職種マスタキャッシュ
 
   // 起動時：sessionStorage が空ならモックJSONをロード
   async function ensureSeed() {
     const raw = sessionStorage.getItem(LS_KEY);
     if (raw) return JSON.parse(raw);
     try {
-      const res = await fetch("/nextface/data/provisional-mocks.json");
+      const res = await fetch("/data/provisional-mocks.json");
       const json = await res.json();
       sessionStorage.setItem(LS_KEY, JSON.stringify(json.items || []));
       return json.items || [];
@@ -35,7 +33,7 @@
     const cached = sessionStorage.getItem(SS_SITES_ALL);
     if (cached) return JSON.parse(cached);
     try {
-      const res = await fetch("/nextface/data/sites-mock.json");
+      const res = await fetch("/data/sites-mock.json");
       const j = await res.json();
       sessionStorage.setItem(SS_SITES_ALL, JSON.stringify(j));
       return j;
@@ -90,70 +88,6 @@
     if (!raw) return null;
     try { return JSON.parse(raw); } catch { return null; }
   }
-
-  // ====== v0.6 fix4: 取引先・職種マスタ ======
-  async function loadPartners() {
-    const cached = sessionStorage.getItem(SS_PARTNERS);
-    if (cached) {
-      try { return JSON.parse(cached); } catch {}
-    }
-    try {
-      const res = await fetch("/nextface/data/partner-master-mock.json");
-      const j = await res.json();
-      const arr = j.partners || [];
-      sessionStorage.setItem(SS_PARTNERS, JSON.stringify(arr));
-      return arr;
-    } catch (e) {
-      console.warn("partner-master-mock.json 読み込み失敗", e);
-      return [];
-    }
-  }
-  async function loadOccupations() {
-    const cached = sessionStorage.getItem(SS_OCCUPATIONS);
-    if (cached) {
-      try { return JSON.parse(cached); } catch {}
-    }
-    try {
-      const res = await fetch("/nextface/data/occupation-master-mock.json");
-      const j = await res.json();
-      const arr = j.occupations || [];
-      sessionStorage.setItem(SS_OCCUPATIONS, JSON.stringify(arr));
-      return arr;
-    } catch (e) {
-      console.warn("occupation-master-mock.json 読み込み失敗", e);
-      return [];
-    }
-  }
-
-  // OCR結果文字列をマスタとファジーマッチ。
-  // 戻り値: { matched: <master行 or null>, score: 0..1, mode: "exact"|"includes"|"none" }
-  function matchMaster(value, master, keys = ["name", "kana"]) {
-    const v = String(value || "").trim();
-    if (!v || !master?.length) return { matched: null, score: 0, mode: "none" };
-    // 1. 完全一致
-    for (const row of master) {
-      for (const k of keys) {
-        if (row[k] && String(row[k]).trim() === v) {
-          return { matched: row, score: 1, mode: "exact" };
-        }
-      }
-    }
-    // 2. 部分一致（OCR値 ⊂ master 名 / または master 名 ⊂ OCR値）
-    let best = null;
-    let bestScore = 0;
-    for (const row of master) {
-      for (const k of keys) {
-        const mv = String(row[k] || "").trim();
-        if (!mv) continue;
-        if (mv.includes(v) || v.includes(mv)) {
-          const score = Math.min(v.length, mv.length) / Math.max(v.length, mv.length);
-          if (score > bestScore) { best = row; bestScore = score; }
-        }
-      }
-    }
-    if (best) return { matched: best, score: bestScore, mode: "includes" };
-    return { matched: null, score: 0, mode: "none" };
-  }
   function getUserSites() {
     const raw = sessionStorage.getItem(SS_USER_SITES);
     if (!raw) return [];
@@ -199,7 +133,7 @@
     const idx = items.findIndex((x) => x.id === id);
     if (idx < 0) return null;
     try {
-      const res = await fetch("/nextface/data/ocr-mocks.json");
+      const res = await fetch("/data/ocr-mocks.json");
       const j = await res.json();
       // デフォルトOCR結果テンプレートを流し込み（電話番号と顔写真は本人入力のため上書きしない）
       items[idx].ocrResult = j.defaultResult;
@@ -213,137 +147,124 @@
     }
   }
 
-  // ====== v0.6: 実Gemini OCR（GAS Web App 呼び出し） ======
-  //
-  // GAS デプロイ URL を埋め込み or sessionStorage / URLパラメータで上書き可能。
-  // 流れ:
-  //   1. ?ocrEndpoint=https://script.google.com/...exec で上書き
-  //   2. sessionStorage.nagaken_ocr_endpoint があれば次回以降そっち
-  //   3. 既定値（後で大関さん側で値差し替え）
-  //
-  // ?mock=1 が付いていれば常にモック動作（GAS呼ばず ocr-mocks.json を返す）
-  //
-  const OCR_ENDPOINT_DEFAULT = "https://script.google.com/macros/s/AKfycbwgVHVYmlzYvsjnSLhDmn9Kh8nq5RGBrsgyy3KtGhyFHsyQUBnV7CRecgdPI6fB1RM/exec"; // 2026-05-18 v0.2 Few-shot 反映版（公式アンケート全面対応）
-  const SS_OCR_ENDPOINT = "nagaken_ocr_endpoint";
+  // 実OCR呼出（GAS Web App）
+  //   mode: 'v1' (現行スキーマ縛り版) | 'v2' (2段化版) | 'compare' (V1/V2比較)
+  //   feedback_gemini_ocr_paper_form_lessons の学び検証用
+  //   CORS: Content-Type=text/plain で simple request 化（preflight回避）
+  const NAGAKEN_GAS_OCR_URL = "https://script.google.com/macros/s/AKfycbwgVHVYmlzYvsjnSLhDmn9Kh8nq5RGBrsgyy3KtGhyFHsyQUBnV7CRecgdPI6fB1RM/exec";
 
-  function getOcrEndpoint() {
-    const qs = new URLSearchParams(location.search);
-    const fromQs = qs.get("ocrEndpoint");
-    if (fromQs) {
-      sessionStorage.setItem(SS_OCR_ENDPOINT, fromQs);
-      return fromQs;
-    }
-    return sessionStorage.getItem(SS_OCR_ENDPOINT) || OCR_ENDPOINT_DEFAULT;
-  }
-  function isMockForced() {
-    const qs = new URLSearchParams(location.search);
-    return qs.get("mock") === "1";
-  }
-
-  // shots を GAS が期待する形（dataURL）に変換
-  function shotsToPayload(shots) {
-    if (!shots) return {};
-    return {
-      paper:   shots.paper?.thumb   || null,
-      licence: shots.licence?.thumb || null,
-      qualifications: (shots.certs || []).map(c => c.thumb).filter(Boolean),
-      face:    shots.face?.thumb    || null, // 参考送信のみ・OCR対象外
-    };
-  }
-
-  // GAS の results を v0.5/v0.6 フォーマット {licence:{...}, paper:{...}, certs:[]}
-  // に変換する。GAS は {fields:{...}} で返してくるので１段剥がす。
-  function adaptGasResults(gas) {
-    if (!gas) return { licence: {}, paper: {}, certs: [] };
-    const out = { licence: {}, paper: {}, certs: [] };
-    if (gas.licence && gas.licence.fields) out.licence = gas.licence.fields;
-    if (gas.paper   && gas.paper.fields)   out.paper   = gas.paper.fields;
-    if (Array.isArray(gas.qualifications)) {
-      out.certs = gas.qualifications.map(q => ({
-        kind: q.type || "不明",
-        confidence: q.confidence || "mid",
-        fields: (q.fields || {}),
-      }));
-    }
-    return out;
-  }
-
-  async function runRealOcr(id) {
+  async function runRealOcr(id, mode) {
     const items = list();
     const idx = items.findIndex((x) => x.id === id);
-    if (idx < 0) return { ok: false, error: "draft not found" };
-
+    if (idx < 0) return null;
     const draft = items[idx];
-
-    // モック強制 or エンドポイント未設定なら mock fallback
-    const endpoint = getOcrEndpoint();
-    if (isMockForced() || !endpoint) {
-      const updated = await runMockOcr(id);
-      return {
-        ok: true,
-        item: updated,
-        usedMock: true,
-        endpoint: endpoint || "(未設定)",
-      };
+    const s = draft.shots || {};
+    const paperDataUrl = s.paper && s.paper.thumb ? s.paper.thumb : null;
+    if (!paperDataUrl) {
+      console.warn("runRealOcr: paper shot 不在");
+      return null;
     }
-
     const payload = {
       provId: id,
-      shots: shotsToPayload(draft.shots),
+      mode: mode || 'v1',
+      shots: {
+        paper: paperDataUrl,
+        licence: s.licence && s.licence.thumb ? s.licence.thumb : null,
+        qualifications: (s.certs || []).map((c) => c && c.thumb).filter(Boolean),
+        face: s.face && s.face.thumb ? s.face.thumb : null,
+      },
     };
-
-    // 60秒タイムアウト
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 60000);
     try {
-      const res = await fetch(endpoint, {
+      const res = await fetch(NAGAKEN_GAS_OCR_URL, {
         method: "POST",
-        // GAS Web App は標準で text/plain でも application/json でも受けるが
-        // CORS preflight 回避のため text/plain にしておく（GAS側は contentText を JSON.parse）
         headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify(payload),
-        signal: controller.signal,
       });
-      clearTimeout(timer);
-      const text = await res.text();
-      let json;
-      try { json = JSON.parse(text); } catch { json = null; }
-      if (!res.ok || !json || json.ok === false) {
-        // フォールバック: モックで埋める
-        const updated = await runMockOcr(id);
-        return {
-          ok: false,
-          error: (json && json.error) || `HTTP ${res.status}`,
-          fallbackToMock: true,
-          item: updated,
-          rawText: text.slice(0, 500),
-        };
+      const j = await res.json();
+      if (!j.ok) {
+        console.error("GAS OCR error:", j);
+        items[idx].ocrError = j.error || "unknown";
+        items[idx].updatedAt = new Date().toISOString();
+        save(items);
+        return items[idx];
       }
-      // 成功 → ストア更新
-      const adapted = adaptGasResults(json.results);
-      items[idx].ocrResult = adapted;
+      // mode別の結果格納
+      //   v1: paperResult = { fields, confidence }
+      //   v2: paperResult = { fields, _rawTranscription, _version }
+      //   compare: paperResult = { v1, v2, diff, summary, totalElapsedMs }
+      items[idx].ocrResult = j.results;
+      items[idx].ocrMode = j.mode || mode;
+      items[idx].ocrElapsedMs = j.elapsedMs;
       items[idx].status = "OCR_REVIEWING";
-      items[idx].ocrElapsedMs = json.elapsedMs || null;
-      items[idx].ocrUsedEndpoint = endpoint;
       items[idx].updatedAt = new Date().toISOString();
       save(items);
-      return { ok: true, item: items[idx], elapsedMs: json.elapsedMs, usedMock: false };
+      return items[idx];
     } catch (e) {
-      clearTimeout(timer);
-      // ネットワークエラー等 → モックフォールバック
-      const updated = await runMockOcr(id);
-      return {
-        ok: false,
-        error: String(e && e.message || e),
-        fallbackToMock: true,
-        item: updated,
-      };
+      console.error("runRealOcr fetch failed", e);
+      items[idx].ocrError = String(e && e.message || e);
+      items[idx].updatedAt = new Date().toISOString();
+      save(items);
+      return items[idx];
     }
   }
 
-  function setOcrEndpoint(url) {
-    if (url) sessionStorage.setItem(SS_OCR_ENDPOINT, url);
-    else sessionStorage.removeItem(SS_OCR_ENDPOINT);
+  // Azure DI + OpenAI 経路OCR呼出（SWA Functions /api/ocr-di）
+  //   GAS版 runRealOcr と payload/レスポンス同一構造（fields lowerCamel）
+  //   ocrEngine フィールドで判別可能
+  async function runAzureOcr(id, mode) {
+    const items = list();
+    const idx = items.findIndex((x) => x.id === id);
+    if (idx < 0) return null;
+    const draft = items[idx];
+    const s = draft.shots || {};
+    const paperDataUrl = s.paper && s.paper.thumb ? s.paper.thumb : null;
+    if (!paperDataUrl) {
+      console.warn("runAzureOcr: paper shot 不在");
+      return null;
+    }
+    const payload = {
+      provId: id,
+      mode: mode || 'v1',
+      shots: {
+        paper: paperDataUrl,
+        licence: s.licence && s.licence.thumb ? s.licence.thumb : null,
+        qualifications: (s.certs || []).map((c) => c && c.thumb).filter(Boolean),
+        face: s.face && s.face.thumb ? s.face.thumb : null,
+      },
+    };
+    try {
+      // manual.kensetsu-total.support/nextface/ など別オリジンから叩く前提で絶対URL固定
+      // Content-Type: text/plain;charset=utf-8 で simple request 化＝CORS preflight 回避（GASと同じパターン）
+      const res = await fetch("https://gray-moss-06a59c500.2.azurestaticapps.net/api/ocr-di", {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload),
+      });
+      const j = await res.json();
+      if (!j.ok) {
+        console.error("Azure OCR error:", j);
+        items[idx].ocrError = j.error || "unknown";
+        items[idx].ocrEngine = "azure-di+openai";
+        items[idx].updatedAt = new Date().toISOString();
+        save(items);
+        return items[idx];
+      }
+      items[idx].ocrResult = j.results;
+      items[idx].ocrMode = j.mode || mode;
+      items[idx].ocrEngine = j.engine || "azure-di+openai";
+      items[idx].ocrElapsedMs = j.elapsedMs;
+      items[idx].status = "OCR_REVIEWING";
+      items[idx].updatedAt = new Date().toISOString();
+      save(items);
+      return items[idx];
+    } catch (e) {
+      console.error("runAzureOcr fetch failed", e);
+      items[idx].ocrError = String(e && e.message || e);
+      items[idx].ocrEngine = "azure-di+openai";
+      items[idx].updatedAt = new Date().toISOString();
+      save(items);
+      return items[idx];
+    }
   }
 
   function newDraftId() {
@@ -384,13 +305,9 @@
 
   window.ProvStore = {
     ensureSeed, list, save, getById, upsert, setStatus,
-    runMockOcr, newDraftId, statusBadge, confBadge, fmtDateTime,
+    runMockOcr, runRealOcr, runAzureOcr, newDraftId, statusBadge, confBadge, fmtDateTime,
     STATUS_LABEL,
     // v0.5: ログインUser／現場マスタ
     ensureLoginContext, getLoginUser, getUserSites,
-    // v0.6: 実 OCR（Gemini 2.5 Flash via GAS）
-    runRealOcr, getOcrEndpoint, setOcrEndpoint, isMockForced,
-    // v0.6 fix4: 取引先・職種マスタ
-    loadPartners, loadOccupations, matchMaster,
   };
 })();

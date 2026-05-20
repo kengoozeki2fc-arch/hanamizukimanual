@@ -3,38 +3,44 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>本登録（OCR結果確認＋22項目データ投入） | 永賢組 顔認証初期登録 v0.6</title>
-  <link rel="stylesheet" href="/nextface/css/common.css">
-  <link rel="stylesheet" href="/nextface/css/provisional.css">
-  <script src="/nextface/js/provisional-store.js" defer></script>
-  <script src="/nextface/js/prov-nav.js" defer></script>
+  <title>22項目データ投入 | 永賢組 顔認証初期登録 v0.5</title>
+  <link rel="stylesheet" href="/css/common.css">
+  <link rel="stylesheet" href="/css/provisional.css">
+  <script src="/js/provisional-store.js" defer></script>
+  <script src="/js/prov-nav.js" defer></script>
 </head>
 <body>
   <div class="nav">
-    <h3>本登録（OCR結果確認＋22項目データ投入）</h3>
-    <a href="/nextface/provisional-dashboard.html">← ダッシュボード</a>
+    <h3>② データ投入：22項目最終確認</h3>
+    <a href="/provisional-dashboard.html">← 仮登録一覧</a>
   </div>
 
   <div class="wrap">
     <div class="prov-nav">
-      <a class="prov-nav-btn" href="/nextface/provisional-dashboard.html">← ダッシュボードへ戻る</a>
-      <a class="prov-nav-btn" href="/nextface/provisional-list.html">📃 仮登録者リストへ</a>
+      <a class="prov-nav-btn" href="/">← メニューへ戻る</a>
+      <a class="prov-nav-btn" href="/provisional-dashboard.html">📋 ダッシュボードへ</a>
       <span class="prov-nav-spacer"></span>
-      <span class="prov-nav-hint">v0.6 ハブ&スポーク：OCRレビューは本画面に統合済</span>
+      <span class="prov-nav-hint">パンくずクリックで各画面へジャンプ</span>
+    </div>
+    <div class="flow-steps">
+      <a class="step done" data-step="1">① 仮登録</a><span class="sep">›</span>
+      <a class="step done" data-step="2">② OCRレビュー</a><span class="sep">›</span>
+      <a class="step active" data-step="3">③ 22項目最終確認</a><span class="sep">›</span>
+      <a class="step" data-step="4">④ 正式投入</a>
     </div>
 
-    <!-- v0.6 事務員PCヘッダー（ログインUser表示） -->
+    <!-- v0.5 事務員PCヘッダー（ログインUser表示） -->
     <div class="prov-header">
       <div class="prov-header-site">
         <label class="site-label">事務員PC</label>
-        <span class="site-fixed">本登録（OCR結果確認＋22項目データ投入）</span>
+        <span class="site-fixed">22項目データ投入</span>
       </div>
       <div class="prov-header-user" id="provHeaderUser">
         <span class="user-icon">👤</span><span class="user-name">読込中…</span>
       </div>
     </div>
 
-    <h1>本登録（OCR結果確認＋22項目データ投入）</h1>
+    <h1>22項目データ投入</h1>
     <p class="muted" id="topMeta">読込中…</p>
 
     <div id="banners"></div>
@@ -142,46 +148,36 @@
         </div>
       </div>
 
-      <!-- ===== 所属・職種（v0.6 fix4：マスタ照合＋選択UI） ===== -->
+      <!-- ===== 所属・職種 ===== -->
       <div class="card">
-        <h2>所属・職種 <span class="muted" style="font-size:12px; font-weight:normal;">マスタから選択（無ければ追加申請）</span></h2>
+        <h2>所属・職種</h2>
+        <label>主たる所属（取引先） <span style="color:#991b1b">*</span> <span id="conf-partnerName"></span></label>
+        <input type="text" name="partnerName" data-field="partnerName" placeholder="マスタとファジーマッチ予定">
 
-        <label>主たる所属（取引先） <span style="color:#991b1b">*</span>
-          <span id="conf-partnerName"></span>
-          <span id="badge-partnerName"></span>
-        </label>
-        <div class="master-pick" data-master-field="partnerName">
-          <select name="partnerName_select" data-master-select="partnerName">
-            <option value="">— マスタから選択 —</option>
-          </select>
-          <input type="text" name="partnerName" data-field="partnerName" placeholder="マスタ未登録：手入力" style="display:none;">
-          <button type="button" class="master-toggle-btn" data-master-toggle="partnerName">手入力に切替</button>
-        </div>
-        <small class="master-hint" id="hint-partnerName"></small>
-
-        <label style="margin-top:10px;">職種 <span style="color:#991b1b">*</span>
-          <span id="conf-occupation"></span>
-          <span id="badge-occupation"></span>
-        </label>
-        <div class="master-pick" data-master-field="occupation">
-          <select name="occupation_select" data-master-select="occupation">
-            <option value="">— マスタから選択 —</option>
-          </select>
-          <input type="text" name="occupation" data-field="occupation" placeholder="マスタ未登録：手入力" style="display:none;">
-          <button type="button" class="master-toggle-btn" data-master-toggle="occupation">手入力に切替</button>
-        </div>
-        <small class="master-hint" id="hint-occupation"></small>
+        <label>職種 <span style="color:#991b1b">*</span> <span id="conf-occupation"></span></label>
+        <input type="text" name="occupation" data-field="occupation" placeholder="例：土工／鳶／大工">
       </div>
 
       <!-- ===== 健康情報 ===== -->
       <div class="card">
         <h2>健康情報（紙OCR・手書き精度中）</h2>
-        <label>血液型 <span id="conf-bloodType"></span></label>
-        <select name="bloodType" data-field="bloodType">
-          <option value="">-</option>
-          <option value="A">A</option><option value="B">B</option>
-          <option value="O">O</option><option value="AB">AB</option>
-        </select>
+        <div class="row2">
+          <div>
+            <label>血液型 <span id="conf-bloodType"></span></label>
+            <select name="bloodType" data-field="bloodType">
+              <option value="">-</option>
+              <option value="A">A</option><option value="B">B</option>
+              <option value="O">O</option><option value="AB">AB</option>
+            </select>
+          </div>
+          <div>
+            <label>Rh <span id="conf-rh"></span></label>
+            <select name="rh" data-field="rh">
+              <option value="">-</option>
+              <option value="+">+</option><option value="-">−</option>
+            </select>
+          </div>
+        </div>
 
         <label>直近健診日 <span id="conf-lastHealthCheckDate"></span></label>
         <input type="date" name="lastHealthCheckDate" data-field="lastHealthCheckDate">
@@ -201,6 +197,10 @@
       <div class="card">
         <h2>保有資格（資格証OCR判定済）</h2>
         <div id="certsList" class="muted">読込中…</div>
+        <div id="certWarning"></div>
+        <label style="display:flex; align-items:center; gap:8px; margin-top:10px;">
+          <input type="checkbox" id="ackNoCert" name="ackNoCert"> 資格なしで登録することを確認しました
+        </label>
       </div>
 
       <!-- ===== 顔写真（監督モバイル撮影） ===== -->
@@ -216,17 +216,13 @@
       <div class="card">
         <h2>撮影元画像（参照）</h2>
         <div class="ocr-shot-grid" id="shotThumbs"></div>
-        <div class="reocr-bar">
-          <button type="button" class="reocr-btn" id="reocrBtn">📷 再OCR</button>
-          <span class="reocr-hint">OCR結果が不満なら再実行できます（編集中の内容はOCR結果で上書きされます）。</span>
-        </div>
       </div>
 
       <div id="result" style="margin-top: 12px;"></div>
 
       <div class="btn-group" style="margin-top: 16px;">
-        <button type="button" id="backBtn" class="btn btn-ghost">← 仮登録者リストへ戻る</button>
-        <button type="submit" class="btn btn-block" id="submitBtn">✅ 正式投入（APIM /api/addpersonalinfo モック）</button>
+        <button type="button" id="backBtn" class="btn btn-ghost">← OCRレビューへ戻る</button>
+        <button type="submit" class="btn btn-block" id="submitBtn">✅ APIM /api/addpersonalinfo へ正式投入（モック）</button>
       </div>
     </form>
   </div>
@@ -239,6 +235,16 @@
 
     const $ = (sel) => document.querySelector(sel);
     const esc = (s) => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+
+    // 紙OCR/免許OCR ともに lowerCamel + fieldsネスト 構造（旧V1版 2026-05-20 revert）
+    function paperFieldOf(paperResult, fieldName) {
+      const fields = paperResult?.fields || {};
+      return fields[fieldName];
+    }
+    function licenceFieldOf(licenceResult, fieldName) {
+      const fields = licenceResult?.fields || {};
+      return fields[fieldName];
+    }
 
     // OCR結果1項目（{value, confidence}）をフィールドに流し込み
     function hydrateField(name, ocrSrc, options = {}) {
@@ -300,8 +306,8 @@
           // ソース切替時、フィールド値を該当ソースで再ハイドレート（手入力時はクリアしない）
           if (current?.ocrResult && source !== "manual") {
             const ocrSrc = {
-              licence: current.ocrResult.licence?.[field],
-              paper:   current.ocrResult.paper?.[field],
+              licence: licenceFieldOf(current.ocrResult.licence, field),
+              paper:   paperFieldOf(current.ocrResult.paper, field),
             };
             hydrateField(field, ocrSrc, { useSource: source, skipBadge: true });
           }
@@ -315,9 +321,12 @@
 
     function renderCerts() {
       const wrap = document.getElementById("certsList");
+      const warn = document.getElementById("certWarning");
       const certs = current?.ocrResult?.certs || [];
       if (!certs.length) {
-        wrap.innerHTML = '<p class="muted">資格証OCR結果なし（資格証未撮影 or 読取失敗）。</p>';
+        wrap.innerHTML = '<p class="muted">資格証OCR結果なし。</p>';
+        warn.innerHTML = '<div class="banner-strong">⚠ 資格が登録されていません。本当に登録しますか？ 下のチェックを入れてください。</div>';
+        document.getElementById("ackNoCert").required = true;
         return;
       }
       wrap.innerHTML = certs.map((c, i) => {
@@ -334,96 +343,7 @@
           </div>
         `;
       }).join("");
-    }
-
-    // v0.6 fix4: マスタ選択UI hydrate
-    // OCR値 と マスタを照合 → 完全/部分一致なら select 既定値・未一致なら手入力に自動切替
-    function hydratePartnerOccupation(ocrPaper, partners, occupations) {
-      const fields = [
-        { name: "partnerName", master: partners,    keys: ["name", "kana"], label: "取引先" },
-        { name: "occupation",  master: occupations, keys: ["name"],         label: "職種"   },
-      ];
-      fields.forEach(({ name, master, keys, label }) => {
-        const sel    = document.querySelector(`[data-master-select="${name}"]`);
-        const input  = document.querySelector(`[data-field="${name}"]`);
-        const toggle = document.querySelector(`[data-master-toggle="${name}"]`);
-        const badge  = document.getElementById(`badge-${name}`);
-        const confSpan = document.getElementById(`conf-${name}`);
-        const hint   = document.getElementById(`hint-${name}`);
-        if (!sel || !input) return;
-
-        // <option>を流し込み（valueはmaster name・displayは name(+kana)）
-        sel.innerHTML = '<option value="">— マスタから選択 —</option>' + master.map(m => {
-          const k = m.kana ? `（${esc(m.kana)}）` : "";
-          return `<option value="${esc(m.name)}">${esc(m.name)}${k}</option>`;
-        }).join("");
-
-        // OCR結果取り出し
-        const v = ocrPaper?.[name];
-        const ocrValue = v?.value || "";
-        const ocrConf  = v?.confidence;
-        if (confSpan) confSpan.innerHTML = ProvStore.confBadge(ocrConf || "fail");
-
-        // マスタ照合
-        const m = ProvStore.matchMaster(ocrValue, master, keys);
-        if (m.mode === "exact" || m.mode === "includes") {
-          sel.value = m.matched.name;
-          input.value = m.matched.name;
-          input.style.display = "none";
-          sel.style.display = "";
-          toggle.textContent = "手入力に切替";
-          if (badge) {
-            badge.className = "master-badge " + (m.mode === "exact" ? "master-matched" : "master-partial");
-            badge.textContent = m.mode === "exact" ? "✓ マスタ一致" : "～ 部分一致";
-          }
-          if (hint) hint.textContent = ocrValue ? `OCR値「${ocrValue}」→ マスタ「${m.matched.name}」と一致（${m.mode === "exact" ? "完全" : "部分"}）。違う場合は手入力に切替。` : "";
-        } else {
-          // 未一致 → 手入力モード
-          input.value = ocrValue;
-          input.style.display = "";
-          sel.style.display = "none";
-          toggle.textContent = "マスタから選ぶ";
-          if (badge) {
-            badge.className = "master-badge master-unlisted";
-            badge.textContent = ocrValue ? "⚠ マスタ未登録" : "未入力";
-          }
-          if (hint) hint.textContent = ocrValue ? `OCR値「${ocrValue}」はマスタ未登録。手入力 or マスタから選択してください。` : `${label}マスタから選択 or 手入力してください。`;
-        }
-
-        // selectで選んだら hidden の input 側にも反映（FormData対策）
-        sel.addEventListener("change", () => {
-          input.value = sel.value || "";
-          if (badge && sel.value) {
-            badge.className = "master-badge master-matched";
-            badge.textContent = "✓ マスタから選択";
-          }
-        });
-
-        // 手入力 ⇄ マスタ選択トグル
-        toggle.onclick = () => {
-          const isManualNow = input.style.display !== "none";
-          if (isManualNow) {
-            // → マスタ選択モードへ
-            input.style.display = "none";
-            sel.style.display = "";
-            toggle.textContent = "手入力に切替";
-            // 値はselectに無いとリセットされるので、現在の input.value で再マッチ
-            const m2 = ProvStore.matchMaster(input.value, master, keys);
-            sel.value = m2.matched?.name || "";
-            input.value = sel.value;
-          } else {
-            // → 手入力モードへ
-            sel.style.display = "none";
-            input.style.display = "";
-            toggle.textContent = "マスタから選ぶ";
-            if (!input.value && sel.value) input.value = sel.value;
-            if (badge) {
-              badge.className = "master-badge master-unlisted";
-              badge.textContent = "手入力";
-            }
-          }
-        };
-      });
+      document.getElementById("ackNoCert").required = false;
     }
 
     function renderShotThumbs() {
@@ -465,7 +385,7 @@
         userBox.innerHTML = `<span class="user-icon">👤</span><span class="user-name">${u?.displayName || "(未ログイン)"}</span>`;
       }
       if (!provId) {
-        $("#topMeta").innerHTML = '<span style="color:#c00;">⚠ id パラメータがありません。<a href="/nextface/provisional-dashboard.html">仮登録一覧</a>からやり直してください。</span>';
+        $("#topMeta").innerHTML = '<span style="color:#c00;">⚠ id パラメータがありません。<a href="/provisional-dashboard.html">仮登録一覧</a>からやり直してください。</span>';
         return;
       }
       current = ProvStore.getById(provId);
@@ -480,81 +400,20 @@
 
       // バナー
       const banners = [];
-      const endpoint = ProvStore.getOcrEndpoint();
-      const mockForced = ProvStore.isMockForced();
-      const endpointSet = !!endpoint && !mockForced;
-      const modeLabel = mockForced
-        ? "強制モック（?mock=1）"
-        : endpointSet ? `実Gemini OCR（${endpoint.slice(0, 60)}…）` : "モック動作（GASエンドポイント未設定）";
-
       if (current.status === "PROVISIONAL_DRAFT") {
-        banners.push(`
-          <div class="banner-strong" style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-            <span>⚠ OCR未実行（PROVISIONAL_DRAFT）。下のボタンで Gemini 2.5 Flash を実行→ OCR_REVIEWING に昇格＋22項目フォームへ自動流し込みします。</span>
-            <button type="button" id="runOcrBtn" class="btn btn-accent" style="padding:6px 14px; min-height:32px; font-size:13px;">🤖 OCR実行</button>
-            <details style="flex-basis:100%; margin-top:4px;">
-              <summary style="cursor:pointer; font-size:12px; color:#1B5E20;">OCRエンドポイント設定 (現在: ${esc(modeLabel)})</summary>
-              <div style="display:flex; gap:8px; align-items:center; margin-top:6px;">
-                <input type="text" id="ocrEndpointInput" placeholder="https://script.google.com/.../exec" style="flex:1; padding:4px 8px; font-size:12px;" value="${esc(endpoint || "")}">
-                <button type="button" id="saveOcrEndpointBtn" class="btn btn-ghost" style="padding:4px 10px; font-size:12px;">保存</button>
-                <button type="button" id="clearOcrEndpointBtn" class="btn btn-ghost" style="padding:4px 10px; font-size:12px;">クリア（モックに戻す）</button>
-              </div>
-              <p style="font-size:11px; color:#666; margin-top:4px;">※ ?ocrEndpoint=URL でも上書き可能。?mock=1 で強制モック。</p>
-            </details>
-          </div>`);
-      }
-      if (current.status === "OCR_REVIEWING" && current.ocrElapsedMs) {
-        banners.push(`<div class="alert alert-info">🤖 Gemini OCR 完了 — 経過 ${current.ocrElapsedMs}ms。下記カードで採用ソースを設定してください。</div>`);
+        banners.push('<div class="banner-strong">⚠ OCR未完。先に OCRレビュー画面でOCR実行してください。</div>');
       }
       if (current.status === "ACTIVE") {
         banners.push(`<div class="alert alert-success">✅ すでに正式投入済み（PersonalInformationID: ${esc(current.personalInfoId || "?")}）。閲覧モードです。</div>`);
       }
       $("#banners").innerHTML = banners.join("");
 
-      // エンドポイント設定UI
-      const saveBtn = document.getElementById("saveOcrEndpointBtn");
-      const clearBtn = document.getElementById("clearOcrEndpointBtn");
-      if (saveBtn) {
-        saveBtn.onclick = () => {
-          const v = document.getElementById("ocrEndpointInput").value.trim();
-          ProvStore.setOcrEndpoint(v);
-          location.reload();
-        };
-      }
-      if (clearBtn) {
-        clearBtn.onclick = () => {
-          ProvStore.setOcrEndpoint(null);
-          location.reload();
-        };
-      }
-
-      // PROVISIONAL_DRAFT 時の OCR 実行ボタン
-      const runBtn = document.getElementById("runOcrBtn");
-      if (runBtn) {
-        runBtn.onclick = async () => {
-          runBtn.disabled = true;
-          runBtn.textContent = "⏳ Gemini 2.5 Flash 実行中…";
-          const res = await ProvStore.runRealOcr(current.id);
-          if (res.ok) {
-            // 成功 → リロードして22項目フォームへ
-            location.reload();
-          } else if (res.fallbackToMock) {
-            alert(`⚠ Gemini OCR 失敗のためモックでフォールバックしました。\nerror: ${res.error}`);
-            location.reload();
-          } else {
-            runBtn.disabled = false;
-            runBtn.textContent = "🤖 OCR実行";
-            alert(`OCR 失敗: ${res.error || "(unknown)"}`);
-          }
-        };
-      }
-
       // OCR結果でフィールドを流し込み（採用ソース選択は ProvStore に保存されていればそれを優先）
       const sel = current.sourceSelection || {};
       const ocr = current.ocrResult || { licence: {}, paper: {}, certs: [] };
 
       // v0.5: 免許OCRが無い（=免許未撮影 or OCR失敗）場合は主ソースを「紙」に自動切替
-      const hasLicenceOcr = !!(ocr.licence && Object.keys(ocr.licence).length > 0);
+      const hasLicenceOcr = !!(ocr.licence?.fields && Object.keys(ocr.licence.fields).length > 0);
       const defaultSource = hasLicenceOcr ? "licence" : "paper";
       if (!hasLicenceOcr) {
         const banner = document.createElement("div");
@@ -568,21 +427,20 @@
         const useSource = sel[f] || defaultSource;
         setSourceToggleActive(f, useSource);
         hydrateField(f, {
-          licence: ocr.licence?.[f],
-          paper:   ocr.paper?.[f],
+          licence: licenceFieldOf(ocr.licence, f),
+          paper:   paperFieldOf(ocr.paper, f),
         }, { useSource });
         // 採用コメント欄の初期表示（デフォルトソース以外なら表示）
         const cw = document.querySelector(`.source-comment-wrap[data-field="${f}"]`);
         if (cw && useSource !== defaultSource) cw.classList.add("show");
       });
 
-      // 紙のみ項目（partnerName/occupation は v0.6 fix4 でマスタ照合UIに分離、rh は削除）
-      const paperOnly = ["emergencyContactName", "emergencyContactRelation", "emergencyContactPhone", "bloodType", "lastHealthCheckDate", "specialHealthCheck"];
+      // 紙のみ項目
+      const paperOnly = ["emergencyContactName", "emergencyContactRelation", "emergencyContactPhone", "occupation", "partnerName", "bloodType", "rh", "lastHealthCheckDate", "specialHealthCheck"];
       paperOnly.forEach(f => {
-        const v = ocr.paper?.[f];
+        const v = paperFieldOf(ocr.paper, f);
         const input = document.querySelector(`[data-field="${f}"]`);
         const confSpan = document.getElementById(`conf-${f}`);
-        if (!input) return;
         if (v && v.value) {
           input.value = v.value;
           if (confSpan) confSpan.innerHTML = ProvStore.confBadge(v.confidence);
@@ -596,13 +454,6 @@
           input.classList.add("ocr-failed");
         }
       });
-
-      // v0.6 fix4: 所属（PartnerMaster）／職種（OccupationMaster）をマスタ照合UIに流す
-      const [partners, occupations] = await Promise.all([
-        ProvStore.loadPartners(),
-        ProvStore.loadOccupations(),
-      ]);
-      hydratePartnerOccupation(ocr.paper || {}, partners, occupations);
 
       // 電話番号は監督入力（OCR対象外）
       const phoneInput = document.querySelector("[data-field='phone']");
@@ -626,43 +477,16 @@
       // 採用ソーストグル
       bindSourceToggles();
 
-      // v0.6 fix4: 再OCRボタン（撮影元画像下）
-      const reocrBtn = document.getElementById("reocrBtn");
-      if (reocrBtn) {
-        reocrBtn.onclick = async () => {
-          if (current.status === "ACTIVE") {
-            alert("正式投入済のため再OCRは実行できません。");
-            return;
-          }
-          if (!confirm("OCRを再実行しますか？\n現在の編集内容はOCR結果で上書きされます。")) return;
-          reocrBtn.disabled = true;
-          const orig = reocrBtn.textContent;
-          reocrBtn.textContent = "⏳ Gemini 2.5 Flash 再実行中…";
-          const res = await ProvStore.runRealOcr(current.id);
-          if (res.ok) {
-            location.reload();
-          } else if (res.fallbackToMock) {
-            alert(`⚠ Gemini OCR 失敗のためモックでフォールバックしました。\nerror: ${res.error}`);
-            location.reload();
-          } else {
-            reocrBtn.disabled = false;
-            reocrBtn.textContent = orig;
-            alert(`OCR 失敗: ${res.error || "(unknown)"}`);
-          }
-        };
-      }
-
       // ACTIVE 状態なら readonly 化
       if (current.status === "ACTIVE") {
         document.querySelectorAll("input, select, textarea").forEach(el => el.disabled = true);
         document.getElementById("submitBtn").disabled = true;
         document.getElementById("submitBtn").textContent = "✅ 投入済み";
-        if (reocrBtn) reocrBtn.disabled = true;
       }
     }
 
     document.getElementById("backBtn").onclick = () => {
-      location.href = "/nextface/provisional-list.html";
+      location.href = `/provisional-review.html?id=${encodeURIComponent(provId)}`;
     };
 
     document.getElementById("form").onsubmit = async (e) => {
@@ -673,7 +497,7 @@
       const data = Object.fromEntries(fd.entries());
 
       // 採用ソース選択を保存（v0.5: 免許なし時は紙が既定）
-      const hasLicenceOcr = !!(current.ocrResult?.licence && Object.keys(current.ocrResult.licence).length > 0);
+      const hasLicenceOcr = !!(current.ocrResult?.licence?.fields && Object.keys(current.ocrResult.licence.fields).length > 0);
       const defaultSource = hasLicenceOcr ? "licence" : "paper";
       const sel = {};
       const comments = [];
@@ -710,8 +534,7 @@
           PersonalInformationID: <code>${esc(personalInfoId)}</code><br>
           仮登録ID <code>${esc(current.id)}</code> を ACTIVE に昇格しました。<br>
           顔ベクトル登録は <code>addpersonalinfo</code> 側で連鎖（モックでは省略）。<br>
-          <a href="/nextface/provisional-list.html">→ 仮登録者リストに戻る</a> ｜
-          <a href="/nextface/provisional-dashboard.html">→ ダッシュボードに戻る</a>
+          <a href="/provisional-dashboard.html">→ 仮登録一覧に戻る</a>
         </div>`;
     };
 

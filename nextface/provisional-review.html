@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OCRレビュー | 永賢組 顔認証初期登録 v0.5</title>
+  <link rel="stylesheet" href="/css/common.css">
+  <link rel="stylesheet" href="/css/provisional.css">
+  <script src="/js/provisional-store.js" defer></script>
+  <script src="/js/prov-nav.js" defer></script>
+</head>
+<body>
+  <div class="nav">
+    <h3>② OCRレビュー</h3>
+    <a href="/provisional-dashboard.html">← 仮登録一覧</a>
+  </div>
+
+  <div class="wrap">
+    <div class="prov-nav">
+      <a class="prov-nav-btn" href="/">← メニューへ戻る</a>
+      <a class="prov-nav-btn" href="/provisional-dashboard.html">📋 ダッシュボードへ</a>
+      <span class="prov-nav-spacer"></span>
+      <span class="prov-nav-hint">パンくずクリックで各画面へジャンプ</span>
+    </div>
+    <div class="flow-steps">
+      <a class="step done" data-step="1">① 仮登録</a><span class="sep">›</span>
+      <a class="step active" data-step="2">② OCRレビュー</a><span class="sep">›</span>
+      <a class="step" data-step="3">③ 22項目最終確認</a><span class="sep">›</span>
+      <a class="step" data-step="4">④ 正式投入</a>
+    </div>
+
+    <!-- v0.5 事務員PCヘッダー -->
+    <div class="prov-header">
+      <div class="prov-header-site">
+        <label class="site-label">事務員PC</label>
+        <span class="site-fixed">OCRレビュー</span>
+      </div>
+      <div class="prov-header-user" id="provHeaderUser">
+        <span class="user-icon">👤</span><span class="user-name">読込中…</span>
+      </div>
+    </div>
+
+    <h1>OCR結果レビュー</h1>
+    <p class="muted" id="topMeta">読込中…</p>
+
+    <div id="banners"></div>
+
+    <!-- 撮影元画像 -->
+    <div class="card">
+      <h2>撮影元画像</h2>
+      <div class="ocr-shot-grid" id="shotGrid"></div>
+    </div>
+
+    <!-- OCR実行ボタン（DRAFTのみ表示） -->
+    <div class="card" id="ocrRunCard" style="display:none;">
+      <h2>OCR未実行</h2>
+      <p class="muted">仮登録直後は OCR未実行（PROVISIONAL_DRAFT）です。下のボタンで Gemini 2.5 Flash モック実行→OCR_REVIEWING に昇格します。</p>
+      <button class="btn btn-block" id="runOcrBtn">🤖 OCR実行（モック・2秒）</button>
+      <hr style="margin:16px 0; border:none; border-top:1px solid #ddd;">
+      <p class="muted" style="margin-top:8px;"><strong>🔬 実OCR検証（学び v0.3 比較用）</strong>　紙の入場票画像を GAS Web App に投げて V1（現行スキーマ縛り）／V2（2段化）の精度を比較。結果は下のテキストエリアに JSON で出る。</p>
+      <div class="btn-group" style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="btn" id="runRealV1Btn" style="flex:1;">🅰️ V1 のみ</button>
+        <button class="btn" id="runRealV2Btn" style="flex:1;">🅱️ V2 のみ</button>
+        <button class="btn" id="runRealCompareBtn" style="flex:1; font-weight:bold;">🆚 V1 vs V2 比較</button>
+      </div>
+      <div class="btn-group" style="display:flex; gap:8px; margin-top:8px;">
+        <button class="btn" id="runAzureBtn" style="flex:1; background:#0078D4; color:#fff;">☁ Azure DI + gpt-4o-mini</button>
+      </div>
+      <div id="realOcrResultArea" style="display:none; margin-top:16px;">
+        <h3 id="realOcrResultTitle">実OCR結果</h3>
+        <div id="realOcrSummary" style="margin-bottom:8px; padding:8px; background:#F1F8E9; border-radius:4px; font-size:13px;"></div>
+        <details open><summary style="cursor:pointer;">📋 V2 書き起こし生テキスト（compare/v2のみ）</summary>
+          <pre id="realOcrTranscription" style="background:#F5F5F5; padding:8px; border-radius:4px; white-space:pre-wrap; max-height:200px; overflow:auto; font-size:12px;"></pre>
+        </details>
+        <details open><summary style="cursor:pointer;">📊 13フィールド差分テーブル（compareのみ）</summary>
+          <div id="realOcrDiffTable" style="overflow-x:auto;"></div>
+        </details>
+        <details><summary style="cursor:pointer;">🪵 生JSON</summary>
+          <textarea id="realOcrRawJson" readonly style="width:100%; height:240px; font-family:monospace; font-size:11px;"></textarea>
+        </details>
+      </div>
+    </div>
+
+    <!-- OCR結果テーブル -->
+    <div id="ocrResultArea" style="display:none;">
+      <div class="card">
+        <h2>免許 vs 紙 採用ソース選択（コンフリクト発生項目）</h2>
+        <p class="muted">免許・紙の両方からOCR結果が出た5項目を比較。<strong>免許優先がデフォルト</strong>。紙側を選んだ場合は採用コメントが自動表示されます。</p>
+
+        <table class="ocr-result-table" id="conflictTable">
+          <thead>
+            <tr><th>項目</th><th>免許OCR</th><th>紙OCR</th><th>採用</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+
+        <label style="margin-top:12px;">採用ソース変更コメント（任意・監査ログに保存）</label>
+        <textarea id="sourceComment" placeholder="紙側を採用した理由など。複数項目で紙を選んだ場合はまとめて記入可"></textarea>
+      </div>
+
+      <div class="card">
+        <h2>紙のみOCR項目（緊急連絡先・職種等）</h2>
+        <table class="ocr-result-table" id="paperOnlyTable"><tbody></tbody></table>
+      </div>
+
+      <div class="card">
+        <h2>資格証OCR結果（種別自動判定）</h2>
+        <div id="certsArea"></div>
+      </div>
+
+      <div class="btn-group" style="margin-top:16px;">
+        <button type="button" id="backBtn" class="btn btn-ghost">← 仮登録一覧</button>
+        <button type="button" id="toEntryBtn" class="btn btn-block">採用ソース確定→ 22項目データ投入へ</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const qs = new URLSearchParams(location.search);
+    const provId = qs.get("id") || sessionStorage.getItem("currentProvId");
+    let current = null;
+
+    const esc = (s) => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+
+    function placeholderSvg(label) {
+      const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='200' height='140'><rect width='100%' height='100%' fill='%23F1F8E9' stroke='%23C5DCCA'/><text x='50%' y='50%' font-size='22' fill='%231E5F2A' text-anchor='middle' dominant-baseline='middle' font-family='sans-serif'>${label}</text></svg>`;
+      return "data:image/svg+xml;utf8," + svg;
+    }
+
+    function renderShots() {
+      const wrap = document.getElementById("shotGrid");
+      const cards = [];
+      const s = current.shots || {};
+      cards.push(`<div class="ocr-shot-card"><div class="cap">紙の入場票</div><img src="${s.paper?.thumb || placeholderSvg('紙')}"></div>`);
+      cards.push(`<div class="ocr-shot-card"><div class="cap">運転免許証</div><img src="${s.licence?.thumb || placeholderSvg('免許')}"></div>`);
+      (s.certs || []).forEach((c, i) => {
+        cards.push(`<div class="ocr-shot-card"><div class="cap">資格証 ${i+1}</div><img src="${c.thumb || placeholderSvg('資格')}"></div>`);
+      });
+      cards.push(`<div class="ocr-shot-card"><div class="cap">本人 顔写真</div><img src="${s.face?.thumb || placeholderSvg('顔')}"></div>`);
+      wrap.innerHTML = cards.join("");
+    }
+
+    const CONFLICT_FIELDS = [
+      { key: "name", label: "氏名" },
+      { key: "nameKana", label: "氏名カナ" },
+      { key: "birthday", label: "生年月日" },
+      { key: "postalCode", label: "郵便番号" },
+      { key: "address", label: "住所" },
+    ];
+
+    const PAPER_ONLY_FIELDS = [
+      { key: "emergencyContactName", label: "緊急連絡先 氏名" },
+      { key: "emergencyContactRelation", label: "緊急連絡先 続柄" },
+      { key: "emergencyContactPhone", label: "緊急連絡先 電話番号" },
+      { key: "occupation", label: "職種" },
+      { key: "partnerName", label: "主たる所属" },
+      { key: "bloodType", label: "血液型" },
+      { key: "rh", label: "Rh" },
+    ];
+
+    function renderConflicts() {
+      const tbody = document.querySelector("#conflictTable tbody");
+      const ocr = current.ocrResult;
+      const existingSel = current.sourceSelection || {};
+      tbody.innerHTML = CONFLICT_FIELDS.map(({ key, label }) => {
+        const lic = ocr.licence?.[key];
+        const pap = ocr.paper?.[key];
+        const sel = existingSel[key] || "licence";
+        return `
+          <tr data-field="${key}">
+            <th>${esc(label)}</th>
+            <td>
+              <div>${esc(lic?.value || "(なし)")}</div>
+              <div>${ProvStore.confBadge(lic?.confidence || "fail")}</div>
+            </td>
+            <td>
+              <div>${esc(pap?.value || "(なし)")}</div>
+              <div>${ProvStore.confBadge(pap?.confidence || "fail")}</div>
+            </td>
+            <td>
+              <div class="source-toggle" data-field="${key}">
+                <label class="${sel === 'licence' ? 'active' : ''}"><input type="radio" name="sel_${key}" value="licence" ${sel === 'licence' ? 'checked' : ''}>免許</label>
+                <label class="${sel === 'paper' ? 'active' : ''}"><input type="radio" name="sel_${key}" value="paper" ${sel === 'paper' ? 'checked' : ''}>紙</label>
+                <label class="${sel === 'manual' ? 'active' : ''}"><input type="radio" name="sel_${key}" value="manual" ${sel === 'manual' ? 'checked' : ''}>手入力</label>
+              </div>
+            </td>
+          </tr>`;
+      }).join("");
+
+      tbody.addEventListener("change", (e) => {
+        if (e.target.tagName !== "INPUT") return;
+        const tr = e.target.closest("tr");
+        tr.querySelectorAll(".source-toggle label").forEach(l => l.classList.remove("active"));
+        e.target.closest("label").classList.add("active");
+      });
+
+      if (current.sourceChangeComment) {
+        document.getElementById("sourceComment").value = current.sourceChangeComment;
+      }
+    }
+
+    function renderPaperOnly() {
+      const tbody = document.querySelector("#paperOnlyTable tbody");
+      const paper = current.ocrResult?.paper || {};
+      tbody.innerHTML = PAPER_ONLY_FIELDS.map(({ key, label }) => {
+        const v = paper[key];
+        return `<tr><th>${esc(label)}</th><td>${esc(v?.value || "(なし)")} ${ProvStore.confBadge(v?.confidence || "fail")}</td></tr>`;
+      }).join("");
+    }
+
+    function renderCerts() {
+      const wrap = document.getElementById("certsArea");
+      const certs = current.ocrResult?.certs || [];
+      if (!certs.length) {
+        wrap.innerHTML = '<div class="banner-strong">⚠ 資格証OCR結果なし。本登録UIで「資格なし確認」が必要です。</div>';
+        return;
+      }
+      wrap.innerHTML = certs.map((c, i) => {
+        const fields = c.fields || {};
+        const rows = Object.entries(fields).map(([k, v]) =>
+          `<tr><th>${esc(k)}</th><td>${esc(v.value || "(なし)")} ${ProvStore.confBadge(v.confidence)}</td></tr>`
+        ).join("");
+        return `
+          <div style="border:1px solid var(--nagaken-border); border-radius:6px; padding:10px; margin-bottom:8px; background:#fff;">
+            <div style="font-weight:700; color:var(--nagaken-primary-dark);">
+              📜 種別: ${esc(c.kind || "種別不明")} ${ProvStore.confBadge(c.confidence)}
+            </div>
+            <table class="ocr-result-table" style="width:100%; margin-top:6px;">${rows}</table>
+          </div>`;
+      }).join("");
+    }
+
+    function showResultArea() {
+      document.getElementById("ocrRunCard").style.display = "none";
+      document.getElementById("ocrResultArea").style.display = "";
+      renderConflicts();
+      renderPaperOnly();
+      renderCerts();
+    }
+
+    async function init() {
+      await ProvStore.ensureSeed();
+      // v0.5: ログインUserヘッダー
+      const ctx = await ProvStore.ensureLoginContext();
+      const u = ctx.user;
+      const userBox = document.getElementById("provHeaderUser");
+      if (userBox) {
+        userBox.innerHTML = `<span class="user-icon">👤</span><span class="user-name">${u?.displayName || "(未ログイン)"}</span>`;
+      }
+      if (!provId) {
+        document.getElementById("topMeta").innerHTML = '<span style="color:#c00;">⚠ id がありません。<a href="/provisional-dashboard.html">一覧</a>からやり直してください。</span>';
+        return;
+      }
+      current = ProvStore.getById(provId);
+      if (!current) {
+        document.getElementById("topMeta").innerHTML = `<span style="color:#c00;">⚠ 仮登録 ${esc(provId)} が見つかりません。</span>`;
+        return;
+      }
+      sessionStorage.setItem("currentProvId", provId);
+
+      document.getElementById("topMeta").innerHTML =
+        `仮登録ID: <code>${esc(current.id)}</code> ｜ 電話番号: ${esc(current.phone)} ｜ 監督: ${esc(current.supervisorName)} ｜ 現場: ${esc(current.onsiteName)} ｜ ${ProvStore.statusBadge(current.status)}`;
+
+      renderShots();
+
+      if (current.status === "PROVISIONAL_DRAFT") {
+        document.getElementById("ocrRunCard").style.display = "";
+      } else {
+        showResultArea();
+      }
+    }
+
+    document.getElementById("runOcrBtn").onclick = async () => {
+      const btn = document.getElementById("runOcrBtn");
+      btn.disabled = true;
+      btn.textContent = "⏳ Gemini 2.5 Flash 実行中…";
+      await new Promise(r => setTimeout(r, 2000));
+      const updated = await ProvStore.runMockOcr(current.id);
+      if (updated) {
+        current = updated;
+        document.getElementById("topMeta").innerHTML =
+          `仮登録ID: <code>${esc(current.id)}</code> ｜ 電話番号: ${esc(current.phone)} ｜ 監督: ${esc(current.supervisorName)} ｜ 現場: ${esc(current.onsiteName)} ｜ ${ProvStore.statusBadge(current.status)}`;
+        showResultArea();
+      } else {
+        btn.disabled = false;
+        btn.textContent = "🤖 OCR実行（モック・2秒）";
+      }
+    };
+
+    // ============================================
+    // 実OCR検証（V1/V2/compare）
+    // ============================================
+    async function runRealOcrWithMode(mode, btnId, label) {
+      const btn = document.getElementById(btnId);
+      const orig = btn.textContent;
+      const allBtns = ["runRealV1Btn","runRealV2Btn","runRealCompareBtn"].map(id => document.getElementById(id));
+      allBtns.forEach(b => b.disabled = true);
+      btn.textContent = `⏳ ${label} 実行中…（最大60秒）`;
+      try {
+        const updated = await ProvStore.runRealOcr(current.id, mode);
+        if (!updated) {
+          alert("実OCR失敗: 仮登録ドラフトが見つからない or paper未撮影");
+          return;
+        }
+        if (updated.ocrError) {
+          alert("実OCRエラー: " + updated.ocrError);
+        }
+        current = updated;
+        renderRealOcrResult(updated, mode);
+      } catch (e) {
+        alert("実OCR例外: " + (e && e.message || e));
+      } finally {
+        allBtns.forEach(b => b.disabled = false);
+        btn.textContent = orig;
+      }
+    }
+
+    function renderRealOcrResult(updated, mode) {
+      document.getElementById("realOcrResultArea").style.display = "";
+      const titleMap = { v1: "🅰️ V1 結果（スキーマ縛り版）", v2: "🅱️ V2 結果（2段化版）", compare: "🆚 V1 vs V2 比較結果" };
+      document.getElementById("realOcrResultTitle").textContent = titleMap[mode] || "実OCR結果";
+
+      const results = updated.ocrResult || {};
+      const paper = results.paper || {};
+
+      // Summary
+      const summary = document.getElementById("realOcrSummary");
+      if (mode === "compare" && paper.summary) {
+        const s = paper.summary;
+        summary.innerHTML =
+          `<strong>match: ${s.match_count}/${s.match_count + s.mismatch_count}</strong> ｜ ` +
+          `V1 [high:${s.v1_high_count} mid:${s.v1_mid_count} low:${s.v1_low_count} fail:${s.v1_fail_count}] ｜ ` +
+          `V2 [high:${s.v2_high_count} mid:${s.v2_mid_count} low:${s.v2_low_count} fail:${s.v2_fail_count}] ｜ ` +
+          `経過: V1=${paper.v1?.elapsedMs}ms / V2=${paper.v2?.elapsedMs}ms / total=${paper.totalElapsedMs}ms`;
+      } else if (mode === "v2") {
+        const fields = paper.fields || {};
+        const counts = countConfidences(fields);
+        summary.innerHTML = `V2 [high:${counts.high} mid:${counts.mid} low:${counts.low} fail:${counts.fail}] ｜ 経過: ${updated.ocrElapsedMs}ms`;
+      } else {
+        const fields = paper.fields || {};
+        const counts = countConfidences(fields);
+        summary.innerHTML = `V1 [high:${counts.high} mid:${counts.mid} low:${counts.low} fail:${counts.fail}] ｜ 経過: ${updated.ocrElapsedMs}ms`;
+      }
+
+      // V2 生書き起こし
+      const transcription = mode === "compare" ? paper.v2?._rawTranscription
+                          : mode === "v2"      ? paper._rawTranscription
+                          : "";
+      document.getElementById("realOcrTranscription").textContent = transcription || "(V2モードでのみ取得)";
+
+      // 13フィールド差分テーブル（compareのみ）
+      if (mode === "compare" && paper.diff) {
+        const rows = Object.entries(paper.diff).map(([key, d]) => {
+          const mark = d.match ? '<span style="color:#1B5E20;">✓</span>' : '<span style="color:#C62828;">✗</span>';
+          return `<tr>
+            <td>${mark}</td>
+            <td><code>${esc(key)}</code></td>
+            <td>[${esc(d.v1Conf)}] ${esc(d.v1Value)}</td>
+            <td>[${esc(d.v2Conf)}] ${esc(d.v2Value)}</td>
+          </tr>`;
+        }).join("");
+        document.getElementById("realOcrDiffTable").innerHTML =
+          `<table class="ocr-result-table" style="width:100%;">
+            <thead><tr><th></th><th>キー</th><th>V1</th><th>V2</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>`;
+      } else {
+        document.getElementById("realOcrDiffTable").innerHTML = "(compareモードでのみ表示)";
+      }
+
+      // 生JSON
+      document.getElementById("realOcrRawJson").value = JSON.stringify(results, null, 2);
+    }
+
+    function countConfidences(fields) {
+      const c = { high:0, mid:0, low:0, fail:0 };
+      Object.values(fields || {}).forEach(v => {
+        const conf = v && v.confidence;
+        if (c[conf] != null) c[conf]++;
+      });
+      return c;
+    }
+
+    document.getElementById("runRealV1Btn").onclick = () => runRealOcrWithMode("v1", "runRealV1Btn", "V1");
+    document.getElementById("runRealV2Btn").onclick = () => runRealOcrWithMode("v2", "runRealV2Btn", "V2");
+    document.getElementById("runRealCompareBtn").onclick = () => runRealOcrWithMode("compare", "runRealCompareBtn", "V1/V2比較");
+
+    // Azure DI + gpt-4o-mini 経路
+    async function runAzureOcrFn() {
+      const btn = document.getElementById("runAzureBtn");
+      const orig = btn.textContent;
+      const allBtns = ["runRealV1Btn","runRealV2Btn","runRealCompareBtn","runAzureBtn"].map(id => document.getElementById(id));
+      allBtns.forEach(b => b.disabled = true);
+      btn.textContent = "⏳ Azure DI + gpt-4o-mini 実行中…（最大60秒）";
+      try {
+        const updated = await ProvStore.runAzureOcr(current.id, "v1");
+        if (!updated) {
+          alert("Azure OCR失敗: 仮登録ドラフトが見つからない or paper未撮影");
+          return;
+        }
+        if (updated.ocrError) {
+          alert("Azure OCRエラー: " + updated.ocrError);
+        }
+        current = updated;
+        // Azure側は v1相当なので mode="v1" として描画
+        renderRealOcrResult(updated, "v1");
+        // タイトル上書き
+        document.getElementById("realOcrResultTitle").textContent = "☁ Azure DI + gpt-4o-mini 結果";
+      } catch (e) {
+        alert("Azure OCR例外: " + (e && e.message || e));
+      } finally {
+        allBtns.forEach(b => b.disabled = false);
+        btn.textContent = orig;
+      }
+    }
+    document.getElementById("runAzureBtn").onclick = runAzureOcrFn;
+
+    document.getElementById("backBtn")?.addEventListener("click", () => {
+      location.href = "/provisional-dashboard.html";
+    });
+
+    document.getElementById("toEntryBtn")?.addEventListener("click", () => {
+      // 採用ソースとコメントを保存してから 22項目画面へ
+      const sel = {};
+      CONFLICT_FIELDS.forEach(({ key }) => {
+        const radio = document.querySelector(`input[name="sel_${key}"]:checked`);
+        sel[key] = radio?.value || "licence";
+      });
+      const comment = document.getElementById("sourceComment").value.trim() || null;
+      ProvStore.upsert({ ...current, sourceSelection: sel, sourceChangeComment: comment });
+      location.href = `/provisional-data-entry.html?id=${encodeURIComponent(current.id)}`;
+    });
+
+    document.addEventListener("DOMContentLoaded", init);
+  </script>
+</body>
+</html>

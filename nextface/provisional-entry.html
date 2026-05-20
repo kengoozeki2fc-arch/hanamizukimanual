@@ -3,24 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>仮登録（5点撮影） | 永賢組 顔認証初期登録 v0.6</title>
-  <link rel="stylesheet" href="/nextface/css/common.css">
-  <link rel="stylesheet" href="/nextface/css/provisional.css">
-  <script src="/nextface/js/provisional-store.js" defer></script>
-  <script src="/nextface/js/prov-nav.js" defer></script>
+  <title>仮登録（5点撮影） | 永賢組 顔認証初期登録 v0.5</title>
+  <link rel="stylesheet" href="/css/common.css">
+  <link rel="stylesheet" href="/css/provisional.css">
+  <script src="/js/provisional-store.js" defer></script>
+  <script src="/js/prov-nav.js" defer></script>
 </head>
 <body>
   <div class="nav">
-    <h3>仮登録：監督モバイル5点撮影</h3>
-    <a href="/nextface/">メニュー</a>
+    <h3>① 仮登録：監督モバイル5点撮影</h3>
+    <a href="/">メニュー</a>
   </div>
 
   <div class="wrap">
     <div class="prov-nav">
-      <a class="prov-nav-btn" href="/nextface/provisional-dashboard.html">← ダッシュボードへ戻る</a>
-      <a class="prov-nav-btn" href="/nextface/">← メニューへ戻る</a>
+      <a class="prov-nav-btn" href="/">← メニューへ戻る</a>
+      <a class="prov-nav-btn" href="/provisional-dashboard.html">📋 ダッシュボードへ</a>
       <span class="prov-nav-spacer"></span>
-      <span class="prov-nav-hint">監督モバイル：5点撮影（必須＝紙／顔／電話番号）</span>
+      <span class="prov-nav-hint">パンくずクリックで各画面へジャンプ</span>
+    </div>
+    <div class="flow-steps">
+      <a class="step active" data-step="1">① 仮登録</a><span class="sep">›</span>
+      <a class="step" data-step="2">② OCRレビュー</a><span class="sep">›</span>
+      <a class="step" data-step="3">③ 22項目最終確認</a><span class="sep">›</span>
+      <a class="step" data-step="4">④ 正式投入</a>
     </div>
 
     <h1>新規作業員 仮登録</h1>
@@ -140,32 +146,35 @@
       validate();
     }
 
-    // 画像をリサイズして base64 化（sessionStorage 容量対策・最大2400px・JPEG quality 0.9）
-    // 細かい手書き文字のOCR精度確保のため高画質寄り
     function readDataUrl(file) {
       return new Promise((resolve, reject) => {
         const r = new FileReader();
-        r.onload = () => {
-          const img = new Image();
-          img.onload = () => {
-            const MAX = 2400;
-            let w = img.naturalWidth, h = img.naturalHeight;
-            if (w > MAX || h > MAX) {
-              const ratio = Math.min(MAX / w, MAX / h);
-              w = Math.round(w * ratio);
-              h = Math.round(h * ratio);
-            }
-            const cv = document.createElement("canvas");
-            cv.width = w; cv.height = h;
-            const ctx = cv.getContext("2d");
-            ctx.drawImage(img, 0, 0, w, h);
-            resolve(cv.toDataURL("image/jpeg", 0.9));
-          };
-          img.onerror = reject;
-          img.src = String(r.result);
-        };
+        r.onload = () => resolve(String(r.result));
         r.onerror = reject;
         r.readAsDataURL(file);
+      });
+    }
+
+    // 画像を長辺 maxPx までCanvasリサイズ→JPEG quality でbase64化
+    // sessionStorage 5MB制限対策 + Azure DI F0 4MB制限対策
+    async function resizeImage(file, maxPx = 1600, quality = 0.85) {
+      // 画像じゃない（PDFなど）はそのままbase64
+      if (!file.type.startsWith("image/")) return readDataUrl(file);
+      const dataUrl = await readDataUrl(file);
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          const w = img.width, h = img.height;
+          const scale = Math.min(1, maxPx / Math.max(w, h));
+          const tw = Math.round(w * scale), th = Math.round(h * scale);
+          const canvas = document.createElement("canvas");
+          canvas.width = tw; canvas.height = th;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, tw, th);
+          resolve(canvas.toDataURL("image/jpeg", quality));
+        };
+        img.onerror = reject;
+        img.src = dataUrl;
       });
     }
 
@@ -176,11 +185,11 @@
         if (!files || files.length === 0) return;
         if (shotKey === "certs") {
           for (const f of files) {
-            const url = await readDataUrl(f);
+            const url = await resizeImage(f);
             shots.certs.push(url);
           }
         } else {
-          shots[shotKey] = await readDataUrl(files[0]);
+          shots[shotKey] = await resizeImage(files[0]);
         }
         refreshCell(shotKey);
         e.target.value = ""; // 同じファイル再選択可
@@ -246,6 +255,15 @@
     });
 
     document.addEventListener("DOMContentLoaded", async () => {
+      // ?reset=1 で sessionStorage クリア（QuotaExceededError 復旧用）
+      if (new URLSearchParams(location.search).get("reset") === "1") {
+        sessionStorage.clear();
+        // ?reset=1 を URL から除去（戻ってきた時の再クリア防止）
+        const u = new URL(location.href);
+        u.searchParams.delete("reset");
+        history.replaceState(null, "", u.toString());
+        alert("✅ 仮登録データをクリアしました。新規仮登録できます。");
+      }
       await ProvStore.ensureSeed();
       const ctx = await ProvStore.ensureLoginContext();
       loginUser = ctx.user;
@@ -272,39 +290,54 @@
       const supvUserId = loginUser?.userId || "";
 
       result.innerHTML = '<div class="alert alert-info">⏳ サーバ送信中（モック1.5秒）…</div>';
-      await new Promise(r => setTimeout(r, 1500));
+      result.scrollIntoView({ behavior: "smooth", block: "center" });
 
-      // 仮登録ドラフトを upsert
-      const id = ProvStore.newDraftId();
-      ProvStore.upsert({
-        id,
-        status: "PROVISIONAL_DRAFT",
-        phone,
-        supervisorName: supv,
-        supervisorUserId: supvUserId,
-        supervisorClientId: clientId,
-        onsiteId: Number(onsiteId),
-        onsiteName,
-        shots: {
-          paper:   shots.paper   ? { filename: "paper.jpg",   thumb: shots.paper }   : null,
-          licence: shots.licence ? { filename: "licence.jpg", thumb: shots.licence } : null,
-          certs:   shots.certs.map((t, i) => ({ filename: `cert_${i+1}.jpg`, thumb: t })),
-          face:    shots.face    ? { filename: "face.jpg",    thumb: shots.face }    : null,
-        },
-        ocrResult: null,
-      });
+      try {
+        await new Promise(r => setTimeout(r, 1500));
 
-      result.innerHTML = `
-        <div class="alert alert-success">
-          ✅ 仮登録完了（モック）<br>
-          ドラフトID: <code>${id}</code><br>
-          サーバ側でOCRが非同期実行され、完了次第「OCR_REVIEWING」に昇格します。<br>
-          <a href="/nextface/provisional-dashboard.html">→ ダッシュボードへ</a> ｜
-          <a href="/nextface/provisional-list.html">→ 仮登録者リスト（事務員PC）</a>
-        </div>
-        <button type="button" class="btn btn-ghost btn-block" id="newOneBtn" style="margin-top:8px;">続けてもう1人 仮登録</button>
-      `;
-      document.getElementById("newOneBtn").onclick = () => location.reload();
+        // 仮登録ドラフトを upsert
+        const id = ProvStore.newDraftId();
+        ProvStore.upsert({
+          id,
+          status: "PROVISIONAL_DRAFT",
+          phone,
+          supervisorName: supv,
+          supervisorUserId: supvUserId,
+          supervisorClientId: clientId,
+          onsiteId: Number(onsiteId),
+          onsiteName,
+          shots: {
+            paper:   shots.paper   ? { filename: "paper.jpg",   thumb: shots.paper }   : null,
+            licence: shots.licence ? { filename: "licence.jpg", thumb: shots.licence } : null,
+            certs:   shots.certs.map((t, i) => ({ filename: `cert_${i+1}.jpg`, thumb: t })),
+            face:    shots.face    ? { filename: "face.jpg",    thumb: shots.face }    : null,
+          },
+          ocrResult: null,
+        });
+
+        result.innerHTML = `
+          <div class="alert alert-success" style="font-size:16px;">
+            ✅ <strong>仮登録 完了</strong>（モック）<br>
+            <span style="font-size:13px;color:#555;">ドラフトID: <code>${id}</code></span><br>
+            <span style="font-size:13px;">サーバ側でOCRが非同期実行され、完了次第「OCR_REVIEWING」に昇格します。</span><br>
+            <a href="provisional-dashboard.html" style="display:inline-block;margin-top:8px;font-weight:bold;">→ 仮登録一覧（事務員PC）</a>
+          </div>
+          <button type="button" class="btn btn-ghost btn-block" id="newOneBtn" style="margin-top:8px;">続けてもう1人 仮登録</button>
+        `;
+        result.scrollIntoView({ behavior: "smooth", block: "center" });
+        document.getElementById("newOneBtn").onclick = () => location.reload();
+      } catch (err) {
+        console.error("仮登録エラー:", err);
+        result.innerHTML = `
+          <div class="alert alert-warn" style="background:#fff3cd;border-color:#ffc107;color:#856404;">
+            ⚠️ <strong>仮登録に失敗しました</strong><br>
+            <span style="font-size:13px;">${(err && err.message) || err}</span><br>
+            <button type="button" class="btn btn-ghost" onclick="location.reload()" style="margin-top:8px;">最初からやり直す</button>
+          </div>
+        `;
+        result.scrollIntoView({ behavior: "smooth", block: "center" });
+        submitBtn.disabled = false;
+      }
     };
   </script>
 </body>
