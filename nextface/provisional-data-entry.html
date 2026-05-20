@@ -132,14 +132,7 @@
         <div class="row2">
           <div>
             <label>続柄 <span style="color:#991b1b">*</span> <span id="conf-emergencyContactRelation"></span></label>
-            <select name="emergencyContactRelation" data-field="emergencyContactRelation">
-              <option value="">-</option>
-              <option value="配偶者">配偶者</option>
-              <option value="父母">父母</option>
-              <option value="子">子</option>
-              <option value="兄弟">兄弟</option>
-              <option value="その他">その他</option>
-            </select>
+            <input type="text" name="emergencyContactRelation" data-field="emergencyContactRelation" placeholder="例：妻／夫／父／母／兄／弟／子（OCR結果をそのまま）">
           </div>
           <div>
             <label>電話番号 <span style="color:#991b1b">*</span> <span id="conf-emergencyContactPhone"></span></label>
@@ -148,36 +141,25 @@
         </div>
       </div>
 
-      <!-- ===== 所属・職種 ===== -->
+      <!-- ===== 所属・職種（永賢システムマスタから取得・OCR充填しない） ===== -->
       <div class="card">
-        <h2>所属・職種</h2>
-        <label>主たる所属（取引先） <span style="color:#991b1b">*</span> <span id="conf-partnerName"></span></label>
-        <input type="text" name="partnerName" data-field="partnerName" placeholder="マスタとファジーマッチ予定">
+        <h2>所属・職種 <span style="font-size:12px; color:#888; font-weight:normal;">（永賢システムから取得・OCRしない）</span></h2>
+        <label>主たる所属（取引先） <span style="color:#991b1b">*</span></label>
+        <input type="text" name="partnerName" data-field="partnerName" placeholder="永賢システム Partner マスタから選択（マスタ参照UI実装予定）">
 
-        <label>職種 <span style="color:#991b1b">*</span> <span id="conf-occupation"></span></label>
-        <input type="text" name="occupation" data-field="occupation" placeholder="例：土工／鳶／大工">
+        <label>職種 <span style="color:#991b1b">*</span></label>
+        <input type="text" name="occupation" data-field="occupation" placeholder="永賢システム Occupation マスタから選択（マスタ参照UI実装予定）">
       </div>
 
       <!-- ===== 健康情報 ===== -->
       <div class="card">
         <h2>健康情報（紙OCR・手書き精度中）</h2>
-        <div class="row2">
-          <div>
-            <label>血液型 <span id="conf-bloodType"></span></label>
-            <select name="bloodType" data-field="bloodType">
-              <option value="">-</option>
-              <option value="A">A</option><option value="B">B</option>
-              <option value="O">O</option><option value="AB">AB</option>
-            </select>
-          </div>
-          <div>
-            <label>Rh <span id="conf-rh"></span></label>
-            <select name="rh" data-field="rh">
-              <option value="">-</option>
-              <option value="+">+</option><option value="-">−</option>
-            </select>
-          </div>
-        </div>
+        <label>血液型 <span id="conf-bloodType"></span></label>
+        <select name="bloodType" data-field="bloodType">
+          <option value="">-</option>
+          <option value="A">A</option><option value="B">B</option>
+          <option value="O">O</option><option value="AB">AB</option>
+        </select>
 
         <label>直近健診日 <span id="conf-lastHealthCheckDate"></span></label>
         <input type="date" name="lastHealthCheckDate" data-field="lastHealthCheckDate">
@@ -456,9 +438,12 @@
         });
       });
 
-      // 紙のみ項目（emergency*, occupation, partnerName, bloodType, rh ...）
-      // 免許に該当無いので paper のみ評価
-      const paperOnly = ["emergencyContactName", "emergencyContactRelation", "emergencyContactPhone", "occupation", "partnerName", "bloodType", "rh", "lastHealthCheckDate", "specialHealthCheck"];
+      // 紙のみ項目（emergency*, bloodType, lastHealthCheckDate, specialHealthCheck）
+      // 注意:
+      // - occupation / partnerName は永賢システムから取得するため OCR充填しない
+      // - rh は UI削除済（不要）
+      // - emergencyContactRelation は OCR結果文字をそのまま反映（text input）
+      const paperOnly = ["emergencyContactName", "emergencyContactRelation", "emergencyContactPhone", "bloodType", "lastHealthCheckDate", "specialHealthCheck"];
       paperOnly.forEach(f => {
         fillField(f, { licence: null, paper: paperFieldOf(ocr.paper, f) });
       });
