@@ -51,8 +51,8 @@
       <div class="ocr-shot-grid" id="shotGrid"></div>
     </div>
 
-    <!-- OCR実行ボタン（DRAFTのみ表示） -->
-    <div class="card" id="ocrRunCard" style="display:none;">
+    <!-- OCR実行ボタン（常時表示・status関係なく再OCR可能） -->
+    <div class="card" id="ocrRunCard">
       <h2>🔬 OCR実行（実画像から抽出）</h2>
       <p class="muted">仮登録した <strong>紙の入場票＋運転免許証の実画像</strong> を OCR エンジンに投げて項目抽出します。エンジン別に精度比較可能。</p>
       <div class="btn-group" style="display:flex; gap:8px; flex-wrap:wrap;">
@@ -89,38 +89,8 @@
       </div>
     </div>
 
-    <!-- OCR結果テーブル -->
-    <div id="ocrResultArea" style="display:none;">
-      <div class="card">
-        <h2>免許 vs 紙 採用ソース選択（コンフリクト発生項目）</h2>
-        <p class="muted">免許・紙の両方からOCR結果が出た5項目を比較。<strong>免許優先がデフォルト</strong>。紙側を選んだ場合は採用コメントが自動表示されます。</p>
-
-        <table class="ocr-result-table" id="conflictTable">
-          <thead>
-            <tr><th>項目</th><th>免許OCR</th><th>紙OCR</th><th>採用</th></tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-
-        <label style="margin-top:12px;">採用ソース変更コメント（任意・監査ログに保存）</label>
-        <textarea id="sourceComment" placeholder="紙側を採用した理由など。複数項目で紙を選んだ場合はまとめて記入可"></textarea>
-      </div>
-
-      <div class="card">
-        <h2>紙のみOCR項目（緊急連絡先・職種等）</h2>
-        <table class="ocr-result-table" id="paperOnlyTable"><tbody></tbody></table>
-      </div>
-
-      <div class="card">
-        <h2>資格証OCR結果（種別自動判定）</h2>
-        <div id="certsArea"></div>
-      </div>
-
-      <div class="btn-group" style="margin-top:16px;">
-        <button type="button" id="backBtn" class="btn btn-ghost">← 仮登録一覧</button>
-        <button type="button" id="toEntryBtn" class="btn btn-block">採用ソース確定→ 22項目データ投入へ</button>
-      </div>
-    </div>
+    <!-- v0.7: 旧「採用ソース選択UI」は撤去（fillField 自動判定で 22項目フォーム側で充填するため不要）
+         遷移ボタンは OCR結果サマリ下の goEntryBtn に統合済 -->
   </div>
 
   <script>
@@ -238,13 +208,8 @@
       }).join("");
     }
 
-    function showResultArea() {
-      document.getElementById("ocrRunCard").style.display = "none";
-      document.getElementById("ocrResultArea").style.display = "";
-      renderConflicts();
-      renderPaperOnly();
-      renderCerts();
-    }
+    // v0.7: ocrResultArea 撤去のため no-op（OCR実行UIは常時表示・結果は renderRealOcrResult で realOcrResultArea に描画）
+    function showResultArea() {}
 
     async function init() {
       await ProvStore.ensureSeed();
@@ -271,11 +236,7 @@
 
       renderShots();
 
-      if (current.status === "PROVISIONAL_DRAFT") {
-        document.getElementById("ocrRunCard").style.display = "";
-      } else {
-        showResultArea();
-      }
+      // v0.7: ocrRunCard は常時表示（status不問・再OCR可能）
     }
 
     document.getElementById("runOcrBtn").onclick = async () => {
