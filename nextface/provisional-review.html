@@ -71,6 +71,7 @@
       <div id="realOcrResultArea" style="display:none; margin-top:16px;">
         <h3 id="realOcrResultTitle">実OCR結果</h3>
         <div id="realOcrSummary" style="margin-bottom:8px; padding:8px; background:#F1F8E9; border-radius:4px; font-size:13px;"></div>
+        <button class="btn btn-block" id="goEntryBtn" style="font-weight:bold; background:#1B5E20; color:#fff; margin-bottom:12px;">→ 22項目データ投入画面で確認（免許優先・自動充填）</button>
         <div class="btn-group" style="display:flex; gap:8px; margin-bottom:8px; flex-wrap:wrap;">
           <button class="btn btn-ghost" id="downloadJsonBtn" style="font-size:13px;">📥 JSON ダウンロード</button>
           <button class="btn btn-ghost" id="downloadTxtBtn" style="font-size:13px;">📥 生テキスト (.txt)</button>
@@ -396,6 +397,9 @@
         document.body.appendChild(a); a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+      };
+      document.getElementById("goEntryBtn").onclick = () => {
+        location.href = `provisional-data-entry.html?id=${encodeURIComponent(updated.id)}`;
       };
       document.getElementById("downloadJsonBtn").onclick = () => triggerDownload(`${baseName}.json`, jsonText, "application/json");
       document.getElementById("downloadTxtBtn").onclick  = () => triggerDownload(`${baseName}.txt`,  document.getElementById("realOcrTranscription").textContent || "(no rawText)", "text/plain;charset=utf-8");
