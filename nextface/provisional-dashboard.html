@@ -354,7 +354,7 @@
           const id = tr.dataset.id;
           const item = ProvStore.getById(id);
           if (!item) return;
-          location.href = (item.status === "ACTIVE" ? "/provisional-data-entry.html" : "/provisional-review.html") + "?id=" + encodeURIComponent(id);
+          location.href = (item.status === "ACTIVE" ? "provisional-data-entry.html" : "provisional-review.html") + "?id=" + encodeURIComponent(id);
         });
       });
     }

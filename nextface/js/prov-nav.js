@@ -33,31 +33,31 @@
     const id = currentId();
     switch (step) {
       case "1":
-        return "/provisional-entry.html";
+        return "provisional-entry.html";
       case "2": {
         const target =
           id ||
           pickByStatus(["PROVISIONAL_DRAFT", "OCR_REVIEWING", "ACTIVE"]);
         return target
           ? `/provisional-review.html?id=${encodeURIComponent(target)}`
-          : "/provisional-dashboard.html";
+          : "provisional-dashboard.html";
       }
       case "3": {
         const target =
           id || pickByStatus(["OCR_REVIEWING", "ACTIVE", "PROVISIONAL_DRAFT"]);
         return target
           ? `/provisional-data-entry.html?id=${encodeURIComponent(target)}`
-          : "/provisional-dashboard.html";
+          : "provisional-dashboard.html";
       }
       case "4": {
         // ④ は ACTIVE 行があれば閲覧モードで開く、無ければダッシュボード
         const target = pickByStatus(["ACTIVE"]);
         return target
           ? `/provisional-data-entry.html?id=${encodeURIComponent(target)}`
-          : "/provisional-dashboard.html";
+          : "provisional-dashboard.html";
       }
       default:
-        return "/provisional-dashboard.html";
+        return "provisional-dashboard.html";
     }
   }
 

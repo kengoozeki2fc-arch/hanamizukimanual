@@ -449,7 +449,7 @@
     document.getElementById("runAzureBtn").onclick = runAzureOcrFn;
 
     document.getElementById("backBtn")?.addEventListener("click", () => {
-      location.href = "/provisional-dashboard.html";
+      location.href = "provisional-dashboard.html";
     });
 
     document.getElementById("toEntryBtn")?.addEventListener("click", () => {
@@ -461,7 +461,7 @@
       });
       const comment = document.getElementById("sourceComment").value.trim() || null;
       ProvStore.upsert({ ...current, sourceSelection: sel, sourceChangeComment: comment });
-      location.href = `/provisional-data-entry.html?id=${encodeURIComponent(current.id)}`;
+      location.href = `provisional-data-entry.html?id=${encodeURIComponent(current.id)}`;
     });
 
     document.addEventListener("DOMContentLoaded", init);
