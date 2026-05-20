@@ -8,6 +8,27 @@
   <link rel="stylesheet" href="css/provisional.css">
   <script src="js/provisional-store.js" defer></script>
   <script src="js/prov-nav.js" defer></script>
+  <style>
+    .ocr-hint { display:block; margin-top:4px; font-size:11px; color:#666; background:#F5F5F5; padding:4px 8px; border-radius:3px; border-left:3px solid #9CCC65; }
+    .ocr-hint .lbl { color:#888; margin-right:4px; }
+    .ocr-hint .val { font-weight:bold; color:#333; }
+    .ocr-hint.none { border-left-color:#bbb; opacity:0.7; }
+    .master-pick-btn { font-size:12px; padding:4px 10px; margin-left:6px; background:#1B5E20; color:#fff; border:none; border-radius:3px; cursor:pointer; }
+    .master-modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:1000; align-items:center; justify-content:center; }
+    .master-modal-bg.show { display:flex; }
+    .master-modal { background:#fff; border-radius:6px; padding:20px; max-width:520px; width:90%; max-height:80vh; display:flex; flex-direction:column; }
+    .master-modal h3 { margin:0 0 12px; }
+    .master-modal input[type=text] { width:100%; padding:8px; margin-bottom:8px; box-sizing:border-box; }
+    .master-list { flex:1; overflow-y:auto; border:1px solid #ddd; border-radius:3px; }
+    .master-list .item { padding:8px 12px; cursor:pointer; border-bottom:1px solid #eee; }
+    .master-list .item:hover { background:#E8F5E9; }
+    .master-list .item .id { font-size:11px; color:#888; margin-right:8px; }
+    .master-modal .close-btn { margin-top:8px; padding:6px 12px; align-self:flex-end; }
+    .image-zoom-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:1001; align-items:center; justify-content:center; cursor:zoom-out; padding:20px; box-sizing:border-box; }
+    .image-zoom-bg.show { display:flex; }
+    .image-zoom-bg img { max-width:100%; max-height:100%; object-fit:contain; box-shadow:0 0 40px rgba(0,0,0,0.6); }
+    .ocr-shot-card img { cursor:zoom-in; }
+  </style>
 </head>
 <body>
   <div class="nav">
@@ -141,14 +162,22 @@
         </div>
       </div>
 
-      <!-- ===== 所属・職種（永賢システムマスタから取得・OCR充填しない） ===== -->
+      <!-- ===== 所属・職種（永賢システムマスタから取得・OCR充填しない・OCR結果は参考表示） ===== -->
       <div class="card">
-        <h2>所属・職種 <span style="font-size:12px; color:#888; font-weight:normal;">（永賢システムから取得・OCRしない）</span></h2>
+        <h2>所属・職種 <span style="font-size:12px; color:#888; font-weight:normal;">（永賢システムから選択・OCR結果は参考のみ）</span></h2>
         <label>主たる所属（取引先） <span style="color:#991b1b">*</span></label>
-        <input type="text" name="partnerName" data-field="partnerName" placeholder="永賢システム Partner マスタから選択（マスタ参照UI実装予定）">
+        <div style="display:flex; align-items:center; gap:4px;">
+          <input type="text" name="partnerName" data-field="partnerName" placeholder="マスタから選択" style="flex:1;">
+          <button type="button" class="master-pick-btn" id="pickPartnerBtn">📋 マスタから選択</button>
+        </div>
+        <div class="ocr-hint" id="ocrHint-partnerName"><span class="lbl">📷 OCR読取（参考）:</span><span class="val">（未取得）</span></div>
 
-        <label>職種 <span style="color:#991b1b">*</span></label>
-        <input type="text" name="occupation" data-field="occupation" placeholder="永賢システム Occupation マスタから選択（マスタ参照UI実装予定）">
+        <label style="margin-top:10px;">職種 <span style="color:#991b1b">*</span></label>
+        <div style="display:flex; align-items:center; gap:4px;">
+          <input type="text" name="occupation" data-field="occupation" placeholder="マスタから選択" style="flex:1;">
+          <button type="button" class="master-pick-btn" id="pickOccupationBtn">📋 マスタから選択</button>
+        </div>
+        <div class="ocr-hint" id="ocrHint-occupation"><span class="lbl">📷 OCR読取（参考）:</span><span class="val">（未取得）</span></div>
       </div>
 
       <!-- ===== 健康情報 ===== -->
@@ -163,16 +192,21 @@
 
         <label>直近健診日 <span id="conf-lastHealthCheckDate"></span></label>
         <input type="date" name="lastHealthCheckDate" data-field="lastHealthCheckDate">
+        <div class="ocr-hint" id="ocrHint-lastHealthCheckDate"><span class="lbl">📷 OCR読取（参考）:</span><span class="val">（未取得）</span></div>
 
-        <label>特殊健康診断種類 <span id="conf-specialHealthCheck"></span></label>
+        <label style="margin-top:10px;">特殊健康診断種類 <span id="conf-specialHealthCheck"></span></label>
         <input type="text" name="specialHealthCheck" data-field="specialHealthCheck" placeholder="該当する場合のみ">
+        <div class="ocr-hint" id="ocrHint-specialHealthCheck"><span class="lbl">📷 OCR読取（参考）:</span><span class="val">（未取得）</span></div>
 
-        <label style="display:flex; align-items:center; gap:8px;">
+        <label style="display:flex; align-items:center; gap:8px; margin-top:12px;">
           <input type="checkbox" name="isSolo"> 1人親方
         </label>
-        <label style="display:flex; align-items:center; gap:8px;">
+        <div class="ocr-hint" id="ocrHint-isSolo"><span class="lbl">📷 OCR読取（参考）:</span><span class="val">（未取得）</span></div>
+
+        <label style="display:flex; align-items:center; gap:8px; margin-top:6px;">
           <input type="checkbox" name="rosaiSpecial"> 労災特別加入
         </label>
+        <div class="ocr-hint" id="ocrHint-rosaiSpecial"><span class="lbl">📷 OCR読取（参考）:</span><span class="val">（未取得）</span></div>
       </div>
 
       <!-- ===== 保有資格（OCR種別判定済） ===== -->
@@ -455,6 +489,10 @@
         phoneInput.classList.add("ocr-hydrated");
       }
 
+      // OCR参考表示ヒント用に current を global 公開してイベント発火
+      window.__currentDraft = current;
+      window.dispatchEvent(new Event("provisional:hydrated"));
+
       // 採用コメント既存値
       if (current.sourceChangeComment) {
         // 簡易：address に入れる
@@ -532,6 +570,116 @@
     };
 
     document.addEventListener("DOMContentLoaded", init);
+  </script>
+
+  <!-- ===== マスタ参照モーダル ===== -->
+  <div class="master-modal-bg" id="masterModalBg">
+    <div class="master-modal">
+      <h3 id="masterModalTitle">マスタから選択</h3>
+      <input type="text" id="masterFilterInput" placeholder="検索（名前 or ID）">
+      <div class="master-list" id="masterList"></div>
+      <button type="button" class="btn btn-ghost close-btn" id="masterCloseBtn">閉じる</button>
+    </div>
+  </div>
+
+  <!-- ===== 画像拡大モーダル ===== -->
+  <div class="image-zoom-bg" id="imageZoomBg">
+    <img id="imageZoomImg" alt="zoomed">
+  </div>
+
+  <script>
+    // ===== マスタ参照モーダル =====
+    let masterCache = { partners: null, occupations: null };
+    async function loadMaster(kind) {
+      if (masterCache[kind]) return masterCache[kind];
+      const url = kind === "partners" ? "data/partner-master-mock.json" : "data/occupation-master-mock.json";
+      const res = await fetch(url);
+      const j = await res.json();
+      masterCache[kind] = j[kind] || [];
+      return masterCache[kind];
+    }
+    function openMasterModal(kind, targetFieldName, title) {
+      const modal = document.getElementById("masterModalBg");
+      const list = document.getElementById("masterList");
+      const input = document.getElementById("masterFilterInput");
+      document.getElementById("masterModalTitle").textContent = title;
+      input.value = "";
+      list.innerHTML = '<div style="padding:12px; color:#888;">読込中…</div>';
+      modal.classList.add("show");
+      loadMaster(kind).then(items => {
+        const render = (filter = "") => {
+          const f = filter.trim().toLowerCase();
+          const filtered = items.filter(it => {
+            const name = (kind === "partners" ? it.companyName || it.name : it.name) || "";
+            const id   = String(kind === "partners" ? it.partnerId : it.occupationId);
+            return !f || name.toLowerCase().includes(f) || id.includes(f);
+          });
+          list.innerHTML = filtered.map(it => {
+            const name = kind === "partners" ? (it.companyName || it.name) : it.name;
+            const id   = kind === "partners" ? it.partnerId : it.occupationId;
+            return `<div class="item" data-name="${name.replace(/"/g, '&quot;')}"><span class="id">#${id}</span>${name}</div>`;
+          }).join("") || '<div style="padding:12px; color:#888;">該当なし</div>';
+          list.querySelectorAll(".item").forEach(el => {
+            el.onclick = () => {
+              const name = el.dataset.name;
+              const inp = document.querySelector(`[data-field="${targetFieldName}"]`);
+              if (inp) { inp.value = name; inp.classList.add("ocr-hydrated"); inp.classList.remove("ocr-failed"); }
+              modal.classList.remove("show");
+            };
+          });
+        };
+        render();
+        input.oninput = e => render(e.target.value);
+      });
+    }
+    document.getElementById("pickPartnerBtn")?.addEventListener("click", () => openMasterModal("partners", "partnerName", "📋 主たる所属マスタから選択"));
+    document.getElementById("pickOccupationBtn")?.addEventListener("click", () => openMasterModal("occupations", "occupation", "📋 職種マスタから選択"));
+    document.getElementById("masterCloseBtn")?.addEventListener("click", () => document.getElementById("masterModalBg").classList.remove("show"));
+    document.getElementById("masterModalBg")?.addEventListener("click", e => {
+      if (e.target.id === "masterModalBg") document.getElementById("masterModalBg").classList.remove("show");
+    });
+
+    // ===== 画像拡大モーダル =====
+    function openImageZoom(src) {
+      document.getElementById("imageZoomImg").src = src;
+      document.getElementById("imageZoomBg").classList.add("show");
+    }
+    document.getElementById("imageZoomBg")?.addEventListener("click", () => document.getElementById("imageZoomBg").classList.remove("show"));
+    // 撮影元画像（参照）の img クリック→拡大
+    // shotThumbs内のimgは動的生成されるためdocument全体に委譲
+    document.addEventListener("click", (e) => {
+      const tgt = e.target;
+      if (tgt.tagName === "IMG" && tgt.closest(".ocr-shot-card")) {
+        openImageZoom(tgt.src);
+      }
+    });
+
+    // ===== OCR結果を参考情報枠に表示（編集不可） =====
+    // hydrate完了後に呼ぶ。fillField で値入れた箇所も別途このヒント表示で原典提示
+    function paintOcrHint(fieldName, ocrField) {
+      const el = document.getElementById(`ocrHint-${fieldName}`);
+      if (!el) return;
+      if (ocrField && ocrField.value) {
+        el.classList.remove("none");
+        el.querySelector(".val").textContent = `${ocrField.value} (信頼度:${ocrField.confidence})`;
+      } else {
+        el.classList.add("none");
+        el.querySelector(".val").textContent = "（未取得）";
+      }
+    }
+    // hydrate直後にトリガー: window.__paintAllOcrHints が呼ばれるよう load イベントで遅延
+    window.addEventListener("provisional:hydrated", () => {
+      const ocr = window.__currentDraft?.ocrResult;
+      if (!ocr) return;
+      const paperField = (key) => ocr.paper?.fields?.[key];
+      paintOcrHint("partnerName", paperField("partnerName"));
+      paintOcrHint("occupation", paperField("occupation"));
+      paintOcrHint("lastHealthCheckDate", paperField("lastHealthCheckDate"));
+      paintOcrHint("specialHealthCheck", paperField("specialHealthCheck"));
+      // チェック項目はOCR項目に存在しないので、もしAzureDI/Gemini側で取れていれば（例: isSolo, rosaiSpecial）value表示
+      paintOcrHint("isSolo", paperField("isSolo"));
+      paintOcrHint("rosaiSpecial", paperField("rosaiSpecial"));
+    });
   </script>
 </body>
 </html>
