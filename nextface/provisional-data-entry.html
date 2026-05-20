@@ -4,21 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>22項目データ投入 | 永賢組 顔認証初期登録 v0.5</title>
-  <link rel="stylesheet" href="/css/common.css">
-  <link rel="stylesheet" href="/css/provisional.css">
-  <script src="/js/provisional-store.js" defer></script>
-  <script src="/js/prov-nav.js" defer></script>
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/provisional.css">
+  <script src="js/provisional-store.js" defer></script>
+  <script src="js/prov-nav.js" defer></script>
 </head>
 <body>
   <div class="nav">
     <h3>② データ投入：22項目最終確認</h3>
-    <a href="/provisional-dashboard.html">← 仮登録一覧</a>
+    <a href="provisional-dashboard.html">← 仮登録一覧</a>
   </div>
 
   <div class="wrap">
     <div class="prov-nav">
-      <a class="prov-nav-btn" href="/">← メニューへ戻る</a>
-      <a class="prov-nav-btn" href="/provisional-dashboard.html">📋 ダッシュボードへ</a>
+      <a class="prov-nav-btn" href="./">← メニューへ戻る</a>
+      <a class="prov-nav-btn" href="provisional-dashboard.html">📋 ダッシュボードへ</a>
       <span class="prov-nav-spacer"></span>
       <span class="prov-nav-hint">パンくずクリックで各画面へジャンプ</span>
     </div>
@@ -385,7 +385,7 @@
         userBox.innerHTML = `<span class="user-icon">👤</span><span class="user-name">${u?.displayName || "(未ログイン)"}</span>`;
       }
       if (!provId) {
-        $("#topMeta").innerHTML = '<span style="color:#c00;">⚠ id パラメータがありません。<a href="/provisional-dashboard.html">仮登録一覧</a>からやり直してください。</span>';
+        $("#topMeta").innerHTML = '<span style="color:#c00;">⚠ id パラメータがありません。<a href="provisional-dashboard.html">仮登録一覧</a>からやり直してください。</span>';
         return;
       }
       current = ProvStore.getById(provId);
@@ -534,7 +534,7 @@
           PersonalInformationID: <code>${esc(personalInfoId)}</code><br>
           仮登録ID <code>${esc(current.id)}</code> を ACTIVE に昇格しました。<br>
           顔ベクトル登録は <code>addpersonalinfo</code> 側で連鎖（モックでは省略）。<br>
-          <a href="/provisional-dashboard.html">→ 仮登録一覧に戻る</a>
+          <a href="provisional-dashboard.html">→ 仮登録一覧に戻る</a>
         </div>`;
     };
 

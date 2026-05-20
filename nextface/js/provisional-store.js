@@ -16,7 +16,7 @@
     const raw = sessionStorage.getItem(LS_KEY);
     if (raw) return JSON.parse(raw);
     try {
-      const res = await fetch("/data/provisional-mocks.json");
+      const res = await fetch("data/provisional-mocks.json");
       const json = await res.json();
       sessionStorage.setItem(LS_KEY, JSON.stringify(json.items || []));
       return json.items || [];
@@ -33,7 +33,7 @@
     const cached = sessionStorage.getItem(SS_SITES_ALL);
     if (cached) return JSON.parse(cached);
     try {
-      const res = await fetch("/data/sites-mock.json");
+      const res = await fetch("data/sites-mock.json");
       const j = await res.json();
       sessionStorage.setItem(SS_SITES_ALL, JSON.stringify(j));
       return j;
@@ -133,7 +133,7 @@
     const idx = items.findIndex((x) => x.id === id);
     if (idx < 0) return null;
     try {
-      const res = await fetch("/data/ocr-mocks.json");
+      const res = await fetch("data/ocr-mocks.json");
       const j = await res.json();
       // デフォルトOCR結果テンプレートを流し込み（電話番号と顔写真は本人入力のため上書きしない）
       items[idx].ocrResult = j.defaultResult;

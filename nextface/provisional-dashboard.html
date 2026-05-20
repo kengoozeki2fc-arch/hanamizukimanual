@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>現場ダッシュボード | 永賢組 顔認証初期登録 v0.5</title>
-  <link rel="stylesheet" href="/css/common.css">
-  <link rel="stylesheet" href="/css/provisional.css">
-  <script src="/js/provisional-store.js" defer></script>
-  <script src="/js/prov-nav.js" defer></script>
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/provisional.css">
+  <script src="js/provisional-store.js" defer></script>
+  <script src="js/prov-nav.js" defer></script>
   <style>
     /* === 本体 dashboard.html から忠実コピー === */
     .wrap-dash { max-width: 1100px; margin: 0 auto; padding: 16px; }
@@ -150,13 +150,13 @@
   <!-- 本体と同じ .nav バー -->
   <div class="nav">
     <h3>現場ダッシュボード</h3>
-    <a href="/">メニュー</a>
+    <a href="./">メニュー</a>
   </div>
 
   <div class="wrap-dash">
     <!-- 共通ナビバー（仮登録フロー4画面のジャンプ用・このダッシュボード本体ではパンくず非表示） -->
     <div class="prov-nav">
-      <a class="prov-nav-btn" href="/">← メニューへ戻る</a>
+      <a class="prov-nav-btn" href="./">← メニューへ戻る</a>
       <span class="prov-nav-spacer"></span>
       <span class="prov-nav-hint">仮入場者リストは所属現場のみ表示されます</span>
     </div>
@@ -168,7 +168,7 @@
       <span class="onsite" id="onsiteLabel"></span>
       <select class="site-picker" id="sitePicker" style="display:none;"></select>
       <span style="flex:1 1 30px;"></span>
-      <a href="/provisional-entry.html" class="cta-camera">📷 仮登録（5点撮影）</a>
+      <a href="provisional-entry.html" class="cta-camera">📷 仮登録（5点撮影）</a>
       <span class="user-chip" id="provHeaderUser">
         <span class="user-icon">👤</span><span class="user-name">読込中…</span>
       </span>
@@ -293,12 +293,12 @@
 
   function actionBtn(item) {
     if (item.status === "PROVISIONAL_DRAFT") {
-      return `<a href="/provisional-review.html?id=${encodeURIComponent(item.id)}" class="btn btn-accent" style="padding:6px 12px; min-height:32px; font-size:12px;">OCR実行→レビュー</a>`;
+      return `<a href="provisional-review.html?id=${encodeURIComponent(item.id)}" class="btn btn-accent" style="padding:6px 12px; min-height:32px; font-size:12px;">OCR実行→レビュー</a>`;
     }
     if (item.status === "OCR_REVIEWING") {
-      return `<a href="/provisional-review.html?id=${encodeURIComponent(item.id)}" class="btn" style="padding:6px 12px; min-height:32px; font-size:12px;">レビュー</a>`;
+      return `<a href="provisional-review.html?id=${encodeURIComponent(item.id)}" class="btn" style="padding:6px 12px; min-height:32px; font-size:12px;">レビュー</a>`;
     }
-    return `<a href="/provisional-data-entry.html?id=${encodeURIComponent(item.id)}" class="btn btn-ghost" style="padding:6px 12px; min-height:32px; font-size:12px;">閲覧</a>`;
+    return `<a href="provisional-data-entry.html?id=${encodeURIComponent(item.id)}" class="btn btn-ghost" style="padding:6px 12px; min-height:32px; font-size:12px;">閲覧</a>`;
   }
 
   // 現場フィルタ：選択中現場 or ログインUser所属現場（複数可）に該当する仮入場者だけ返す
