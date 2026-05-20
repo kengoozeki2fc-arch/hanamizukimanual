@@ -412,47 +412,55 @@
       const sel = current.sourceSelection || {};
       const ocr = current.ocrResult || { licence: {}, paper: {}, certs: [] };
 
-      // v0.5: 免許OCRが無い（=免許未撮影 or OCR失敗）場合は主ソースを「紙」に自動切替
-      const hasLicenceOcr = !!(ocr.licence?.fields && Object.keys(ocr.licence.fields).length > 0);
-      const defaultSource = hasLicenceOcr ? "licence" : "paper";
-      if (!hasLicenceOcr) {
-        const banner = document.createElement("div");
-        banner.className = "banner-soft";
-        banner.innerHTML = "ℹ 免許OCRなし（免許未撮影 or 読取失敗）。主ソースを<strong>紙</strong>に自動切替しました。";
-        document.getElementById("banners").appendChild(banner);
-      }
+      // ====== v0.7 シンプル充填ロジック（免許優先→紙フォールバック）======
+      // ルール:
+      //   1) 免許OCRに値あり (confidence != "fail") → 免許の値を使う
+      //   2) 免許になし or fail → 紙OCRの値を使う（紙も fail でなければ）
+      //   3) 両方ダメ → 空欄（プレースホルダで手入力誘導）
+      //   正解/不正解の判定はしない。OCR失敗以外は必ず入れる。
+      function fillField(fieldName, sources) {
+        const input = document.querySelector(`[data-field="${fieldName}"]`);
+        if (!input) return;
+        const confSpan = document.getElementById(`conf-${fieldName}`);
+        const lic = sources.licence;
+        const pap = sources.paper;
+        let chosen = null, source = null;
+        if (lic && lic.value && lic.confidence !== "fail") { chosen = lic; source = "licence"; }
+        else if (pap && pap.value && pap.confidence !== "fail") { chosen = pap; source = "paper"; }
 
-      const fieldsFromBothSources = ["name", "nameKana", "birthday", "address", "postalCode"];
-      fieldsFromBothSources.forEach(f => {
-        const useSource = sel[f] || defaultSource;
-        setSourceToggleActive(f, useSource);
-        hydrateField(f, {
-          licence: licenceFieldOf(ocr.licence, f),
-          paper:   paperFieldOf(ocr.paper, f),
-        }, { useSource });
-        // 採用コメント欄の初期表示（デフォルトソース以外なら表示）
-        const cw = document.querySelector(`.source-comment-wrap[data-field="${f}"]`);
-        if (cw && useSource !== defaultSource) cw.classList.add("show");
-      });
-
-      // 紙のみ項目
-      const paperOnly = ["emergencyContactName", "emergencyContactRelation", "emergencyContactPhone", "occupation", "partnerName", "bloodType", "rh", "lastHealthCheckDate", "specialHealthCheck"];
-      paperOnly.forEach(f => {
-        const v = paperFieldOf(ocr.paper, f);
-        const input = document.querySelector(`[data-field="${f}"]`);
-        const confSpan = document.getElementById(`conf-${f}`);
-        if (v && v.value) {
-          input.value = v.value;
-          if (confSpan) confSpan.innerHTML = ProvStore.confBadge(v.confidence);
-          if (v.confidence === "fail" || v.confidence === "low") {
-            input.classList.add("ocr-failed");
-          } else {
-            input.classList.add("ocr-hydrated");
-          }
+        if (chosen) {
+          input.value = chosen.value;
+          if (confSpan) confSpan.innerHTML = ProvStore.confBadge(chosen.confidence) + ` <span class="src-badge" style="font-size:11px; color:#666; margin-left:4px;">[${source === "licence" ? "免許" : "紙"}]</span>`;
+          input.classList.add("ocr-hydrated");
+          input.classList.remove("ocr-failed");
         } else {
           if (confSpan) confSpan.innerHTML = ProvStore.confBadge("fail");
           input.classList.add("ocr-failed");
+          input.placeholder = "OCR読取失敗 — 手入力してください";
         }
+        // 旧UIの source-values 表示は両ソース併記のみ残す（デバッグ用）
+        const sv = document.querySelector(`.source-values[data-field="${fieldName}"]`);
+        if (sv) {
+          const licV = lic?.value || "(なし)";
+          const papV = pap?.value || "(なし)";
+          sv.innerHTML = `<span class="src-licence">免許: ${esc(licV)}</span> ｜ <span class="src-paper">紙: ${esc(papV)}</span>`;
+        }
+      }
+
+      // 免許＋紙の両方ある項目（免許優先）
+      const bothFields = ["name", "nameKana", "birthday", "address", "postalCode"];
+      bothFields.forEach(f => {
+        fillField(f, {
+          licence: licenceFieldOf(ocr.licence, f),
+          paper:   paperFieldOf(ocr.paper, f),
+        });
+      });
+
+      // 紙のみ項目（emergency*, occupation, partnerName, bloodType, rh ...）
+      // 免許に該当無いので paper のみ評価
+      const paperOnly = ["emergencyContactName", "emergencyContactRelation", "emergencyContactPhone", "occupation", "partnerName", "bloodType", "rh", "lastHealthCheckDate", "specialHealthCheck"];
+      paperOnly.forEach(f => {
+        fillField(f, { licence: null, paper: paperFieldOf(ocr.paper, f) });
       });
 
       // 電話番号は監督入力（OCR対象外）
