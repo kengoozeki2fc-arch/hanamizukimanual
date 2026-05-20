@@ -3,180 +3,235 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>永賢組 顔認証フロー見直し v0.6 モック</title>
-  <link rel="stylesheet" href="/nextface/css/common.css">
-  <link rel="stylesheet" href="/nextface/css/provisional.css">
+  <title>永賢組 入退場モック</title>
+  <link rel="stylesheet" href="css/common.css">
   <style>
-    .hero {
-      background: linear-gradient(135deg, var(--nagaken-primary) 0%, var(--nagaken-primary-deep) 100%);
-      color: #fff;
-      padding: 20px 16px;
-      margin: -20px -16px 20px;
-      border-radius: 0 0 12px 12px;
-    }
-    .hero h1 {
-      color: #fff;
-      border-bottom: none;
-      margin: 0 0 6px;
-      font-size: clamp(18px, 5vw, 22px);
-    }
-    .hero .ver {
-      display: inline-block; padding: 2px 10px; border-radius: 999px;
-      background: rgba(255,255,255,0.2); color: #fff; font-size: 12px; font-weight: 600;
-      margin-bottom: 6px;
-    }
-    .hero p { margin: 0; opacity: 0.95; font-size: 13px; line-height: 1.6; }
-
-    .section-label {
-      margin: 22px 0 10px; padding: 6px 12px; border-radius: 4px;
+    .section-title {
+      margin: 24px 0 10px; padding: 8px 12px; border-radius: 6px;
       background: var(--nagaken-primary-dark); color: #fff;
-      font-size: 13px; font-weight: 700; letter-spacing: 0.05em;
+      font-size: 14px; font-weight: 700; letter-spacing: 0.05em;
     }
-
-    .entry-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-      margin-bottom: 16px;
+    .section-title.worker { background: var(--nagaken-primary); }
+    .section-title.office { background: var(--nagaken-primary-dark); }
+    .onsite-picker {
+      background: #fff; border: 2px solid var(--nagaken-primary);
+      border-radius: 8px; padding: 14px; margin-bottom: 12px;
     }
-    @media (min-width: 720px) {
-      .entry-grid { grid-template-columns: repeat(2, 1fr); }
+    .onsite-picker .row { display: flex; gap: 8px; align-items: stretch; }
+    .onsite-picker select { flex: 1; min-height: 44px; }
+    .onsite-picker .decide-btn {
+      padding: 0 18px; min-width: 80px;
+      background: var(--nagaken-primary); color: #fff;
+      border: none; border-radius: 6px; font-weight: 700; cursor: pointer;
     }
-    .entry-card {
-      background: #fff;
-      border: 1px solid var(--nagaken-border);
-      border-left: 5px solid var(--nagaken-primary);
-      border-radius: 8px;
-      padding: 14px 16px;
-      display: flex; flex-direction: column; gap: 8px;
+    .onsite-picker .decide-btn:hover { background: var(--nagaken-primary-deep); }
+    .onsite-picker .selected-badge {
+      display: inline-block; margin-top: 8px; padding: 4px 10px;
+      background: var(--nagaken-primary); color: #fff;
+      border-radius: 12px; font-size: 12px; font-weight: 600;
     }
-    .entry-card.primary { border-left-color: var(--nagaken-accent); background: #FFFCF3; }
-    .entry-card h2 {
-      margin: 0; font-size: 15px; color: var(--nagaken-primary-dark);
-      display: flex; align-items: center; gap: 8px;
-    }
-    .entry-card .role {
-      display: inline-block; padding: 2px 8px; border-radius: 4px;
-      background: var(--nagaken-bg); color: var(--nagaken-primary-dark);
-      font-size: 11px; font-weight: 600;
-    }
-    .entry-card p { margin: 0; font-size: 13px; line-height: 1.6; color: var(--nagaken-body); }
-    .entry-card .key { color: var(--nagaken-primary-deep); font-weight: 700; }
-    .btn-block { display: block; width: 100%; }
-
-    .footnote {
-      margin-top: 28px; padding: 14px;
-      background: var(--nagaken-bg); border-radius: 8px;
-      font-size: 12px; line-height: 1.7; color: var(--nagaken-body);
-    }
-    .footnote strong { color: var(--nagaken-primary-dark); }
-    .badge-v06 {
-      display: inline-block; padding: 2px 8px; border-radius: 4px;
-      background: var(--nagaken-accent); color: var(--nagaken-primary-dark);
-      font-size: 11px; font-weight: 700; margin-left: 6px;
-    }
-    .badge-existing {
-      display: inline-block; padding: 2px 8px; border-radius: 4px;
-      background: #e8e8e8; color: #555;
-      font-size: 11px; font-weight: 700; margin-left: 6px;
-    }
-
-    .topology {
-      background: #fff;
-      border: 1px solid var(--nagaken-border);
-      border-radius: 8px;
-      padding: 14px;
-      font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
-      font-size: 11px;
-      line-height: 1.5;
-      color: #333;
-      white-space: pre;
-      overflow-x: auto;
-    }
+    .nested-card { margin-left: 16px; border-left: 3px solid var(--nagaken-border); padding-left: 14px; }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="hero">
-      <span class="ver">v0.6 モック（ハブ&スポーク）</span>
-      <h1>永賢組 顔認証 初期登録フロー見直し</h1>
-      <p>v0.5 線形4ステップを廃止し、ダッシュボードを<strong>ハブ</strong>、社員メニュー5項目を<strong>スポーク</strong>とする構造に再構築。OCRレビュー画面は本登録画面に統合。</p>
-    </div>
-
-    <div class="section-label">🧭 v0.6 画面構成（ハブ&スポーク）</div>
-
-    <div class="topology">                        ┌──────────────────────────┐
-                        │ ダッシュボード（ハブ）   │
-                        │ provisional-dashboard    │
-                        └──────────┬───────────────┘
-                                   │
-   ┌──────────┬──────────┬─────────┼─────────┬──────────┬──────────┐
-   ▼          ▼          ▼         ▼         ▼          ▼          ▼
- 仮登録    本登録    新規入場者  入場管理   KY記録   仮登録者
- (監督)    (事務)    (既存)      (既存)     (既存)    リスト
- entry     data-entry                                 list</div>
-
-    <div class="section-label">🚪 入口</div>
-
-    <div class="entry-grid">
-      <div class="entry-card primary">
-        <h2>📋 ダッシュボード（ハブ）<span class="badge-v06">v0.6</span></h2>
-        <p>当日サマリ／クイック導線／社員メニュー5項目（スポーク）。<strong>まずここから始める</strong>。</p>
-        <a href="/nextface/provisional-dashboard.html" class="btn btn-block">📋 ダッシュボードを開く</a>
-      </div>
-
-      <div class="entry-card">
-        <h2>📷 仮登録（5点撮影）<span class="role">監督モバイル</span></h2>
-        <p>当日飛び込み作業員に対し、監督がスマホで <span class="key">紙・顔・電話番号</span>（必須）と <span class="key">免許・資格証</span>（任意）を撮影。OCRサーバに送信し<strong>仮入場ステータス</strong>で当日入場OK。</p>
-        <a href="/nextface/provisional-entry.html" class="btn btn-accent btn-block">📷 仮登録を開く</a>
-      </div>
-    </div>
-
-    <div class="section-label">🧑‍💼 スポーク（社員メニュー5項目）</div>
-
-    <div class="entry-grid">
-      <div class="entry-card">
-        <h2>📋 本登録（OCR結果確認＋22項目データ投入）<span class="badge-v06">v0.6</span></h2>
-        <p>仮登録者リストから対象を選んで開く。OCR マッピング済みの22項目フォームが初期表示され、<strong>免許／紙／手入力トグル</strong>で採用ソースを選択。「正式投入」で ACTIVE 昇格＋PI-2026 採番。</p>
-        <a href="/nextface/provisional-data-entry.html" class="btn btn-block">📋 本登録画面を開く</a>
-      </div>
-
-      <div class="entry-card">
-        <h2>📃 仮登録者リスト<span class="badge-v06">v0.6</span></h2>
-        <p>PROVISIONAL_DRAFT / OCR_REVIEWING / ACTIVE の3段バッジ＋検索＋ステータス絞り込み。行クリックで本登録画面（OCRマッピング統合）へ遷移。</p>
-        <a href="/nextface/provisional-list.html" class="btn btn-block">📃 仮登録者リストを開く</a>
-      </div>
-
-      <div class="entry-card">
-        <h2>👷 新規入場者<span class="badge-existing">既存</span></h2>
-        <p>永賢組 既存の事前登録パターン（face.gemba-ai.cloud）。本モックではリンクのみ。</p>
-        <a href="https://www.face.gemba-ai.cloud/" target="_blank" rel="noopener" class="btn btn-ghost btn-block">→ 既存サイトへ</a>
-      </div>
-
-      <div class="entry-card">
-        <h2>🛡 入場管理<span class="badge-existing">既存</span></h2>
-        <p>既存：入退場ログ・管理画面。</p>
-        <a href="https://www.face.gemba-ai.cloud/admin.html" target="_blank" rel="noopener" class="btn btn-ghost btn-block">→ admin.html へ</a>
-      </div>
-
-      <div class="entry-card">
-        <h2>⚠️ KY記録<span class="badge-existing">既存</span></h2>
-        <p>既存：KY帳票ビュー・3画面連動（指示書/KY/KY裏面）。</p>
-        <a href="https://www.face.gemba-ai.cloud/ky-sheet.html" target="_blank" rel="noopener" class="btn btn-ghost btn-block">→ ky-sheet.html へ</a>
-      </div>
-    </div>
-
-    <div class="footnote">
-      <p><strong>このモックについて</strong></p>
-      <p>本サイトは <strong>永賢組 顔認証初期登録フロー見直し案 v0.6</strong>（2026-05-17 確定）の動作確認用モックです。実データ書き込みは行わず、ブラウザの sessionStorage に保存します。</p>
-      <p style="margin-top:8px;">＜v0.6 主要確定事項＞<br>
-      ① <span class="key">OCRレビュー画面廃止</span>＝本登録画面に統合（22項目フォーム＋免許/紙/手入力トグル＋採用コメント）<br>
-      ② <span class="key">ハブ&スポーク構造</span>＝ダッシュボードをハブ、社員メニュー5項目をスポーク<br>
-      ③ <span class="key">仮登録者リスト独立化</span>＝3段バッジ＋現場フィルタ＋行クリックで本登録画面へ<br>
-      ④ <span class="key">パンくず4ステップ廃止</span>＝戻りリンクのみのシンプル遷移<br>
-      ⑤ 認証＝Entra直結（Keycloak不採用）／デプロイ＝nface.gemba-ai.cloud 新規SWA</p>
-      <p style="margin-top:8px;">設計書: <code>MyBrain/20_Projects/永賢組/02_基本設計/顔認証初期登録フロー見直し案_v0.6_20260517.{md,pdf}</code></p>
-    </div>
+  <div class="nav">
+    <h3>永賢組 入退場モック</h3>
+    <a id="navDashboard" href="/dashboard.html">📊 ダッシュボード</a>
+    <a id="navAdmin" href="/admin.html">管理画面</a>
   </div>
+  <div class="wrap">
+    <h1>画面メニュー</h1>
+    <p class="muted">永賢組建築現場 入退場＆安全管理システム（モックアップ）</p>
+
+    <!-- ==================== 作業員用 ==================== -->
+    <div class="section-title worker">🧑‍🔧 作業員用（NFC経由想定）</div>
+
+    <div class="card">
+      <h2>① 個人情報登録（事前登録）</h2>
+      <p class="muted">QR/URL→顔写真撮影→作業員情報登録</p>
+      <a id="link-site-entry" href="/site-entry.html?clientId=1" class="btn btn-block">個人情報登録へ</a>
+    </div>
+
+    <div class="card" style="border-left:5px solid var(--nagaken-primary-deep);">
+      <h2>①' 仮登録（顔認証フロー v0.5・監督モバイル5点撮影）</h2>
+      <p class="muted">当日飛び込み作業員用。<strong>必須＝紙／顔／電話番号</strong>。免許・資格証は任意（撮影で精度UP）。サーバOCR→事務員レビュー。</p>
+      <a id="link-prov-entry" href="provisional-entry.html" class="btn btn-block">📷 仮登録（5点撮影）へ</a>
+    </div>
+
+    <!-- 現場選択プルダウン -->
+    <div class="onsite-picker">
+      <label style="margin:0 0 6px; font-weight:700; color:var(--nagaken-primary-dark);">🏗 作業する現場を選んで「確定」</label>
+      <p class="muted" style="font-size:12px; margin:0 0 10px;">現場名は永賢組SPO (OnsiteMaster) と同期。以降のメニューは選択した現場に連動します。</p>
+      <div class="row">
+        <select id="onsiteSelect"><option value="">読込中…</option></select>
+        <button type="button" class="decide-btn" id="onsiteDecideBtn">✅ 確定</button>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; flex-wrap:wrap; gap:8px;">
+        <div id="onsiteSelected" class="selected-badge" style="display:none;"></div>
+        <button type="button" id="spoSyncBtn" class="btn btn-ghost" style="padding:4px 10px; min-height:30px; font-size:12px;">🔄 SPOから同期</button>
+      </div>
+      <div id="spoSyncMsg" class="muted" style="font-size:12px; margin-top:4px;"></div>
+    </div>
+
+    <div class="card">
+      <h2>① 新規入場登録（初日のみ）</h2>
+      <p class="muted">顔認証→電話番号→当日項目（体調/血圧/体温）入力</p>
+      <a id="link-new-entry" href="/nfc-entry.html?mode=new-entry&clientId=1" class="btn btn-block">新規入場登録へ</a>
+    </div>
+
+    <div class="card">
+      <h2>② 入場</h2>
+      <p class="muted">顔認証→打刻</p>
+      <a id="link-entry" href="/nfc-entry.html?mode=entry&clientId=1" class="btn btn-block">入場へ</a>
+    </div>
+
+    <div class="card">
+      <h2>③ KY活動</h2>
+      <p class="muted">顔認証→本日のKY活動記入</p>
+      <a id="link-ky" href="/nfc-entry.html?mode=ky&clientId=1" class="btn btn-block">KY活動へ</a>
+    </div>
+
+    <div class="card">
+      <h2>Ⓑ KY用紙（帳票ビュー）</h2>
+      <p class="muted">危険予知活動表のA3帳票・③ KY活動の登録結果／現場名／会社／作業内容を反映</p>
+      <a id="link-ky-sheet" href="/ky-sheet.html" class="btn btn-accent btn-block">📄 KY帳票ビューを開く</a>
+    </div>
+
+    <div class="card">
+      <h2>④ 安全会議参加</h2>
+      <p class="muted">顔認証→参加実績登録</p>
+      <a id="link-safety" href="/nfc-entry.html?mode=safety&clientId=1" class="btn btn-block">安全会議参加へ</a>
+    </div>
+
+    <div class="card">
+      <h2>⑤ 退場</h2>
+      <p class="muted">顔認証→退場打刻</p>
+      <a id="link-exit" href="/nfc-entry.html?mode=exit&clientId=1" class="btn btn-danger btn-block">退場へ</a>
+    </div>
+
+    <!-- ==================== 社員用 ==================== -->
+    <div class="section-title office">🧑‍💼 社員用（要認証・モックは認証なし）</div>
+
+    <div class="card" style="border-left:5px solid var(--nagaken-primary);">
+      <h2>📊 現場ダッシュボード</h2>
+      <p class="muted">現場の速報・社員メニュー集約（施工体制図 / 管理画面 / 朝礼イラスト）</p>
+      <a id="link-dashboard" href="/dashboard.html" class="btn btn-block">ダッシュボードを開く</a>
+      <div class="nested-card" style="margin-top:12px;">
+        <p class="muted" style="margin:6px 0;">ダッシュボード内の導線：</p>
+        <ul class="muted" style="font-size:13px; line-height:1.7; margin:0 0 4px 20px;">
+          <li>Ⓔ 施工体制図作成</li>
+          <li>Ⓓ 管理画面</li>
+          <li>Ⓒ KY裏面エディタ（朝礼用イラスト作成）</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Ⓐ 安全作業指示書エディタ</h2>
+      <p class="muted">前日安全会議で翌営業日の指示書を作成・発行（最大30社・下書き／発行）</p>
+      <div class="btn-group">
+        <a id="link-plan-simple" href="/safety-plan.html" class="btn btn-accent">📝 シンプル版</a>
+        <a id="link-plan-sheet" href="/safety-plan-sheet.html" class="btn btn-accent">📄 帳票ビュー（Excel忠実）</a>
+      </div>
+    </div>
+
+    <div class="card" style="border-left:5px solid var(--nagaken-accent);">
+      <h2>Ⓐ' 明日の安全日誌作成</h2>
+      <p class="muted">翌営業日を対象に帳票ビューを起動（前日夜の下書きに最適）</p>
+      <a id="link-plan-tomorrow" href="/safety-plan-sheet.html" class="btn btn-accent btn-block">📅 明日の安全日誌を作成する</a>
+    </div>
+
+    <div class="card">
+      <h2>Ⓓ 管理画面</h2>
+      <p class="muted">入退場履歴 / 新規入場 / KY / 安全会議 / 登録リスト / 未退場（強制退場可）</p>
+      <a id="link-admin" href="/admin.html" class="btn btn-accent btn-block">管理画面を開く</a>
+    </div>
+
+    <div class="card" style="border-left:5px solid var(--nagaken-primary-deep);">
+      <h2>Ⓕ 仮登録ダッシュボード（顔認証フロー v0.5・事務員PC）</h2>
+      <p class="muted">監督モバイルから上がった仮登録ドラフトの一覧／OCRレビュー／22項目最終確認／APIM /api/addpersonalinfo 正式投入</p>
+      <a id="link-prov-dashboard" href="provisional-dashboard.html" class="btn btn-accent btn-block">📋 仮登録ダッシュボードを開く</a>
+    </div>
+
+    <p class="muted" style="margin-top:40px; text-align:center;">
+      設計書: 建築現場の入退場管理基本設計書.pdf / 安全指示書_KY_KY裏面_仕様書.md に準拠
+    </p>
+  </div>
+
+<script>
+  const LS_ONSITE = "nagaken_mock_onsite_id";
+
+  // 全リンクに ?onsiteId=X を付与（clientIdや他のパラメータは保持）
+  function applyOnsiteToLinks(onsiteId) {
+    const linkIds = [
+      "link-site-entry", "link-new-entry", "link-entry", "link-exit", "link-ky", "link-safety",
+      "link-dashboard", "link-plan-simple", "link-plan-sheet", "link-plan-tomorrow",
+      "link-ky-sheet", "link-admin", "navDashboard", "navAdmin",
+    ];
+    for (const id of linkIds) {
+      const el = document.getElementById(id);
+      if (!el) continue;
+      const u = new URL(el.href, location.origin);
+      u.searchParams.set("onsiteId", onsiteId);
+      el.href = u.pathname + "?" + u.searchParams.toString();
+    }
+  }
+
+  function updateSelectedBadge(name) {
+    const b = document.getElementById("onsiteSelected");
+    if (!name) { b.style.display = "none"; return; }
+    b.style.display = "inline-block";
+    b.textContent = `✅ 選択中: ${name}`;
+  }
+
+  async function loadOnsites() {
+    try {
+      const res = await fetch("/api/onsites");
+      const { onsites } = await res.json();
+      const sel = document.getElementById("onsiteSelect");
+      const saved = Number(localStorage.getItem(LS_ONSITE)) || (onsites[0]?.id) || 1;
+      sel.innerHTML = (onsites || []).map(o =>
+        `<option value="${o.id}" ${o.id === saved ? "selected" : ""}>${o.name}</option>`
+      ).join("");
+      applyOnsiteToLinks(saved);
+      const cur = onsites.find(o => o.id === saved);
+      if (cur) updateSelectedBadge(cur.name);
+    } catch (e) {
+      const sel = document.getElementById("onsiteSelect");
+      sel.innerHTML = '<option value="1">(現場取得失敗・ID=1で続行)</option>';
+      applyOnsiteToLinks(1);
+    }
+  }
+
+  document.getElementById("onsiteDecideBtn").onclick = () => {
+    const sel = document.getElementById("onsiteSelect");
+    const id = Number(sel.value);
+    if (!id) return;
+    localStorage.setItem(LS_ONSITE, String(id));
+    applyOnsiteToLinks(id);
+    const name = sel.options[sel.selectedIndex]?.textContent || "";
+    updateSelectedBadge(name);
+  };
+
+  document.getElementById("spoSyncBtn").onclick = async () => {
+    const btn = document.getElementById("spoSyncBtn");
+    const msg = document.getElementById("spoSyncMsg");
+    btn.disabled = true; btn.textContent = "⏳ 同期中…";
+    msg.textContent = "永賢組SPOのOnsiteMasterから取得中…";
+    try {
+      const res = await fetch("/api/onsites/sync");
+      const j = await res.json();
+      if (!res.ok) throw new Error(j.error || "同期失敗");
+      msg.innerHTML = `✅ 同期完了: 新規 ${j.inserted} / 更新 ${j.updated} / 合計 ${j.total}`;
+      await loadOnsites();
+    } catch (e) {
+      msg.innerHTML = `<span style="color:#c00;">❌ ${e.message}</span>`;
+    } finally {
+      btn.disabled = false; btn.textContent = "🔄 SPOから同期";
+    }
+  };
+
+  loadOnsites();
+</script>
 </body>
 </html>
