@@ -7622,6 +7622,12 @@
   ※ 本サイトは社内学習用です。問題文・選択肢・解説は学習目的での引用です。
 </footer>
 
+
+<div class="lightbox" id="lightbox" role="dialog" aria-hidden="true">
+  <button type="button" class="lightbox-close" id="lightbox-close" aria-label="閉じる">×</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
 <script>
 const PICK_CONFIG = {"env": {"pool": 6, "limit": 6}, "envopt": {"pool": 9, "limit": 6}, "fac": {"pool": 5, "limit": 5}, "build": {"pool": 10, "limit": 8}, "finish": {"pool": 10, "limit": 7}, "plan": {"pool": 4, "limit": 4}, "qc": {"pool": 6, "limit": 6}, "apt": {"pool": 10, "limit": 10}, "law": {"pool": 12, "limit": 8}};
 const STORAGE_KEY = 'benkyokai-1kg-r07-state-v1';
@@ -8100,11 +8106,5 @@ updateProgress();
 })();
 
 </script>
-
-<div class="lightbox" id="lightbox" role="dialog" aria-hidden="true">
-  <button type="button" class="lightbox-close" id="lightbox-close" aria-label="閉じる">×</button>
-  <img id="lightbox-img" src="" alt="">
-</div>
-
 </body>
 </html>
