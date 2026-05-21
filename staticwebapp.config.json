@@ -138,6 +138,22 @@
     {
       "route": "/nextface",
       "rewrite": "/nextface/index.html"
+    },
+    {
+      "route": "/inagi",
+      "rewrite": "/inagi/index.html"
+    },
+    {
+      "route": "/inagi/gyosha",
+      "rewrite": "/inagi/gyosha/index.html"
+    },
+    {
+      "route": "/inagi/madoguchi",
+      "rewrite": "/inagi/madoguchi/index.html"
+    },
+    {
+      "route": "/inagi/keiri",
+      "rewrite": "/inagi/keiri/index.html"
     }
   ],
   "navigationFallback": {
@@ -196,6 +212,10 @@
       "/oisi/benkyokai-skk3/images/*.jpg",
       "/oisi-builder/*.html",
       "/oisi-builder/*.json",
+      "/inagi/*.html",
+      "/inagi/gyosha/*.html",
+      "/inagi/madoguchi/*.html",
+      "/inagi/keiri/*.html",
       "/nextface/*",
       "/nextface/*.html",
       "/nextface/css/*.css",

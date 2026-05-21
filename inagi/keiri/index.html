@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>経理・受取担当 向け｜運用マニュアル | 稲城建設業協会 完了届OCR</title>
+<style>
+  :root {
+    --cp-green-50:  #F3FAF4;
+    --cp-green-100: #DDEFE0;
+    --cp-green-200: #C2E2C7;
+    --cp-green-400: #6BBF73;
+    --cp-green-700: #2E7D38;
+    --cp-green-900: #1B4D22;
+    --cp-gray-600: #666666;
+    --cp-gray-900: #1A1A1A;
+    --cp-yellow-50: #FFF8E1;
+    --cp-yellow-400: #E6B800;
+    --cp-red-50: #FFEBEE;
+    --cp-red-400: #E57373;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+    line-height: 1.85;
+    color: var(--cp-gray-900);
+    background: var(--cp-green-50);
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+  .breadcrumb { font-size: 13px; color: var(--cp-gray-600); margin-bottom: 16px; }
+  .breadcrumb a { color: var(--cp-green-700); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  header.cover {
+    background: linear-gradient(135deg, var(--cp-green-700) 0%, var(--cp-green-400) 100%);
+    color: #fff;
+    padding: 40px 32px;
+    border-radius: 14px;
+    margin-bottom: 24px;
+    box-shadow: 0 6px 20px rgba(46,125,56,.15);
+  }
+  header.cover h1 { font-size: 24px; margin: 0 0 8px; }
+  header.cover .subtitle { font-size: 14px; opacity: .92; }
+  section {
+    background: #fff;
+    border: 1px solid var(--cp-green-200);
+    border-radius: 8px;
+    padding: 24px 28px;
+    margin-bottom: 18px;
+  }
+  section h2 {
+    color: var(--cp-green-700);
+    margin: 0 0 14px;
+    font-size: 18px;
+    padding-left: 10px;
+    border-left: 5px solid var(--cp-green-400);
+  }
+  section h3 { color: var(--cp-green-900); margin: 22px 0 8px; font-size: 15px; }
+  ol, ul { padding-left: 22px; margin: 6px 0 12px; }
+  li { margin-bottom: 6px; font-size: 14.5px; }
+  .url-box {
+    background: var(--cp-green-50);
+    border: 2px solid var(--cp-green-400);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 8px 0 14px;
+    word-break: break-all;
+    font-family: "SF Mono", "Menlo", monospace;
+    font-size: 12.5px;
+  }
+  .url-box a { color: var(--cp-green-700); font-weight: 700; }
+  .url-box .label {
+    display: block;
+    font-family: "Hiragino Sans", sans-serif;
+    font-size: 12px;
+    color: var(--cp-gray-600);
+    margin-bottom: 4px;
+  }
+  .note {
+    background: var(--cp-yellow-50);
+    border-left: 4px solid var(--cp-yellow-400);
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 13.5px;
+    border-radius: 4px;
+  }
+  .alert {
+    background: var(--cp-red-50);
+    border-left: 4px solid var(--cp-red-400);
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 13.5px;
+    border-radius: 4px;
+  }
+  code {
+    background: var(--cp-green-100);
+    color: var(--cp-green-900);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 12.5px;
+  }
+  pre {
+    background: #1A1A1A;
+    color: #E0E0E0;
+    padding: 14px 18px;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-size: 12.5px;
+    line-height: 1.6;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 13.5px;
+  }
+  th, td {
+    border: 1px solid var(--cp-green-200);
+    padding: 8px 12px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th { background: var(--cp-green-100); color: var(--cp-green-900); }
+  footer { text-align: center; margin-top: 32px; font-size: 12px; color: var(--cp-gray-600); }
+</style>
+</head>
+<body>
+
+<div class="breadcrumb">
+  <a href="../">← 稲城建設業協会 完了届OCR トップ</a>
+</div>
+
+<header class="cover">
+  <h1>経理・受取担当 向け｜運用マニュアル</h1>
+  <div class="subtitle">スプレッドシート運用・確認待ち対応・トリガー再実行・トラブルシュート</div>
+</header>
+
+<section>
+  <h2>1. システム全体像</h2>
+  <ol>
+    <li>業者さんが投稿フォームから完了届PDFをアップロード</li>
+    <li>PDFが <strong>Driveルートフォルダ（稲城建設業協会_完了届）</strong> に保存される</li>
+    <li>Apps Scriptの <code>processNewCompletionReports</code> が <strong>1時間ごと</strong> に自動実行</li>
+    <li>未処理ファイルを Gemini OCR にかけて <strong>「完了届」タブ</strong> に1行追記</li>
+    <li>処理後のファイルは <code>_処理済み/</code> または <code>_確認待ち/</code> に自動移動</li>
+  </ol>
+</section>
+
+<section>
+  <h2>2. 主要リンク（ブックマーク推奨）</h2>
+
+  <div class="url-box">
+    <span class="label">📊 スプレッドシート（完了届OCR一覧）</span>
+    <a href="https://docs.google.com/spreadsheets/d/1f97Ddcje-4PDgkCG8F6vCwAr67_89HLhx5hEBbVqxzA/edit" target="_blank" rel="noopener">https://docs.google.com/spreadsheets/d/1f97Ddcje-4PDgkCG8F6vCwAr67_89HLhx5hEBbVqxzA/edit</a>
+  </div>
+
+  <div class="url-box">
+    <span class="label">📁 Driveルートフォルダ（稲城建設業協会_完了届）</span>
+    <a href="https://drive.google.com/drive/folders/199dN8fzskWmjbRke_Bt6Vv5HDjAXwi_k" target="_blank" rel="noopener">https://drive.google.com/drive/folders/199dN8fzskWmjbRke_Bt6Vv5HDjAXwi_k</a>
+  </div>
+
+  <div class="url-box">
+    <span class="label">📝 業者投稿フォーム（業者向け配布URL）</span>
+    <a href="https://script.google.com/macros/s/AKfycbxzZXeqkO7vFfz8Cupj-KeYMksihULkLpRUh0tZ1F8uL1YP6BUMntue7COLLYb9Qb71xg/exec" target="_blank" rel="noopener">https://script.google.com/macros/s/AKfycbxzZXeqkO7vFfz8Cupj-KeYMksihULkLpRUh0tZ1F8uL1YP6BUMntue7COLLYb9Qb71xg/exec</a>
+  </div>
+
+  <div class="url-box">
+    <span class="label">⚙️ Apps Script Editor（OCR本体・receipt-ocr-gas）</span>
+    <a href="https://script.google.com/d/1Bp8MyZR0jHXuVcsB9t3rzH52-WQNSwxPBuOO5zBKzdFnddISX4_jmJ74/edit" target="_blank" rel="noopener">https://script.google.com/d/1Bp8MyZR0jHXuVcsB9t3rzH52-WQNSwxPBuOO5zBKzdFnddISX4_jmJ74/edit</a>
+  </div>
+
+  <div class="url-box">
+    <span class="label">⚙️ Apps Script Editor（業者投稿フォーム・inagi-form-upload-gas）</span>
+    <a href="https://script.google.com/d/1Qb5jARW0ALjZQ0OxLfgp3WlGDJ9LPXZwLcV7kgrlFu5JMjfIkZbNY_aL/edit" target="_blank" rel="noopener">https://script.google.com/d/1Qb5jARW0ALjZQ0OxLfgp3WlGDJ9LPXZwLcV7kgrlFu5JMjfIkZbNY_aL/edit</a>
+  </div>
+</section>
+
+<section>
+  <h2>3. スプレッドシート「完了届」タブの見方</h2>
+
+  <h3>列構成（17列）</h3>
+  <table>
+    <thead>
+      <tr><th>列</th><th>内容</th><th>備考</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>取込日時</td><td>OCR処理が完了した日時</td><td>JST</td></tr>
+      <tr><td>ファイルリンク</td><td>Drive上の元PDFへのリンク</td><td>クリックで原本確認</td></tr>
+      <tr><td>業者名</td><td>OCRで抽出した施工業者名</td><td>「（施工業者 ○○）」表記優先</td></tr>
+      <tr><td>契約番号</td><td>財契第○号</td><td>欠落だと確認待ちフラグ</td></tr>
+      <tr><td>発注者</td><td>例：いなぎグリーンウェルネス財団</td><td></td></tr>
+      <tr><td>契約件名</td><td>例：公園維持管理業務委託（単価契約）</td><td></td></tr>
+      <tr><td>作業箇所</td><td>例：平尾入定塚緑地</td><td></td></tr>
+      <tr><td>着手年月日 / 完了月日</td><td>和暦→西暦変換済み</td><td></td></tr>
+      <tr><td>支出科目(大/中/小)</td><td>例：事業費 / 公園管理 / 委託費</td><td>3列に分解</td></tr>
+      <tr><td>小計 / 消費税 / 合計</td><td>金額（カンマ抜き数値）</td><td>小計+消費税≠合計なら確認待ち</td></tr>
+      <tr><td>信頼度</td><td>0〜1のスコア</td><td>0.7未満は確認待ちフラグ</td></tr>
+      <tr><td>確認フラグ</td><td>要確認の理由</td><td>空＝OK / 値あり＝要目視</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    明細表（工種番号・形状寸法・数量・単価）は <strong>意図的に列に持っていません</strong>（ヘッダ+合計のみ集約）。明細が必要な場合は原本PDFを開いてください。
+  </div>
+</section>
+
+<section>
+  <h2>4. 確認待ちフラグが立つ条件</h2>
+  <p>下記いずれかに該当すると <strong>確認フラグ列に理由が入り</strong>、ファイルは Drive の <code>_確認待ち/</code> フォルダに移動されます。</p>
+  <ul>
+    <li>信頼度 &lt; 0.7</li>
+    <li>契約番号 または 施工業者 が欠落</li>
+    <li>小計 + 消費税 ≠ 合計（誤差1円超）</li>
+    <li>Gemini API失敗</li>
+  </ul>
+
+  <h3>対応の流れ</h3>
+  <ol>
+    <li>スプレッドシートで確認フラグが立っている行を確認</li>
+    <li>「ファイルリンク」列から原本PDFを開く</li>
+    <li>OCR結果と原本を突き合わせて、必要なセルを手動修正</li>
+    <li>確認フラグ列を手動で空にする（修正済みの目印）</li>
+    <li>Drive上の<code>_確認待ち/</code>のファイルは原本として残しておく</li>
+  </ol>
+</section>
+
+<section>
+  <h2>5. Drive運用ルール</h2>
+  <ul>
+    <li><strong>ルートフォルダ直下</strong>に業者からの投稿ファイルが入る（業者別サブフォルダなし）</li>
+    <li>OCR処理後、<strong>自動で <code>_処理済み/</code> または <code>_確認待ち/</code> に移動</strong>される</li>
+    <li>ファイル名は <code>YYYYMMDD_業者名_NN.ext</code>（NN=同日同業者の連番2桁）</li>
+    <li>重複検知は <strong>ファイルのハッシュ値</strong> で行うため、同じファイルを2回投稿しても重複行は作られない</li>
+  </ul>
+
+  <div class="alert">
+    <strong>注意：</strong> Drive上のファイルを <strong>削除・移動・リネーム</strong> しないでください。
+    重複検知用のハッシュは「処理済み一覧」で管理しているので、ファイル削除しても重複扱いされ続けます。
+    どうしても消したい場合は、Apps Script の Properties から該当ハッシュも削除する必要があります。
+  </div>
+</section>
+
+<section>
+  <h2>6. トリガー再実行・手動実行手順</h2>
+
+  <h3>普段の運用</h3>
+  <p>1時間ごとに自動実行されているので、通常は何もしなくてOK。</p>
+
+  <h3>今すぐ処理したいとき（手動実行）</h3>
+  <ol>
+    <li>Apps Script Editor（receipt-ocr-gas）を開く</li>
+    <li>左上の関数選択ドロップダウンから <code>runOnceCompletionReports</code> を選ぶ</li>
+    <li>「▶ 実行」ボタンを押す</li>
+    <li>実行ログに処理件数が出れば成功</li>
+  </ol>
+
+  <h3>トリガーが止まっている疑いがあるとき</h3>
+  <ol>
+    <li>Apps Script Editor で左メニューの「⏰ トリガー」を開く</li>
+    <li><code>processNewCompletionReports</code> が「1時間ごと」で登録されているか確認</li>
+    <li>なければ <code>createCompletionReportTrigger</code> 関数を1回実行</li>
+  </ol>
+</section>
+
+<section>
+  <h2>7. よくあるトラブルと対処</h2>
+
+  <table>
+    <thead>
+      <tr><th>症状</th><th>原因の候補</th><th>対処</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>業者から投稿したと連絡があったがスプレッドシートに反映されない</td>
+        <td>① 1時間トリガー未到達 ② Driveに保存されていない</td>
+        <td>① Drive直下に該当ファイルが見えるか確認 → 見えれば <code>runOnceCompletionReports</code> 手動実行<br>② 見えなければ業者に再投稿依頼</td>
+      </tr>
+      <tr>
+        <td>確認フラグに「Gemini API失敗」</td>
+        <td>API課金/クォータ切れ・一時的なAPIエラー</td>
+        <td>Google Cloud Console の課金状況確認。Tier1 prepay 残高を補充。その後 <code>runOnceCompletionReports</code> 再実行</td>
+      </tr>
+      <tr>
+        <td>同じ業者から複数件投稿があるが1件しか反映されない</td>
+        <td>1つのPDFに複数の完了届が入っていた</td>
+        <td>業者に「1完了届=1PDFで再投稿」を依頼</td>
+      </tr>
+      <tr>
+        <td>業者名が読み取れていない（空欄）</td>
+        <td>OCR精度の問題（手書き等）</td>
+        <td>原本確認の上、手動で列を埋めて確認フラグをクリア</td>
+      </tr>
+      <tr>
+        <td>金額が合わない（小計+消費税≠合計）</td>
+        <td>OCR誤読 or 元PDFの記載ミス</td>
+        <td>原本確認の上、正しい金額に手動修正</td>
+      </tr>
+      <tr>
+        <td>業者投稿フォームのURLが「サービスを利用できません」</td>
+        <td>Apps Script デプロイの「アクセス: 全員」設定がリセットされた</td>
+        <td>inagi-form-upload-gas の Editor → 「デプロイを管理」→ 鉛筆編集 → アクセス「全員」に再設定</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>8. メンテナンス・更新</h2>
+
+  <h3>業者投稿フォームのコードを更新する場合</h3>
+  <p>URLを変えずに本番版を上書き更新するコマンド：</p>
+  <pre>cd ~/kenken-tools/inagi-form-upload-gas
+npx @google/clasp@2.5.0 push --force
+npx @google/clasp@2.5.0 deploy \
+  --deploymentId AKfycbxzZXeqkO7vFfz8Cupj-KeYMksihULkLpRUh0tZ1F8uL1YP6BUMntue7COLLYb9Qb71xg \
+  --description "v3 ..."</pre>
+  <div class="note">
+    <code>--deploymentId</code> を既存IDで指定すれば <strong>URL不変で本番版を上書き</strong> できます（業者に再案内不要）。
+  </div>
+
+  <h3>OCR本体（receipt-ocr-gas）のコードを更新する場合</h3>
+  <pre>cd ~/kenken-tools/receipt-ocr-gas
+npx @google/clasp@2.5.0 push --force</pre>
+  <p>こちらはトリガー実行型なのでデプロイ不要。</p>
+</section>
+
+<section>
+  <h2>9. 関連リンク</h2>
+  <ul>
+    <li><a href="../gyosha/">業者さん向けマニュアル</a></li>
+    <li><a href="../madoguchi/">協会窓口担当向けマニュアル</a></li>
+  </ul>
+</section>
+
+<footer>
+  クラウドパワー株式会社 / 稲城市総合建設業協会 完了届OCRシステム
+</footer>
+
+</body>
+</html>

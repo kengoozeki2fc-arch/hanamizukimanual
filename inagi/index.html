@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>稲城市総合建設業協会 完了届OCR マニュアル</title>
+<style>
+  :root {
+    --cp-green-50:  #F3FAF4;
+    --cp-green-100: #DDEFE0;
+    --cp-green-200: #C2E2C7;
+    --cp-green-400: #6BBF73;
+    --cp-green-700: #2E7D38;
+    --cp-green-900: #1B4D22;
+    --cp-gray-600: #666666;
+    --cp-gray-900: #1A1A1A;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+    line-height: 1.75;
+    color: var(--cp-gray-900);
+    background: var(--cp-green-50);
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+  header.cover {
+    background: linear-gradient(135deg, var(--cp-green-700) 0%, var(--cp-green-400) 100%);
+    color: #fff;
+    padding: 56px 32px;
+    border-radius: 14px;
+    margin-bottom: 32px;
+    box-shadow: 0 6px 20px rgba(46,125,56,.15);
+  }
+  header.cover h1 {
+    font-size: 26px;
+    margin: 0 0 10px;
+    letter-spacing: .03em;
+  }
+  header.cover .subtitle {
+    font-size: 15px;
+    opacity: .92;
+  }
+  section.menu {
+    background: #fff;
+    border: 1px solid var(--cp-green-200);
+    border-radius: 8px;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+  }
+  section.menu h2 {
+    color: var(--cp-green-700);
+    margin: 0 0 14px;
+    font-size: 18px;
+    padding-left: 10px;
+    border-left: 5px solid var(--cp-green-400);
+  }
+  .menu-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: var(--cp-green-50);
+    border: 1px solid var(--cp-green-200);
+    border-radius: 6px;
+    padding: 18px 22px;
+    margin-bottom: 12px;
+    transition: background .15s, border-color .15s, transform .1s;
+  }
+  .menu-card:hover {
+    background: var(--cp-green-100);
+    border-color: var(--cp-green-400);
+    transform: translateX(2px);
+  }
+  .menu-card .title {
+    font-weight: 700;
+    color: var(--cp-green-700);
+    font-size: 16px;
+  }
+  .menu-card .desc {
+    font-size: 13.5px;
+    color: var(--cp-gray-600);
+    margin-top: 6px;
+  }
+  .lead {
+    background: #fff;
+    border: 1px solid var(--cp-green-200);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    font-size: 14.5px;
+    color: var(--cp-gray-900);
+  }
+  .lead strong { color: var(--cp-green-700); }
+  footer {
+    text-align: center;
+    margin-top: 32px;
+    font-size: 12px;
+    color: var(--cp-gray-600);
+  }
+</style>
+</head>
+<body>
+
+<header class="cover">
+  <h1>稲城市総合建設業協会<br>完了届OCR マニュアル</h1>
+  <div class="subtitle">公園維持管理業務委託（単価契約）完了届の電子受付システム</div>
+</header>
+
+<div class="lead">
+  業者さんが <strong>ブラウザのフォームから完了届PDFをアップロード</strong> すると、AIが内容を自動で読み取り、<strong>経理用の一覧表（Google スプレッドシート）に1書類1行で追記</strong> されます。<br>
+  紙のFAXや手入力転記をなくし、契約番号・支出科目・金額の整理を業者横断で集約することがゴールです。
+</div>
+
+<section class="menu">
+  <h2>あなたの立場に合わせてお選びください</h2>
+
+  <a class="menu-card" href="gyosha/">
+    <div class="title">① 業者さん向け（投稿する側）</div>
+    <div class="desc">完了届PDFをフォームURLからアップロードする手順。スマホ・PC両対応。送付状や請求書が混ざったPDFでもOK。</div>
+  </a>
+
+  <a class="menu-card" href="madoguchi/">
+    <div class="title">② 稲城市総合建設業協会 窓口担当 向け</div>
+    <div class="desc">業者さんへのURL案内テンプレート、トラブル時の一次対応、エスカレーション基準など。</div>
+  </a>
+
+  <a class="menu-card" href="keiri/">
+    <div class="title">③ 経理・受取担当（大関）向け</div>
+    <div class="desc">スプレッドシート「完了届」タブの見方、確認待ちフラグの対応、Driveの_確認待ち / _処理済みフォルダ運用、トリガー再実行手順。</div>
+  </a>
+</section>
+
+<footer>
+  クラウドパワー株式会社 / 稲城市総合建設業協会 完了届OCRシステム
+</footer>
+
+</body>
+</html>
