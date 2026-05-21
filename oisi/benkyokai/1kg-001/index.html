@@ -390,7 +390,14 @@
   }
 
   .fig-wrap { margin: 10px 0 14px; text-align:center; background:#fafbfd; border:1px solid var(--border); border-radius:6px; padding:8px; }
-  .fig-wrap img { max-width: 100%; max-height: 420px; height: auto; }
+  .fig-wrap img { max-width: 100%; max-height: 420px; height: auto; cursor: zoom-in; transition: opacity .15s; }
+  .fig-wrap img:hover { opacity: .85; }
+  .fig-hint { font-size: .75rem; color: var(--muted); margin-top: 4px; }
+  .lightbox { position: fixed; inset: 0; background: rgba(15,25,40,.92); display: none; align-items: center; justify-content: center; z-index: 9999; padding: 20px; cursor: zoom-out; }
+  .lightbox.show { display: flex; }
+  .lightbox img { max-width: 95vw; max-height: 92vh; box-shadow: 0 8px 40px rgba(0,0,0,.6); background: #fff; }
+  .lightbox-close { position: absolute; top: 14px; right: 18px; color: #fff; font-size: 28px; line-height: 1; cursor: pointer; background: rgba(0,0,0,.4); border: none; padding: 4px 14px; border-radius: 999px; font-weight: 700; }
+  .lightbox-close:hover { background: rgba(0,0,0,.6); }
 </style>
 <script src="../../_gate.js" defer></script>
 </head>
@@ -543,7 +550,7 @@
     <span class="result-badge" style="display:none"></span>
   </div>
   <p class="q-text">照明に関する次の文章中、空欄に当てはまる数値として、最も適当なものはどれか。ただし、点光源の配光特性は一様なものとし、床面・天井面・壁面等からの反射は考慮しないものとする。「照明による受照面の明るさを表す照度は、点光源の光度に比例し、その光源からの距離の2乗に反比例する。図に示すような点光源の直下ではない床面上の点Pの水平面照度Ehは、照度の余弦則を用いて計算することができ、点光源の点Pに対する入射角θを60°とした場合、その値は □ lxとなる。」（点光源1,800 cd、H=3.0 m）</p>
-  <div class="fig-wrap"><img src="figs/q2.png" alt="No.2の図" loading="lazy"></div>
+  <div class="fig-wrap"><img src="figs/q2.png" alt="No.2の図" loading="lazy" class="fig-zoomable"><div class="fig-hint">🔍 画像をクリックで拡大表示</div></div>
   <div class="meta-choice">
     <span class="meta-label">この問題のタイプ：</span>
     <div class="meta-toggle" data-mock="2">
@@ -832,7 +839,7 @@
     <span class="result-badge" style="display:none"></span>
   </div>
   <p class="q-text">図に示すラーメン架構に集中荷重Pが作用したときの曲げモーメント図として、正しいものはどれか。ただし、曲げモーメントは材の引張側に描くものとする。</p>
-  <div class="fig-wrap"><img src="figs/q5.png" alt="No.5の図" loading="lazy"></div>
+  <div class="fig-wrap"><img src="figs/q5.png" alt="No.5の図" loading="lazy" class="fig-zoomable"><div class="fig-hint">🔍 画像をクリックで拡大表示</div></div>
   <div class="meta-choice">
     <span class="meta-label">この問題のタイプ：</span>
     <div class="meta-toggle" data-mock="5">
@@ -1031,7 +1038,7 @@
     <span class="result-badge" style="display:none"></span>
   </div>
   <p class="q-text">次に示す断面形状の室において、風が矢印の向きで左から右に一様に吹いている場合、自然換気による換気効率が最も良いものはどれか。ただし、室温は外気温より高く、開口部の形状寸法はすべて同じものとする。</p>
-  <div class="fig-wrap"><img src="figs/q7.png" alt="No.7の図" loading="lazy"></div>
+  <div class="fig-wrap"><img src="figs/q7.png" alt="No.7の図" loading="lazy" class="fig-zoomable"><div class="fig-hint">🔍 画像をクリックで拡大表示</div></div>
   <div class="meta-choice">
     <span class="meta-label">この問題のタイプ：</span>
     <div class="meta-toggle" data-mock="7">
@@ -1420,7 +1427,7 @@
     <span class="result-badge" style="display:none"></span>
   </div>
   <p class="q-text">図に示す山形ラーメン架構のCD間に等分布荷重w=2 kN/mが作用したとき、支点Aに生じる鉛直反力VA及び水平反力HAと、支点Bに生じる鉛直反力VB及び水平反力HBの値として、正しいものはどれか。ただし、反力は右向き及び上向きを「+」、左向き及び下向きを「-」とする。</p>
-  <div class="fig-wrap"><img src="figs/q11.png" alt="No.11の図" loading="lazy"></div>
+  <div class="fig-wrap"><img src="figs/q11.png" alt="No.11の図" loading="lazy" class="fig-zoomable"><div class="fig-hint">🔍 画像をクリックで拡大表示</div></div>
   <div class="meta-choice">
     <span class="meta-label">この問題のタイプ：</span>
     <div class="meta-toggle" data-mock="11">
@@ -1518,7 +1525,7 @@
     <span class="result-badge" style="display:none"></span>
   </div>
   <p class="q-text">図に示す断面及び材端条件の長柱A,B及びCが中心圧縮力を受けるときの座屈荷重の大きさの大小関係を示すものとして、正しいものはどれか。ただし、柱の材質は同一のものとする。</p>
-  <div class="fig-wrap"><img src="figs/q12.png" alt="No.12の図" loading="lazy"></div>
+  <div class="fig-wrap"><img src="figs/q12.png" alt="No.12の図" loading="lazy" class="fig-zoomable"><div class="fig-hint">🔍 画像をクリックで拡大表示</div></div>
   <div class="meta-choice">
     <span class="meta-label">この問題のタイプ：</span>
     <div class="meta-toggle" data-mock="12">
@@ -8066,6 +8073,38 @@ document.getElementById('btn-copilot').addEventListener('click', callCopilot);
 enforcePickLimits();
 loadState();
 updateProgress();
+
+// ---------------- 図画像ライトボックス ----------------
+(function(){
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  if (!lb || !lbImg) return;
+  function open(src, alt) {
+    lbImg.src = src; lbImg.alt = alt || '';
+    lb.classList.add('show'); lb.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+  function close() {
+    lb.classList.remove('show'); lb.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    lbImg.src = '';
+  }
+  document.addEventListener('click', (e) => {
+    const img = e.target.closest('.fig-zoomable');
+    if (img) { open(img.src, img.alt); return; }
+    if (e.target === lb || e.target.id === 'lightbox-close') { close(); }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lb.classList.contains('show')) close();
+  });
+})();
+
 </script>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-hidden="true">
+  <button type="button" class="lightbox-close" id="lightbox-close" aria-label="閉じる">×</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
 </body>
 </html>
