@@ -1,0 +1,1749 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1級施工管技 社内対策講座 R3（2021年度）全問演習｜大石建設</title>
+<style>
+  :root {
+    --primary: #1a3a5c;
+    --accent:  #e05a00;
+    --correct: #1a7a3a;
+    --wrong:   #b00020;
+    --bg:      #f5f7fa;
+    --card:    #ffffff;
+    --border:  #d0d8e4;
+    --text:    #1e2a38;
+    --muted:   #6b7c93;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Hiragino Sans","Meiryo",sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.75;
+    font-size: 15px;
+  }
+
+  header {
+    background: var(--primary);
+    color: #fff;
+    padding: 20px 24px;
+    border-bottom: 4px solid var(--accent);
+  }
+  header h1 { font-size: 1.2rem; font-weight: 700; }
+  header p  { font-size: 0.82rem; color: #aac4e0; margin-top: 4px; }
+
+  .banner-note {
+    background: #fff8ec;
+    border-bottom: 1px solid #f0d9a8;
+    color: #6e4b00;
+    font-size: .82rem;
+    padding: 10px 24px;
+    line-height: 1.7;
+  }
+
+  nav {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    padding: 10px 24px;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 0.82rem;
+  }
+  nav a { color: var(--primary); text-decoration: none; font-weight: 600; }
+  nav a:hover { text-decoration: underline; }
+
+  main { max-width: 900px; margin: 0 auto; padding: 28px 16px 80px; }
+
+  .section-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--primary);
+    background: #eaf0f8;
+    border-left: 5px solid var(--primary);
+    padding: 10px 16px;
+    margin: 36px 0 18px;
+    border-radius: 0 6px 6px 0;
+    scroll-margin-top: 12px;
+  }
+
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  }
+  .q-number {
+    display: inline-block;
+    background: var(--primary);
+    color: #fff;
+    font-size: .75rem;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    letter-spacing: .05em;
+  }
+  .q-text { font-weight: 600; margin-bottom: 14px; line-height: 1.8; }
+
+  .answer-textarea {
+    width: 100%;
+    min-height: 110px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.75;
+    resize: vertical;
+    outline: none;
+    transition: border .15s;
+  }
+  .answer-textarea:focus { border-color: var(--primary); }
+  .answer-textarea.tall  { min-height: 200px; }
+
+  .essay-field { margin-bottom: 16px; }
+  .essay-label {
+    font-weight: 600;
+    font-size: .88rem;
+    color: var(--primary);
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  /* R6 工事概要表示 */
+  .koji-gaiyou {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin: 12px 0 18px;
+    font-size: .88rem;
+    line-height: 1.85;
+  }
+  .koji-gaiyou-banner {
+    background: #ffeed5;
+    border-left: 4px solid var(--accent);
+    padding: 8px 12px;
+    margin-bottom: 12px;
+    font-size: .82rem;
+    color: #6e4b00;
+    line-height: 1.7;
+    border-radius: 0 6px 6px 0;
+  }
+  .koji-gaiyou table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .82rem;
+  }
+  .koji-gaiyou table th, .koji-gaiyou table td {
+    border: 1px solid var(--border);
+    padding: 5px 8px;
+    text-align: left;
+    vertical-align: top;
+  }
+  .koji-gaiyou table th {
+    background: #eaf0f8;
+    font-weight: 700;
+    color: var(--primary);
+    white-space: nowrap;
+    width: 100px;
+  }
+  .koji-gaiyou .gaiyou-section {
+    font-weight: 700;
+    color: var(--primary);
+    margin: 12px 0 6px;
+    font-size: .9rem;
+  }
+  .koji-gaiyou .gaiyou-section:first-child { margin-top: 0; }
+
+  .network-info {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    font-size: .88rem;
+    line-height: 1.9;
+    margin-bottom: 12px;
+    white-space: pre-wrap;
+  }
+  .network-img-wrap {
+    text-align: center;
+    margin: 12px 0 16px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px;
+  }
+  .network-img-wrap img {
+    max-width: 100%;
+    height: auto;
+    display: inline-block;
+  }
+  .network-img-caption {
+    font-size: .78rem;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+
+  /* 穴埋め問題（5択選択） */
+  .fill-blank-card {
+    background: #fbfdff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 14px;
+  }
+  .fill-blank-card h4 {
+    font-size: .92rem;
+    color: var(--primary);
+    margin-bottom: 8px;
+  }
+  .fill-blank-card p.law-text {
+    font-size: .9rem;
+    line-height: 1.95;
+    margin-bottom: 10px;
+  }
+  .blank-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    margin-top: 8px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    flex-wrap: wrap;
+  }
+  .blank-label {
+    font-weight: 700;
+    color: var(--primary);
+    font-size: .9rem;
+    min-width: 36px;
+  }
+  .blank-row select {
+    font-family: inherit;
+    font-size: .9rem;
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: #fff;
+    min-width: 200px;
+  }
+  .blank-row.correct {
+    background: #eafaf0;
+    border-color: var(--correct);
+  }
+  .blank-row.wrong {
+    background: #fff0f0;
+    border-color: var(--wrong);
+  }
+  .blank-mark {
+    font-weight: 700;
+    font-size: 1rem;
+  }
+  .blank-mark.ok { color: var(--correct); }
+  .blank-mark.ng { color: var(--wrong); }
+  .blank-correct-note {
+    width: 100%;
+    margin-top: 6px;
+    font-size: .82rem;
+    color: var(--wrong);
+  }
+
+  .score-box {
+    display: none;
+    margin-top: 16px;
+    padding: 14px 18px;
+    background: #f0f8ff;
+    border: 2px solid var(--primary);
+    border-radius: 8px;
+    text-align: center;
+  }
+  .score-box.show { display: block; }
+  .score-num {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary);
+  }
+  .score-label {
+    font-size: .85rem;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  .law-detail {
+    display: none;
+    margin-top: 14px;
+    background: #f0f8ff;
+    border: 1px solid #b3d4f0;
+    border-radius: 8px;
+    padding: 16px 18px;
+  }
+  .law-detail.show { display: block; }
+  .law-detail h5 {
+    font-size: .85rem;
+    color: var(--primary);
+    margin-bottom: 6px;
+    margin-top: 8px;
+  }
+  .law-detail h5:first-child { margin-top: 0; }
+  .law-detail p {
+    font-size: .85rem;
+    line-height: 1.8;
+    margin-bottom: 6px;
+  }
+
+  .btn-row { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    padding: 9px 22px;
+    border: none;
+    border-radius: 6px;
+    font-size: .9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity .15s;
+  }
+  .btn:hover { opacity: .85; }
+  .btn-primary   { background: var(--accent); color: #fff; }
+  .btn-secondary { background: var(--primary); color: #fff; }
+  .btn-reset     { background: #e8ecf2; color: var(--muted); }
+  .btn-copilot   { background: #0078d4; color: #fff; }
+  .btn-small     { padding: 6px 14px; font-size: .8rem; }
+  .partial-grade-row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px; flex-wrap: wrap; }
+
+  .explanation {
+    display: none;
+    margin-top: 16px;
+    background: #f0f8ff;
+    border: 1px solid #b3d4f0;
+    border-radius: 8px;
+    padding: 16px 18px;
+  }
+  .explanation.show { display: block; }
+  .explanation-title {
+    font-size: .78rem;
+    font-weight: 700;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 8px;
+  }
+
+  .model-answer {
+    background: #fff8ec;
+    border-left: 4px solid var(--accent);
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    white-space: pre-wrap;
+    font-size: .9rem;
+    line-height: 1.8;
+    margin-bottom: 12px;
+  }
+  .model-answer:last-child { margin-bottom: 0; }
+  .model-pattern-title {
+    font-weight: 700;
+    color: var(--primary);
+    font-size: .92rem;
+    margin: 14px 0 6px;
+  }
+  .model-pattern-title:first-child { margin-top: 0; }
+  .model-supplement {
+    background: #f4f8fc;
+    border-left: 4px solid var(--primary);
+    padding: 10px 14px;
+    border-radius: 0 6px 6px 0;
+    font-size: .85rem;
+    color: var(--muted);
+    line-height: 1.75;
+    margin-top: 10px;
+    white-space: pre-wrap;
+  }
+  .model-prep {
+    background: #fdf4d8;
+    border-left: 4px solid #d4a043;
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    font-size: .88rem;
+    color: #6e4b00;
+    line-height: 1.8;
+  }
+
+  .copilot-result {
+    display: none;
+    margin-top: 12px;
+    background: #f0f7ff;
+    border: 1px dashed #0078d4;
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: .88rem;
+  }
+  .copilot-result.show { display: block; }
+  .copilot-label { font-size: .78rem; color: #0078d4; font-weight: 700; margin-bottom: 6px; }
+  .copilot-body { white-space: pre-wrap; line-height: 1.8; }
+  .copilot-body a { color: #0078d4; text-decoration: underline; word-break: break-all; }
+  .copilot-result.error { background:#fff4f4; border-color:#c00; }
+  .copilot-result.error .copilot-label { color:#c00; }
+  .copilot-loading { display:flex; align-items:center; gap:10px; color:#0078d4; font-size:.85rem; }
+  .copilot-spinner {
+    width: 16px; height: 16px;
+    border: 2px solid #cfe3f7;
+    border-top-color: #0078d4;
+    border-radius: 50%;
+    animation: copilot-spin 0.8s linear infinite;
+  }
+  @keyframes copilot-spin { to { transform: rotate(360deg); } }
+  .copilot-retry {
+    margin-top: 10px;
+    background: #fff;
+    border: 1px solid #c00;
+    color: #c00;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: .82rem;
+    cursor: pointer;
+  }
+  .copilot-retry:hover { background:#c00; color:#fff; }
+  .btn-copilot[disabled] { opacity:.6; cursor: progress; }
+
+  footer {
+    text-align: center;
+    font-size: .78rem;
+    color: var(--muted);
+    padding: 20px;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+    line-height: 1.8;
+  }
+
+  @media (max-width:600px) {
+    header h1 { font-size: 1rem; }
+    .q-card    { padding: 16px; }
+    .btn       { padding: 8px 14px; font-size: .85rem; }
+    nav        { gap: 10px; }
+    .blank-row select { min-width: 160px; }
+    .koji-gaiyou table th { width: 80px; }
+  }
+</style>
+<script src="../_gate.js" defer></script>
+</head>
+<body>
+
+<header>
+  <h1>1級施工管技 社内対策講座 R3（2021年度）全問演習｜大石建設</h1>
+  <p>本試験 2026年10月18日予定 ／ 講師：林副部長・大関（けんけん） ／ 出典：CIC出版『1級建築施工管理技士 第二次検定 テキスト&amp;過去問題集 2025年度版』＋ 全国建設研修センター公表問題</p>
+</header>
+
+<div class="banner-note">
+  ※ R6（令和6年度）以降の検定問題見直しにより「問題1」は<strong>試験問題側で工事概要が示される方式</strong>に変更されました。本演習では受講者の工事概要記述を不要とし、<strong>令和6年度本試験で実際に示された工事概要（共同住宅52戸）</strong>をそのまま掲載しています。設問のみ R3（令和3年度）の問題に解答してください。<br>
+  ※ <strong>R3はR4と問題分野の構成が異なります</strong>（問1＝品質管理／問4＝躯体記述／問5＝仕上げ語句訂正型）。年度ごとに分野・出題形式が入れ替わる点に注意してください。
+</div>
+
+<nav>
+  <a href="#sec1">問題1 施工経験記述（品質管理）</a>
+  <a href="#sec2">問題2 仮設物の設置計画</a>
+  <a href="#sec3">問題3 工程管理（躯体工程表）</a>
+  <a href="#sec4">問題4 躯体施工</a>
+  <a href="#sec5">問題5 仕上げ施工（語句訂正8択）</a>
+  <a href="#sec6">問題6 法規（穴埋め）</a>
+</nav>
+
+<main>
+
+<!-- ========================================================
+     問題1：施工経験記述（品質管理）
+======================================================== -->
+<div class="section-title" id="sec1">問題1｜施工経験記述（論文）テーマ：品質管理</div>
+
+<div class="q-card" id="q1">
+  <span class="q-number">問1</span>
+  <p class="q-text">
+    建築工事における品質確保は、建築物の長寿命化を実現するために重要である。このため、施工者は、発注者のニーズ及び設計図書等を把握し、決められた工期やコスト等の条件の下で適切に品質管理を行うことが求められる。<br>
+    あなたが経験した建築工事のうち、発注者及び設計図書等により要求された品質を確保するため、重点的に品質管理を行った工事を1つ選び、次の1.及び2.の問いに答えなさい。<br>
+    なお、建築工事とは、建築基準法に定める建築物に係る工事とし、建築設備工事を除くものとする。
+  </p>
+
+  <div class="koji-gaiyou-banner">
+    【参考：令和6年度本試験で示された工事概要（出題側提示・R6新形式）】<br>
+    令和3年度の本試験では受検者が工事概要を記入する旧形式でしたが、本演習ではR6本試験で示された下記工事概要に基づいて解答してください。
+  </div>
+
+  <div class="koji-gaiyou">
+    <div class="gaiyou-section">工事概要</div>
+    <table>
+      <tr><th>工事名</th><td>共同住宅新築工事</td></tr>
+      <tr><th>主要用途</th><td>共同住宅 52戸</td></tr>
+      <tr><th>用途地域</th><td>住居地域 6m道路隣接</td></tr>
+      <tr><th>主要構造</th><td>鉄筋コンクリート構造 地上7階建て</td></tr>
+      <tr><th>工期</th><td>2024年1月〜2025年6月</td></tr>
+      <tr><th>面積</th><td>敷地2,350.00㎡／建築758.85㎡／延床4,950.60㎡／最高高さ23.25m／1〜4階3.3m、5〜7階3.0m／エレベーター乗用8人乗り1台</td></tr>
+    </table>
+    <div class="gaiyou-section">主な構造仕様</div>
+    <table>
+      <tr><th>根切深さ</th><td>2.5m</td></tr>
+      <tr><th>山留め</th><td>親杭横矢板工法</td></tr>
+      <tr><th>地業</th><td>現場造成杭（アースドリル工法）</td></tr>
+      <tr><th>コンクリート</th><td>普通コンクリート</td></tr>
+      <tr><th>型枠</th><td>コンクリート型枠用合板／支保工：パイプサポート</td></tr>
+      <tr><th>鉄筋</th><td>工場加工、現場組立て／柱・梁主筋：ガス圧接継手</td></tr>
+    </table>
+    <div class="gaiyou-section">主な外部仕上げ</div>
+    <table>
+      <tr><th>屋根</th><td>陸屋根：アスファルト露出断熱防水＋アルミ製笠木／バルコニー：モルタル下地＋ウレタン系塗膜防水／外部廊下：コンクリート直均し＋ビニル床シート／外部階段：モルタル下地＋ビニル床シート</td></tr>
+      <tr><th>外壁</th><td>コンクリート打放し＋防水形複層塗材／内断熱工法（現場発泡断熱材吹付け）</td></tr>
+      <tr><th>手すり壁</th><td>バルコニー：アルミ製既製品 H=1.2m／外部廊下・階段：コンクリート打放し＋防水形複層塗材＋ステンレス製壁付手すり</td></tr>
+      <tr><th>建具</th><td>風除室：ステンレス製オートロック式自動扉＋強化ガラス／玄関：化粧シート張り鋼製扉／窓：アルミ製サッシ（1〜2階網入りガラス／3〜7階フロートガラス）</td></tr>
+    </table>
+    <div class="gaiyou-section">主な内部仕上げ（居室・水廻り：天井高2.4m／風除室：天井高2.5m）</div>
+    <table>
+      <tr><th>床</th><td>居室：コンクリート直均し＋乾式二重床＋フローリングボード／水廻り：コンクリート直均し＋乾式二重床＋耐水合板＋ビニル床シート／風除室：モルタル下地＋ノンスリップタイル</td></tr>
+      <tr><th>壁</th><td>居室：軽量鉄骨下地＋せっこうボード＋ビニルクロス／水廻り：軽量鉄骨下地＋シージングせっこうボード＋ビニルクロス／風除室：モルタル下地＋有機系接着剤による小口タイル</td></tr>
+      <tr><th>天井</th><td>居室・水廻り：軽量鉄骨下地＋せっこうボード＋ビニルクロス／風除室：軽量鉄骨下地＋アルミスパンドレル</td></tr>
+      <tr><th>建具他</th><td>居室：化粧シート張り木製扉（枠共）／水廻り：ユニットバス、洗面化粧台、システムキッチン／風除室：集合郵便受け、インターホンパネル</td></tr>
+    </table>
+    <div class="gaiyou-section">主な外構仕様</div>
+    <table>
+      <tr><th>構内舗装</th><td>駐車場：アスファルト舗装／駐輪場：コンクリート舗装／アプローチ：インターロッキング舗装</td></tr>
+      <tr><th>囲障・植栽</th><td>化粧フェンス／駐車場入口：レール式門扉／敷地境界：中木、低木混栽</td></tr>
+    </table>
+  </div>
+
+  <div class="essay-field">
+    <span class="essay-label">【設問1】上記工事概要の建築工事において、あなたが現場で重点をおいて実施した<strong>品質管理の事例を2つ</strong>あげ、次の①〜④について具体的に記述しなさい（2つの事例の②〜④はそれぞれ異なる内容とする）。<br>
+    ① 工種名／② 施工に当たっての品質の目標及びそれを達成するために定めた重点品質管理項目／③ ②の重点品質管理項目を定めた理由及び発生を予測した欠陥又は不具合／④ ②の重点品質管理項目について、実施した内容及びその確認方法又は検査方法</span>
+    <textarea class="answer-textarea tall" id="e-q1a" placeholder="（事例1）&#10;①工種名：&#10;②品質の目標と重点品質管理項目：&#10;③定めた理由・予測した欠陥又は不具合：&#10;④実施内容と確認・検査方法：&#10;&#10;（事例2）"></textarea>
+  </div>
+
+  <div class="essay-field">
+    <span class="essay-label">【設問2】工事概要にあげた工事にかかわらず、あなたの今日までの工事経験を踏まえて、現場で行う<strong>組織的な品質管理活動</strong>について、次の①及び②を具体的に記述しなさい（設問1の④と同じ内容の記述は不可）。<br>
+    ① 品質管理活動の内容及びそれを協力会社等に伝達する手段又は方法／② 品質管理活動によってもたらされる良い影響</span>
+    <textarea class="answer-textarea tall" id="e-q2" placeholder="①品質管理活動の内容と伝達手段・方法：&#10;&#10;②もたらされる良い影響："></textarea>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="showEssayAnswer('exp-q1','e-q1a,e-q2')">回答する（模範回答を表示）</button>
+    <button class="btn btn-copilot" onclick="showCopilot('copilot-q1')">Copilotに採点させる</button>
+  </div>
+
+  <div class="explanation" id="exp-q1">
+    <div class="explanation-title">模範回答例（CIC出版 R3記述例1：躯体工事中心）</div>
+
+    <div class="model-pattern-title">■ 設問1 解答例（躯体工事中心・CIC Part59）</div>
+    <div class="model-answer">（事例1）地業工事（既製コンクリート杭地業）
+①工種名：地業工事（既製コンクリート杭地業）
+②品質の目標及び重点品質管理項目：既製コンクリート杭先端への支持層への確実な到達を目標として、掘削深度の確実な計測確認の実施を重点品質管理項目とした。
+③定めた理由及び欠陥又は不具合：地盤調査の結果、敷地内において支持層の深さに変化のあることが判明したことから、将来的な建物の不同沈下による構造上有害な不具合を防止するため、杭先端の支持層への到達確認が必要であった。
+④実施した内容及びその確認方法又は検査方法：試験杭の掘削電流値の変化状況や施工状況と照らし合わせながら施工し、管理電流値や施工状況の変化により、支持層出現深度の確認と杭先端位置が支持層に貫入されていることの確認と記録を行った。
+
+（事例2）コンクリート工事
+①工種名：コンクリート工事
+②品質の目標及び重点品質管理項目：日平均気温25℃超の期間に打ち込むコンクリートの品質確保のため、荷卸し時のコンクリート温度管理を重点品質管理項目とした。
+③定めた理由及び欠陥又は不具合：コンクリートは、気温が高くなると運搬中のスランプの低下や凝結の促進、水分の急激な上昇等が生じ、コールドジョイントやひび割れの発生、耐久性低下の原因となる。
+④実施した内容及びその確認方法又は検査方法：プラントには、使用する水や骨材の温度をできるだけ下げるように指示し、現場では荷卸し時のコンクリートの温度が35℃以下であることを接触式温度計により確認、記録した。</div>
+
+    <div class="model-pattern-title">■ 設問2 解答例</div>
+    <div class="model-answer">①品質管理活動の内容及び伝達手段又は方法：設計者と施工者が常に連携を取り、それぞれの施工過程における施工品質標準を確保できる体制を整えた上で品質標準の設定を行うと共に書類化し、協力会社に配付する。
+
+②良い影響：建築主の注文内容を図面に表現する設計者と、それを実現する施工者が常に連携を取り、その内容を協力会社と共有することで、建築主の意向の反映された品質を実現できる。</div>
+
+    <div class="model-pattern-title">■ 設問1 解答例（仕上げ工事中心・CIC Part60）</div>
+    <div class="model-answer">（事例1）内装工事（断熱工事）
+①工種名：内装工事（断熱工事）
+②品質の目標及び重点品質管理項目：断熱性能の確実な確保を目標として、断熱材現場発泡工法による断熱材吹付け後の所定厚さの確保を重点品質管理項目とした。
+③定めた理由及び欠陥又は不具合：断熱材の厚さが所定の寸法に満たない場合、外壁や屋根スラブの内面側に結露を生じさせるとともに、室内の空調負荷を増大させ、省エネルギー性能を低下させる要因となるため。
+④実施した内容及びその確認方法又は検査方法：吹付けた発泡ウレタン断熱材の厚さについて、所定の厚さとの誤差が−0mm〜＋10mmの範囲内で施工されていることを、厚さ確認ピンを使用して確認し、記録した。
+
+（事例2）タイル工事
+①工種名：タイル工事
+②品質の目標及び重点品質管理項目：外装タイルのはく落事故防止を目標として、タイル張りに先立っての下地モルタルの施工状況確認を重点品質管理項目とした。
+③定めた理由及び欠陥又は不具合：タイルを張り付ける下地モルタルの不具合は、タイルはく落の原因となり、外壁タイルのはく落は大事故につながる恐れがあることから、下地モルタルの確実な施工を目指した。
+④実施した内容及びその確認方法又は検査方法：外壁のタイル張りに先立ち、下地モルタルに硬化不良やはく離、ひび割れ、浮き等がないか、また、表面に汚れやレイタンス等の接着上有害な付着物がないかを、目視や打診検査により確認、記録した。
+
+【設問2 解答例（仕上げ版）】
+①品質管理活動の内容及び伝達手段又は方法：設計者から要求される多くの品質項目の中から重要なものを選択し、これを重要品質項目として定めて書面にし、現場において施工関係者全員に書面を配布することで周知し、管理する。
+②良い影響：現場ごとに重要品質項目を定め、それを協力会社等の施工関係者全員で重点的に管理していくことで、顧客のニーズに合致した、満足度の高い品質が得られる。</div>
+
+    <div class="model-pattern-title">■ 設問1 解答例（改修工事中心・CIC Part61）</div>
+    <div class="model-answer">（事例1）耐震改修工事（連続繊維補強工事）
+①工種名：耐震改修工事（連続繊維補強工事）
+②品質の目標及び重点品質管理項目：連続繊維シートの精度のよい張り付けを実現するため、躯体表面の処理を重点品質管理項目として設定した。
+③定めた理由及び欠陥又は不具合：躯体表面に突起などがあると、連続繊維シートを精度よく張り付けることが難しくなることから、シートにしわや気泡、液溜まり等の施工欠陥が生じやすくなるため。
+④実施した内容及びその確認方法又は検査方法：コンクリート表面の突起部が削り取られ、凹部は断面修復材や下地調整材等により平滑にされ、コーナー部はR面取りされていることを目視により確認し、記録した。
+
+（事例2）内装改修工事（軽量鉄骨天井下地）
+①工種名：内装改修工事（軽量鉄骨天井下地）
+②品質の目標及び重点品質管理項目：新設する軽量鉄骨天井下地の脱落を防止するために、つりボルトの引張強度の確保を重点品質管理項目とした。
+③定めた理由及び欠陥又は不具合：改修工事で軽量鉄骨天井下地の新設時に使用する既存の埋込インサートは、施工当時の状況が不明で、天井下地のつりボルト受けとして、十分な強度を有していない可能性がある。
+④実施した内容及びその確認方法又は検査方法：既存の埋込インサートに施したつりボルトについて、施工する階ごとに3か所、引張試験を行い、引張強度が400N以上であることを確認し、記録した。
+
+【設問2 解答例（改修工事版）】
+①品質管理活動の内容及び伝達手段又は方法：工事着手後、早期に作業所と社内技術部門とで設計図書の検討会を実施し、過去の不具合事例にもとづいて検討を行い、検討結果を書類化して協力会社に配布し、現場で重点的に管理する。
+②良い影響：事前に設計図書の問題点を抽出しておくことで、施工の際に管理すべき要点を適切に把握することができ、効率の良い品質管理活動が実施できる。</div>
+
+    <div class="model-supplement">【補足解説】
+R3本試験のテーマは「品質管理」。設問1は<strong>2事例必須・②〜④が異なる内容</strong>がポイント。<strong>建築設備工事は対象外</strong>。設問2は<strong>組織的な品質管理活動</strong>を問う（設問1の④と同じ内容は不可）。
+本演習ではR6新形式に合わせて工事概要を出題側で提示。実際のR3本試験では受検者が自分の経験工事を記述する形式でしたが、R6以降は本演習の通り「示された工事概要に対し経験・知識で答える」方式に変更されています。
+3パターン（躯体・仕上げ・改修）はそれぞれ別の工事概要が前提のため、参考解答として活用してください。</div>
+  </div>
+
+  <div class="copilot-result" id="copilot-q1">
+    <div class="copilot-label">Copilot 採点結果</div>
+    <div class="copilot-body"></div>
+  </div>
+</div>
+
+
+<!-- ========================================================
+     問題2：仮設物の設置計画（留意・検討すべき事項）
+======================================================== -->
+<div class="section-title" id="sec2">問題2｜仮設物の設置計画（留意及び検討すべき事項）</div>
+
+<p style="margin-bottom:14px;font-size:.88rem;color:var(--muted);line-height:1.8;">
+  次の1.〜3.の建築工事における仮設物の設置を計画するに当たり、<strong>留意及び検討すべき事項</strong>を<strong>2つ</strong>具体的に記述しなさい。<br>
+  ただし、解答はそれぞれ異なる内容の記述とし、申請手続、届出及び運用管理に関する記述は除くものとする。また、使用資機材に不良品はないものとする。
+</p>
+
+<div class="q-card">
+  <span class="q-number">問2-1</span>
+  <p class="q-text">1. 仮設ゴンドラ</p>
+  <textarea class="answer-textarea tall" id="ans-q2-1" placeholder="①留意及び検討すべき事項：&#10;&#10;②留意及び検討すべき事項："></textarea>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="showModel('exp-q2-1','ans-q2-1')">回答する</button>
+    <button class="btn btn-copilot" onclick="showCopilot('copilot-q2-1')">Copilotに採点させる</button>
+  </div>
+  <div class="explanation" id="exp-q2-1">
+    <div class="explanation-title">CIC公式 解答例</div>
+    <div class="model-answer">(1) 設置計画において予定する作業の積載荷重について検討し、ゴンドラの積載荷重をこえないように留意する。
+(2) ゴンドラを使用する場所において、照明について検討し、当該作業を安全に行うため必要な照度を保持することに留意する。</div>
+    <div class="model-prep">【補足解説（CIC本に他例あり）】
+・ゴンドラを設置する躯体の状況を確認し、設置場所に適した支持金具、アーム台を選定する。
+・アーム台により躯体部分が損傷するおそれがある場合は、その躯体部分を補強するための補強材と、補強材の固定方法を検討する。</div>
+  </div>
+  <div class="copilot-result" id="copilot-q2-1">
+    <div class="copilot-label">Copilot 採点結果</div>
+    <div class="copilot-body"></div>
+  </div>
+</div>
+
+<div class="q-card">
+  <span class="q-number">問2-2</span>
+  <p class="q-text">2. 場内仮設事務所</p>
+  <textarea class="answer-textarea tall" id="ans-q2-2" placeholder="①留意及び検討すべき事項：&#10;&#10;②留意及び検討すべき事項："></textarea>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="showModel('exp-q2-2','ans-q2-2')">回答する</button>
+    <button class="btn btn-copilot" onclick="showCopilot('copilot-q2-2')">Copilotに採点させる</button>
+  </div>
+  <div class="explanation" id="exp-q2-2">
+    <div class="explanation-title">CIC公式 解答例</div>
+    <div class="model-answer">(1) 地域住民への配慮を検討し、場内仮設事務所の窓や通路は、周囲の民家の側に設置しないことに留意する。
+(2) 搬出入車両の動きや作業員の行動、資材搬入の作業等の効率的な管理について検討し、事務所から施工状況がよく見えるよう、設置場所の選定に留意する。</div>
+    <div class="model-prep">【補足解説（CIC本に他例あり）】
+・作業員の利便性と動線を考え、作業員が出入りしやすい出入口付近に設ける。
+・交流を円滑にするため、監理事務所と工事事務所は、相互に行き来しやすい配置とする。
+・できるだけ敷地の外周に近い所に配置して、電気や給排水を引き込みやすくする。
+・材料置き場や下小屋等の状況を容易に把握できる場所に設置する。</div>
+  </div>
+  <div class="copilot-result" id="copilot-q2-2">
+    <div class="copilot-label">Copilot 採点結果</div>
+    <div class="copilot-body"></div>
+  </div>
+</div>
+
+<div class="q-card">
+  <span class="q-number">問2-3</span>
+  <p class="q-text">3. 工事ゲート（車両出入口）</p>
+  <textarea class="answer-textarea tall" id="ans-q2-3" placeholder="①留意及び検討すべき事項：&#10;&#10;②留意及び検討すべき事項："></textarea>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="showModel('exp-q2-3','ans-q2-3')">回答する</button>
+    <button class="btn btn-copilot" onclick="showCopilot('copilot-q2-3')">Copilotに採点させる</button>
+  </div>
+  <div class="explanation" id="exp-q2-3">
+    <div class="explanation-title">CIC公式 解答例</div>
+    <div class="model-answer">(1) 工事ゲートの有効高さについて検討し、工事中に出入りする工事車両等の最高の高さを考慮して計画するよう留意する。
+(2) 工事ゲートの設置位置について検討し、交差点の近く等、見通しの悪い場所を避けるよう留意する。</div>
+    <div class="model-prep">【補足解説（CIC本に他例あり）】
+・扉の開放時における通行者との接触の危険を避けるため、工事ゲートの扉は引き戸又は内開きとする。
+・ゲート付近に歩行者が多い場合、通行人の安全確保のため車両の入退場を知らせるブザー及び標示灯を設置する。
+・運転者が安全確認しやすいように、出入口にはカーブミラー等を設置して配慮する。
+・出入口の幅は、工事中に出入りする工事車両等の有効幅を有するものとし、前面道路の幅員を考慮して計画する。</div>
+  </div>
+  <div class="copilot-result" id="copilot-q2-3">
+    <div class="copilot-label">Copilot 採点結果</div>
+    <div class="copilot-body"></div>
+  </div>
+</div>
+
+
+<!-- ========================================================
+     問題3：工程管理（躯体工事工程表・人数割振り最適化）
+======================================================== -->
+<div class="section-title" id="sec3">問題3｜工程管理（躯体工事工程表・作業員割振り）</div>
+
+<div class="q-card">
+  <span class="q-number">問3</span>
+  <p class="q-text">市街地での事務所ビルの新築工事において、各階を施工数量の異なるA工区とB工区に分けて工事を行うとき、右の躯体工事工程表（基準階の柱、上階の床、梁部分）に関し、次の1.から4.の問いに答えなさい。</p>
+
+  <div class="network-info">【工事概要】
+　用途：事務所
+　構造・規模：鉄筋コンクリート造、地上6階、塔屋1階、延べ面積3,000㎡
+　　　　　　　階段は鉄骨造で、別工程により施工する。
+
+【条件】
+　工程表は検討中のもので、型枠工10人、鉄筋工6人をそれぞれ半数ずつの2班に割り振り、両工区の施工を同時に進める計画とした。
+　Aで始まる作業名はA工区、Bで始まる作業名はB工区、Cで始まる作業名は両工区同時に行う作業。
+　作業A4・B4及び作業A8・B8については作業内容を記載していない（設問1で答える）。
+　各作業は一般的な手順に従って施工。検査や設備関係の作業は省略。
+　安全上の観点から鉄筋工事と型枠工事の同時施工は避け、作業A3・B3及び作業A7・B7はA・B両工区の前工程が両方とも完了してから作業を行う。</div>
+
+  <div class="network-img-wrap">
+    <img src="q3_network_r3-1.png" alt="令和3年度 1級建築施工管理 第二次検定 問題3 躯体工事工程表（基準階）＋作業内容表">
+    <div class="network-img-caption">※ 出典：CIC出版『1級建築施工管理技士 第二次検定 テキスト&amp;過去問題集 2025年度版』 Part155（社内勉強会用抜粋）</div>
+  </div>
+
+  <div class="essay-field">
+    <span class="essay-label">設問1：作業A4・B4及び作業A8・B8の作業内容を記述しなさい。</span>
+    <textarea class="answer-textarea" id="q3-1" style="min-height:80px" placeholder="A4・B4：&#10;A8・B8："></textarea>
+  </div>
+
+  <div class="essay-field">
+    <span class="essay-label">設問2：作業B6のフリーフロート（FF）を記入しなさい。</span>
+    <textarea class="answer-textarea" id="q3-2" style="min-height:60px" placeholder="例） ○日"></textarea>
+  </div>
+
+  <div class="essay-field">
+    <span class="essay-label">設問3：A工区とB工区の施工数量の違いから、各作業に必要な総人数に差のある作業A1、B1から作業A4、B4までについて、最も効率の良い作業員の割振りに変え、所要日数の短縮を図ることとした。一作業の1日当たりの最少人数は2人とし、一作業の途中での人数の変更は無いものとする。<br>
+    変更後の1日当たりの人数は、作業A1＝2人、作業B1＝4人、作業A2＝4人、作業B2＝2人に、作業A3の人数は「あ」人となり、作業A4の人数は「い」人となる。「あ」と「い」を答えなさい。</span>
+    <textarea class="answer-textarea" id="q3-3" style="min-height:60px" placeholder="あ：　○人&#10;い：　○人"></textarea>
+  </div>
+
+  <div class="essay-field">
+    <span class="essay-label">設問4：設問3で求めた、作業A1・B1から作業A4・B4の工事ごと、工区ごとの割振り人数としたとき、始から終までの総所要日数を記入しなさい。</span>
+    <textarea class="answer-textarea" id="q3-4" placeholder="例） ○日"></textarea>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="showMultiModel('exp-q3',['q3-1','q3-2','q3-3','q3-4'])">回答する（解答・解説を表示）</button>
+  </div>
+
+  <div class="explanation" id="exp-q3">
+    <div class="explanation-title">解答・解説</div>
+    <div class="model-answer">設問1：
+　A4・B4：壁型枠建込み
+　A8・B8：床配筋
+
+設問2：作業B6のフリーフロート＝2日
+
+設問3：
+　あ：3（人）
+　い：8（人）
+
+設問4：総所要日数＝24日</div>
+    <div class="model-supplement">【補足解説】
+1. 鉄筋コンクリート造の一般階の躯体工事は、柱・壁配筋→柱・壁型枠建込み→梁・床型枠組立て→梁・床配筋の順に行うのが一般的。よって柱・壁配筋（A3・B3）の終了後、柱型枠建込みと同時期に行われる作業A4・B4は<strong>壁型枠建込み</strong>。梁・床型枠組立て（A6・B6）の終了後、梁配筋（A7・B7）と同時期に行われる作業A8・B8は<strong>床配筋</strong>。
+
+2. フリーフロート（FF）＝後続作業の最早開始時刻（EST）から先行作業のESTとその作業の所要日数を差し引いて求める。ダミー線を追加してネットワークを完成させ、ESTを計算すると、作業B6のFFは 16日−（11日＋3日）＝<strong>2日</strong>。
+
+3. A工区とB工区の施工数量の違いから生じる作業員の割振りの違いを効率よく調整し、所要日数を短縮する。A・B両工区の各作業が同じスピードで進むよう作業員人数を平準化する。例えばA1・B1（柱配筋）の場合、必要総人数からA1の作業は2人、B1の作業は4人いれば1日で終わるので、A1の現状3人のうち1人をB1に移してA1を2人、B1を4人にする。これにより作業<strong>A3の人数は3人</strong>、作業<strong>A4の人数は8人</strong>となる。
+
+4. 人数を平準化した割振りとすると、始から終までの総所要日数は<strong>24日</strong>となる。
+・林副部長の解説どおり、ネットワーク工程表は<strong>条件式（ダミー線の入る位置）を整理して書き出してから手で経路を辿る</strong>練習が重要。R3は「人数の割振り最適化」という応用が加わるので、必要総人数÷所要日数＝1日当たり人数の計算を丁寧に行うこと。</div>
+  </div>
+</div>
+
+
+<!-- ========================================================
+     問題4：躯体施工（4工種の留意事項）
+======================================================== -->
+<div class="section-title" id="sec4">問題4｜躯体施工（施工上の留意事項）</div>
+
+<p style="margin-bottom:14px;font-size:.88rem;color:var(--muted);line-height:1.8;">
+  次の1.〜4.の問いに答えなさい。<br>
+  ただし、解答はそれぞれ異なる内容の記述とし、材料（仕様、品質、運搬、保管等）、作業環境（騒音、振動、気象条件等）及び作業員の安全に関する記述は除く。
+</p>
+
+<div class="q-card">
+  <span class="q-number">問4-1</span>
+  <p class="q-text">1. 杭工事において、<strong>既製コンクリート杭の埋込み工法</strong>の施工上の留意事項を2つ、具体的に記述しなさい。<br>
+  ただし、養生に関する記述は除くものとする。</p>
+  <textarea class="answer-textarea tall" id="ans-q4-1" placeholder="①…&#10;②…"></textarea>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="showModel('exp-q4-1','ans-q4-1')">回答する</button>
+    <button class="btn btn-copilot" onclick="showCopilot('copilot-q4-1')">Copilotに採点させる</button>
+  </div>
+  <div class="explanation" id="exp-q4-1">
+    <div class="explanation-title">CIC公式 解答例</div>
+    <div class="model-answer">(1) セメントミルク工法において、アースオーガーは掘削時及び引上げ時とも正回転とする。
+(2) セメントミルク工法において、アースオーガーによる掘削は、粘着力の大きな地盤や硬い地盤ほど掘削速度を遅くする。</div>
+    <div class="model-prep">【補足解説（CIC本に他例あり）】
+・セメントミルク工法において、アースオーガーを引き上げる際には、負圧によって地盤を緩めないよう行う。
+・セメントミルク工法における杭の設置は、根固め液注入の後に、圧入又は軽打によって杭を根固め液中に貫入させる。
+・セメントミルク工法において、杭の自重だけでは埋設が困難な場合、杭の中空部に水を入れ重量を増し安定させる。</div>
+  </div>
+  <div class="copilot-result" id="copilot-q4-1"><div class="copilot-label">Copilot 採点結果</div><div class="copilot-body"></div></div>
+</div>
+
+<div class="q-card">
+  <span class="q-number">問4-2</span>
+  <p class="q-text">2. 型枠工事において、<strong>柱又は梁型枠の加工、組立て</strong>の施工上の留意事項を2つ、具体的に記述しなさい。<br>
+  ただし、基礎梁及び型枠支保工に関する記述は除くものとする。</p>
+  <textarea class="answer-textarea tall" id="ans-q4-2" placeholder="①…&#10;②…"></textarea>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="showModel('exp-q4-2','ans-q4-2')">回答する</button>
+    <button class="btn btn-copilot" onclick="showCopilot('copilot-q4-2')">Copilotに採点させる</button>
+  </div>
+  <div class="explanation" id="exp-q4-2">
+    <div class="explanation-title">CIC公式 解答例</div>
+    <div class="model-answer">(1) 柱型枠の建入れ調整は、梁、壁及び床の型枠を組み立てる前にチェーン等で控えを取り、変形しないように行う。
+(2) 柱型枠の足元は、型枠の変形防止やセメントペーストの漏出防止等のため、桟木で根巻きを行う。</div>
+    <div class="model-prep">【補足解説（CIC本に他例あり）】
+・外周梁の側型枠の上部は、コンクリートの側圧による変形防止のため、スラブ引き金物で固定する。</div>
+  </div>
+  <div class="copilot-result" id="copilot-q4-2"><div class="copilot-label">Copilot 採点結果</div><div class="copilot-body"></div></div>
+</div>
+
+<div class="q-card">
+  <span class="q-number">問4-3</span>
+  <p class="q-text">3. コンクリート工事において、<strong>コンクリート打込み後の養生</strong>に関する施工上の留意事項を2つ、具体的に記述しなさい。<br>
+  なお、コンクリートに使用するセメントは普通ポルトランドセメントとし、計画供用期間の級は標準とする。</p>
+  <textarea class="answer-textarea tall" id="ans-q4-3" placeholder="①…&#10;②…"></textarea>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="showModel('exp-q4-3','ans-q4-3')">回答する</button>
+    <button class="btn btn-copilot" onclick="showCopilot('copilot-q4-3')">Copilotに採点させる</button>
+  </div>
+  <div class="explanation" id="exp-q4-3">
+    <div class="explanation-title">CIC公式 解答例</div>
+    <div class="model-answer">(1) 水分の急激な発散及び日射による温度上昇を防ぐよう、コンクリート表面への散水により常に湿潤に保つ。
+(2) 湿潤養生の開始時期は、コンクリート上面ではブリーディング水が消失した時点、せき板に接する面では脱型直後とする。</div>
+    <div class="model-prep">【補足解説（CIC本に他例あり）】
+・コンクリート打込み後5日間は、コンクリート温度が2℃を下回らないように保つ。
+・コンクリート面が露出している部分は水密シート等で被覆し、直射日光や風による急激な乾燥からコンクリートの露出面を保護する。
+・保温養生の際も、コンクリートが十分な湿潤状態を保つように、散水を行う。</div>
+  </div>
+  <div class="copilot-result" id="copilot-q4-3"><div class="copilot-label">Copilot 採点結果</div><div class="copilot-body"></div></div>
+</div>
+
+<div class="q-card">
+  <span class="q-number">問4-4</span>
+  <p class="q-text">4. 鉄骨工事において、<strong>トルシア形高力ボルトの締付け</strong>に関する施工上の留意事項を2つ、具体的に記述しなさい。<br>
+  ただし、締付け器具に関する記述は除くものとする。</p>
+  <textarea class="answer-textarea tall" id="ans-q4-4" placeholder="①…&#10;②…"></textarea>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="showModel('exp-q4-4','ans-q4-4')">回答する</button>
+    <button class="btn btn-copilot" onclick="showCopilot('copilot-q4-4')">Copilotに採点させる</button>
+  </div>
+  <div class="explanation" id="exp-q4-4">
+    <div class="explanation-title">CIC公式 解答例</div>
+    <div class="model-answer">(1) 高力ボルトの締付けは二度締めとし、一次締め、マーキング、本締めの順に行う。
+(2) 一次締め及び本締めは、ボルト1群ごとに継手の中央部から周辺部に向かって締め付ける。</div>
+    <div class="model-prep">【補足解説（CIC本に他例あり）】
+・ボルト孔にボルトを挿入し、一次締め後に、ボルト軸、ナット、座金及び鋼材面にマーキングをしてから本締めを行う。
+・ボルト、ナット、座金が共回りを生じた場合、新しいボルトセットに取り換えて締め直す。
+・締付け位置によって専用締付け機が使用できない場合には、JIS形の高力ボルトと交換し、トルクレンチ等を用いて締め付ける。</div>
+  </div>
+  <div class="copilot-result" id="copilot-q4-4"><div class="copilot-label">Copilot 採点結果</div><div class="copilot-body"></div></div>
+</div>
+
+
+<!-- ========================================================
+     問題5：仕上げ施工（語句訂正型8小問）
+======================================================== -->
+<div class="section-title" id="sec5">問題5｜仕上げ施工（語句・数値の訂正選択）</div>
+
+<div class="q-card">
+  <span class="q-number">問5</span>
+  <p class="q-text">次の1.〜8.の各記述において、（&nbsp;a&nbsp;）〜（&nbsp;e&nbsp;）の下線部のうち<strong>最も不適当な語句又は数値</strong>の下線部の記号と、それに替わる適当な語句又は数値との組合せを、下の枠内から1つ選びなさい。</p>
+
+  <!-- 5-1 -->
+  <div class="fill-blank-card">
+    <h4>1. 改質アスファルトシート防水（常温粘着工法・断熱露出仕様）</h4>
+    <p class="law-text">
+      改質アスファルトシート防水常温粘着工法・断熱露出仕様の場合、立上り際の風による<u>負（&nbsp;<strong>a</strong>&nbsp;）</u>圧は平場の一般部より大きくなるため、断熱材の上が絶縁工法となる立上り際の平場部の幅<u>300（&nbsp;<strong>b</strong>&nbsp;）</u>mm程度は、防水層の<u>1（&nbsp;<strong>c</strong>&nbsp;）</u>層目に粘着層付改質アスファルトシートを張り付ける。<br>
+      なお、<u>入隅（&nbsp;<strong>d</strong>&nbsp;）</u>部では立上りに<u>100（&nbsp;<strong>e</strong>&nbsp;）</u>mm程度立ち上げて、浮きや口あきが生じないように張り付ける。
+    </p>
+    <div class="blank-row" id="row-q5-1">
+      <span class="blank-label">解答</span>
+      <select id="q5-1">
+        <option value="">選択してください</option>
+        <option value="1">① a－正</option>
+        <option value="2">② b－500</option>
+        <option value="3">③ c－2</option>
+        <option value="4">④ d－出隅</option>
+        <option value="5">⑤ e－150</option>
+      </select>
+      <span class="blank-mark" id="mark-q5-1"></span>
+      <div class="blank-correct-note" id="note-q5-1"></div>
+    </div>
+  </div>
+
+  <!-- 5-2 -->
+  <div class="fill-blank-card">
+    <h4>2. セメントモルタルによるタイル張り</h4>
+    <p class="law-text">
+      セメントモルタルによるタイル張りにおいて、まぐさ、庇先端<u>下部（&nbsp;<strong>a</strong>&nbsp;）</u>など剥落のおそれが大きい箇所に<u>小口（&nbsp;<strong>b</strong>&nbsp;）</u>タイル以上の大きさのタイルを張る場合、径が<u>0.6（&nbsp;<strong>c</strong>&nbsp;）</u>mm以上のなまし<u>鉄（&nbsp;<strong>d</strong>&nbsp;）</u>線を剥落防止用引金物として張付けモルタルに塗り込み、必要に応じて、受木を添えて<u>24（&nbsp;<strong>e</strong>&nbsp;）</u>時間以上支持する。
+    </p>
+    <div class="blank-row" id="row-q5-2">
+      <span class="blank-label">解答</span>
+      <select id="q5-2">
+        <option value="">選択してください</option>
+        <option value="1">① a－見付</option>
+        <option value="2">② b－モザイク</option>
+        <option value="3">③ c－0.4</option>
+        <option value="4">④ d－ステンレス</option>
+        <option value="5">⑤ e－72</option>
+      </select>
+      <span class="blank-mark" id="mark-q5-2"></span>
+      <div class="blank-correct-note" id="note-q5-2"></div>
+    </div>
+  </div>
+
+  <!-- 5-3 -->
+  <div class="fill-blank-card">
+    <h4>3. 長尺金属板葺の下葺</h4>
+    <p class="law-text">
+      長尺金属板葺の下葺のアスファルトルーフィングは軒先と<u>平行（&nbsp;<strong>a</strong>&nbsp;）</u>に敷き込み、軒先から順次棟へ向かって張り、隣接するルーフィングとの重ね幅は、流れ方向（上下）は<u>100（&nbsp;<strong>b</strong>&nbsp;）</u>mm以上、長手方向（左右）は<u>150（&nbsp;<strong>c</strong>&nbsp;）</u>mm以上重ね合わせる。<br>
+      金属板を折曲げ加工する場合、塗装又はめっき及び地肌に亀裂が生じないよう切れ目を<u>入れないで（&nbsp;<strong>d</strong>&nbsp;）</u>折り曲げる。金属板を小はぜ掛けとする場合は、はぜの折返し寸法と角度に注意し、小はぜ内に3〜6mm程度の隙間を設けて毛細管現象による<u>雨水（&nbsp;<strong>e</strong>&nbsp;）</u>の浸入を防ぐようにする。
+    </p>
+    <div class="blank-row" id="row-q5-3">
+      <span class="blank-label">解答</span>
+      <select id="q5-3">
+        <option value="">選択してください</option>
+        <option value="1">① a－垂直</option>
+        <option value="2">② b－200</option>
+        <option value="3">③ c－200</option>
+        <option value="4">④ d－入れて</option>
+        <option value="5">⑤ e－風</option>
+      </select>
+      <span class="blank-mark" id="mark-q5-3"></span>
+      <div class="blank-correct-note" id="note-q5-3"></div>
+    </div>
+  </div>
+
+  <!-- 5-4 -->
+  <div class="fill-blank-card">
+    <h4>4. 内装の床張物下地（セルフレベリング材塗り）</h4>
+    <p class="law-text">
+      内装の床張物下地をセルフレベリング材塗りとする場合、<u>軟（&nbsp;<strong>a</strong>&nbsp;）</u>度を一定に練り上げたセルフレベリング材を、レベルに合わせて流し込む。流し込み中はできる限り通風を<u>良くして（&nbsp;<strong>b</strong>&nbsp;）</u>作業を行う。<br>
+      施工後の養生期間は、常温で<u>7（&nbsp;<strong>c</strong>&nbsp;）</u>日以上、冬期間は<u>14（&nbsp;<strong>d</strong>&nbsp;）</u>日以上とし、施工場所の気温が<u>5（&nbsp;<strong>e</strong>&nbsp;）</u>℃以下の場合は施工しない。
+    </p>
+    <div class="blank-row" id="row-q5-4">
+      <span class="blank-label">解答</span>
+      <select id="q5-4">
+        <option value="">選択してください</option>
+        <option value="1">① a－硬</option>
+        <option value="2">② b－避けて</option>
+        <option value="3">③ c－3</option>
+        <option value="4">④ d－28</option>
+        <option value="5">⑤ e－3</option>
+      </select>
+      <span class="blank-mark" id="mark-q5-4"></span>
+      <div class="blank-correct-note" id="note-q5-4"></div>
+    </div>
+  </div>
+
+  <!-- 5-5 -->
+  <div class="fill-blank-card">
+    <h4>5. PCカーテンウォール</h4>
+    <p class="law-text">
+      PCカーテンウォールの<u>ファスナー（&nbsp;<strong>a</strong>&nbsp;）</u>方式には、ロッキング方式、スウェイ方式がある。<br>
+      ロッキング方式はPCパネルを<u>回転させる（&nbsp;<strong>b</strong>&nbsp;）</u>ことにより、また、スウェイ方式は上部、下部ファスナーの<u>両方（&nbsp;<strong>c</strong>&nbsp;）</u>をルーズホールなどで<u>滑らせる（&nbsp;<strong>d</strong>&nbsp;）</u>ことにより、PCカーテンウォールを<u>層間（&nbsp;<strong>e</strong>&nbsp;）</u>変位に追従させるものである。
+    </p>
+    <div class="blank-row" id="row-q5-5">
+      <span class="blank-label">解答</span>
+      <select id="q5-5">
+        <option value="">選択してください</option>
+        <option value="1">① a－取付</option>
+        <option value="2">② b－滑らせる</option>
+        <option value="3">③ c－どちらか</option>
+        <option value="4">④ d－回転させる</option>
+        <option value="5">⑤ e－地震</option>
+      </select>
+      <span class="blank-mark" id="mark-q5-5"></span>
+      <div class="blank-correct-note" id="note-q5-5"></div>
+    </div>
+  </div>
+
+  <!-- 5-6 -->
+  <div class="fill-blank-card">
+    <h4>6. 塗装工事における研磨紙ずり</h4>
+    <p class="law-text">
+      塗装工事における研磨紙ずりは、素地の汚れや錆、下地に付着している<u>塵埃（&nbsp;<strong>a</strong>&nbsp;）</u>を取り除いて素地や下地を<u>粗面（&nbsp;<strong>b</strong>&nbsp;）</u>にし、かつ、次工程で適用する塗装材料の<u>付着性（&nbsp;<strong>c</strong>&nbsp;）</u>を確保するための足掛かりをつくり、<u>仕上り（&nbsp;<strong>d</strong>&nbsp;）</u>を良くするために行う。<br>
+      研磨紙ずりは、下層塗膜が十分<u>乾燥（&nbsp;<strong>e</strong>&nbsp;）</u>した後に行い、塗膜を過度に研がないようにする。
+    </p>
+    <div class="blank-row" id="row-q5-6">
+      <span class="blank-label">解答</span>
+      <select id="q5-6">
+        <option value="">選択してください</option>
+        <option value="1">① a－油分</option>
+        <option value="2">② b－平滑</option>
+        <option value="3">③ c－作業</option>
+        <option value="4">④ d－付着</option>
+        <option value="5">⑤ e－硬化</option>
+      </select>
+      <span class="blank-mark" id="mark-q5-6"></span>
+      <div class="blank-correct-note" id="note-q5-6"></div>
+    </div>
+  </div>
+
+  <!-- 5-7 -->
+  <div class="fill-blank-card">
+    <h4>7. 居室の壁紙施工</h4>
+    <p class="law-text">
+      居室の壁紙施工において、壁紙及び壁紙施工用<u>でん粉（&nbsp;<strong>a</strong>&nbsp;）</u>系接着剤の<u>ホルムアルデヒド（&nbsp;<strong>b</strong>&nbsp;）</u>放散量は、一般に、F<u>☆☆☆☆（&nbsp;<strong>c</strong>&nbsp;）</u>としている。また、防火材の認定の表示は防火製品表示<u>ラベル（&nbsp;<strong>d</strong>&nbsp;）</u>を1区分（1室）ごとに<u>1（&nbsp;<strong>e</strong>&nbsp;）</u>枚以上張り付けて表示する。
+    </p>
+    <div class="blank-row" id="row-q5-7">
+      <span class="blank-label">解答</span>
+      <select id="q5-7">
+        <option value="">選択してください</option>
+        <option value="1">① a－溶剤</option>
+        <option value="2">② b－シンナー</option>
+        <option value="3">③ c－☆☆</option>
+        <option value="4">④ d－シール</option>
+        <option value="5">⑤ e－2</option>
+      </select>
+      <span class="blank-mark" id="mark-q5-7"></span>
+      <div class="blank-correct-note" id="note-q5-7"></div>
+    </div>
+  </div>
+
+  <!-- 5-8 -->
+  <div class="fill-blank-card">
+    <h4>8. コンクリート打放し仕上げ外壁のひび割れ補修（樹脂注入工法）</h4>
+    <p class="law-text">
+      コンクリート打放し仕上げ外壁のひび割れ部の改修における樹脂注入工法は、外壁のひび割れ幅が0.2mm以上<u>2.0（&nbsp;<strong>a</strong>&nbsp;）</u>mm以下の場合に主に適用され、シール工法や<u>U（&nbsp;<strong>b</strong>&nbsp;）</u>カットシール材充填工法に比べ<u>耐久（&nbsp;<strong>c</strong>&nbsp;）</u>性が期待できる工法である。<br>
+      挙動のあるひび割れ部の注入に用いるエポキシ樹脂の種類は、<u>軟（&nbsp;<strong>d</strong>&nbsp;）</u>質形とし、粘性による区分は<u>低（&nbsp;<strong>e</strong>&nbsp;）</u>粘度形又は中粘度形とする。
+    </p>
+    <div class="blank-row" id="row-q5-8">
+      <span class="blank-label">解答</span>
+      <select id="q5-8">
+        <option value="">選択してください</option>
+        <option value="1">① a－1.0</option>
+        <option value="2">② b－V</option>
+        <option value="3">③ c－耐水</option>
+        <option value="4">④ d－硬</option>
+        <option value="5">⑤ e－高</option>
+      </select>
+      <span class="blank-mark" id="mark-q5-8"></span>
+      <div class="blank-correct-note" id="note-q5-8"></div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="gradeQ5()">採点する（8問一括）</button>
+    <button class="btn btn-reset" onclick="resetQ5()">リセット</button>
+    <button class="btn btn-secondary" onclick="toggleQ5Detail()" id="btn-q5-detail">訂正内容の解説を表示</button>
+  </div>
+
+  <div class="score-box" id="score-q5">
+    <div class="score-num"><span id="score-q5-num">0</span> / 8</div>
+    <div class="score-label">スコア（仕上げ語句訂正）</div>
+  </div>
+
+  <div class="law-detail" id="q5-detail">
+    <div class="explanation-title">各小問の訂正内容（正しい記述）</div>
+    <p>1. 正解：<strong>② b→500</strong> ／ 立上り際の平場部の幅は<strong>500mm</strong>程度。</p>
+    <p>2. 正解：<strong>④ d→ステンレス</strong> ／ 剥落防止用引金物は<strong>なましステンレス線</strong>（径0.6mm以上）。</p>
+    <p>3. 正解：<strong>② b→200</strong> ／ 流れ方向（上下）の重ね幅は<strong>200mm</strong>以上、長手方向（左右）は100mm以上。</p>
+    <p>4. 正解：<strong>② b→避けて</strong> ／ セルフレベリング材の流し込み中はできる限り通風を<strong>避けて</strong>作業を行う（通風でシワができるため）。</p>
+    <p>5. 正解：<strong>③ c→どちらか</strong> ／ スウェイ方式は上部・下部ファスナーの<strong>どちらか</strong>をルーズホールで滑らせる。</p>
+    <p>6. 正解：<strong>② b→平滑</strong> ／ 研磨紙ずりは素地や下地を<strong>平滑</strong>にする（粗面ではない）。</p>
+    <p>7. 正解：<strong>⑤ e→2</strong> ／ 防火製品表示ラベルは1区分（1室）ごとに<strong>2枚</strong>以上張り付ける。</p>
+    <p>8. 正解：<strong>① a→1.0</strong> ／ 樹脂注入工法はひび割れ幅0.2mm以上<strong>1.0mm</strong>以下の場合に主に適用。</p>
+  </div>
+</div>
+
+
+<!-- ========================================================
+     問題6：法規（穴埋め6箇所）
+======================================================== -->
+<div class="section-title" id="sec6">問題6｜法規（穴埋め6箇所）</div>
+
+<div class="q-card">
+  <span class="q-number">問6</span>
+  <p class="q-text">次の1.〜3.の各法文において、（　）に当てはまる正しい語句を、下の該当する枠内から1つ選びなさい。</p>
+
+  <!-- 6-1 建設業法 第24条 -->
+  <div class="fill-blank-card">
+    <h4>1. 建設業法（第24条：請負契約とみなす場合）</h4>
+    <p class="law-text">
+      第24条　委託その他いかなる（&nbsp;<strong>①</strong>&nbsp;）をもってするかを問わず、（&nbsp;<strong>②</strong>&nbsp;）を得て建設工事の完成を目的として締結する契約は、建設工事の請負契約とみなして、この法律の規定を適用する。
+    </p>
+
+    <div class="blank-row" id="row-q6-1">
+      <span class="blank-label">穴①</span>
+      <select id="q6-1">
+        <option value="">選択してください</option>
+        <option value="1">① 業務</option>
+        <option value="2">② 許可</option>
+        <option value="3">③ 立場</option>
+        <option value="4">④ 名義</option>
+        <option value="5">⑤ 資格</option>
+      </select>
+      <span class="blank-mark" id="mark-q6-1"></span>
+      <div class="blank-correct-note" id="note-q6-1"></div>
+    </div>
+
+    <div class="blank-row" id="row-q6-2">
+      <span class="blank-label">穴②</span>
+      <select id="q6-2">
+        <option value="">選択してください</option>
+        <option value="1">① 報酬</option>
+        <option value="2">② 利益</option>
+        <option value="3">③ 許可</option>
+        <option value="4">④ 承認</option>
+        <option value="5">⑤ 信用</option>
+      </select>
+      <span class="blank-mark" id="mark-q6-2"></span>
+      <div class="blank-correct-note" id="note-q6-2"></div>
+    </div>
+  </div>
+
+  <!-- 6-2 建築基準法施行令 第136条の6 -->
+  <div class="fill-blank-card">
+    <h4>2. 建築基準法施行令（第136条の6：建て方）</h4>
+    <p class="law-text">
+      第136条の6　建築物の建て方を行なうに当たっては、仮筋かいを取り付ける等荷重又は外力による（&nbsp;<strong>③</strong>&nbsp;）を防止するための措置を講じなければならない。<br>
+      2　鉄骨造の建築物の建て方の（&nbsp;<strong>④</strong>&nbsp;）は、荷重及び外力に対して安全なものとしなければならない。
+    </p>
+
+    <div class="blank-row" id="row-q6-3">
+      <span class="blank-label">穴③</span>
+      <select id="q6-3">
+        <option value="">選択してください</option>
+        <option value="1">① 事故</option>
+        <option value="2">② 災害</option>
+        <option value="3">③ 変形</option>
+        <option value="4">④ 傾倒</option>
+        <option value="5">⑤ 倒壊</option>
+      </select>
+      <span class="blank-mark" id="mark-q6-3"></span>
+      <div class="blank-correct-note" id="note-q6-3"></div>
+    </div>
+
+    <div class="blank-row" id="row-q6-4">
+      <span class="blank-label">穴④</span>
+      <select id="q6-4">
+        <option value="">選択してください</option>
+        <option value="1">① ワイヤロープ</option>
+        <option value="2">② 仮筋かい</option>
+        <option value="3">③ 仮締</option>
+        <option value="4">④ 本締</option>
+        <option value="5">⑤ 手順</option>
+      </select>
+      <span class="blank-mark" id="mark-q6-4"></span>
+      <div class="blank-correct-note" id="note-q6-4"></div>
+    </div>
+  </div>
+
+  <!-- 6-3 労働安全衛生法 第29条 -->
+  <div class="fill-blank-card">
+    <h4>3. 労働安全衛生法（第29条：元方事業者の講ずべき措置等）</h4>
+    <p class="law-text">
+      第29条　元方事業者は、関係請負人及び関係請負人の労働者が、当該仕事に関し、この法律又はこれに基づく命令の規定に違反しないよう必要な（&nbsp;<strong>⑤</strong>&nbsp;）を行なわなければならない。<br>
+      2　元方事業者は、関係請負人又は関係請負人の労働者が、当該仕事に関し、この法律又はこれに基づく命令の規定に違反していると認めるときは、（&nbsp;<strong>⑥</strong>&nbsp;）のため必要な指示を行なわなければならない。<br>
+      3　（略）
+    </p>
+
+    <div class="blank-row" id="row-q6-5">
+      <span class="blank-label">穴⑤</span>
+      <select id="q6-5">
+        <option value="">選択してください</option>
+        <option value="1">① 説明</option>
+        <option value="2">② 教育</option>
+        <option value="3">③ 指導</option>
+        <option value="4">④ 注意喚起</option>
+        <option value="5">⑤ 契約</option>
+      </select>
+      <span class="blank-mark" id="mark-q6-5"></span>
+      <div class="blank-correct-note" id="note-q6-5"></div>
+    </div>
+
+    <div class="blank-row" id="row-q6-6">
+      <span class="blank-label">穴⑥</span>
+      <select id="q6-6">
+        <option value="">選択してください</option>
+        <option value="1">① 衛生</option>
+        <option value="2">② 是正</option>
+        <option value="3">③ 改善</option>
+        <option value="4">④ 安全</option>
+        <option value="5">⑤ 健康</option>
+      </select>
+      <span class="blank-mark" id="mark-q6-6"></span>
+      <div class="blank-correct-note" id="note-q6-6"></div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="gradeQ6()">採点する（6箇所一括）</button>
+    <button class="btn btn-reset" onclick="resetQ6()">リセット</button>
+  </div>
+
+  <div class="score-box" id="score-q6">
+    <div class="score-num"><span id="score-q6-num">0</span> / 6</div>
+    <div class="score-label">スコア（法規）</div>
+    <div class="btn-row" style="justify-content:center;">
+      <button class="btn btn-secondary" onclick="toggleLawDetail()" id="btn-law-detail">補足解説を表示</button>
+    </div>
+  </div>
+
+  <div class="law-detail" id="law-detail">
+    <div class="explanation-title">法令本文と解説</div>
+
+    <h5>1. 建設業法 第24条（請負契約とみなす場合）</h5>
+    <p>① 正解：<strong>名義</strong> ／ 委託その他いかなる<strong>名義</strong>をもってするかを問わず。</p>
+    <p>② 正解：<strong>報酬</strong> ／ <strong>報酬</strong>を得て建設工事の完成を目的として締結する契約は、請負契約とみなす。委託・準委任等の名義を使っても、報酬を得て工事完成を目的とすれば請負契約として建設業法を適用する趣旨。</p>
+
+    <h5>2. 建築基準法施行令 第136条の6（建て方）</h5>
+    <p>③ 正解：<strong>倒壊</strong> ／ 仮筋かいを取り付ける等、荷重又は外力による<strong>倒壊</strong>を防止する措置を講じる。</p>
+    <p>④ 正解：<strong>仮締</strong> ／ 鉄骨造建築物の建て方の<strong>仮締</strong>は、荷重及び外力に対して安全なものとする。</p>
+
+    <h5>3. 労働安全衛生法 第29条（元方事業者の講ずべき措置等）</h5>
+    <p>⑤ 正解：<strong>指導</strong> ／ 関係請負人等が法令違反しないよう必要な<strong>指導</strong>を行う。</p>
+    <p>⑥ 正解：<strong>是正</strong> ／ 法令違反していると認めるときは、<strong>是正</strong>のため必要な指示を行う。</p>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  大石建設 社内対策講座 ／ 1級建築施工管理技術検定 第二次検定対策 R3（2021年度）全問演習<br>
+  出典：CIC出版『1級建築施工管理技士 第二次検定 テキスト&amp;過去問題集 2025年度版』 ／ 全国建設研修センター公表問題（社内勉強会用抜粋）<br>
+  本資料は社内勉強会の教材として作成したものであり、外部への配布・公開を禁じます。
+</footer>
+
+<script>
+// ================================================
+// 記述式：模範回答表示
+// ================================================
+function showModel(expId, textareaId) {
+  const ta = document.getElementById(textareaId);
+  if (ta && !ta.value.trim()) {
+    if (!confirm('回答が未入力です。模範回答を表示しますか？')) return;
+  }
+  document.getElementById(expId).classList.add('show');
+}
+
+function showEssayAnswer(expId, fieldIds) {
+  const ids = fieldIds.split(',');
+  const hasEmpty = ids.some(id => {
+    const el = document.getElementById(id);
+    return !el || !el.value.trim();
+  });
+  if (hasEmpty) {
+    if (!confirm('未入力の欄があります。模範回答を表示しますか？')) return;
+  }
+  document.getElementById(expId).classList.add('show');
+}
+
+function showMultiModel(expId, fieldIds) {
+  const hasEmpty = fieldIds.some(id => {
+    const el = document.getElementById(id);
+    return !el || !el.value.trim();
+  });
+  if (hasEmpty) {
+    if (!confirm('未入力の設問があります。解答・解説を表示しますか？')) return;
+  }
+  document.getElementById(expId).classList.add('show');
+}
+
+// ================================================
+// 問題5：仕上げ語句訂正 一括採点（R3本試験 解答 ②④②②③②⑤①）
+// ================================================
+const r3ShiageAnswers = {
+  'q5-1': '2', // ② b→500
+  'q5-2': '4', // ④ d→ステンレス
+  'q5-3': '2', // ② b→200
+  'q5-4': '2', // ② b→避けて
+  'q5-5': '3', // ③ c→どちらか
+  'q5-6': '2', // ② b→平滑
+  'q5-7': '5', // ⑤ e→2
+  'q5-8': '1', // ① a→1.0
+};
+const r3ShiageLabels = {
+  'q5-1': '② b－500', 'q5-2': '④ d－ステンレス', 'q5-3': '② b－200', 'q5-4': '② b－避けて',
+  'q5-5': '③ c－どちらか', 'q5-6': '② b－平滑', 'q5-7': '⑤ e－2', 'q5-8': '① a－1.0',
+};
+
+function gradeQ5() {
+  _gradeBlanks(r3ShiageAnswers, r3ShiageLabels, 'score-q5', 'score-q5-num');
+  document.getElementById('q5-detail').classList.remove('show');
+  document.getElementById('btn-q5-detail').textContent = '訂正内容の解説を表示';
+}
+function resetQ5() {
+  _resetBlanks(r3ShiageAnswers, 'score-q5');
+  document.getElementById('q5-detail').classList.remove('show');
+  document.getElementById('btn-q5-detail').textContent = '訂正内容の解説を表示';
+}
+function toggleQ5Detail() {
+  const det = document.getElementById('q5-detail');
+  const btn = document.getElementById('btn-q5-detail');
+  if (det.classList.contains('show')) {
+    det.classList.remove('show');
+    btn.textContent = '訂正内容の解説を表示';
+  } else {
+    det.classList.add('show');
+    btn.textContent = '訂正内容の解説を隠す';
+  }
+}
+
+// ================================================
+// 問題6：法規 6箇所一括採点（R3本試験 解答）
+// ================================================
+const r3LawAnswers = {
+  'q6-1': '4', // ④ 名義
+  'q6-2': '1', // ① 報酬
+  'q6-3': '5', // ⑤ 倒壊
+  'q6-4': '3', // ③ 仮締
+  'q6-5': '3', // ③ 指導
+  'q6-6': '2', // ② 是正
+};
+const r3LawLabels = {
+  'q6-1': '④ 名義',
+  'q6-2': '① 報酬',
+  'q6-3': '⑤ 倒壊',
+  'q6-4': '③ 仮締',
+  'q6-5': '③ 指導',
+  'q6-6': '② 是正',
+};
+
+function gradeQ6() {
+  _gradeBlanks(r3LawAnswers, r3LawLabels, 'score-q6', 'score-q6-num');
+  document.getElementById('law-detail').classList.remove('show');
+  document.getElementById('btn-law-detail').textContent = '補足解説を表示';
+}
+function resetQ6() {
+  _resetBlanks(r3LawAnswers, 'score-q6');
+  document.getElementById('law-detail').classList.remove('show');
+  document.getElementById('btn-law-detail').textContent = '補足解説を表示';
+}
+
+function _gradeBlanks(answers, labels, scoreBoxId, scoreNumId) {
+  let score = 0;
+  let unanswered = 0;
+  for (const k in answers) {
+    const sel = document.getElementById(k);
+    const row = document.getElementById('row-' + k);
+    const mark = document.getElementById('mark-' + k);
+    const note = document.getElementById('note-' + k);
+    row.classList.remove('correct', 'wrong');
+    if (!sel.value) {
+      unanswered++;
+      mark.textContent = '';
+      mark.className = 'blank-mark';
+      note.textContent = '';
+      continue;
+    }
+    const isCorrect = sel.value === answers[k];
+    if (isCorrect) {
+      score++;
+      row.classList.add('correct');
+      mark.textContent = '○';
+      mark.className = 'blank-mark ok';
+      note.textContent = '';
+    } else {
+      row.classList.add('wrong');
+      mark.textContent = '×';
+      mark.className = 'blank-mark ng';
+      note.textContent = '正解：' + labels[k];
+    }
+  }
+  if (unanswered > 0) {
+    if (!confirm('未回答が ' + unanswered + ' 箇所あります。このまま採点しますか？')) {
+      for (const k in answers) {
+        const row = document.getElementById('row-' + k);
+        const mark = document.getElementById('mark-' + k);
+        const note = document.getElementById('note-' + k);
+        row.classList.remove('correct', 'wrong');
+        mark.textContent = '';
+        mark.className = 'blank-mark';
+        note.textContent = '';
+      }
+      return;
+    }
+  }
+  document.getElementById(scoreNumId).textContent = score;
+  document.getElementById(scoreBoxId).classList.add('show');
+  document.getElementById(scoreBoxId).scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function _resetBlanks(answers, scoreBoxId) {
+  for (const k in answers) {
+    const sel = document.getElementById(k);
+    const row = document.getElementById('row-' + k);
+    const mark = document.getElementById('mark-' + k);
+    const note = document.getElementById('note-' + k);
+    sel.value = '';
+    row.classList.remove('correct', 'wrong');
+    mark.textContent = '';
+    mark.className = 'blank-mark';
+    note.textContent = '';
+  }
+  document.getElementById(scoreBoxId).classList.remove('show');
+}
+
+// ================================================
+// 設問単位の個別採点（問題5・問題6 共通）
+// ================================================
+function _gradePartialKeys(keys, answers, labels) {
+  const unanswered = keys.filter(k => !document.getElementById(k).value);
+  if (unanswered.length === keys.length) {
+    alert('この設問は未回答です。選択肢を選んでから採点してください。');
+    return;
+  }
+  if (unanswered.length > 0) {
+    if (!confirm(unanswered.length + '箇所が未回答です。このまま採点しますか？')) return;
+  }
+  keys.forEach(k => {
+    const sel = document.getElementById(k);
+    const row = document.getElementById('row-' + k);
+    const mark = document.getElementById('mark-' + k);
+    const note = document.getElementById('note-' + k);
+    row.classList.remove('correct', 'wrong');
+    if (!sel.value) {
+      mark.textContent = '';
+      mark.className = 'blank-mark';
+      note.textContent = '';
+      return;
+    }
+    if (sel.value === answers[k]) {
+      row.classList.add('correct');
+      mark.textContent = '○';
+      mark.className = 'blank-mark ok';
+      note.textContent = '';
+    } else {
+      row.classList.add('wrong');
+      mark.textContent = '×';
+      mark.className = 'blank-mark ng';
+      note.textContent = '正解：' + labels[k];
+    }
+  });
+}
+
+function _resetPartialKeys(keys) {
+  keys.forEach(k => {
+    const sel = document.getElementById(k);
+    const row = document.getElementById('row-' + k);
+    const mark = document.getElementById('mark-' + k);
+    const note = document.getElementById('note-' + k);
+    sel.value = '';
+    row.classList.remove('correct', 'wrong');
+    mark.textContent = '';
+    mark.className = 'blank-mark';
+    note.textContent = '';
+  });
+}
+
+// 各 fill-blank-card に「この設問だけ採点 / リセット」ボタンを自動挿入
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.fill-blank-card').forEach(card => {
+    const selects = card.querySelectorAll('select');
+    if (selects.length === 0) return;
+    const keys = Array.from(selects).map(s => s.id).filter(id => /^q[56]-\d+$/.test(id));
+    if (keys.length === 0) return;
+    const isQ6 = keys[0].startsWith('q6');
+    const answers = isQ6 ? r3LawAnswers : r3ShiageAnswers;
+    const labels = isQ6 ? r3LawLabels : r3ShiageLabels;
+
+    const row = document.createElement('div');
+    row.className = 'partial-grade-row';
+
+    const btnGrade = document.createElement('button');
+    btnGrade.type = 'button';
+    btnGrade.className = 'btn btn-secondary btn-small';
+    btnGrade.textContent = 'この設問だけ採点';
+    btnGrade.addEventListener('click', () => _gradePartialKeys(keys, answers, labels));
+
+    const btnReset = document.createElement('button');
+    btnReset.type = 'button';
+    btnReset.className = 'btn btn-reset btn-small';
+    btnReset.textContent = 'リセット';
+    btnReset.addEventListener('click', () => _resetPartialKeys(keys));
+
+    row.appendChild(btnGrade);
+    row.appendChild(btnReset);
+    card.appendChild(row);
+  });
+});
+
+function toggleLawDetail() {
+  const det = document.getElementById('law-detail');
+  const btn = document.getElementById('btn-law-detail');
+  if (det.classList.contains('show')) {
+    det.classList.remove('show');
+    btn.textContent = '補足解説を表示';
+  } else {
+    det.classList.add('show');
+    btn.textContent = '補足解説を隠す';
+  }
+}
+
+// ================================================
+// Copilot 採点 (Direct Line API 経由) - skk2/skk3と同一API使用
+// ================================================
+const COPILOT_API_URL = '/api/grade-skk1';
+const COPILOT_POLL_API_URL = '/api/grade-skk1-poll';
+
+// R3（令和3年度）本試験問題マスタ。クライアントから問題文をAPIに渡し、
+// サーバー側で R3 問題文に基づくプロンプトを組み立てさせる（B案 questionOverride）。
+const R3_QUESTIONS = {
+  q1: {
+    title: '問1：施工経験記述（品質管理）（令和3年度）',
+    body:
+      '建築工事における品質確保は、建築物の長寿命化を実現するために重要である。施工者は、' +
+      '発注者のニーズ及び設計図書等を把握し、決められた工期やコスト等の条件の下で適切に品質管理を行う。\n' +
+      '本演習ではR6（令和6年度）本試験で示された工事概要（共同住宅52戸／RC造地上7階／' +
+      '延床4,950.60㎡／2024年1月〜2025年6月）に基づいて解答する。\n' +
+      '【設問1】重点的に品質管理を行った事例を2つ。①工種名／②品質の目標及びそれを達成するために定めた重点品質管理項目／' +
+      '③重点品質管理項目を定めた理由及び発生を予測した欠陥又は不具合／④重点品質管理項目について実施した内容及びその確認方法又は検査方法。' +
+      '2つの事例の②〜④はそれぞれ異なる内容。\n' +
+      '【設問2】現場で行う組織的な品質管理活動について、①品質管理活動の内容及びそれを協力会社等に伝達する手段又は方法／' +
+      '②品質管理活動によってもたらされる良い影響。設問1の④と同じ内容は除く。',
+    parts: [
+      {
+        key: 'q1a',
+        label: '設問1：品質管理の事例2つ（①工種名②品質目標と重点項目③定めた理由+予測欠陥④実施内容+確認検査方法）',
+        placeholder: '事例ごとに①②③④をセットで',
+      },
+      {
+        key: 'q2',
+        label: '設問2：組織的な品質管理活動（①内容と伝達手段②良い影響）',
+        placeholder: '①活動内容と伝達手段 ②良い影響',
+      },
+    ],
+  },
+  'q2-1': {
+    title: '問2-1：仮設ゴンドラの設置計画（令和3年度）',
+    body:
+      '仮設ゴンドラの設置を計画するに当たり、留意及び検討すべき事項を2つ具体的に記述しなさい。' +
+      'ただし、申請手続・届出・運用管理に関する記述は除く。使用資機材に不良品はないものとする。',
+  },
+  'q2-2': {
+    title: '問2-2：場内仮設事務所の設置計画（令和3年度）',
+    body:
+      '場内仮設事務所の設置を計画するに当たり、留意及び検討すべき事項を2つ具体的に記述しなさい。' +
+      'ただし、申請手続・届出・運用管理に関する記述は除く。使用資機材に不良品はないものとする。',
+  },
+  'q2-3': {
+    title: '問2-3：工事ゲート（車両出入口）の設置計画（令和3年度）',
+    body:
+      '工事ゲート（車両出入口）の設置を計画するに当たり、留意及び検討すべき事項を2つ具体的に記述しなさい。' +
+      'ただし、申請手続・届出・運用管理に関する記述は除く。使用資機材に不良品はないものとする。',
+  },
+  'q4-1': {
+    title: '問4-1：既製コンクリート杭の埋込み工法（令和3年度）',
+    body:
+      '杭工事において、既製コンクリート杭の埋込み工法の施工上の留意事項を2つ具体的に記述しなさい。' +
+      'ただし、養生に関する記述は除く。材料・作業環境・作業員の安全に関する記述も除く。',
+  },
+  'q4-2': {
+    title: '問4-2：柱又は梁型枠の加工・組立て（令和3年度）',
+    body:
+      '型枠工事において、柱又は梁型枠の加工、組立ての施工上の留意事項を2つ具体的に記述しなさい。' +
+      'ただし、基礎梁及び型枠支保工に関する記述は除く。材料・作業環境・作業員の安全に関する記述も除く。',
+  },
+  'q4-3': {
+    title: '問4-3：コンクリート打込み後の養生（令和3年度）',
+    body:
+      'コンクリート工事において、コンクリート打込み後の養生に関する施工上の留意事項を2つ具体的に記述しなさい。' +
+      'セメントは普通ポルトランドセメント、計画供用期間の級は標準。材料・作業環境・作業員の安全に関する記述は除く。',
+  },
+  'q4-4': {
+    title: '問4-4：トルシア形高力ボルトの締付け（令和3年度）',
+    body:
+      '鉄骨工事において、トルシア形高力ボルトの締付けに関する施工上の留意事項を2つ具体的に記述しなさい。' +
+      'ただし、締付け器具に関する記述は除く。材料・作業環境・作業員の安全に関する記述も除く。',
+  },
+};
+
+const COPILOT_TOTAL_TIMEOUT_SEC = 240;
+const COPILOT_POLL_INTERVAL_MS = 1500;
+
+function _resultEl(resultId) { return document.getElementById(resultId); }
+function _bodyEl(resultId) { return _resultEl(resultId).querySelector('.copilot-body'); }
+
+function _setLoading(resultId) {
+  const root = _resultEl(resultId);
+  root.classList.remove('error');
+  root.classList.add('show');
+  const label = root.querySelector('.copilot-label');
+  if (label) label.textContent = 'Copilot 採点中…';
+  const body = _bodyEl(resultId);
+  body.innerHTML = '';
+  const wrap = document.createElement('div');
+  wrap.className = 'copilot-loading';
+  const sp = document.createElement('div');
+  sp.className = 'copilot-spinner';
+  const txt = document.createElement('span');
+  txt.textContent = '建設サポートに問い合わせ中（最大' + COPILOT_TOTAL_TIMEOUT_SEC + '秒）…';
+  wrap.appendChild(sp);
+  wrap.appendChild(txt);
+  body.appendChild(wrap);
+}
+
+function _renderText(body, text) {
+  body.innerHTML = '';
+  const urlRe = /(https?:\/\/[^\s<>"]+)/g;
+  let last = 0;
+  let m;
+  while ((m = urlRe.exec(text)) !== null) {
+    if (m.index > last) body.appendChild(document.createTextNode(text.slice(last, m.index)));
+    const a = document.createElement('a');
+    a.href = m[1];
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.textContent = m[1];
+    body.appendChild(a);
+    last = m.index + m[1].length;
+  }
+  if (last < text.length) body.appendChild(document.createTextNode(text.slice(last)));
+}
+
+function _setResult(resultId, text) {
+  const root = _resultEl(resultId);
+  root.classList.remove('error');
+  root.classList.add('show');
+  const label = root.querySelector('.copilot-label');
+  if (label) label.textContent = 'Copilot 採点結果';
+  _renderText(_bodyEl(resultId), text);
+}
+
+function _setError(resultId, message) {
+  const root = _resultEl(resultId);
+  root.classList.add('show');
+  root.classList.add('error');
+  const label = root.querySelector('.copilot-label');
+  if (label) label.textContent = 'Copilot 採点エラー';
+  const body = _bodyEl(resultId);
+  body.innerHTML = '';
+  const p = document.createElement('div');
+  p.textContent = message;
+  body.appendChild(p);
+  const retry = document.createElement('button');
+  retry.className = 'copilot-retry';
+  retry.type = 'button';
+  retry.textContent = '再試行';
+  retry.addEventListener('click', () => showCopilot(resultId));
+  body.appendChild(retry);
+}
+
+function _collectAnswerPayload(questionId) {
+  let payload;
+  if (questionId === 'q1') {
+    payload = {
+      questionId,
+      answers: {
+        q1a: (document.getElementById('e-q1a') || {}).value || '',
+        q2: (document.getElementById('e-q2') || {}).value || '',
+      },
+    };
+  } else {
+    const ta = document.getElementById('ans-' + questionId);
+    payload = {
+      questionId,
+      answer: ta ? ta.value : '',
+    };
+  }
+  if (R3_QUESTIONS[questionId]) {
+    payload.questionOverride = R3_QUESTIONS[questionId];
+  }
+  return payload;
+}
+
+function _hasAnswer(payload) {
+  if (payload.answers) {
+    return Object.values(payload.answers).some(
+      (v) => typeof v === 'string' && v.trim().length > 0,
+    );
+  }
+  return typeof payload.answer === 'string' && payload.answer.trim().length > 0;
+}
+
+async function showCopilot(resultId) {
+  const questionId = resultId.replace(/^copilot-/, '');
+  const payload = _collectAnswerPayload(questionId);
+  if (!_hasAnswer(payload)) {
+    if (!confirm('解答が未記入です。空のまま採点を依頼しますか？\n（記入してから依頼することを推奨します）')) {
+      return;
+    }
+  }
+
+  const triggerBtn = document.querySelector(`button[onclick="showCopilot('${resultId}')"]`);
+  if (triggerBtn) triggerBtn.setAttribute('disabled', 'disabled');
+
+  _setLoading(resultId);
+
+  const overallStart = Date.now();
+  const overallDeadline = overallStart + COPILOT_TOTAL_TIMEOUT_SEC * 1000;
+
+  try {
+    const res = await fetch(COPILOT_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (res.status >= 400) {
+      let msg = `エラー (HTTP ${res.status})`;
+      try { const j = await res.json(); if (j && j.error) msg = j.error; } catch (_) {}
+      _setError(resultId, msg);
+      return;
+    }
+    let j;
+    try { j = await res.json(); } catch (_) {
+      _setError(resultId, '採点APIの応答が不正でした。再試行してください。');
+      return;
+    }
+
+    if (res.status === 200 && j && (j.verdict || j.raw)) {
+      const text = (j.verdict || j.raw || '').trim();
+      if (!text) { _setError(resultId, '採点結果が空でした。再試行してください。'); return; }
+      _setResult(resultId, text);
+      return;
+    }
+
+    const conversationId = j && j.conversationId;
+    let watermark = (j && j.watermark) || undefined;
+    if (!conversationId) {
+      _setError(resultId, '採点処理を開始できませんでした。再試行してください。');
+      return;
+    }
+
+    while (Date.now() < overallDeadline) {
+      await new Promise((r) => setTimeout(r, COPILOT_POLL_INTERVAL_MS));
+      if (Date.now() >= overallDeadline) break;
+
+      const pollRes = await fetch(COPILOT_POLL_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ questionId: payload.questionId, conversationId, watermark }),
+      });
+      if (pollRes.status >= 400 && pollRes.status !== 202) {
+        let msg = `採点取得エラー (HTTP ${pollRes.status})`;
+        try { const pj = await pollRes.json(); if (pj && pj.error) msg = pj.error; } catch (_) {}
+        _setError(resultId, msg);
+        return;
+      }
+      let pj;
+      try { pj = await pollRes.json(); } catch (_) { continue; }
+      if (pj && pj.watermark) watermark = pj.watermark;
+      if (pollRes.status === 200 && pj && (pj.verdict || pj.raw)) {
+        const text = (pj.verdict || pj.raw || '').trim();
+        if (!text) { _setError(resultId, '採点結果が空でした。再試行してください。'); return; }
+        _setResult(resultId, text);
+        return;
+      }
+    }
+
+    _setError(resultId, '採点処理が時間内に完了しませんでした。再試行してください。');
+  } catch (e) {
+    _setError(resultId, 'ネットワークエラーが発生しました。通信状況を確認のうえ再試行してください。');
+  } finally {
+    if (triggerBtn) triggerBtn.removeAttribute('disabled');
+  }
+}
+</script>
+
+</body>
+</html>
