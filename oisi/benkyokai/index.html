@@ -129,6 +129,74 @@
     font-size: 13.5px;
     text-align: center;
   }
+
+  /* セコカンAI 自由確認チャット */
+  .ai-chat {
+    background: #fff;
+    border: 1px solid var(--cp-blue-200);
+    border-radius: 8px;
+    padding: 24px 28px;
+    margin-bottom: 24px;
+  }
+  .ai-chat h2 {
+    color: var(--cp-blue-700);
+    margin: 0 0 6px;
+    font-size: 18px;
+    padding-left: 10px;
+    border-left: 5px solid var(--cp-blue-400);
+  }
+  .ai-chat .hint { font-size: 13px; color: var(--cp-gray-600); margin: 0 0 14px; }
+  .ai-chat .log {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 14px;
+    max-height: 480px;
+    overflow-y: auto;
+    padding: 4px;
+  }
+  .ai-chat .log.show { display: flex; }
+  .ai-chat .msg {
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 14px;
+    white-space: pre-wrap;
+    line-height: 1.7;
+    max-width: 88%;
+  }
+  .ai-chat .msg a { color: var(--cp-blue-700); word-break: break-all; }
+  .ai-chat .msg.user { align-self: flex-end; background: var(--cp-blue-100); border: 1px solid var(--cp-blue-200); }
+  .ai-chat .msg.ai { align-self: flex-start; background: var(--cp-blue-50); border: 1px solid var(--cp-blue-200); }
+  .ai-chat .msg.err { align-self: flex-start; background: #fff4f4; border: 1px solid #e0a0a0; color: #b00; }
+  .ai-chat .msg.loading { align-self: flex-start; background: var(--cp-blue-50); border: 1px dashed var(--cp-blue-300); color: var(--cp-blue-700); display: flex; align-items: center; gap: 8px; }
+  .ai-chat .spinner { width: 14px; height: 14px; border: 2px solid var(--cp-blue-200); border-top-color: var(--cp-blue-700); border-radius: 50%; animation: ai-spin .8s linear infinite; }
+  @keyframes ai-spin { to { transform: rotate(360deg); } }
+  .ai-chat .row { display: flex; gap: 8px; align-items: flex-end; }
+  .ai-chat textarea {
+    flex: 1;
+    border: 1px solid var(--cp-blue-300);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 46px;
+  }
+  .ai-chat textarea:focus { outline: none; border-color: var(--cp-blue-500); box-shadow: 0 0 0 2px var(--cp-blue-100); }
+  .ai-chat button {
+    background: var(--cp-blue-700);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0 20px;
+    height: 46px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .ai-chat button:hover:not(:disabled) { background: var(--cp-blue-900); }
+  .ai-chat button:disabled { opacity: .55; cursor: progress; }
 </style>
 <script src="../_gate.js" defer></script>
 </head>
@@ -153,6 +221,16 @@
     <dt>出典</dt><dd>全国建設研修センター 公表問題／社内解答集・LLC株式会社</dd>
   </dl>
 </div>
+
+<section class="ai-chat">
+  <h2>セコカンAIに質問（自由確認チャット）</h2>
+  <p class="hint">勉強会の内容や1級建築施工管理技士の疑問を自由に質問できます。採点とは別に、解説として回答します。（回答まで最大4分ほどかかる場合があります）</p>
+  <div class="log" id="chatLog"></div>
+  <div class="row">
+    <textarea id="chatInput" rows="2" placeholder="例：施工経験記述で品質管理をテーマにするときの書き方のコツは？"></textarea>
+    <button id="chatSend" type="button">質問する</button>
+  </div>
+</section>
 
 <section class="session-list">
   <h2>開催スケジュール</h2>
@@ -186,10 +264,6 @@
     <div class="title">R3本試験 第二次検定 全6問演習（R6新形式・Copilot採点付き）</div>
     <div class="desc">工事概要はR6新形式準拠で表埋込／問1＝品質管理・問4＝躯体記述・問5＝仕上げ語句訂正型と年度で分野構成が入替わる点に注意／問題3は躯体工事工程表＋人数割振り最適化のPNG埋込／問題5仕上げ8択＋問題6法規6箇所の自動○×判定／問題1・2・4はCopilot採点</div>
   </a>
-
-  <div class="coming">
-    今後の開催日分はここに追加していきます（次回予定：2026-05-21）
-  </div>
 </section>
 
 <section class="session-list" style="margin-top:32px;">
@@ -219,6 +293,125 @@
     回数を追加していきます（第2回以降は別書籍／別年度バランスで構成予定）
   </div>
 </section>
+
+<script>
+(function () {
+  // セコカンAI 自由確認チャット（採点 grade-skk1 と同じ Copilot Studio バックエンド）。
+  // 本ページは manual.kensetsu-total.support と同一オリジンのため相対パスで叩く。
+  var ASK_URL = '/api/sekokan-ask';
+  var POLL_URL = '/api/sekokan-ask-poll';
+  var TOTAL_TIMEOUT_SEC = 240;
+  var POLL_INTERVAL_MS = 1500;
+
+  var log = document.getElementById('chatLog');
+  var input = document.getElementById('chatInput');
+  var sendBtn = document.getElementById('chatSend');
+  if (!log || !input || !sendBtn) return;
+  var conversationId = null;
+  var busy = false;
+
+  function appendMsg(kind, text) {
+    log.classList.add('show');
+    var el = document.createElement('div');
+    el.className = 'msg ' + kind;
+    if (kind === 'ai' || kind === 'user') renderText(el, text);
+    else el.textContent = text;
+    log.appendChild(el);
+    log.scrollTop = log.scrollHeight;
+    return el;
+  }
+  function appendLoading() {
+    log.classList.add('show');
+    var el = document.createElement('div');
+    el.className = 'msg loading';
+    var sp = document.createElement('div'); sp.className = 'spinner';
+    var tx = document.createElement('span'); tx.textContent = 'セコカンAIが回答を作成中…（最大' + TOTAL_TIMEOUT_SEC + '秒）';
+    el.appendChild(sp); el.appendChild(tx);
+    log.appendChild(el);
+    log.scrollTop = log.scrollHeight;
+    return el;
+  }
+  function renderText(el, text) {
+    var re = /(https?:\/\/[^\s<>"]+)/g, last = 0, m;
+    while ((m = re.exec(text)) !== null) {
+      if (m.index > last) el.appendChild(document.createTextNode(text.slice(last, m.index)));
+      var a = document.createElement('a');
+      a.href = m[1]; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = m[1];
+      el.appendChild(a);
+      last = m.index + m[1].length;
+    }
+    if (last < text.length) el.appendChild(document.createTextNode(text.slice(last)));
+  }
+
+  async function ask() {
+    if (busy) return;
+    var message = (input.value || '').trim();
+    if (!message) { input.focus(); return; }
+    busy = true;
+    sendBtn.setAttribute('disabled', 'disabled');
+    appendMsg('user', message);
+    input.value = '';
+    var loadingEl = appendLoading();
+    var deadline = Date.now() + TOTAL_TIMEOUT_SEC * 1000;
+
+    function fail(msg) { if (loadingEl) loadingEl.remove(); appendMsg('err', msg); }
+    function done(answer) {
+      if (loadingEl) loadingEl.remove();
+      if (!answer) { appendMsg('err', '回答が空でした。もう一度お試しください。'); return; }
+      appendMsg('ai', answer);
+    }
+
+    try {
+      var body = { message: message };
+      if (conversationId) body.conversationId = conversationId;
+      var res = await fetch(ASK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (res.status >= 400) {
+        var em = 'エラー (HTTP ' + res.status + ')';
+        try { var ej = await res.json(); if (ej && ej.error) em = ej.error; } catch (e) {}
+        fail(em); return;
+      }
+      var j = await res.json();
+      if (j && j.conversationId) conversationId = j.conversationId;
+      if (res.status === 200 && j && (j.answer || j.raw)) { done((j.answer || j.raw || '').trim()); return; }
+      var watermark = (j && j.watermark) || undefined;
+      if (!conversationId) { fail('回答処理を開始できませんでした。'); return; }
+
+      while (Date.now() < deadline) {
+        await new Promise(function (r) { setTimeout(r, POLL_INTERVAL_MS); });
+        if (Date.now() >= deadline) break;
+        var pr = await fetch(POLL_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ conversationId: conversationId, watermark: watermark }),
+        });
+        if (pr.status >= 400 && pr.status !== 202) {
+          var pm = '回答取得エラー (HTTP ' + pr.status + ')';
+          try { var pe = await pr.json(); if (pe && pe.error) pm = pe.error; } catch (e) {}
+          fail(pm); return;
+        }
+        var pj; try { pj = await pr.json(); } catch (e) { continue; }
+        if (pj && pj.watermark) watermark = pj.watermark;
+        if (pr.status === 200 && pj && (pj.answer || pj.raw)) { done((pj.answer || pj.raw || '').trim()); return; }
+      }
+      fail('回答が時間内に完了しませんでした。もう一度お試しください。');
+    } catch (e) {
+      fail('ネットワークエラーが発生しました。');
+    } finally {
+      busy = false;
+      sendBtn.removeAttribute('disabled');
+    }
+  }
+
+  sendBtn.addEventListener('click', ask);
+  input.addEventListener('keydown', function (e) {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); ask(); }
+  });
+})();
+</script>
 
 </body>
 </html>

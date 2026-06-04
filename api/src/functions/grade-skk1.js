@@ -858,3 +858,282 @@ app.http('grade-skk1-poll', {
     );
   },
 });
+
+// ============================================================================
+// セコカンAI 自由確認チャット
+// ----------------------------------------------------------------------------
+// 採点(grade-skk1)と同じ Copilot Studio エージェント・同じ ROPC 認証・同じ
+// 2段階ポーリング機構を流用し、採点プロンプトでラップせず「ユーザーの自由質問」
+// をそのまま投げて回答を返す。会話を継続したい場合は conversationId を引き継ぐ
+// ことでマルチターン対話になる。
+//
+// POST /api/sekokan-ask
+//   Request:  { "message": string, "conversationId"?: string }
+//   Response: 200 { answer, raw, conversationId, watermark }
+//             202 { conversationId, status:"pending", watermark }
+// POST /api/sekokan-ask-poll
+//   Request:  { "conversationId": string, "watermark"?: string }
+//   Response: 200 { answer, raw, conversationId, watermark }
+//             202 { conversationId, status:"pending", watermark }
+// ============================================================================
+
+// 採点エージェントを質問応答に向けるための軽い前置き（新規会話の初回のみ付与）。
+const ASK_PREAMBLE =
+  'あなたは1級建築施工管理技士の試験対策に詳しい現場監督アカデミーAIです。' +
+  '以下の質問に、採点ではなく、わかりやすい解説として日本語で回答してください。\n\n';
+
+const MAX_ASK_LEN = 4000;
+
+app.http('sekokan-ask', {
+  methods: ['POST', 'OPTIONS'],
+  authLevel: 'anonymous',
+  route: 'sekokan-ask',
+  handler: async (request, context) => {
+    const origin = request.headers.get('origin') || '';
+    if (request.method === 'OPTIONS') {
+      return { status: 204, headers: corsHeaders(origin) };
+    }
+
+    let payload;
+    try {
+      payload = await request.json();
+    } catch (e) {
+      return jsonResponse(400, { error: 'Invalid JSON body' }, origin);
+    }
+    const message =
+      typeof payload?.message === 'string' ? payload.message.trim() : '';
+    const priorConversationId =
+      typeof payload?.conversationId === 'string' && payload.conversationId
+        ? payload.conversationId
+        : null;
+    if (!message) {
+      return jsonResponse(400, { error: '質問を入力してください。' }, origin);
+    }
+    if (message.length > MAX_ASK_LEN) {
+      return jsonResponse(
+        400,
+        { error: `質問が長すぎます（最大${MAX_ASK_LEN}文字）。` },
+        origin,
+      );
+    }
+
+    const t0 = Date.now();
+    const deadline = t0 + ENDPOINT_BUDGET_MS;
+
+    let accessToken;
+    try {
+      accessToken = await getAccessToken(context);
+    } catch (e) {
+      if (e instanceof CopilotAuthError) {
+        context.error?.(`sekokan-ask auth error: ${e.message}`);
+        return jsonResponse(e.status, { error: e.message }, origin);
+      }
+      context.error?.(`sekokan-ask auth unexpected: ${e?.stack || e}`);
+      return jsonResponse(503, { error: 'Copilot 認証情報設定エラー' }, origin);
+    }
+
+    const base = getCopilotBase();
+
+    // conversationId 引継ぎがあればマルチターン継続、無ければ新規会話。
+    let conversationId = priorConversationId;
+    const isNewConversation = !conversationId;
+    if (isNewConversation) {
+      try {
+        conversationId = await createConversation(base, accessToken, context);
+      } catch (e) {
+        const status = e?.status || 502;
+        return jsonResponse(
+          status,
+          { error: e?.message || 'Copilot 接続エラー' },
+          origin,
+        );
+      }
+    }
+
+    // 新規会話の初回のみ前置きを付与（継続ターンは文脈が残るので素の質問）。
+    const text = isNewConversation ? ASK_PREAMBLE + message : message;
+
+    const send = startSendMessage(base, accessToken, conversationId, text, context);
+    registerInflightSend(conversationId, send.promise, accessToken);
+
+    let botMessages = [];
+    let watermark = null;
+    const pollDeadline = deadline - 1000;
+    const sendWrapped = send.promise.then((r) => ({ kind: 'send', value: r }));
+    const pollPromise = pollActivitiesUntil(
+      base,
+      accessToken,
+      conversationId,
+      null,
+      pollDeadline,
+      context,
+    ).then((r) => ({ kind: 'poll', value: r }));
+    const deadlinePromise = delay(Math.max(0, deadline - Date.now())).then(
+      () => ({ kind: 'deadline' }),
+    );
+
+    let timedOut = false;
+    while (!timedOut && botMessages.length === 0) {
+      const winner = await Promise.race([sendWrapped, pollPromise, deadlinePromise]);
+      if (winner.kind === 'deadline') {
+        timedOut = true;
+        break;
+      }
+      if (winner.kind === 'send') {
+        const v = winner.value;
+        if (v?.ok && v.json) {
+          botMessages = extractBotMessages(v.json.activities);
+          if (v.json.watermark) watermark = v.json.watermark;
+          if (botMessages.length > 0) break;
+        }
+        const next = await Promise.race([pollPromise, deadlinePromise]);
+        if (next.kind === 'deadline') {
+          timedOut = true;
+          break;
+        }
+        botMessages = next.value.messages;
+        if (next.value.watermark) watermark = next.value.watermark;
+        break;
+      }
+      if (winner.kind === 'poll') {
+        botMessages = winner.value.messages;
+        if (winner.value.watermark) watermark = winner.value.watermark;
+        break;
+      }
+    }
+
+    if (botMessages.length > 0) {
+      const answer = botMessages.join('\n\n').trim();
+      send.promise.catch(() => {});
+      return jsonResponse(
+        200,
+        { answer, raw: answer, conversationId, watermark: watermark || undefined },
+        origin,
+      );
+    }
+
+    send.promise.catch(() => {});
+    pollPromise.catch(() => {});
+    return jsonResponse(
+      202,
+      {
+        conversationId,
+        watermark: watermark || undefined,
+        status: 'pending',
+        message: '回答生成中。/api/sekokan-ask-poll で結果を取得してください。',
+      },
+      origin,
+    );
+  },
+});
+
+app.http('sekokan-ask-poll', {
+  methods: ['POST', 'OPTIONS'],
+  authLevel: 'anonymous',
+  route: 'sekokan-ask-poll',
+  handler: async (request, context) => {
+    const origin = request.headers.get('origin') || '';
+    if (request.method === 'OPTIONS') {
+      return { status: 204, headers: corsHeaders(origin) };
+    }
+
+    let payload;
+    try {
+      payload = await request.json();
+    } catch (e) {
+      return jsonResponse(400, { error: 'Invalid JSON body' }, origin);
+    }
+    const conversationId =
+      typeof payload?.conversationId === 'string' ? payload.conversationId : null;
+    const inWatermark =
+      typeof payload?.watermark === 'string' ? payload.watermark : null;
+    if (!conversationId) {
+      return jsonResponse(400, { error: 'conversationId is required' }, origin);
+    }
+
+    const t0 = Date.now();
+    let accessToken;
+    try {
+      accessToken = await getAccessToken(context);
+    } catch (e) {
+      if (e instanceof CopilotAuthError) {
+        return jsonResponse(e.status, { error: e.message }, origin);
+      }
+      context.error?.(`sekokan-ask-poll auth unexpected: ${e?.stack || e}`);
+      return jsonResponse(503, { error: 'Copilot 認証情報設定エラー' }, origin);
+    }
+
+    const base = getCopilotBase();
+    const deadline = Math.min(
+      t0 + POLL_TOTAL_BUDGET_MS,
+      t0 + (SWA_HARD_LIMIT_MS - 5000),
+    );
+
+    const inflight = getInflightSend(conversationId);
+    let botMessages = [];
+    let watermark = inWatermark || null;
+
+    if (inflight) {
+      const sendWrapped = inflight.promise.then((r) => ({ kind: 'send', value: r }));
+      const pollWrapped = pollActivitiesUntil(
+        base,
+        accessToken,
+        conversationId,
+        watermark,
+        deadline,
+        context,
+      ).then((r) => ({ kind: 'poll', value: r }));
+      const deadlineWrapped = delay(Math.max(0, deadline - Date.now())).then(
+        () => ({ kind: 'deadline' }),
+      );
+      while (Date.now() < deadline && botMessages.length === 0) {
+        const winner = await Promise.race([sendWrapped, pollWrapped, deadlineWrapped]);
+        if (winner.kind === 'deadline') break;
+        if (winner.kind === 'send') {
+          const v = winner.value;
+          if (v?.ok && v.json) {
+            botMessages = extractBotMessages(v.json.activities);
+            if (v.json.watermark) watermark = v.json.watermark;
+            if (botMessages.length > 0) break;
+          }
+          const next = await Promise.race([pollWrapped, deadlineWrapped]);
+          if (next.kind === 'deadline') break;
+          botMessages = next.value.messages;
+          if (next.value.watermark) watermark = next.value.watermark;
+          break;
+        }
+        if (winner.kind === 'poll') {
+          botMessages = winner.value.messages;
+          if (winner.value.watermark) watermark = winner.value.watermark;
+          break;
+        }
+      }
+    } else {
+      const result = await pollActivitiesUntil(
+        base,
+        accessToken,
+        conversationId,
+        watermark,
+        deadline,
+        context,
+      );
+      botMessages = result.messages;
+      if (result.watermark) watermark = result.watermark;
+    }
+
+    if (botMessages.length > 0) {
+      const answer = botMessages.join('\n\n').trim();
+      return jsonResponse(
+        200,
+        { answer, raw: answer, conversationId, watermark: watermark || undefined },
+        origin,
+      );
+    }
+
+    return jsonResponse(
+      202,
+      { conversationId, watermark: watermark || undefined, status: 'pending' },
+      origin,
+    );
+  },
+});
