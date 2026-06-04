@@ -70,6 +70,12 @@ const {
 
 const ALLOWED_ORIGIN = 'https://manual.kensetsu-total.support';
 const FALLBACK_ORIGIN = 'http://localhost:4280'; // SWA CLI emulator
+// 採点ページが置かれている全オリジン。manual(本家) と sekokan-ai(静的コピー内製化)。
+const ALLOWED_ORIGINS = new Set([
+  ALLOWED_ORIGIN,
+  FALLBACK_ORIGIN,
+  'https://sekokan-ai.kensetsu-total.support',
+]);
 const API_VERSION = '2022-03-01-preview';
 
 // SWA managed Functions の応答上限が 45 秒。各レスポンスは 40 秒で打ち切る。
@@ -89,10 +95,7 @@ const POLL_FETCH_TIMEOUT_MS = 10_000;
 const CREATE_TIMEOUT_MS = 15_000;
 
 function corsHeaders(origin) {
-  const allow =
-    origin === ALLOWED_ORIGIN || origin === FALLBACK_ORIGIN
-      ? origin
-      : ALLOWED_ORIGIN;
+  const allow = ALLOWED_ORIGINS.has(origin) ? origin : ALLOWED_ORIGIN;
   return {
     'Access-Control-Allow-Origin': allow,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
