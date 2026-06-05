@@ -10,6 +10,8 @@
   <link rel="shortcut icon" href="img/favicon.ico">
   <title>現場ダッシュボード | 永賢組</title>
   <link rel="stylesheet" href="css/common.css">
+  <!-- 協力業者作業員名簿の Excel(xlsx) 生成用（モック・クライアントサイド）。本番は名簿APIに差し替え -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="js/onsite-badge.js" defer></script>
   <style>
     .wrap-dash { max-width: 1100px; margin: 0 auto; padding: 16px; }
@@ -286,7 +288,7 @@
         <div class="muted" style="font-size:13px;">入退場/KY/未退場の確認・強制退場</div>
         <div class="card-submenu">
           <a href="admin.html" target="_blank" rel="noopener" id="link-admin">🖥 管理画面を開く ↗</a>
-          <a href="#" id="link-roster-dl">⬇ 協力業者作業員名簿（CSV）</a>
+          <a href="#" id="link-roster-dl">⬇ 協力業者作業員名簿（Excel）</a>
         </div>
       </div>
       <!-- Ⓒ KY裏面エディタ（変更なし・Coming Soon） -->
@@ -646,25 +648,32 @@
   });
   document.getElementById("link-roster-dl").addEventListener("click", (ev) => {
     ev.preventDefault();
-    downloadRosterCsv();
+    downloadRosterXlsx();
   });
   document.getElementById("refreshBtn").onclick = reload;
 
-  // 協力業者作業員名簿（CSV雛形DL・モック）
-  function downloadRosterCsv() {
+  // 協力業者作業員名簿（Excel xlsx 雛形DL・モック）
+  // ※モックのためクライアントサイドで SheetJS により xlsx 生成。
+  //   本番では現場別の名簿API（協力業者・作業員・資格・緊急連絡先）から取得した
+  //   実データに差し替える想定。ヘッダ定義はそのまま流用可。
+  function downloadRosterXlsx() {
     const site = SITES.find(s => s.onsiteId === onsiteId);
     const header = ["会社名","氏名","職種","電話番号","緊急連絡先氏名","続柄","緊急連絡先電話番号","資格","入場日"];
     const sample = [
       ["丸和建設","鈴木 健太","とび工","090-1111-2222","鈴木 美香","妻","080-3333-4444","職長・とび作業主任者","2026-06-05"],
       ["ヤマト電設","田中 大輔","電工","090-5555-6666","田中 一郎","父","080-7777-8888","第一種電気工事士","2026-06-05"],
     ];
-    const csv = [header, ...sample].map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(",")).join("\r\n");
-    const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8;" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `協力業者作業員名簿_${site ? site.name : "現場"}_${todayStr()}.csv`;
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    const aoa = [header, ...sample];
+    const ws = XLSX.utils.aoa_to_sheet(aoa);
+    // 列幅を内容に合わせて調整（見やすさ用）
+    ws["!cols"] = header.map((h, i) => {
+      const maxLen = Math.max(h.length, ...aoa.slice(1).map(r => String(r[i] ?? "").length));
+      return { wch: Math.min(Math.max(maxLen + 2, 8), 28) };
+    });
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "協力業者作業員名簿");
+    const dateStr = todayStr().replace(/-/g, ""); // YYYY-MM-DD -> YYYYMMDD
+    XLSX.writeFile(wb, `協力業者作業員名簿_${site ? site.name : "現場"}_${dateStr}.xlsx`);
   }
 
   // ===== 初期化 =====

@@ -50,13 +50,7 @@
       background: #fff; border: 1px solid var(--nagaken-border);
       border-radius: 10px; padding: 18px 18px 16px;
       display: flex; flex-direction: column; gap: 8px;
-      cursor: pointer; transition: all 0.15s ease;
-      text-decoration: none; color: inherit;
-    }
-    .stat-card:hover {
-      border-color: var(--nagaken-primary);
-      box-shadow: 0 4px 14px rgba(200, 16, 46, 0.18);
-      transform: translateY(-1px);
+      color: inherit;
     }
     .stat-card .icon { font-size: 28px; line-height: 1; }
     .stat-card .label {
@@ -68,10 +62,6 @@
       color: var(--nagaken-primary-dark);
     }
     .stat-card .unit { font-size: 15px; color: #666; margin-left: 4px; font-weight: 500; }
-    .stat-card .more {
-      font-size: 12px; color: var(--nagaken-primary-deep);
-      margin-top: auto; text-align: right;
-    }
     .stat-card .dummy-tag {
       font-size: 10px; color: #aa7a00; background: #fff7e0;
       border: 1px solid #ecd9a0; border-radius: 999px;
@@ -219,37 +209,34 @@
       <button type="button" class="btn refresh-btn" id="refreshBtn">🔄 更新</button>
     </div>
 
-    <!-- 上部 KPI 3カード -->
+    <!-- 上部 KPI 3カード（明細画面未実装のため数字表示のみ・リンクなし） -->
     <div class="dash-grid">
       <!-- ① 仮登録者数（本登録したら減る） -->
-      <a href="#" class="stat-card prov" id="card-prov">
+      <div class="stat-card prov" id="card-prov">
         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
           <div class="label">⏳ 仮登録者数</div>
           <div class="icon">🪪</div>
         </div>
         <div><span class="num" id="n-prov">0</span><span class="unit">名</span></div>
-        <div class="more">明細を見る →</div>
-      </a>
+      </div>
       <!-- ② 今日の入場者数（退場したら減る・clientID全数） -->
-      <a href="#" class="stat-card entry" id="card-entry">
+      <div class="stat-card entry" id="card-entry">
         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
           <div class="label">🚪 今日の入場者数</div>
           <div class="icon">👷</div>
         </div>
         <div><span class="num" id="n-entry">0</span><span class="unit">名</span></div>
-        <div class="more">明細を見る →</div>
         <span class="dummy-tag">ダミー値</span>
-      </a>
+      </div>
       <!-- ③ 今日の退場者（退場したら増える・clientID全数） -->
-      <a href="#" class="stat-card exit" id="card-exit">
+      <div class="stat-card exit" id="card-exit">
         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
           <div class="label">🏁 今日の退場者</div>
           <div class="icon">🚶</div>
         </div>
         <div><span class="num" id="n-exit">0</span><span class="unit">名</span></div>
-        <div class="more">退場明細を見る →</div>
         <span class="dummy-tag">ダミー値</span>
-      </a>
+      </div>
     </div>
 
     <!-- 仮入場者リスト（OCR登録前）：選択中テナント（clientID）の全現場横断 -->
@@ -705,20 +692,7 @@
       reload();
     });
 
-    // KPIカードクリック
-    document.getElementById("card-prov").addEventListener("click", (e) => {
-      e.preventDefault();
-      document.getElementById("provSection")?.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-    document.getElementById("card-exit").addEventListener("click", (e) => {
-      e.preventDefault();
-      document.getElementById("unexitedSection")?.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-    // 入場者数カードはダミーなので案内
-    document.getElementById("card-entry").addEventListener("click", (e) => {
-      e.preventDefault();
-      alert("この指標はモックのダミー値です（実入退場データ連携は未実装）。");
-    });
+    // KPIカードは明細画面未実装のため数字表示のみ（クリック挙動なし）
 
     document.getElementById("refreshBtn").onclick = reload;
     setInterval(reload, 5 * 60 * 1000);
