@@ -1,13 +1,15 @@
 :root {
-  /* 永賢組モック・建設業グリーンパレット（安全衛生・建設現場イメージ） */
-  --nagaken-primary: #2E8B3E;        /* ヘルメット＆ハーネス グリーン */
-  --nagaken-primary-deep: #1E5F2A;   /* hover・リンク */
-  --nagaken-primary-dark: #0F3217;   /* 見出し・ダーク文字 */
-  --nagaken-accent: #F0AD00;         /* 警告黄（建設現場定番） */
-  --nagaken-bg: #F3F8F4;             /* 薄いグリーンがかった背景 */
-  --nagaken-border: #C5DCCA;         /* 薄いグリーン境界線 */
-  --nagaken-body: #2B3B2F;           /* 本文（グリーン寄りグレー） */
-  --nagaken-safety-red: #DC3545;     /* 危険・強制退場 */
+  /* 永賢組モック・ブランドレッドパレット（NAGAKENロゴの赤グラデに馴染む建設系レッド）
+     ※ CLOUDPOWER Palette 例外。旧・建設業グリーンから赤ベーストーンへ統一（2026-06-05）。 */
+  --nagaken-primary: #C8102E;        /* ブランドレッド（NAGAKENロゴ赤） */
+  --nagaken-primary-deep: #9E0C24;   /* hover・リンク（濃い赤） */
+  --nagaken-primary-dark: #6E0A1A;   /* 見出し・ダーク文字（さらに濃い赤） */
+  --nagaken-accent: #F0AD00;         /* 警告黄（建設現場定番・視認性のため維持） */
+  --nagaken-bg: #FBF3F4;             /* 薄い赤がかった背景 */
+  --nagaken-border: #E8C9CE;         /* 薄い赤境界線 */
+  --nagaken-body: #3A2B2D;           /* 本文（赤寄りグレー） */
+  --nagaken-safety-red: #B00020;     /* 危険・強制退場（基調と分けた濃い警告赤） */
+  --nagaken-primary-rgb: 200, 16, 46;/* rgba() 用（旧 46,139,62 を置換） */
 }
 
 * { box-sizing: border-box; }
@@ -77,7 +79,7 @@ select, textarea {
 input:focus, select:focus, textarea:focus {
   outline: none;
   border-color: var(--nagaken-primary);
-  box-shadow: 0 0 0 2px rgba(46, 139, 62, 0.25);
+  box-shadow: 0 0 0 2px rgba(var(--nagaken-primary-rgb), 0.25);
 }
 
 .row2 {

@@ -16,7 +16,7 @@
     .dash-head {
       display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
       background: #fff; border: 1px solid var(--nagaken-border);
-      border-radius: 8px; padding: 12px 14px; margin-bottom: 16px;
+      border-radius: 8px; padding: 12px 14px; margin-bottom: 8px;
     }
     .dash-head h1 {
       margin: 0; padding: 0; border: none; font-size: 18px;
@@ -34,7 +34,46 @@
     .dash-head .today {
       font-size: 15px; font-weight: 600; color: var(--nagaken-primary-deep);
     }
-    .dash-head .onsite { color: #555; font-size: 13px; }
+    /* ヘッダ右上の「client名 ｜ 現場名 ｜ ログイン者氏名」 */
+    .dash-head .ctx {
+      margin-left: auto; text-align: right; line-height: 1.45;
+      font-size: 13px; color: var(--nagaken-primary-dark);
+    }
+    .dash-head .ctx .ctx-line { font-weight: 700; }
+    .dash-head .ctx .ctx-line .sep { color: var(--nagaken-border); margin: 0 6px; font-weight: 400; }
+    .dash-head .ctx .ctx-user { font-size: 12px; color: #666; font-weight: 600; }
+    .dash-head .ctx .ctx-user .role-pill {
+      display: inline-block; margin-left: 6px; padding: 1px 8px; border-radius: 999px;
+      background: var(--nagaken-bg); color: var(--nagaken-primary-deep);
+      border: 1px solid var(--nagaken-border); font-size: 11px; font-weight: 700;
+    }
+
+    /* 権限別 切替バー */
+    .switch-bar {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      background: #fff; border: 1px solid var(--nagaken-border);
+      border-radius: 8px; padding: 8px 14px; margin-bottom: 16px;
+    }
+    .switch-bar .sw {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; color: var(--nagaken-primary-dark); font-weight: 600;
+    }
+    .switch-bar select {
+      min-height: 34px; padding: 4px 10px; font-size: 13px; font-weight: 600;
+      border: 1px solid var(--nagaken-primary); border-radius: 6px;
+      background: var(--nagaken-bg); color: var(--nagaken-primary-dark); width: auto; min-width: 160px;
+    }
+    .switch-bar .sw-fixed {
+      font-size: 12px; color: #666; background: #f6f6f6;
+      border: 1px dashed var(--nagaken-border); border-radius: 6px; padding: 4px 10px;
+    }
+    .switch-bar .spacer { flex: 1 1 20px; }
+    .refresh-btn {
+      padding: 6px 14px; min-height: 34px; font-size: 12px;
+      background: transparent; color: var(--nagaken-primary-deep);
+      border: 1px solid var(--nagaken-primary);
+    }
+
     .dash-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -49,12 +88,12 @@
     }
     .stat-card:hover {
       border-color: var(--nagaken-primary);
-      box-shadow: 0 4px 14px rgba(46, 139, 62, 0.18);
+      box-shadow: 0 4px 14px rgba(var(--nagaken-primary-rgb), 0.18);
       transform: translateY(-1px);
     }
     .stat-card .icon { font-size: 28px; line-height: 1; }
     .stat-card .label {
-      font-size: 13px; font-weight: 600; color: #5a6a5c;
+      font-size: 13px; font-weight: 600; color: #5a5a5a;
       letter-spacing: 0.02em;
     }
     .stat-card .num {
@@ -66,9 +105,22 @@
       font-size: 12px; color: var(--nagaken-primary-deep);
       margin-top: auto; text-align: right;
     }
+    /* KPI 3色アクセント（視認性のため残す） */
     .stat-card.new-entry { border-left: 5px solid var(--nagaken-accent); }
     .stat-card.entry     { border-left: 5px solid var(--nagaken-primary); }
     .stat-card.ky        { border-left: 5px solid #5BC0DE; }
+
+    /* 社員メニューカード内サブメニュー */
+    .card-submenu {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px;
+    }
+    .card-submenu a {
+      font-size: 12px; font-weight: 600; text-decoration: none;
+      padding: 4px 10px; border-radius: 6px;
+      background: var(--nagaken-bg); color: var(--nagaken-primary-deep);
+      border: 1px solid var(--nagaken-border);
+    }
+    .card-submenu a:hover { background: var(--nagaken-primary); color: #fff; border-color: var(--nagaken-primary); }
 
     .unexited-section {
       background: #fff; border: 1px solid var(--nagaken-border);
@@ -84,19 +136,54 @@
     }
     .unexited-locked strong { color: var(--nagaken-primary-dark); }
     table.mini {
-      width: 100%; border-collapse: collapse; font-size: 13px;
+      width: 100%; border-collapse: collapse; font-size: 13px; min-width: 760px;
     }
     table.mini th, table.mini td {
       padding: 6px 10px; text-align: left;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid #eee; white-space: nowrap;
     }
-    table.mini th { background: var(--nagaken-bg); font-weight: 600; }
+    table.mini th { background: var(--nagaken-bg); font-weight: 600; color: var(--nagaken-primary-dark); }
+    .table-scroll-x { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .badge-hot { background: #F8D7DA; color: #721C24; }
-    .muted-right { text-align: right; font-size: 12px; color: #888; }
-    .refresh-btn {
-      padding: 4px 12px; min-height: 30px; font-size: 12px;
-      background: transparent; color: var(--nagaken-primary-deep);
-      border: 1px solid var(--nagaken-primary);
+    .force-exit-btn {
+      padding: 4px 10px; min-height: 30px; font-size: 12px; font-weight: 700;
+      background: var(--nagaken-safety-red); color: #fff; border: none; border-radius: 6px;
+      cursor: pointer; white-space: nowrap;
+    }
+    .force-exit-btn:hover { filter: brightness(0.92); }
+    /* 続柄は機微情報のため鍵アイコン付き */
+    .lock-col { color: #555; }
+    .lock-col .lk { font-size: 11px; color: #999; margin-right: 3px; }
+
+    /* === 強制退場モーダル === */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(40, 10, 14, 0.45);
+      display: none; align-items: flex-start; justify-content: center;
+      z-index: 1000; padding: 32px 12px; overflow-y: auto;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #fff; border-radius: 12px; width: 100%; max-width: 520px;
+      box-shadow: 0 12px 40px rgba(0,0,0,.3); overflow: hidden;
+      border-top: 6px solid var(--nagaken-safety-red);
+    }
+    .modal-head {
+      display: flex; align-items: center; gap: 8px; padding: 14px 18px;
+      border-bottom: 1px solid var(--nagaken-border);
+    }
+    .modal-head h3 { margin: 0; font-size: 16px; color: var(--nagaken-safety-red); }
+    .modal-head .x { margin-left: auto; cursor: pointer; font-size: 22px; color: #888; background: none; border: none; }
+    .modal-body { padding: 16px 18px; }
+    .modal-body .target {
+      font-size: 14px; font-weight: 700; color: var(--nagaken-primary-dark);
+      background: var(--nagaken-bg); border: 1px solid var(--nagaken-border);
+      border-radius: 8px; padding: 10px 12px; margin-bottom: 14px;
+    }
+    .modal-body label { font-weight: 600; }
+    .modal-body textarea { width: 100%; min-height: 96px; }
+    .modal-foot {
+      display: flex; gap: 10px; justify-content: flex-end; padding: 12px 18px;
+      border-top: 1px solid var(--nagaken-border); background: var(--nagaken-bg);
     }
   </style>
 </head>
@@ -107,39 +194,67 @@
   </div>
 
   <div class="wrap-dash">
+    <!-- ヘッダ：ロゴ＋タイトル＋日付 ／ 右上に client名｜現場名｜氏名 -->
     <div class="dash-head">
       <span class="tenant-logo" id="tenantLogo" aria-label="テナントロゴ"></span>
       <h1>📊 現場ダッシュボード</h1>
       <span class="today" id="todayLabel"></span>
-      <span class="onsite" id="onsiteLabel"></span>
-      <span style="flex:1 1 30px;"></span>
+      <div class="ctx">
+        <div class="ctx-line" id="ctxLine">
+          <span id="ctxClient">-</span><span class="sep">｜</span><span id="ctxOnsite">-</span>
+        </div>
+        <div class="ctx-user">👤 <span id="ctxUser">-</span><span class="role-pill" id="ctxRoleLabel">-</span></div>
+      </div>
+    </div>
+
+    <!-- 権限別 切替バー（ロール選択はモックの簡易UI） -->
+    <div class="switch-bar">
+      <span class="sw">🧪 ロール（モック）
+        <select id="roleSelect" aria-label="ロール切替（モック）">
+          <option value="system_admin">システム管理者</option>
+          <option value="hq_admin">社内管理者（本社管理者）</option>
+          <option value="site_admin">現場管理者</option>
+        </select>
+      </span>
+      <span class="spacer"></span>
+      <!-- システム管理者のみ：テナント切替 -->
+      <span class="sw" id="tenantSwitchWrap" style="display:none;">🏢 クライアント
+        <select id="tenantSelect" aria-label="クライアント（テナント）切替"></select>
+      </span>
+      <!-- システム管理者・社内管理者：現場切替 -->
+      <span class="sw" id="onsiteSwitchWrap" style="display:none;">🏗 現場
+        <select id="onsiteSelect" aria-label="現場切替"></select>
+      </span>
+      <!-- 現場管理者：固定表示 -->
+      <span class="sw-fixed" id="fixedNote" style="display:none;">この現場に固定（切替不可）</span>
       <button type="button" class="btn refresh-btn" id="refreshBtn">🔄 更新</button>
     </div>
 
     <div class="dash-grid">
-      <a href="admin.html?tab=newEntries" class="stat-card new-entry" id="card-newEntries">
+      <!-- KPI明細リンクは既存メニューへ別ウインドウで遷移 -->
+      <a href="admin.html?tab=newEntries" target="_blank" rel="noopener" class="stat-card new-entry" id="card-newEntries">
         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
           <div class="label">🆕 今日の新規入場者</div>
           <div class="icon">🪪</div>
         </div>
         <div><span class="num" id="n-newEntries">-</span><span class="unit">名</span></div>
-        <div class="more">明細を見る →</div>
+        <div class="more">明細を見る ↗</div>
       </a>
-      <a href="admin.html?tab=entries" class="stat-card entry" id="card-entries">
+      <a href="admin.html?tab=entries" target="_blank" rel="noopener" class="stat-card entry" id="card-entries">
         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
           <div class="label">🚪 今日の入場者</div>
           <div class="icon">👷</div>
         </div>
         <div><span class="num" id="n-entries">-</span><span class="unit">名</span></div>
-        <div class="more">明細を見る →</div>
+        <div class="more">明細を見る ↗</div>
       </a>
-      <a href="ky-sheet.html" class="stat-card ky" id="card-ky">
+      <a href="ky-sheet.html" target="_blank" rel="noopener" class="stat-card ky" id="card-ky">
         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
           <div class="label">⚠ 今日のKY活動</div>
           <div class="icon">📋</div>
         </div>
         <div><span class="num" id="n-ky">-</span><span class="unit">件</span></div>
-        <div class="more">KY帳票ビュー →</div>
+        <div class="more">KY帳票ビュー ↗</div>
       </a>
     </div>
 
@@ -150,22 +265,31 @@
 
     <h2 style="margin-top:24px; font-size:16px; color:var(--nagaken-primary-dark); border-bottom:1px solid var(--nagaken-border); padding-bottom:6px;">🧑‍💼 社員メニュー</h2>
     <div class="dash-grid">
-      <a id="link-construction" href="construction-system.html" class="stat-card" style="border-left:5px solid var(--nagaken-primary-deep);">
+      <!-- Ⓔ 施工体制図作成（業者登録／業者紐付サブメニュー・別ウインドウ） -->
+      <div class="stat-card" style="border-left:5px solid var(--nagaken-primary-deep); cursor:default;">
         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
           <div class="label">Ⓔ 施工体制図作成</div>
           <div class="icon">🏗</div>
         </div>
         <div class="muted" style="font-size:13px;">元請＋下請ツリー（Phase3）</div>
-        <div class="more">開く →</div>
-      </a>
-      <a id="link-admin" href="admin.html" class="stat-card" style="border-left:5px solid var(--nagaken-accent);">
+        <div class="card-submenu">
+          <a href="construction-system.html?action=partner-register" target="_blank" rel="noopener" data-onsite="1">🏢 業者登録 ↗</a>
+          <a href="construction-system.html?action=partner-link" target="_blank" rel="noopener" data-onsite="1">🔗 業者紐付 ↗</a>
+        </div>
+      </div>
+      <!-- Ⓓ 管理画面（協力業者作業員名簿＝リンククリックでDL） -->
+      <div class="stat-card" style="border-left:5px solid var(--nagaken-accent); cursor:default;">
         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
           <div class="label">Ⓓ 管理画面</div>
           <div class="icon">📋</div>
         </div>
         <div class="muted" style="font-size:13px;">入退場/KY/未退場の確認・強制退場</div>
-        <div class="more">開く →</div>
-      </a>
+        <div class="card-submenu">
+          <a href="admin.html" target="_blank" rel="noopener" id="link-admin">🖥 管理画面を開く ↗</a>
+          <a href="#" id="link-roster-dl">⬇ 協力業者作業員名簿（CSV）</a>
+        </div>
+      </div>
+      <!-- Ⓒ KY裏面エディタ（変更なし・Coming Soon） -->
       <a id="link-ky-back" href="#" onclick="alert('Ⓒ KY裏面エディタ（朝礼用イラスト作成）はPhase2実装予定です'); return false;" class="stat-card" style="border-left:5px solid #B0B0B0;">
         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
           <div class="label">Ⓒ KY裏面エディタ（朝礼用）</div>
@@ -181,15 +305,167 @@
     </p>
   </div>
 
+  <!-- 強制退場モーダル（理由入力 → 保存） -->
+  <div class="modal-overlay" id="forceExitModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="feTitle">
+      <div class="modal-head">
+        <h3 id="feTitle">🚫 強制退場</h3>
+        <button type="button" class="x" id="feClose" aria-label="閉じる">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="target" id="feTarget">-</div>
+        <label for="feReason">退場理由（必須）</label>
+        <textarea id="feReason" placeholder="例）退場打刻忘れ・現場長確認済 / 直行直帰のため など"></textarea>
+        <p class="muted" style="font-size:11px; margin-top:8px;">
+          ※ モックのため保存はローカル処理です。本番は <code>POST /api/force-exit</code> に
+          <code>{ entryId, reason, operator }</code> を送信して退場打刻します。
+        </p>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn btn-ghost" id="feCancel">キャンセル</button>
+        <button type="button" class="btn btn-danger" id="feConfirm">強制退場を保存</button>
+      </div>
+    </div>
+  </div>
+
 <script src="js/business-date.js"></script>
 <script>
   const qs = new URLSearchParams(location.search);
-  const onsiteId = Number(qs.get("onsiteId") || 1);
+  let onsiteId = Number(qs.get("onsiteId") || 1);
+  let role = qs.get("role") || "system_admin"; // モック初期ロール（?role=で指定可）
   const FORCE_UNEXITED = qs.get("force") === "1"; // 動作確認用: ?force=1 で17:30制約を無視
 
   const esc = (s) => (s == null ? "" : String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c])));
   const fmtDateTime = (s) => s ? new Date(s).toLocaleString("ja-JP", { hour:"2-digit", minute:"2-digit", month:"2-digit", day:"2-digit" }) : "";
   const todayStr = () => window.businessDate.today();
+  const jsonOr = (url, fallback) => fetch(url).then(r => r.ok ? r.json() : fallback).catch(() => fallback);
+
+  // ===== ロール定義（モック）＝ 権限に応じて切替UIを出し分ける =====
+  // system_admin : クライアント(テナント)切替 ＋ 現場切替の両方
+  // hq_admin     : 現場切替のみ（本社管理者）
+  // site_admin   : 切替なし（自現場固定）
+  const ROLE_DEF = {
+    system_admin: { label: "システム管理者", user: "管理者 太郎（CP）", tenant: true,  onsite: true  },
+    hq_admin:     { label: "社内管理者",     user: "本社 花子",         tenant: false, onsite: true  },
+    site_admin:   { label: "現場管理者",     user: "現場 一郎",         tenant: false, onsite: false },
+  };
+
+  // ===== 現場/テナントマスタ（sites-mock.json）=====
+  let SITES = [];                 // [{onsiteId,name,clientId,clientName}]
+  let TENANTS = [];               // [{clientId, clientName}]
+  let ONSITE_TO_CLIENT = {};
+  let currentClientId = null;
+
+  async function loadSites() {
+    const sm = await jsonOr("data/sites-mock.json", { sites: [] });
+    SITES = (sm.sites || []).map(s => ({
+      onsiteId: Number(s.onsiteId), name: s.name,
+      clientId: Number(s.clientId), clientName: s.clientName || `clientID ${s.clientId}`
+    }));
+    ONSITE_TO_CLIENT = {};
+    const seen = new Map();
+    SITES.forEach(s => {
+      ONSITE_TO_CLIENT[s.onsiteId] = s.clientId;
+      if (!seen.has(s.clientId)) seen.set(s.clientId, s.clientName);
+    });
+    TENANTS = [...seen.entries()].map(([clientId, clientName]) => ({ clientId, clientName }))
+      .sort((a, b) => a.clientId - b.clientId);
+    // 現在現場から clientId を確定（不明時は先頭テナント）
+    currentClientId = ONSITE_TO_CLIENT[onsiteId] ?? (TENANTS[0]?.clientId ?? 1);
+  }
+
+  // ===== テナントロゴ（契約先マスタの添付ロゴ）=====
+  // onsiteId → clientId を逆引きしてロゴを出す。本番は契約先マスタ添付ロゴURLに置換。
+  const TENANT_LOGOS = { 1: "img/logo-client1.png", 4: "img/logo-client4.svg" };
+  function renderTenantLogo() {
+    const box = document.getElementById("tenantLogo");
+    if (!box) return;
+    const cid = ONSITE_TO_CLIENT[onsiteId] ?? currentClientId;
+    const src = cid != null ? TENANT_LOGOS[cid] : null;
+    if (src) {
+      box.innerHTML = `<img src="${src}" alt="テナントロゴ"
+        onerror="this.parentNode.innerHTML='<span class=&quot;logo-fallback&quot;>🏢 永賢組</span>'">`;
+    } else {
+      box.innerHTML = `<span class="logo-fallback">🏢 永賢組</span>`;
+    }
+  }
+
+  // ===== ヘッダ右上：client名 ｜ 現場名 ｜ ログイン者氏名 =====
+  function renderContext() {
+    const def = ROLE_DEF[role] || ROLE_DEF.system_admin;
+    const site = SITES.find(s => s.onsiteId === onsiteId);
+    const clientName = site ? site.clientName
+      : (TENANTS.find(t => t.clientId === currentClientId) || {}).clientName || "永賢組";
+    const onsiteName = site ? site.name : "(現場未選択)";
+    document.getElementById("ctxClient").textContent = clientName;
+    document.getElementById("ctxOnsite").textContent = "🏗 " + onsiteName;
+    document.getElementById("ctxUser").textContent = def.user;
+    document.getElementById("ctxRoleLabel").textContent = def.label;
+  }
+
+  // ===== 権限別 切替UIの出し分け＋セレクト構築 =====
+  function buildSwitchUI() {
+    const def = ROLE_DEF[role] || ROLE_DEF.system_admin;
+    document.getElementById("roleSelect").value = role;
+
+    const tenantWrap = document.getElementById("tenantSwitchWrap");
+    const onsiteWrap = document.getElementById("onsiteSwitchWrap");
+    const fixedNote  = document.getElementById("fixedNote");
+
+    tenantWrap.style.display = def.tenant ? "" : "none";
+    onsiteWrap.style.display = def.onsite ? "" : "none";
+    fixedNote.style.display  = (!def.tenant && !def.onsite) ? "" : "none";
+
+    // テナント select
+    if (def.tenant) {
+      const ts = document.getElementById("tenantSelect");
+      ts.innerHTML = TENANTS.map(t =>
+        `<option value="${t.clientId}">clientID ${t.clientId}：${esc(t.clientName)}</option>`).join("");
+      ts.value = String(currentClientId);
+    }
+    // 現場 select（テナント絞り込み or 全件）
+    if (def.onsite) {
+      const os = document.getElementById("onsiteSelect");
+      const list = def.tenant ? SITES.filter(s => s.clientId === currentClientId) : SITES;
+      os.innerHTML = list.map(s =>
+        `<option value="${s.onsiteId}">${esc(s.name)}（ID:${s.onsiteId}）</option>`).join("");
+      // 現在現場が一覧外なら先頭に寄せる
+      if (!list.some(s => s.onsiteId === onsiteId) && list[0]) {
+        onsiteId = list[0].onsiteId;
+      }
+      os.value = String(onsiteId);
+    }
+  }
+
+  // URLに現在の onsiteId / role を反映（リロードせず履歴更新）
+  function syncUrl() {
+    const u = new URL(location.href);
+    u.searchParams.set("onsiteId", onsiteId);
+    u.searchParams.set("role", role);
+    history.replaceState(null, "", u.pathname + "?" + u.searchParams.toString());
+    propagateOnsite();
+  }
+
+  // カードリンクに onsiteId を伝播（別窓で開く管理画面/施工体制図に現場を引き継ぐ）
+  function propagateOnsite() {
+    const ids = ["card-newEntries", "card-entries", "card-ky", "link-admin"];
+    for (const id of ids) {
+      const el = document.getElementById(id);
+      if (!el || !el.getAttribute("href") || el.getAttribute("href") === "#") continue;
+      try {
+        const u = new URL(el.href);
+        u.searchParams.set("onsiteId", onsiteId);
+        el.href = u.pathname + "?" + u.searchParams.toString();
+      } catch (_) { /* skip */ }
+    }
+    document.querySelectorAll(".card-submenu a[data-onsite]").forEach(a => {
+      try {
+        const u = new URL(a.href);
+        u.searchParams.set("onsiteId", onsiteId);
+        a.href = u.pathname + "?" + u.searchParams.toString();
+      } catch (_) { /* skip */ }
+    });
+  }
 
   function isAfter1730() {
     if (FORCE_UNEXITED) return true;
@@ -200,63 +476,33 @@
   async function loadStats() {
     const d = todayStr();
     document.getElementById("todayLabel").textContent = new Date().toLocaleDateString("ja-JP", { year:"numeric", month:"long", day:"numeric", weekday:"short" });
-
-    // モック/マニュアル閲覧用: API(/api/*)未配備でも UI が崩れないよう、
-    // 失敗時は KPI=0・現場名は data/sites-mock.json から解決する
-    const jsonOr = (url, fallback) => fetch(url).then(r => r.ok ? r.json() : fallback).catch(() => fallback);
-    try {
-      const [ne, en, kp, on] = await Promise.all([
-        jsonOr(`api/list/new-entries?date=${d}`, { entries: [] }),
-        jsonOr(`api/list/entries?date=${d}`, { entries: [] }),
-        jsonOr(`api/list/ky-participants?date=${d}`, { entries: [] }),
-        jsonOr(`api/onsites`, { onsites: [] }),
-      ]);
-      document.getElementById("n-newEntries").textContent = (ne.entries || []).length;
-      document.getElementById("n-entries").textContent = (en.entries || []).length;
-      document.getElementById("n-ky").textContent = (kp.entries || []).length;
-      let site = (on.onsites || []).find(o => o.id === onsiteId) || (on.onsites || [])[0];
-      if (!site) {
-        // API未接続時は sites-mock.json で現場名を解決
-        const sm = await jsonOr("data/sites-mock.json", { sites: [] });
-        const hit = (sm.sites || []).find(s => Number(s.onsiteId) === onsiteId) || (sm.sites || [])[0];
-        if (hit) site = { id: hit.onsiteId, name: hit.name };
-      }
-      document.getElementById("onsiteLabel").textContent =
-        site ? `🏗 ${site.name}` : "🏗 (モック表示・API未接続)";
-    } catch (e) {
-      ["n-newEntries", "n-entries", "n-ky"].forEach(id => document.getElementById(id).textContent = "0");
-      document.getElementById("onsiteLabel").textContent = "🏗 (モック表示・API未接続)";
-      console.warn("KPI API 未接続のため 0 表示にフォールバック", e);
-    }
+    const [ne, en, kp] = await Promise.all([
+      jsonOr(`api/list/new-entries?date=${d}`, { entries: [] }),
+      jsonOr(`api/list/entries?date=${d}`, { entries: [] }),
+      jsonOr(`api/list/ky-participants?date=${d}`, { entries: [] }),
+    ]);
+    document.getElementById("n-newEntries").textContent = (ne.entries || []).length;
+    document.getElementById("n-entries").textContent = (en.entries || []).length;
+    document.getElementById("n-ky").textContent = (kp.entries || []).length;
     document.getElementById("lastUpdated").textContent = new Date().toLocaleTimeString("ja-JP");
-    renderTenantLogo();
   }
 
-  // ===== テナントロゴ（契約先マスタの添付ロゴ）=====
-  // 現場ダッシュボードは onsiteId → clientId を逆引きしてロゴを出す。
-  // モック：clientID → ロゴ画像パスの固定マップ。本番は契約先マスタ添付ロゴURLに置換。
-  const TENANT_LOGOS = { 1: "img/logo-client1.png", 4: "img/logo-client4.svg" };
-  let ONSITE_TO_CLIENT = null;
-  async function resolveClientId(oid) {
-    if (!ONSITE_TO_CLIENT) {
-      ONSITE_TO_CLIENT = {};
-      const sm = await jsonOr("data/sites-mock.json", { sites: [] });
-      (sm.sites || []).forEach(s => { ONSITE_TO_CLIENT[Number(s.onsiteId)] = Number(s.clientId); });
-    }
-    return ONSITE_TO_CLIENT[Number(oid)] ?? null;
-  }
-  async function renderTenantLogo() {
-    const box = document.getElementById("tenantLogo");
-    if (!box) return;
-    const cid = await resolveClientId(onsiteId);
-    const src = cid != null ? TENANT_LOGOS[cid] : null;
-    if (src) {
-      box.innerHTML = `<img src="${src}" alt="テナントロゴ"
-        onerror="this.parentNode.innerHTML='<span class=&quot;logo-fallback&quot;>🏢 永賢組</span>'">`;
-    } else {
-      box.innerHTML = `<span class="logo-fallback">🏢 永賢組</span>`;
-    }
-  }
+  // ===== 未退場者リスト =====
+  // モック用ダミー（API未接続時のフォールバック）。本番は /api/list/unexited が返す。
+  const MOCK_UNEXITED_FALLBACK = [
+    { entryId: "e1001", entryDatetime: nowMinus(9.5), overnight: false, elapsedHours: 9,
+      worker: { name: "鈴木 健太", company: "丸和建設", job: "とび工", phone: "090-1111-2222",
+                emName: "鈴木 美香", emRelation: "妻", emPhone: "080-3333-4444" } },
+    { entryId: "e1002", entryDatetime: nowMinus(26), overnight: true, elapsedHours: 26,
+      worker: { name: "田中 大輔", company: "ヤマト電設", job: "電工", phone: "090-5555-6666",
+                emName: "田中 一郎", emRelation: "父", emPhone: "080-7777-8888" } },
+    { entryId: "e1003", entryDatetime: nowMinus(8), overnight: false, elapsedHours: 8,
+      worker: { name: "佐々木 工", company: "佐々木塗装", job: "塗装工", phone: "090-9999-0000",
+                emName: "佐々木 由美", emRelation: "母", emPhone: "080-1212-3434" } },
+  ];
+  function nowMinus(h) { return new Date(Date.now() - h * 3600 * 1000).toISOString(); }
+
+  let unexitedList = []; // 強制退場で消し込む対象
 
   async function loadUnexited() {
     const box = document.getElementById("unexitedBody");
@@ -270,59 +516,166 @@
       `;
       return;
     }
-    try {
-      const r = await fetch("api/list/unexited").then(r => r.json());
-      const entries = r.entries || [];
-      if (entries.length === 0) {
-        box.className = "";
-        box.innerHTML = `<div class="alert alert-success" style="padding:10px;">✅ 未退場者はいません</div>`;
-        return;
+    const r = await jsonOr("api/list/unexited", null);
+    // API未接続時はモックダミーで動作確認できるようにする
+    let entries = (r && Array.isArray(r.entries)) ? r.entries : MOCK_UNEXITED_FALLBACK;
+    // API側 worker が氏名/電話しか無い場合に備え、緊急連絡先はダミー補完
+    entries = entries.map(e => normalizeUnexited(e));
+    unexitedList = entries;
+    renderUnexited();
+  }
+
+  function normalizeUnexited(e) {
+    const w = e.worker || {};
+    return {
+      entryId: e.entryId || e.id || crypto.randomUUID?.() || String(Math.random()),
+      entryDatetime: e.entryDatetime,
+      overnight: !!e.overnight,
+      elapsedHours: e.elapsedHours,
+      worker: {
+        name: w.name || "?",
+        company: w.company || w.partnerName || "-",
+        job: w.job || w.occupation || "-",
+        phone: w.phone || "-",
+        emName: w.emName || w.emergencyName || "-",
+        emRelation: w.emRelation || w.emergencyRelation || "-",
+        emPhone: w.emPhone || w.emergencyPhone || "-",
       }
+    };
+  }
+
+  function renderUnexited() {
+    const box = document.getElementById("unexitedBody");
+    if (!unexitedList.length) {
       box.className = "";
-      const rows = entries.map(e => {
-        const hot = e.overnight;
-        return `<tr>
-          <td>${fmtDateTime(e.entryDatetime)}</td>
-          <td><strong>${esc(e.worker?.name || "?")}</strong><br><span class="muted" style="font-size:11px;">${esc(e.worker?.phone || "")}</span></td>
-          <td>${esc(e.healthConditionToday || "-")}</td>
-          <td><span class="badge ${hot ? "badge-hot" : "badge-warn"}">${e.elapsedHours}h 経過${hot ? " ⚠" : ""}</span></td>
-        </tr>`;
-      }).join("");
-      box.innerHTML = `
-        <div class="muted" style="font-size:12px; margin-bottom:8px;">${entries.length} 名が退場未打刻（元請で強制退場は<a href="admin.html?tab=unexited">管理画面</a>から）</div>
+      box.innerHTML = `<div class="alert alert-success" style="padding:10px;">✅ 未退場者はいません</div>`;
+      return;
+    }
+    box.className = "";
+    const rows = unexitedList.map(e => {
+      const w = e.worker;
+      const hot = e.overnight;
+      return `<tr data-id="${esc(e.entryId)}">
+        <td><button type="button" class="force-exit-btn" data-id="${esc(e.entryId)}">🚫 強制退場</button></td>
+        <td><strong>${esc(w.name)}</strong>${hot ? ' <span class="badge badge-hot">越夜 ⚠</span>' : ''}<br><span class="muted" style="font-size:11px;">入場 ${fmtDateTime(e.entryDatetime)}・${esc(String(e.elapsedHours))}h経過</span></td>
+        <td>${esc(w.company)}</td>
+        <td>${esc(w.job)}</td>
+        <td>${esc(w.phone)}</td>
+        <td>${esc(w.emName)}</td>
+        <td class="lock-col"><span class="lk">🔒</span>${esc(w.emRelation)}</td>
+        <td>${esc(w.emPhone)}</td>
+      </tr>`;
+    }).join("");
+    box.innerHTML = `
+      <div class="muted" style="font-size:12px; margin-bottom:8px;">${unexitedList.length} 名が退場未打刻。続柄(🔒)は機微情報のため取扱注意。</div>
+      <div class="table-scroll-x">
         <table class="mini">
-          <thead><tr><th>入場時刻</th><th>作業員</th><th>体調</th><th>経過</th></tr></thead>
+          <thead><tr>
+            <th>操作</th><th>氏名</th><th>会社名</th><th>職種</th><th>電話番号</th>
+            <th>緊急連絡先氏名</th><th>続柄 🔒</th><th>緊急連絡先電話番号</th>
+          </tr></thead>
           <tbody>${rows}</tbody>
         </table>
-      `;
-    } catch (e) {
-      box.innerHTML = `<div class="alert alert-error">${e.message}</div>`;
-    }
+      </div>`;
+    box.querySelectorAll(".force-exit-btn").forEach(btn => {
+      btn.onclick = () => openForceExit(btn.dataset.id);
+    });
+  }
+
+  // ===== 強制退場モーダル =====
+  let feTargetId = null;
+  function openForceExit(id) {
+    const e = unexitedList.find(x => x.entryId === id);
+    if (!e) return;
+    feTargetId = id;
+    document.getElementById("feTarget").textContent =
+      `${e.worker.name}（${e.worker.company} / ${e.worker.job}）を強制退場します`;
+    document.getElementById("feReason").value = "";
+    document.getElementById("forceExitModal").classList.add("open");
+    document.getElementById("feReason").focus();
+  }
+  function closeForceExit() {
+    document.getElementById("forceExitModal").classList.remove("open");
+    feTargetId = null;
+  }
+  function confirmForceExit() {
+    const reason = document.getElementById("feReason").value.trim();
+    if (!reason) { alert("退場理由を入力してください"); return; }
+    // 本番: POST api/force-exit { entryId: feTargetId, reason, operator } で退場打刻
+    // モック: ローカルでリストから消し込む
+    unexitedList = unexitedList.filter(x => x.entryId !== feTargetId);
+    closeForceExit();
+    renderUnexited();
   }
 
   function reload() {
     loadStats();
     loadUnexited();
+    renderTenantLogo();
+    renderContext();
   }
 
-  // 全カードリンクに onsiteId を伝播
-  (function propagateOnsite() {
-    const ids = ["card-newEntries", "card-entries", "card-ky", "link-construction", "link-admin"];
-    for (const id of ids) {
-      const el = document.getElementById(id);
-      if (!el || !el.href || el.href.startsWith("javascript:") || el.href === location.href + "#") continue;
-      try {
-        const u = new URL(el.href);
-        u.searchParams.set("onsiteId", onsiteId);
-        el.href = u.pathname + "?" + u.searchParams.toString();
-      } catch (_) { /* skip */ }
-    }
-  })();
-
+  // ===== イベント結線 =====
+  document.getElementById("roleSelect").addEventListener("change", (ev) => {
+    role = ev.target.value;
+    buildSwitchUI();
+    syncUrl();
+    renderContext();
+    renderTenantLogo();
+  });
+  document.getElementById("tenantSelect").addEventListener("change", (ev) => {
+    currentClientId = Number(ev.target.value);
+    // テナント変更時は当該テナントの先頭現場へ
+    const first = SITES.find(s => s.clientId === currentClientId);
+    if (first) onsiteId = first.onsiteId;
+    buildSwitchUI();
+    syncUrl();
+    reload();
+  });
+  document.getElementById("onsiteSelect").addEventListener("change", (ev) => {
+    onsiteId = Number(ev.target.value);
+    currentClientId = ONSITE_TO_CLIENT[onsiteId] ?? currentClientId;
+    syncUrl();
+    reload();
+  });
+  document.getElementById("feClose").onclick = closeForceExit;
+  document.getElementById("feCancel").onclick = closeForceExit;
+  document.getElementById("feConfirm").onclick = confirmForceExit;
+  document.getElementById("forceExitModal").addEventListener("click", (ev) => {
+    if (ev.target.id === "forceExitModal") closeForceExit();
+  });
+  document.getElementById("link-roster-dl").addEventListener("click", (ev) => {
+    ev.preventDefault();
+    downloadRosterCsv();
+  });
   document.getElementById("refreshBtn").onclick = reload;
-  reload();
-  // 5分ごとに自動更新（17:30境界を跨いだ時の自動表示切替も兼ねる）
-  setInterval(reload, 5 * 60 * 1000);
+
+  // 協力業者作業員名簿（CSV雛形DL・モック）
+  function downloadRosterCsv() {
+    const site = SITES.find(s => s.onsiteId === onsiteId);
+    const header = ["会社名","氏名","職種","電話番号","緊急連絡先氏名","続柄","緊急連絡先電話番号","資格","入場日"];
+    const sample = [
+      ["丸和建設","鈴木 健太","とび工","090-1111-2222","鈴木 美香","妻","080-3333-4444","職長・とび作業主任者","2026-06-05"],
+      ["ヤマト電設","田中 大輔","電工","090-5555-6666","田中 一郎","父","080-7777-8888","第一種電気工事士","2026-06-05"],
+    ];
+    const csv = [header, ...sample].map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(",")).join("\r\n");
+    const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8;" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `協力業者作業員名簿_${site ? site.name : "現場"}_${todayStr()}.csv`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }
+
+  // ===== 初期化 =====
+  (async function init() {
+    await loadSites();
+    if (!ROLE_DEF[role]) role = "system_admin";
+    buildSwitchUI();
+    syncUrl();
+    reload();
+    setInterval(reload, 5 * 60 * 1000); // 5分ごと自動更新（17:30境界の自動切替も兼ねる）
+  })();
 </script>
 </body>
 </html>

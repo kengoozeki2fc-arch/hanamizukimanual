@@ -1,5 +1,5 @@
 /* 顔認証初期登録フロー v0.5 専用スタイル
-   建設業グリーン #2E8B3E（CLOUDPOWER Palette例外）を継承し、
+   ブランドレッド #C8102E（CLOUDPOWER Palette例外）を共通CSSの変数で継承し、
    3段ステータスバッジ・信頼度バッジ・OCRうすいグレー・採用ソーストグル＋
    v0.5: 監督・現場ヘッダー（ログインUser自動取得＋現場固定/選択） */
 
@@ -42,7 +42,7 @@
 
 /* OCRハイドレート済（自動入力＝薄い緑バック） */
 .ocr-hydrated {
-  background: #F1F8E9 !important;
+  background: var(--nagaken-bg) !important;
 }
 
 /* ====== 免許／紙 採用ソーストグル ====== */
@@ -123,7 +123,7 @@
 }
 .shoot-cell.done {
   border: 2px solid var(--nagaken-primary);
-  background: #F1F8E9;
+  background: var(--nagaken-bg);
 }
 .shoot-cell.required-empty {
   border-color: var(--nagaken-safety-red);
@@ -362,7 +362,7 @@
   font-weight: 600;
 }
 .flow-steps .step.done {
-  background: #E2F0E5;
+  background: var(--nagaken-bg);
   color: var(--nagaken-primary-dark);
   border-color: var(--nagaken-primary);
 }
