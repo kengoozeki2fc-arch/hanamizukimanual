@@ -154,6 +154,26 @@
     {
       "route": "/inagi/keiri",
       "rewrite": "/inagi/keiri/index.html"
+    },
+    {
+      "route": "/dashboard.html",
+      "redirect": "/nextface/dashboard.html",
+      "statusCode": 302
+    },
+    {
+      "route": "/admin.html",
+      "redirect": "/nextface/admin.html",
+      "statusCode": 302
+    },
+    {
+      "route": "/site-dashboard.html",
+      "redirect": "/nextface/site-dashboard.html",
+      "statusCode": 302
+    },
+    {
+      "route": "/construction-system.html",
+      "redirect": "/nextface/construction-system.html",
+      "statusCode": 302
     }
   ],
   "navigationFallback": {

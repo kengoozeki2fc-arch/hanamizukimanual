@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>管理画面 | 永賢組</title>
+  <link rel="stylesheet" href="css/common.css">
+  <style>
+    .wrap-admin { max-width: 1200px; margin: 0 auto; padding: 16px; }
+    @media (max-width: 700px) { .wrap-admin { padding: 12px 8px 40px; } }
+    .date-bar {
+      display: flex; align-items: center; gap: 8px;
+      background: #fff; border: 1px solid var(--nagaken-border);
+      border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; flex-wrap: wrap;
+    }
+    .date-bar label { margin: 0; font-size: 13px; font-weight: 600; color: var(--nagaken-primary-dark); }
+    .date-bar input[type=date] { width: auto; min-height: 36px; padding: 6px 8px; }
+    .date-bar .btn { padding: 6px 12px; min-height: 36px; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="nav">
+    <h3>管理画面</h3>
+    <a href="./">メニュー</a>
+  </div>
+
+  <div class="wrap-admin">
+    <div id="onsiteBadge" style="margin-bottom:10px; font-size:13px;"></div>
+    <div class="tabs">
+      <button class="tab active" data-tab="entries">入退場履歴</button>
+      <button class="tab" data-tab="newEntries">新規入場者リスト</button>
+      <button class="tab" data-tab="ky">KY活動</button>
+      <button class="tab" data-tab="safety">安全会議参加</button>
+      <button class="tab" data-tab="workers">登録リスト</button>
+      <button class="tab" data-tab="unexited">未退場者 <span id="unexitedCount" class="badge badge-danger" style="display:none;">0</span></button>
+      <button class="tab" data-tab="all">🗂 全履歴(all)</button>
+    </div>
+
+    <div id="panel-entries" class="panel">
+      <div class="date-bar" data-panel="entries"></div>
+      <div id="entries-content" class="loading">読込中…</div>
+    </div>
+    <div id="panel-newEntries" class="panel" style="display:none;">
+      <div class="date-bar" data-panel="newEntries"></div>
+      <div id="newEntries-content" class="loading">読込中…</div>
+    </div>
+    <div id="panel-ky" class="panel" style="display:none;">
+      <div class="date-bar" data-panel="ky"></div>
+      <div id="ky-content" class="loading">読込中…</div>
+    </div>
+    <div id="panel-safety" class="panel" style="display:none;">
+      <div class="date-bar" data-panel="safety"></div>
+      <div id="safety-content" class="loading">読込中…</div>
+    </div>
+    <div id="panel-workers" class="panel" style="display:none;">
+      <div id="workers-content" class="loading">読込中…</div>
+    </div>
+    <div id="panel-unexited" class="panel" style="display:none;">
+      <div id="unexited-content" class="loading">読込中…</div>
+    </div>
+    <div id="panel-all" class="panel" style="display:none;">
+      <div id="all-bar" class="date-bar" style="margin-bottom:12px;"></div>
+      <div id="all-content" class="loading">読込中…</div>
+    </div>
+  </div>
+
+  <script src="js/business-date.js"></script>
+  <script>
+    const esc = (s) => (s == null ? "" : String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c])));
+    const fmtDate = (s) => s ? new Date(s).toLocaleString("ja-JP") : "";
+    const fmtDateOnly = (s) => s ? new Date(s).toLocaleDateString("ja-JP") : "";
+    const nl2br = (s) => esc(s || "").replace(/\n/g, "<br>");
+    const urlParams = new URLSearchParams(location.search);
+    const onsiteId = urlParams.get("onsiteId") || "";
+    const onsiteQuery = onsiteId ? `&onsiteId=${onsiteId}` : "";
+    const onsiteQueryAlone = onsiteId ? `?onsiteId=${onsiteId}` : "";
+
+    fetch("api/onsites").then(r => r.json()).then(j => {
+      const o = (j.onsites || []).find(x => String(x.id) === String(onsiteId));
+      const badge = document.getElementById("onsiteBadge");
+      if (onsiteId && o) {
+        badge.innerHTML = `<span class="badge badge-success">🏗 現場: ${esc(o.name)}</span> <a href="admin.html" class="muted" style="font-size:12px; margin-left:8px;">（全現場を表示）</a>`;
+      } else {
+        badge.innerHTML = `<span class="muted">🏗 現場: すべて表示中</span>`;
+      }
+    }).catch(() => {});
+
+    async function forceExitByEntryExit(entryExitId, workerName, btn) {
+      if (!confirm(`${workerName} さんを強制退場させますか？`)) return;
+      btn.disabled = true; btn.textContent = "処理中…";
+      try {
+        const res = await fetch("api/force-exit", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ entryExitId, operator: "admin" }),
+        });
+        const j = await res.json();
+        if (!res.ok) throw new Error(j.error || "強制退場失敗");
+        alert(`✅ ${workerName} さんを強制退場しました`);
+        reloadAll();
+      } catch (e) {
+        alert("❌ " + e.message); btn.disabled = false; btn.textContent = "強制退場";
+      }
+    }
+
+    async function forceExitByWorker(workerId, workerName, btn) {
+      if (!confirm(`${workerName} さんの現在の入場を強制退場させますか？`)) return;
+      btn.disabled = true; btn.textContent = "処理中…";
+      try {
+        const res = await fetch("api/force-exit", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ workerId, operator: "admin" }),
+        });
+        const j = await res.json();
+        if (res.status === 404 && j.error === "no_open_entry") {
+          alert(`${workerName} さんは現在入場していません`);
+          btn.disabled = false; btn.textContent = "強制退場";
+          return;
+        }
+        if (!res.ok) throw new Error(j.error || "強制退場失敗");
+        alert(`✅ ${workerName} さんを強制退場しました`);
+        reloadAll();
+      } catch (e) {
+        alert("❌ " + e.message); btn.disabled = false; btn.textContent = "強制退場";
+      }
+    }
+
+    function activateTab(name) {
+      const t = document.querySelector(`.tab[data-tab="${name}"]`);
+      if (!t) return;
+      document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
+      t.classList.add("active");
+      document.querySelectorAll(".panel").forEach(p => p.style.display = "none");
+      document.getElementById("panel-" + name).style.display = "block";
+    }
+    document.querySelectorAll(".tab").forEach(t => {
+      t.onclick = () => activateTab(t.dataset.tab);
+    });
+    // ?tab=xxx で初期タブを指定（ダッシュボードカードからのジャンプ用）
+    const initTab = new URLSearchParams(location.search).get("tab");
+    if (initTab) activateTab(initTab);
+
+    const todayStr = () => window.businessDate.today();
+    const shiftDate = (s, delta) => {
+      const [y,m,d] = s.split("-").map(Number);
+      const dt = new Date(y, m-1, d); dt.setDate(dt.getDate() + delta);
+      return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,"0")}-${String(dt.getDate()).padStart(2,"0")}`;
+    };
+    const dateStates = { entries: todayStr(), newEntries: todayStr(), ky: todayStr(), safety: todayStr() };
+    const dateLoaders = {}; // filled later
+
+    function renderDateBar(panel, label) {
+      const bar = document.querySelector(`.date-bar[data-panel="${panel}"]`);
+      bar.innerHTML = `
+        <label>${label}</label>
+        <button type="button" class="btn btn-ghost" data-act="prev">← 前日</button>
+        <input type="date" value="${dateStates[panel]}">
+        <button type="button" class="btn btn-ghost" data-act="next">翌日 →</button>
+        <button type="button" class="btn btn-ghost" data-act="today">今日</button>
+        <button type="button" class="btn btn-ghost" data-act="all" title="全期間">全て</button>
+      `;
+      const inp = bar.querySelector("input[type=date]");
+      const apply = () => { dateStates[panel] = inp.value; dateLoaders[panel](); };
+      inp.addEventListener("change", apply);
+      bar.querySelector('[data-act="prev"]').onclick = () => { inp.value = shiftDate(inp.value || todayStr(), -1); apply(); };
+      bar.querySelector('[data-act="next"]').onclick = () => { inp.value = shiftDate(inp.value || todayStr(), 1); apply(); };
+      bar.querySelector('[data-act="today"]').onclick = () => { inp.value = todayStr(); apply(); };
+      bar.querySelector('[data-act="all"]').onclick = () => { inp.value = ""; dateStates[panel] = ""; dateLoaders[panel](); };
+    }
+
+    async function loadWorkers() {
+      try {
+        const res = await fetch("api/list/workers");
+        const { workers } = await res.json();
+        if (!workers || workers.length === 0) {
+          document.getElementById("workers-content").innerHTML = '<div class="alert alert-info">登録なし</div>';
+          return;
+        }
+        const rows = workers.map(w => {
+          const quals = w.qualifications ? JSON.parse(w.qualifications).join(", ") : "";
+          const parts = w.partners ? JSON.parse(w.partners).join(", ") : "";
+          const thumb = w.facePhotoUrl
+            ? `<img class="thumb" src="${esc(w.facePhotoUrl)}">`
+            : `<div class="thumb"></div>`;
+          return `<tr>
+            <td>${thumb}</td>
+            <td><strong>${esc(w.name)}</strong><br><span class="muted">${esc(w.nameKana || "")}</span></td>
+            <td>${esc(w.phone)}</td>
+            <td>${fmtDateOnly(w.birthday)}<br><span class="muted">${esc(w.gender || "")}</span></td>
+            <td>${esc(w.occupation || "")}</td>
+            <td>${esc(quals)}</td>
+            <td>${esc(parts)}${w.isSolo ? " <span class='badge'>1人親方</span>" : ""}</td>
+            <td>${esc(w.bloodType || "")}${w.rh ? w.rh : ""}</td>
+            <td class="muted">${fmtDate(w.createdAt)}</td>
+          </tr>`;
+        }).join("");
+        document.getElementById("workers-content").innerHTML = `
+          <p class="muted">合計 ${workers.length} 件</p>
+          <div class="table-scroll">
+          <table>
+            <thead><tr><th>顔</th><th>氏名</th><th>電話</th><th>生年月日/性別</th><th>職種</th><th>資格</th><th>所属会社</th><th>血液型</th><th>登録日時</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+          </div>`;
+      } catch (e) {
+        document.getElementById("workers-content").innerHTML = `<div class="alert alert-info">データなし（モック・API未接続のため0件表示）</div>`;
+      }
+    }
+
+    async function loadNewEntries() {
+      try {
+        const d = dateStates.newEntries;
+        const qs = new URLSearchParams();
+        if (d) qs.set("date", d);
+        if (onsiteId) qs.set("onsiteId", onsiteId);
+        const res = await fetch("api/list/new-entries" + (qs.toString() ? "?" + qs.toString() : ""));
+        const { entries } = await res.json();
+        if (!entries || entries.length === 0) {
+          document.getElementById("newEntries-content").innerHTML = '<div class="alert alert-info">登録なし</div>';
+          return;
+        }
+        const rows = entries.map(e => {
+          const bp = (e.bloodPressureHigh || e.bloodPressureLow)
+            ? `${e.bloodPressureHigh || "-"}/${e.bloodPressureLow || "-"}` : "";
+          return `<tr>
+            <td>${fmtDate(e.createdAt)}</td>
+            <td>${esc(e.onsiteName || "-")}</td>
+            <td><strong>${esc(e.worker?.name || "?")}</strong><br><span class="muted">${esc(e.worker?.phone || "")}</span></td>
+            <td>${esc(e.role || "")}</td>
+            <td>${esc(e.companyName || "")}</td>
+            <td>${esc(e.healthCondition || "")}</td>
+            <td>${bp}</td>
+            <td>${e.bodyTemperature ?? ""}</td>
+            <td>${e.educationCompleted ? '<span class="badge badge-success">受講済</span>' : '<span class="badge badge-warn">未</span>'}</td>
+          </tr>`;
+        }).join("");
+        document.getElementById("newEntries-content").innerHTML = `
+          <p class="muted">合計 ${entries.length} 件</p>
+          <div class="table-scroll">
+          <table>
+            <thead><tr><th>日時</th><th>現場</th><th>作業員</th><th>役割</th><th>所属会社</th><th>体調</th><th>血圧</th><th>体温</th><th>教育</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+          </div>`;
+      } catch (e) {
+        document.getElementById("newEntries-content").innerHTML = `<div class="alert alert-info">データなし（モック・API未接続のため0件表示）</div>`;
+      }
+    }
+
+    async function loadEntries() {
+      try {
+        const d = dateStates.entries;
+        const qs = new URLSearchParams();
+        if (d) qs.set("date", d);
+        if (onsiteId) qs.set("onsiteId", onsiteId);
+        const res = await fetch("api/list/entries" + (qs.toString() ? "?" + qs.toString() : ""));
+        const { entries } = await res.json();
+        if (!entries || entries.length === 0) {
+          document.getElementById("entries-content").innerHTML = '<div class="alert alert-info">履歴なし</div>';
+          return;
+        }
+        const rows = entries.map(e => {
+          const isOpen = !e.exitDatetime && !e.forcedExitDatetime;
+          const statusCell = e.forcedExitDatetime
+            ? `<span class="badge badge-danger">強制退場 ${esc(e.forcedExitUser || "")}</span><br><span class="muted">${fmtDate(e.forcedExitDatetime)}</span>`
+            : e.exitDatetime ? `<span class="badge badge-success">退場済</span>` : `<span class="badge badge-warn">入場中</span>`;
+          const action = isOpen
+            ? `<button class="btn btn-danger" style="padding:4px 10px; font-size:12px; min-height:32px;" onclick="forceExitByEntryExit(${e.id}, '${esc(e.worker?.name || "").replace(/'/g,"\\'")}', this)">強制退場</button>`
+            : "";
+          return `<tr>
+            <td>${fmtDate(e.entryDatetime)}</td>
+            <td>${fmtDate(e.exitDatetime)}</td>
+            <td>${esc(e.onsiteName || "-")}</td>
+            <td><strong>${esc(e.worker?.name || "?")}</strong><br><span class="muted">${esc(e.worker?.phone || "")}</span></td>
+            <td>${esc(e.healthConditionToday || "")}</td>
+            <td>${statusCell}</td>
+            <td>${action}</td>
+          </tr>`;
+        }).join("");
+        document.getElementById("entries-content").innerHTML = `
+          <p class="muted">合計 ${entries.length} 件</p>
+          <div class="table-scroll">
+          <table>
+            <thead><tr><th>入場日時</th><th>退場日時</th><th>現場</th><th>作業員</th><th>体調</th><th>状態</th><th>操作</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+          </div>`;
+      } catch (e) {
+        document.getElementById("entries-content").innerHTML = `<div class="alert alert-info">データなし（モック・API未接続のため0件表示）</div>`;
+      }
+    }
+
+    async function loadUnexited() {
+      try {
+        const res = await fetch("api/list/unexited" + onsiteQueryAlone);
+        const { entries } = await res.json();
+        const badge = document.getElementById("unexitedCount");
+        if (!entries || entries.length === 0) {
+          badge.style.display = "none";
+          document.getElementById("unexited-content").innerHTML = '<div class="alert alert-success">✅ 未退場者はいません</div>';
+          return;
+        }
+        badge.textContent = entries.length;
+        badge.style.display = "inline-block";
+        const rows = entries.map(e => {
+          const alert = e.overnight
+            ? `<span class="badge badge-danger">⚠ 未退場 ${e.elapsedHours}h</span>`
+            : `<span class="badge badge-warn">${e.elapsedHours}h 経過</span>`;
+          const action = `<button class="btn btn-danger" style="padding:4px 10px; font-size:12px; min-height:32px;" onclick="forceExitByEntryExit(${e.id}, '${esc(e.worker?.name || "").replace(/'/g,"\\'")}', this)">強制退場</button>`;
+          return `<tr>
+            <td>${fmtDate(e.entryDatetime)}</td>
+            <td>${esc(e.onsiteName || "-")}</td>
+            <td><strong>${esc(e.worker?.name || "?")}</strong><br><span class="muted">${esc(e.worker?.phone || "")}</span></td>
+            <td>${esc(e.healthConditionToday || "")}</td>
+            <td>${alert}</td>
+            <td>${action}</td>
+          </tr>`;
+        }).join("");
+        const overnightCount = entries.filter(e => e.overnight).length;
+        const warningHtml = overnightCount > 0
+          ? `<div class="alert alert-error">⚠ 12時間以上未退場が ${overnightCount} 件あります。退場打刻を確認してください</div>`
+          : `<div class="alert alert-warn">現在 ${entries.length} 名が入場中</div>`;
+        document.getElementById("unexited-content").innerHTML = `
+          ${warningHtml}
+          <div class="table-scroll">
+          <table>
+            <thead><tr><th>入場日時</th><th>現場</th><th>作業員</th><th>体調</th><th>経過時間</th><th>操作</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+          </div>`;
+      } catch (e) {
+        document.getElementById("unexited-content").innerHTML = `<div class="alert alert-info">データなし（モック・API未接続のため0件表示）</div>`;
+      }
+    }
+
+    async function loadKy() {
+      try {
+        const d = dateStates.ky;
+        const qs = new URLSearchParams();
+        if (d) qs.set("date", d);
+        if (onsiteId) qs.set("onsiteId", onsiteId);
+        const res = await fetch("api/list/ky-participants" + (qs.toString() ? "?" + qs.toString() : ""));
+        const { entries } = await res.json();
+        if (!entries || entries.length === 0) {
+          document.getElementById("ky-content").innerHTML = '<div class="alert alert-info">当該日のKY参加なし（安全指示書の発行＋作業員のKY参加で追加されます）</div>';
+          return;
+        }
+        const rows = entries.map(e => `<tr>
+          <td>${fmtDate(e.enteredAt)}</td>
+          <td>${esc(e.onsite_name || "-")}</td>
+          <td><strong>${esc(e.worker_name || "?")}</strong><br><span class="muted">${esc(e.worker_phone || "")}</span></td>
+          <td>${esc(e.partner_name || "")}<br><span class="muted">職長:${esc(e.sheet_leader || "-")}</span></td>
+          <td>${e.daysFromEntry ?? "-"}日目</td>
+          <td>${esc(e.healthCondition || "-")}<br><span class="muted">${e.bodyTemperature ? e.bodyTemperature + "℃" : ""}</span></td>
+          <td>${nl2br(e.expectedDanger)}</td>
+          <td>${nl2br(e.preventionMeasure)}</td>
+          <td><strong>${esc(e.actionTarget || "")}</strong></td>
+        </tr>`).join("");
+        document.getElementById("ky-content").innerHTML = `
+          <p class="muted">合計 ${entries.length} 名が参加</p>
+          <div class="table-scroll">
+          <table>
+            <thead><tr><th>参加時刻</th><th>現場</th><th>作業員</th><th>所属会社／職長</th><th>日数</th><th>体調／体温</th><th>危険のポイント</th><th>災害防止策</th><th>行動目標</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+          </div>`;
+      } catch (e) {
+        document.getElementById("ky-content").innerHTML = `<div class="alert alert-info">データなし（モック・API未接続のため0件表示）</div>`;
+      }
+    }
+
+    async function loadSafety() {
+      try {
+        const d = dateStates.safety;
+        const qs = new URLSearchParams();
+        if (d) qs.set("date", d);
+        if (onsiteId) qs.set("onsiteId", onsiteId);
+        const res = await fetch("api/list/safety-meetings" + (qs.toString() ? "?" + qs.toString() : ""));
+        const { entries } = await res.json();
+        if (!entries || entries.length === 0) {
+          document.getElementById("safety-content").innerHTML = '<div class="alert alert-info">安全会議参加の登録なし</div>';
+          return;
+        }
+        const rows = entries.map(e => `<tr>
+          <td>${fmtDate(e.createdAt)}</td>
+          <td>${esc(e.onsiteName || "-")}</td>
+          <td><strong>${esc(e.worker?.name || "?")}</strong><br><span class="muted">${esc(e.worker?.phone || "")}</span></td>
+          <td>${esc(e.meetingName || "")}</td>
+          <td>${nl2br(e.opinion)}</td>
+        </tr>`).join("");
+        document.getElementById("safety-content").innerHTML = `
+          <p class="muted">合計 ${entries.length} 件</p>
+          <div class="table-scroll">
+          <table>
+            <thead><tr><th>日時</th><th>現場</th><th>作業員</th><th>会議名</th><th>所感・議事</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+          </div>`;
+      } catch (e) {
+        document.getElementById("safety-content").innerHTML = `<div class="alert alert-info">データなし（モック・API未接続のため0件表示）</div>`;
+      }
+    }
+
+    async function loadAll() {
+      try {
+        const qs = new URLSearchParams();
+        if (onsiteId) qs.set("onsiteId", onsiteId);
+        qs.set("limit", "500");
+        const res = await fetch("api/list/all?" + qs.toString());
+        const { entries } = await res.json();
+        if (!entries || entries.length === 0) {
+          document.getElementById("all-content").innerHTML = '<div class="alert alert-info">履歴なし</div>';
+          return;
+        }
+        const typeColor = {
+          "EntryExit(入場)": "badge-success",
+          "EntryExit(退場)": "badge",
+          "EntryExit(強制退場)": "badge-danger",
+          "NewEntry(新規入場)": "badge-warn",
+          "KyParticipant(KY参加)": "badge",
+          "SafetyMeeting(安全会議)": "badge",
+          "Worker(作業員登録)": "badge",
+        };
+        const rows = entries.map(e => `<tr>
+          <td>${fmtDate(e.eventAt)}</td>
+          <td><span class="badge ${typeColor[e.entryType] || ""}">${esc(e.entryType)}</span></td>
+          <td>${esc(e.onsiteName || "-")}</td>
+          <td>${e.workerName ? `<strong>${esc(e.workerName)}</strong><br><span class="muted">${esc(e.workerPhone || "")}</span>` : "-"}</td>
+          <td>${esc(e.detail || "")}</td>
+          <td class="muted">#${e.recordId ?? "-"}</td>
+        </tr>`).join("");
+        document.getElementById("all-content").innerHTML = `
+          <p class="muted">合計 ${entries.length} 件（最大500件）</p>
+          <div class="table-scroll">
+          <table>
+            <thead><tr><th>発生日時</th><th>種別</th><th>現場</th><th>作業員</th><th>詳細</th><th>ID</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+          </div>`;
+      } catch (e) {
+        document.getElementById("all-content").innerHTML = `<div class="alert alert-info">データなし（モック・API未接続のため0件表示）</div>`;
+      }
+    }
+
+    function reloadAll() {
+      loadUnexited();
+      loadWorkers();
+      loadNewEntries();
+      loadEntries();
+      loadKy();
+      loadSafety();
+      loadAll();
+    }
+
+    dateLoaders.entries = loadEntries;
+    dateLoaders.newEntries = loadNewEntries;
+    dateLoaders.ky = loadKy;
+    dateLoaders.safety = loadSafety;
+
+    renderDateBar("entries", "📅 入退場日");
+    renderDateBar("newEntries", "📅 新規入場日");
+    renderDateBar("ky", "📅 活動日");
+    renderDateBar("safety", "📅 会議日");
+
+    reloadAll();
+  </script>
+</body>
+</html>

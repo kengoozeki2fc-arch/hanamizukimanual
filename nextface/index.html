@@ -36,8 +36,8 @@
 <body>
   <div class="nav">
     <h3>永賢組 入退場モック</h3>
-    <a id="navDashboard" href="/dashboard.html">📊 ダッシュボード</a>
-    <a id="navAdmin" href="/admin.html">管理画面</a>
+    <a id="navDashboard" href="dashboard.html">📊 ダッシュボード</a>
+    <a id="navAdmin" href="admin.html">管理画面</a>
   </div>
   <div class="wrap">
     <h1>画面メニュー</h1>
@@ -49,7 +49,7 @@
     <div class="card">
       <h2>① 個人情報登録（事前登録）</h2>
       <p class="muted">QR/URL→顔写真撮影→作業員情報登録</p>
-      <a id="link-site-entry" href="/site-entry.html?clientId=1" class="btn btn-block">個人情報登録へ</a>
+      <a id="link-site-entry" href="site-entry.html?clientId=1" class="btn btn-block">個人情報登録へ</a>
     </div>
 
     <div class="card" style="border-left:5px solid var(--nagaken-primary-deep);">
@@ -76,37 +76,37 @@
     <div class="card">
       <h2>① 新規入場登録（初日のみ）</h2>
       <p class="muted">顔認証→電話番号→当日項目（体調/血圧/体温）入力</p>
-      <a id="link-new-entry" href="/nfc-entry.html?mode=new-entry&clientId=1" class="btn btn-block">新規入場登録へ</a>
+      <a id="link-new-entry" href="nfc-entry.html?mode=new-entry&clientId=1" class="btn btn-block">新規入場登録へ</a>
     </div>
 
     <div class="card">
       <h2>② 入場</h2>
       <p class="muted">顔認証→打刻</p>
-      <a id="link-entry" href="/nfc-entry.html?mode=entry&clientId=1" class="btn btn-block">入場へ</a>
+      <a id="link-entry" href="nfc-entry.html?mode=entry&clientId=1" class="btn btn-block">入場へ</a>
     </div>
 
     <div class="card">
       <h2>③ KY活動</h2>
       <p class="muted">顔認証→本日のKY活動記入</p>
-      <a id="link-ky" href="/nfc-entry.html?mode=ky&clientId=1" class="btn btn-block">KY活動へ</a>
+      <a id="link-ky" href="nfc-entry.html?mode=ky&clientId=1" class="btn btn-block">KY活動へ</a>
     </div>
 
     <div class="card">
       <h2>Ⓑ KY用紙（帳票ビュー）</h2>
       <p class="muted">危険予知活動表のA3帳票・③ KY活動の登録結果／現場名／会社／作業内容を反映</p>
-      <a id="link-ky-sheet" href="/ky-sheet.html" class="btn btn-accent btn-block">📄 KY帳票ビューを開く</a>
+      <a id="link-ky-sheet" href="ky-sheet.html" class="btn btn-accent btn-block">📄 KY帳票ビューを開く</a>
     </div>
 
     <div class="card">
       <h2>④ 安全会議参加</h2>
       <p class="muted">顔認証→参加実績登録</p>
-      <a id="link-safety" href="/nfc-entry.html?mode=safety&clientId=1" class="btn btn-block">安全会議参加へ</a>
+      <a id="link-safety" href="nfc-entry.html?mode=safety&clientId=1" class="btn btn-block">安全会議参加へ</a>
     </div>
 
     <div class="card">
       <h2>⑤ 退場</h2>
       <p class="muted">顔認証→退場打刻</p>
-      <a id="link-exit" href="/nfc-entry.html?mode=exit&clientId=1" class="btn btn-danger btn-block">退場へ</a>
+      <a id="link-exit" href="nfc-entry.html?mode=exit&clientId=1" class="btn btn-danger btn-block">退場へ</a>
     </div>
 
     <!-- ==================== 社員用 ==================== -->
@@ -115,7 +115,8 @@
     <div class="card" style="border-left:5px solid var(--nagaken-primary);">
       <h2>📊 現場ダッシュボード</h2>
       <p class="muted">現場の速報・社員メニュー集約（施工体制図 / 管理画面 / 朝礼イラスト）</p>
-      <a id="link-dashboard" href="/dashboard.html" class="btn btn-block">ダッシュボードを開く</a>
+      <a id="link-dashboard" href="dashboard.html" class="btn btn-block">ダッシュボードを開く</a>
+      <a id="link-site-dashboard" href="site-dashboard.html" class="btn btn-ghost btn-block" style="margin-top:8px;">🏗 現場別 入退場ビュー（本登録済み作業員）</a>
       <div class="nested-card" style="margin-top:12px;">
         <p class="muted" style="margin:6px 0;">ダッシュボード内の導線：</p>
         <ul class="muted" style="font-size:13px; line-height:1.7; margin:0 0 4px 20px;">
@@ -130,21 +131,21 @@
       <h2>Ⓐ 安全作業指示書エディタ</h2>
       <p class="muted">前日安全会議で翌営業日の指示書を作成・発行（最大30社・下書き／発行）</p>
       <div class="btn-group">
-        <a id="link-plan-simple" href="/safety-plan.html" class="btn btn-accent">📝 シンプル版</a>
-        <a id="link-plan-sheet" href="/safety-plan-sheet.html" class="btn btn-accent">📄 帳票ビュー（Excel忠実）</a>
+        <a id="link-plan-simple" href="safety-plan.html" class="btn btn-accent">📝 シンプル版</a>
+        <a id="link-plan-sheet" href="safety-plan-sheet.html" class="btn btn-accent">📄 帳票ビュー（Excel忠実）</a>
       </div>
     </div>
 
     <div class="card" style="border-left:5px solid var(--nagaken-accent);">
       <h2>Ⓐ' 明日の安全日誌作成</h2>
       <p class="muted">翌営業日を対象に帳票ビューを起動（前日夜の下書きに最適）</p>
-      <a id="link-plan-tomorrow" href="/safety-plan-sheet.html" class="btn btn-accent btn-block">📅 明日の安全日誌を作成する</a>
+      <a id="link-plan-tomorrow" href="safety-plan-sheet.html" class="btn btn-accent btn-block">📅 明日の安全日誌を作成する</a>
     </div>
 
     <div class="card">
       <h2>Ⓓ 管理画面</h2>
       <p class="muted">入退場履歴 / 新規入場 / KY / 安全会議 / 登録リスト / 未退場（強制退場可）</p>
-      <a id="link-admin" href="/admin.html" class="btn btn-accent btn-block">管理画面を開く</a>
+      <a id="link-admin" href="admin.html" class="btn btn-accent btn-block">管理画面を開く</a>
     </div>
 
     <div class="card" style="border-left:5px solid var(--nagaken-primary-deep);">
@@ -175,6 +176,13 @@
       u.searchParams.set("onsiteId", onsiteId);
       el.href = u.pathname + "?" + u.searchParams.toString();
     }
+    // site-dashboard.html は ?site=<onsiteId> を読む（onsiteId ではなく site キー）
+    const sd = document.getElementById("link-site-dashboard");
+    if (sd) {
+      const u = new URL(sd.href, location.origin);
+      u.searchParams.set("site", onsiteId);
+      sd.href = u.pathname + "?" + u.searchParams.toString();
+    }
   }
 
   function updateSelectedBadge(name) {
@@ -185,22 +193,31 @@
   }
 
   async function loadOnsites() {
+    let onsites = null;
     try {
-      const res = await fetch("/api/onsites");
-      const { onsites } = await res.json();
-      const sel = document.getElementById("onsiteSelect");
-      const saved = Number(localStorage.getItem(LS_ONSITE)) || (onsites[0]?.id) || 1;
-      sel.innerHTML = (onsites || []).map(o =>
-        `<option value="${o.id}" ${o.id === saved ? "selected" : ""}>${o.name}</option>`
-      ).join("");
-      applyOnsiteToLinks(saved);
-      const cur = onsites.find(o => o.id === saved);
-      if (cur) updateSelectedBadge(cur.name);
-    } catch (e) {
-      const sel = document.getElementById("onsiteSelect");
-      sel.innerHTML = '<option value="1">(現場取得失敗・ID=1で続行)</option>';
-      applyOnsiteToLinks(1);
+      const res = await fetch("api/onsites");
+      if (res.ok) onsites = (await res.json()).onsites;
+    } catch (e) { /* API未接続 */ }
+    // モック/マニュアル閲覧用: API(/api/onsites)未配備時は data/sites-mock.json で現場一覧を再現
+    if (!onsites || !onsites.length) {
+      try {
+        const sm = await (await fetch("data/sites-mock.json")).json();
+        onsites = (sm.sites || []).map(s => ({ id: s.onsiteId, name: s.name }));
+      } catch (e) { /* mockも無ければ最終フォールバック */ }
     }
+    const sel = document.getElementById("onsiteSelect");
+    if (!onsites || !onsites.length) {
+      sel.innerHTML = '<option value="1">(現場ID=1で続行)</option>';
+      applyOnsiteToLinks(1);
+      return;
+    }
+    const saved = Number(localStorage.getItem(LS_ONSITE)) || (onsites[0]?.id) || 1;
+    sel.innerHTML = onsites.map(o =>
+      `<option value="${o.id}" ${o.id === saved ? "selected" : ""}>${o.name}</option>`
+    ).join("");
+    applyOnsiteToLinks(saved);
+    const cur = onsites.find(o => o.id === saved);
+    if (cur) updateSelectedBadge(cur.name);
   }
 
   document.getElementById("onsiteDecideBtn").onclick = () => {
@@ -219,7 +236,7 @@
     btn.disabled = true; btn.textContent = "⏳ 同期中…";
     msg.textContent = "永賢組SPOのOnsiteMasterから取得中…";
     try {
-      const res = await fetch("/api/onsites/sync");
+      const res = await fetch("api/onsites/sync");
       const j = await res.json();
       if (!res.ok) throw new Error(j.error || "同期失敗");
       msg.innerHTML = `✅ 同期完了: 新規 ${j.inserted} / 更新 ${j.updated} / 合計 ${j.total}`;

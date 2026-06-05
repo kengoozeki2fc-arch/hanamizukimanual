@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>現場ダッシュボード | 永賢組</title>
+  <link rel="stylesheet" href="css/common.css">
+  <script src="js/onsite-badge.js" defer></script>
+  <style>
+    .wrap-dash { max-width: 1100px; margin: 0 auto; padding: 16px; }
+    .dash-head {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      background: #fff; border: 1px solid var(--nagaken-border);
+      border-radius: 8px; padding: 12px 14px; margin-bottom: 16px;
+    }
+    .dash-head h1 {
+      margin: 0; padding: 0; border: none; font-size: 18px;
+      color: var(--nagaken-primary-dark);
+    }
+    .dash-head .today {
+      font-size: 15px; font-weight: 600; color: var(--nagaken-primary-deep);
+    }
+    .dash-head .onsite { color: #555; font-size: 13px; }
+    .dash-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px; margin-bottom: 20px;
+    }
+    .stat-card {
+      background: #fff; border: 1px solid var(--nagaken-border);
+      border-radius: 10px; padding: 18px 18px 16px;
+      display: flex; flex-direction: column; gap: 8px;
+      cursor: pointer; transition: all 0.15s ease;
+      text-decoration: none; color: inherit;
+    }
+    .stat-card:hover {
+      border-color: var(--nagaken-primary);
+      box-shadow: 0 4px 14px rgba(46, 139, 62, 0.18);
+      transform: translateY(-1px);
+    }
+    .stat-card .icon { font-size: 28px; line-height: 1; }
+    .stat-card .label {
+      font-size: 13px; font-weight: 600; color: #5a6a5c;
+      letter-spacing: 0.02em;
+    }
+    .stat-card .num {
+      font-size: 40px; font-weight: 800; line-height: 1;
+      color: var(--nagaken-primary-dark);
+    }
+    .stat-card .unit { font-size: 15px; color: #666; margin-left: 4px; font-weight: 500; }
+    .stat-card .more {
+      font-size: 12px; color: var(--nagaken-primary-deep);
+      margin-top: auto; text-align: right;
+    }
+    .stat-card.new-entry { border-left: 5px solid var(--nagaken-accent); }
+    .stat-card.entry     { border-left: 5px solid var(--nagaken-primary); }
+    .stat-card.ky        { border-left: 5px solid #5BC0DE; }
+
+    .unexited-section {
+      background: #fff; border: 1px solid var(--nagaken-border);
+      border-radius: 10px; padding: 16px; margin-top: 12px;
+    }
+    .unexited-section h2 {
+      margin: 0 0 10px; font-size: 16px; color: var(--nagaken-primary-dark);
+      border-bottom: 1px solid var(--nagaken-border); padding-bottom: 6px;
+    }
+    .unexited-locked {
+      padding: 20px; text-align: center; color: #888; font-size: 14px;
+      background: #fafafa; border-radius: 6px;
+    }
+    .unexited-locked strong { color: var(--nagaken-primary-dark); }
+    table.mini {
+      width: 100%; border-collapse: collapse; font-size: 13px;
+    }
+    table.mini th, table.mini td {
+      padding: 6px 10px; text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+    table.mini th { background: var(--nagaken-bg); font-weight: 600; }
+    .badge-hot { background: #F8D7DA; color: #721C24; }
+    .muted-right { text-align: right; font-size: 12px; color: #888; }
+    .refresh-btn {
+      padding: 4px 12px; min-height: 30px; font-size: 12px;
+      background: transparent; color: var(--nagaken-primary-deep);
+      border: 1px solid var(--nagaken-primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="nav">
+    <h3>現場ダッシュボード</h3>
+    <a href="./">メニュー</a>
+  </div>
+
+  <div class="wrap-dash">
+    <div class="dash-head">
+      <h1>📊 現場ダッシュボード</h1>
+      <span class="today" id="todayLabel"></span>
+      <span class="onsite" id="onsiteLabel"></span>
+      <span style="flex:1 1 30px;"></span>
+      <button type="button" class="btn refresh-btn" id="refreshBtn">🔄 更新</button>
+    </div>
+
+    <div class="dash-grid">
+      <a href="admin.html?tab=newEntries" class="stat-card new-entry" id="card-newEntries">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div class="label">🆕 今日の新規入場者</div>
+          <div class="icon">🪪</div>
+        </div>
+        <div><span class="num" id="n-newEntries">-</span><span class="unit">名</span></div>
+        <div class="more">明細を見る →</div>
+      </a>
+      <a href="admin.html?tab=entries" class="stat-card entry" id="card-entries">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div class="label">🚪 今日の入場者</div>
+          <div class="icon">👷</div>
+        </div>
+        <div><span class="num" id="n-entries">-</span><span class="unit">名</span></div>
+        <div class="more">明細を見る →</div>
+      </a>
+      <a href="ky-sheet.html" class="stat-card ky" id="card-ky">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div class="label">⚠ 今日のKY活動</div>
+          <div class="icon">📋</div>
+        </div>
+        <div><span class="num" id="n-ky">-</span><span class="unit">件</span></div>
+        <div class="more">KY帳票ビュー →</div>
+      </a>
+    </div>
+
+    <div class="unexited-section">
+      <h2>⏳ 未退場者リスト <span class="muted" style="font-size:12px; font-weight:400;">（17:30以降に表示）</span></h2>
+      <div id="unexitedBody" class="unexited-locked">読込中…</div>
+    </div>
+
+    <h2 style="margin-top:24px; font-size:16px; color:var(--nagaken-primary-dark); border-bottom:1px solid var(--nagaken-border); padding-bottom:6px;">🧑‍💼 社員メニュー</h2>
+    <div class="dash-grid">
+      <a id="link-construction" href="construction-system.html" class="stat-card" style="border-left:5px solid var(--nagaken-primary-deep);">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div class="label">Ⓔ 施工体制図作成</div>
+          <div class="icon">🏗</div>
+        </div>
+        <div class="muted" style="font-size:13px;">元請＋下請ツリー（Phase3）</div>
+        <div class="more">開く →</div>
+      </a>
+      <a id="link-admin" href="admin.html" class="stat-card" style="border-left:5px solid var(--nagaken-accent);">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div class="label">Ⓓ 管理画面</div>
+          <div class="icon">📋</div>
+        </div>
+        <div class="muted" style="font-size:13px;">入退場/KY/未退場の確認・強制退場</div>
+        <div class="more">開く →</div>
+      </a>
+      <a id="link-ky-back" href="#" onclick="alert('Ⓒ KY裏面エディタ（朝礼用イラスト作成）はPhase2実装予定です'); return false;" class="stat-card" style="border-left:5px solid #B0B0B0;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div class="label">Ⓒ KY裏面エディタ（朝礼用）</div>
+          <div class="icon">🎨</div>
+        </div>
+        <div class="muted" style="font-size:13px;">朝礼用イラスト作成（Phase2）</div>
+        <div class="more">Coming Soon</div>
+      </a>
+    </div>
+
+    <p class="muted" style="text-align:center; margin-top:24px; font-size:12px;">
+      最終更新: <span id="lastUpdated">-</span>
+    </p>
+  </div>
+
+<script src="js/business-date.js"></script>
+<script>
+  const qs = new URLSearchParams(location.search);
+  const onsiteId = Number(qs.get("onsiteId") || 1);
+  const FORCE_UNEXITED = qs.get("force") === "1"; // 動作確認用: ?force=1 で17:30制約を無視
+
+  const esc = (s) => (s == null ? "" : String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c])));
+  const fmtDateTime = (s) => s ? new Date(s).toLocaleString("ja-JP", { hour:"2-digit", minute:"2-digit", month:"2-digit", day:"2-digit" }) : "";
+  const todayStr = () => window.businessDate.today();
+
+  function isAfter1730() {
+    if (FORCE_UNEXITED) return true;
+    const now = new Date();
+    return now.getHours() > 17 || (now.getHours() === 17 && now.getMinutes() >= 30);
+  }
+
+  async function loadStats() {
+    const d = todayStr();
+    document.getElementById("todayLabel").textContent = new Date().toLocaleDateString("ja-JP", { year:"numeric", month:"long", day:"numeric", weekday:"short" });
+
+    // モック/マニュアル閲覧用: API(/api/*)未配備でも UI が崩れないよう、
+    // 失敗時は KPI=0・現場名は data/sites-mock.json から解決する
+    const jsonOr = (url, fallback) => fetch(url).then(r => r.ok ? r.json() : fallback).catch(() => fallback);
+    try {
+      const [ne, en, kp, on] = await Promise.all([
+        jsonOr(`api/list/new-entries?date=${d}`, { entries: [] }),
+        jsonOr(`api/list/entries?date=${d}`, { entries: [] }),
+        jsonOr(`api/list/ky-participants?date=${d}`, { entries: [] }),
+        jsonOr(`api/onsites`, { onsites: [] }),
+      ]);
+      document.getElementById("n-newEntries").textContent = (ne.entries || []).length;
+      document.getElementById("n-entries").textContent = (en.entries || []).length;
+      document.getElementById("n-ky").textContent = (kp.entries || []).length;
+      let site = (on.onsites || []).find(o => o.id === onsiteId) || (on.onsites || [])[0];
+      if (!site) {
+        // API未接続時は sites-mock.json で現場名を解決
+        const sm = await jsonOr("data/sites-mock.json", { sites: [] });
+        const hit = (sm.sites || []).find(s => Number(s.onsiteId) === onsiteId) || (sm.sites || [])[0];
+        if (hit) site = { id: hit.onsiteId, name: hit.name };
+      }
+      document.getElementById("onsiteLabel").textContent =
+        site ? `🏗 ${site.name}` : "🏗 (モック表示・API未接続)";
+    } catch (e) {
+      ["n-newEntries", "n-entries", "n-ky"].forEach(id => document.getElementById(id).textContent = "0");
+      document.getElementById("onsiteLabel").textContent = "🏗 (モック表示・API未接続)";
+      console.warn("KPI API 未接続のため 0 表示にフォールバック", e);
+    }
+    document.getElementById("lastUpdated").textContent = new Date().toLocaleTimeString("ja-JP");
+  }
+
+  async function loadUnexited() {
+    const box = document.getElementById("unexitedBody");
+    if (!isAfter1730()) {
+      box.className = "unexited-locked";
+      box.innerHTML = `
+        <div style="font-size:32px; margin-bottom:6px;">🔒</div>
+        <strong>17:30 以降に表示されます</strong><br>
+        <span class="muted">（現在時刻: ${new Date().toLocaleTimeString("ja-JP")}）</span><br>
+        <span class="muted" style="font-size:11px;">一日の作業時間中は誤解を招くので非表示にしています</span>
+      `;
+      return;
+    }
+    try {
+      const r = await fetch("api/list/unexited").then(r => r.json());
+      const entries = r.entries || [];
+      if (entries.length === 0) {
+        box.className = "";
+        box.innerHTML = `<div class="alert alert-success" style="padding:10px;">✅ 未退場者はいません</div>`;
+        return;
+      }
+      box.className = "";
+      const rows = entries.map(e => {
+        const hot = e.overnight;
+        return `<tr>
+          <td>${fmtDateTime(e.entryDatetime)}</td>
+          <td><strong>${esc(e.worker?.name || "?")}</strong><br><span class="muted" style="font-size:11px;">${esc(e.worker?.phone || "")}</span></td>
+          <td>${esc(e.healthConditionToday || "-")}</td>
+          <td><span class="badge ${hot ? "badge-hot" : "badge-warn"}">${e.elapsedHours}h 経過${hot ? " ⚠" : ""}</span></td>
+        </tr>`;
+      }).join("");
+      box.innerHTML = `
+        <div class="muted" style="font-size:12px; margin-bottom:8px;">${entries.length} 名が退場未打刻（元請で強制退場は<a href="admin.html?tab=unexited">管理画面</a>から）</div>
+        <table class="mini">
+          <thead><tr><th>入場時刻</th><th>作業員</th><th>体調</th><th>経過</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      `;
+    } catch (e) {
+      box.innerHTML = `<div class="alert alert-error">${e.message}</div>`;
+    }
+  }
+
+  function reload() {
+    loadStats();
+    loadUnexited();
+  }
+
+  // 全カードリンクに onsiteId を伝播
+  (function propagateOnsite() {
+    const ids = ["card-newEntries", "card-entries", "card-ky", "link-construction", "link-admin"];
+    for (const id of ids) {
+      const el = document.getElementById(id);
+      if (!el || !el.href || el.href.startsWith("javascript:") || el.href === location.href + "#") continue;
+      try {
+        const u = new URL(el.href);
+        u.searchParams.set("onsiteId", onsiteId);
+        el.href = u.pathname + "?" + u.searchParams.toString();
+      } catch (_) { /* skip */ }
+    }
+  })();
+
+  document.getElementById("refreshBtn").onclick = reload;
+  reload();
+  // 5分ごとに自動更新（17:30境界を跨いだ時の自動表示切替も兼ねる）
+  setInterval(reload, 5 * 60 * 1000);
+</script>
+</body>
+</html>

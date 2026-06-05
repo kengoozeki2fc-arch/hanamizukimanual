@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>現場ダッシュボード | 永賢組 顔認証初期登録 v0.5</title>
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/provisional.css">
+  <script src="js/provisional-store.js" defer></script>
+  <script src="js/worker-store.js" defer></script>
+  <style>
+    /* === 本社ダッシュボードのデザインを踏襲（緑トーン） === */
+    .wrap-dash { max-width: 1100px; margin: 0 auto; padding: 16px; }
+    .dash-head {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      background: #fff; border: 1px solid var(--nagaken-border);
+      border-radius: 8px; padding: 12px 14px; margin-bottom: 16px;
+    }
+    .dash-head h1 {
+      margin: 0; padding: 0; border: none; font-size: 18px;
+      color: var(--nagaken-primary-dark);
+    }
+    .dash-head .today {
+      font-size: 15px; font-weight: 600; color: var(--nagaken-primary-deep);
+    }
+    .dash-head .scope { color: #555; font-size: 13px; }
+    .dash-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px; margin-bottom: 20px;
+    }
+    .stat-card {
+      background: #fff; border: 1px solid var(--nagaken-border);
+      border-radius: 10px; padding: 18px 18px 16px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .stat-card .icon { font-size: 28px; line-height: 1; }
+    .stat-card .label {
+      font-size: 13px; font-weight: 600; color: #5a6a5c; letter-spacing: 0.02em;
+    }
+    .stat-card .num {
+      font-size: 40px; font-weight: 800; line-height: 1; color: var(--nagaken-primary-dark);
+    }
+    .stat-card .unit { font-size: 15px; color: #666; margin-left: 4px; font-weight: 500; }
+    .stat-card .dummy-tag {
+      font-size: 10px; color: #aa7a00; background: #fff7e0;
+      border: 1px solid #ecd9a0; border-radius: 999px;
+      padding: 1px 7px; align-self: flex-start; font-weight: 600;
+    }
+    .stat-card.workers { border-left: 5px solid var(--nagaken-primary); }
+    .stat-card.in      { border-left: 5px solid #2E8B3E; }
+    .stat-card.unexit  { border-left: 5px solid #F0AD00; }
+
+    .section-card {
+      background: #fff; border: 1px solid var(--nagaken-border);
+      border-radius: 10px; padding: 16px; margin-top: 12px;
+    }
+    .section-card h2 {
+      margin: 0 0 10px; font-size: 16px; color: var(--nagaken-primary-dark);
+      border-bottom: 1px solid var(--nagaken-border); padding-bottom: 6px;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    .section-card h2 .count { font-size: 13px; font-weight: 500; color: var(--nagaken-primary-deep); }
+
+    table.mini { width: 100%; border-collapse: collapse; font-size: 13px; }
+    table.mini th, table.mini td { padding: 8px 10px; text-align: left; border-bottom: 1px solid #eee; }
+    table.mini th { background: var(--nagaken-bg); font-weight: 600; }
+    .empty-cell { padding: 30px; text-align: center; color: #888; font-size: 13px; background: #fafafa; border-radius: 6px; }
+    .table-scroll-x { overflow-x: auto; }
+
+    .att-badge {
+      display: inline-block; font-size: 11px; font-weight: 700;
+      border-radius: 999px; padding: 2px 10px;
+    }
+    .att-in     { background: #e6f4ea; color: #155724; border: 1px solid #b7dcc1; }
+    .att-out    { background: #eef1f3; color: #555;    border: 1px solid #d4dade; }
+    .att-unexit { background: #fff3cd; color: #856404; border: 1px solid #ffe08a; }
+
+    .refresh-btn {
+      padding: 4px 12px; min-height: 30px; font-size: 12px;
+      background: transparent; color: var(--nagaken-primary-deep);
+      border: 1px solid var(--nagaken-primary);
+    }
+    .cert-chip {
+      display: inline-block; font-size: 10px; color: var(--nagaken-primary-deep);
+      background: var(--nagaken-bg); border: 1px solid var(--nagaken-border);
+      border-radius: 999px; padding: 1px 7px; margin: 1px 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="nav">
+    <h3>現場ダッシュボード</h3>
+    <a href="./">メニュー</a>
+  </div>
+
+  <div class="wrap-dash">
+    <div class="prov-nav">
+      <a class="prov-nav-btn" href="provisional-dashboard.html">← 本社ダッシュボードへ戻る</a>
+      <span class="prov-nav-spacer"></span>
+      <span class="prov-nav-hint">本登録済み作業員（既存テーブル）の入退場状況を表示</span>
+    </div>
+
+    <div class="dash-head">
+      <h1>🏗 <span id="siteName">現場</span></h1>
+      <span class="today" id="todayLabel"></span>
+      <span class="scope" id="siteScope"></span>
+      <span style="flex:1 1 30px;"></span>
+      <button type="button" class="btn refresh-btn" id="refreshBtn">🔄 更新</button>
+    </div>
+
+    <!-- 現場単位 KPI -->
+    <div class="dash-grid">
+      <div class="stat-card workers">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div class="label">👷 本登録済み 作業員</div>
+          <div class="icon">🪪</div>
+        </div>
+        <div><span class="num" id="n-workers">0</span><span class="unit">名</span></div>
+      </div>
+      <div class="stat-card in">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div class="label">🚪 今日の入場者数</div>
+          <div class="icon">✅</div>
+        </div>
+        <div><span class="num" id="n-in">0</span><span class="unit">名</span></div>
+        <span class="dummy-tag">ダミー入退場</span>
+      </div>
+      <div class="stat-card unexit">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div class="label">⚠️ 今日の未退場者数</div>
+          <div class="icon">🚧</div>
+        </div>
+        <div><span class="num" id="n-unexit">0</span><span class="unit">名</span></div>
+        <span class="dummy-tag">ダミー入退場</span>
+      </div>
+    </div>
+
+    <!-- 作業員 入退場一覧（既存テーブル参照） -->
+    <div class="section-card">
+      <h2>
+        👷 本登録済み作業員の入退場状況
+        <span class="count" id="workerCount">（0名）</span>
+        <span class="muted" style="font-size:12px; font-weight:400;">既存テーブル（本登録済み作業員）を参照</span>
+      </h2>
+      <div class="table-scroll-x">
+        <table class="mini" id="workerTable">
+          <thead>
+            <tr>
+              <th>状態</th>
+              <th>氏名</th>
+              <th>会社</th>
+              <th>職種</th>
+              <th>保有資格</th>
+              <th>入場</th>
+              <th>退場</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p class="muted" style="font-size:12px; margin-top:10px;">
+        ※ 入退場の実績はモックのダミー値です（顔認証端末との連携は未実装）。作業員データ（氏名・会社・職種・資格）は本社で本登録された<strong>既存テーブル</strong>の値です。
+      </p>
+    </div>
+
+    <p class="muted" style="text-align:center; margin-top:24px; font-size:12px;">
+      最終更新: <span id="lastUpdated">-</span>
+    </p>
+  </div>
+
+<script>
+  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+
+  function siteIdFromUrl() {
+    const v = new URLSearchParams(location.search).get("site");
+    return v != null ? Number(v) : null;
+  }
+
+  // sites-mock.json から現場名を解決
+  async function resolveSite(onsiteId) {
+    try {
+      const j = await (await fetch("data/sites-mock.json")).json();
+      const hit = (j.sites || []).find(s => Number(s.onsiteId) === Number(onsiteId));
+      if (hit) return hit;
+    } catch (e) {
+      console.warn("sites-mock.json 読み込み失敗", e);
+    }
+    return { onsiteId, name: `現場ID ${onsiteId}`, clientName: "-" };
+  }
+
+  // 当日日付（モックは端末ローカル日付。業務日5時起算はモック簡略化）
+  function todayStr() {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  // 作業員1件にダミー入退場を割り当てる（workerId のハッシュで安定化＝更新しても見た目が暴れない）
+  //   返り値 attendance: { state: "in"|"out"|"unexit", inAt, outAt }
+  function dummyAttendance(worker) {
+    // すでに保存済みの attendance があればそれを尊重（本番ログ相当）
+    if (worker.attendance && worker.attendance.date === todayStr()) return worker.attendance;
+    // workerId 文字列から擬似乱数（0..2）
+    let h = 0;
+    for (const ch of worker.workerId) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    const bucket = h % 3; // 0=入場中(未退場) 1=退場済 2=未入場
+    const base = todayStr();
+    if (bucket === 0) return { date: base, state: "unexit", inAt: `${base}T07:5${h % 9}:00`, outAt: null };
+    if (bucket === 1) return { date: base, state: "out", inAt: `${base}T07:3${h % 9}:00`, outAt: `${base}T17:1${h % 9}:00` };
+    return { date: base, state: "absent", inAt: null, outAt: null };
+  }
+
+  function fmtTime(iso) {
+    if (!iso) return "-";
+    return iso.slice(11, 16);
+  }
+
+  function attBadge(att) {
+    if (att.state === "unexit") return `<span class="att-badge att-unexit">入場中（未退場）</span>`;
+    if (att.state === "out")    return `<span class="att-badge att-out">退場済</span>`;
+    return `<span class="att-badge att-out" style="opacity:.6;">未入場</span>`;
+  }
+
+  let SITE = null;
+
+  function render() {
+    const workers = WorkerStore.listBySite(SITE.onsiteId);
+
+    // KPI
+    document.getElementById("n-workers").textContent = workers.length;
+    let inCount = 0, unexitCount = 0;
+    const rows = workers.map(w => {
+      const att = dummyAttendance(w);
+      if (att.state === "unexit") { inCount++; unexitCount++; }
+      else if (att.state === "out") { inCount++; }
+      return { w, att };
+    });
+    document.getElementById("n-in").textContent = inCount;
+    document.getElementById("n-unexit").textContent = unexitCount;
+
+    // 表
+    const tbody = document.querySelector("#workerTable tbody");
+    if (!rows.length) {
+      tbody.innerHTML = `<tr><td colspan="7"><div class="empty-cell">この現場には本登録済みの作業員がまだいません。<br>本社ダッシュボードで仮入場者を「OCR本登録」するとここに表示されます。</div></td></tr>`;
+    } else {
+      tbody.innerHTML = rows.map(({ w, att }) => `
+        <tr>
+          <td>${attBadge(att)}</td>
+          <td>${esc(w.name)}${w.nameKana ? `<br><span class="muted" style="font-size:11px;">${esc(w.nameKana)}</span>` : ""}</td>
+          <td>${esc(w.company || "-")}</td>
+          <td>${esc(w.occupation || "-")}</td>
+          <td>${(w.certs || []).length ? w.certs.map(c => `<span class="cert-chip">${esc(c)}</span>`).join("") : '<span class="muted">-</span>'}</td>
+          <td>${fmtTime(att.inAt)}</td>
+          <td>${fmtTime(att.outAt)}</td>
+        </tr>`).join("");
+    }
+    document.getElementById("workerCount").textContent = `（${workers.length}名）`;
+    document.getElementById("lastUpdated").textContent = new Date().toLocaleTimeString("ja-JP");
+  }
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    document.getElementById("todayLabel").textContent =
+      new Date().toLocaleDateString("ja-JP", { year:"numeric", month:"long", day:"numeric", weekday:"short" });
+
+    const onsiteId = siteIdFromUrl();
+    if (onsiteId == null) {
+      document.getElementById("siteName").textContent = "（現場が指定されていません）";
+      document.getElementById("siteScope").textContent = "本社ダッシュボードの現場パネルから開いてください";
+      return;
+    }
+    SITE = await resolveSite(onsiteId);
+    document.getElementById("siteName").textContent = SITE.name;
+    document.getElementById("siteScope").textContent =
+      `発注: ${SITE.clientName || "-"}（現場ID ${SITE.onsiteId}）`;
+
+    render();
+    document.getElementById("refreshBtn").onclick = render;
+    setInterval(render, 5 * 60 * 1000);
+  });
+</script>
+</body>
+</html>
