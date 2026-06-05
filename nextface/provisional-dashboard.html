@@ -21,6 +21,18 @@
       margin: 0; padding: 0; border: none; font-size: 18px;
       color: var(--nagaken-primary-dark);
     }
+    /* テナントロゴ表示エリア（契約先マスタの添付ロゴ。clientID 連動で差し替え） */
+    .dash-head .tenant-logo {
+      display: inline-flex; align-items: center; min-height: 40px;
+    }
+    .dash-head .tenant-logo img { height: 40px; width: auto; display: block; }
+    /* ロゴ未設定テナントのフォールバック（テキスト表示） */
+    .dash-head .tenant-logo .logo-fallback {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 40px; padding: 0 12px; border-radius: 8px;
+      background: var(--nagaken-bg); border: 1px dashed var(--nagaken-border);
+      font-size: 13px; font-weight: 700; color: var(--nagaken-primary-dark);
+    }
     .dash-head .today {
       font-size: 15px; font-weight: 600; color: var(--nagaken-primary-deep);
     }
@@ -191,6 +203,7 @@
 
     <!-- dash-head：タイトル＋日付＋テナント切替＋更新ボタン -->
     <div class="dash-head">
+      <span class="tenant-logo" id="tenantLogo" aria-label="テナントロゴ"></span>
       <h1>🏢 本社ダッシュボード</h1>
       <span class="today" id="todayLabel"></span>
       <span style="flex:1 1 30px;"></span>
@@ -371,6 +384,26 @@
     ).join("");
     if (currentClientId == null) currentClientId = TENANTS[0]?.clientId ?? 1;
     sel.value = String(currentClientId);
+    renderTenantLogo();
+  }
+
+  // ===== テナントロゴ（契約先マスタの添付ロゴ）=====
+  // モック：clientID → ロゴ画像パスを固定マップ。
+  // 本番：契約先マスタの添付ロゴURL（ClientMaster.LogoUrl 等）に置き換える。
+  const TENANT_LOGOS = { 1: "img/logo-client1.svg", 4: "img/logo-client4.svg" };
+  function renderTenantLogo() {
+    const box = document.getElementById("tenantLogo");
+    if (!box) return;
+    const cid = Number(currentClientId);
+    const src = TENANT_LOGOS[cid];
+    const name = (TENANTS.find(t => Number(t.clientId) === cid) || {}).clientName || `clientID ${cid}`;
+    if (src) {
+      // 画像読込失敗時はテキストフォールバックへ自動切替
+      box.innerHTML = `<img src="${src}" alt="${esc(name)} ロゴ"
+        onerror="this.parentNode.innerHTML='<span class=&quot;logo-fallback&quot;>🏢 ${esc(name)}</span>'">`;
+    } else {
+      box.innerHTML = `<span class="logo-fallback">🏢 ${esc(name)}</span>`;
+    }
   }
 
   // 選択中テナントの現場（onsiteId）集合
@@ -663,6 +696,7 @@
     // テナント（clientID）切替
     document.getElementById("tenantSelect").addEventListener("change", (e) => {
       currentClientId = Number(e.target.value);
+      renderTenantLogo();
       reload();
     });
 

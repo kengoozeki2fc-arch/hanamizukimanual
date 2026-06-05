@@ -17,6 +17,15 @@
       margin: 0; padding: 0; border: none; font-size: 18px;
       color: var(--nagaken-primary-dark);
     }
+    /* テナントロゴ表示エリア（契約先マスタの添付ロゴ。onsiteId→clientId 逆引きで表示） */
+    .dash-head .tenant-logo { display: inline-flex; align-items: center; min-height: 40px; }
+    .dash-head .tenant-logo img { height: 40px; width: auto; display: block; }
+    .dash-head .tenant-logo .logo-fallback {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 40px; padding: 0 12px; border-radius: 8px;
+      background: var(--nagaken-bg); border: 1px dashed var(--nagaken-border);
+      font-size: 13px; font-weight: 700; color: var(--nagaken-primary-dark);
+    }
     .dash-head .today {
       font-size: 15px; font-weight: 600; color: var(--nagaken-primary-deep);
     }
@@ -94,6 +103,7 @@
 
   <div class="wrap-dash">
     <div class="dash-head">
+      <span class="tenant-logo" id="tenantLogo" aria-label="テナントロゴ"></span>
       <h1>📊 現場ダッシュボード</h1>
       <span class="today" id="todayLabel"></span>
       <span class="onsite" id="onsiteLabel"></span>
@@ -214,6 +224,33 @@
       console.warn("KPI API 未接続のため 0 表示にフォールバック", e);
     }
     document.getElementById("lastUpdated").textContent = new Date().toLocaleTimeString("ja-JP");
+    renderTenantLogo();
+  }
+
+  // ===== テナントロゴ（契約先マスタの添付ロゴ）=====
+  // 現場ダッシュボードは onsiteId → clientId を逆引きしてロゴを出す。
+  // モック：clientID → ロゴ画像パスの固定マップ。本番は契約先マスタ添付ロゴURLに置換。
+  const TENANT_LOGOS = { 1: "img/logo-client1.svg", 4: "img/logo-client4.svg" };
+  let ONSITE_TO_CLIENT = null;
+  async function resolveClientId(oid) {
+    if (!ONSITE_TO_CLIENT) {
+      ONSITE_TO_CLIENT = {};
+      const sm = await jsonOr("data/sites-mock.json", { sites: [] });
+      (sm.sites || []).forEach(s => { ONSITE_TO_CLIENT[Number(s.onsiteId)] = Number(s.clientId); });
+    }
+    return ONSITE_TO_CLIENT[Number(oid)] ?? null;
+  }
+  async function renderTenantLogo() {
+    const box = document.getElementById("tenantLogo");
+    if (!box) return;
+    const cid = await resolveClientId(onsiteId);
+    const src = cid != null ? TENANT_LOGOS[cid] : null;
+    if (src) {
+      box.innerHTML = `<img src="${src}" alt="テナントロゴ"
+        onerror="this.parentNode.innerHTML='<span class=&quot;logo-fallback&quot;>🏢 永賢組</span>'">`;
+    } else {
+      box.innerHTML = `<span class="logo-fallback">🏢 永賢組</span>`;
+    }
   }
 
   async function loadUnexited() {

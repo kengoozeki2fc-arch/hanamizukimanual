@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 56" width="200" height="56" role="img" aria-label="株式会社永賢組">
+  <!-- PLACEHOLDER LOGO (clientId=1 / 本社・株式会社永賢組)
+       本番では SharePoint「契約先マスタ」ItemID 1 の添付ロゴに差し替える。
+       SiteCollectionURL: https://nagaken.sharepoint.com/sites/constructioninfo -->
+  <rect x="1" y="1" width="198" height="54" rx="8" fill="#ffffff" stroke="#2E8B3E" stroke-width="2"/>
+  <rect x="10" y="12" width="32" height="32" rx="6" fill="#2E8B3E"/>
+  <path d="M16 36 L26 18 L36 36 Z" fill="#ffffff"/>
+  <rect x="23" y="30" width="6" height="6" fill="#2E8B3E"/>
+  <text x="52" y="26" font-family="'Hiragino Sans','Yu Gothic',sans-serif" font-size="16" font-weight="700" fill="#1f5e2b">永賢組</text>
+  <text x="52" y="44" font-family="'Hiragino Sans','Yu Gothic',sans-serif" font-size="10" fill="#5a6a5c">NAGAKEN CO., LTD.</text>
+</svg>
