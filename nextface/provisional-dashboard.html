@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>現場ダッシュボード | 永賢組 顔認証初期登録 v0.5</title>
+  <title>本社ダッシュボード | 永賢組 顔認証初期登録 v0.5</title>
   <link rel="stylesheet" href="css/common.css">
   <link rel="stylesheet" href="css/provisional.css">
   <script src="js/provisional-store.js" defer></script>
+  <script src="js/worker-store.js" defer></script>
   <script src="js/prov-nav.js" defer></script>
   <style>
     /* === 本体 dashboard.html から忠実コピー === */
@@ -23,7 +24,6 @@
     .dash-head .today {
       font-size: 15px; font-weight: 600; color: var(--nagaken-primary-deep);
     }
-    .dash-head .onsite { color: #555; font-size: 13px; }
     .dash-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -55,10 +55,15 @@
       font-size: 12px; color: var(--nagaken-primary-deep);
       margin-top: auto; text-align: right;
     }
-    /* 本体3カードの左枠色（そのまま再現） */
-    .stat-card.new-entry { border-left: 5px solid var(--nagaken-accent); }
-    .stat-card.entry     { border-left: 5px solid var(--nagaken-primary); }
-    .stat-card.ky        { border-left: 5px solid #5BC0DE; }
+    .stat-card .dummy-tag {
+      font-size: 10px; color: #aa7a00; background: #fff7e0;
+      border: 1px solid #ecd9a0; border-radius: 999px;
+      padding: 1px 7px; align-self: flex-start; font-weight: 600;
+    }
+    /* KPI 3カードの左枠色：①仮登録 ②入場 ③退場 */
+    .stat-card.prov    { border-left: 5px solid var(--nagaken-accent); }
+    .stat-card.entry   { border-left: 5px solid var(--nagaken-primary); }
+    .stat-card.exit    { border-left: 5px solid #5BC0DE; }
 
     /* === 共通セクション枠（本体 unexited-section と同形） === */
     .section-card {
@@ -73,18 +78,14 @@
     .section-card h2 .count {
       font-size: 13px; font-weight: 500; color: var(--nagaken-primary-deep);
     }
-    .section-card .filter-bar {
-      display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0 12px;
-    }
-    .section-card .filter-bar input[type="text"] { flex: 1 1 220px; min-width: 0; }
-    .section-card .filter-bar select { flex: 0 0 auto; }
 
     table.mini { width: 100%; border-collapse: collapse; font-size: 13px; }
     table.mini th, table.mini td {
       padding: 8px 10px; text-align: left; border-bottom: 1px solid #eee;
+      white-space: nowrap;
     }
     table.mini th { background: var(--nagaken-bg); font-weight: 600; }
-    table.mini tbody tr { cursor: pointer; transition: background 0.1s ease; }
+    table.mini tbody tr { transition: background 0.1s ease; }
     table.mini tbody tr:hover { background: #f7fbf6; }
     .empty-cell {
       padding: 30px; text-align: center; color: #888; font-size: 13px;
@@ -102,129 +103,144 @@
       border: 1px solid var(--nagaken-primary);
     }
 
-    /* v0.5：dash-head にログインUserチップ／現場切替プルダウン */
-    .dash-head .user-chip {
+    /* テナント（clientID）切替プルダウン */
+    .dash-head .tenant-picker {
       display: inline-flex; align-items: center; gap: 6px;
-      padding: 4px 10px; border: 1px solid var(--nagaken-border);
-      border-radius: 999px; background: #fafafa;
-      font-size: 13px; color: #333;
+      font-size: 13px; color: #2f5135; font-weight: 600;
     }
-    .dash-head .user-chip .user-icon { font-size: 14px; }
-    .dash-head select.site-picker {
-      min-height: 30px; padding: 2px 8px; font-size: 13px;
-      border: 1px solid var(--nagaken-border); border-radius: 6px; background: #fff;
-    }
-    .dash-head .cta-camera {
-      padding: 6px 12px; min-height: 32px; font-size: 13px; font-weight: 600;
-      background: var(--nagaken-primary); color: #fff;
-      border: 1px solid var(--nagaken-primary-deep); border-radius: 6px;
-      text-decoration: none;
-    }
-    .dash-head .cta-camera:hover { background: var(--nagaken-primary-deep); }
-
-    /* 社員メニュー Coming Soon プレースホルダー */
-    .coming-soon {
-      background: linear-gradient(135deg, #f5f7f5 0%, #e9ece9 100%);
-      border: 1px dashed #b5beb5; border-radius: 10px;
-      padding: 28px 20px; text-align: center; color: #5a6a5c;
-    }
-    .coming-soon .cs-icon { font-size: 36px; line-height: 1; margin-bottom: 8px; }
-    .coming-soon .cs-title { font-size: 15px; font-weight: 700; color: #3a4a3c; margin-bottom: 6px; }
-    .coming-soon .cs-desc { font-size: 12px; color: #777; }
-    .coming-soon .cs-items {
-      margin-top: 14px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
-      font-size: 12px; color: #666;
-    }
-    .coming-soon .cs-items span {
-      padding: 4px 10px; background: rgba(255,255,255,0.7); border: 1px solid #cfd4cf;
-      border-radius: 999px; cursor: not-allowed;
+    .dash-head select.tenant-select {
+      min-height: 30px; padding: 2px 10px; font-size: 13px; font-weight: 600;
+      border: 1px solid var(--nagaken-primary);
+      border-radius: 6px; background: #f3faf4; color: var(--nagaken-primary-dark);
     }
 
     /* 仮入場者リストのステータス行色（淡め） */
     .row-draft  td:first-child { box-shadow: inset 4px 0 0 #B71C1C; }
     .row-review td:first-child { box-shadow: inset 4px 0 0 #8D6E00; }
     .row-active td:first-child { box-shadow: inset 4px 0 0 #155724; }
+
+    /* === OCR本登録モーダル === */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(15, 50, 23, 0.45);
+      display: none; align-items: flex-start; justify-content: center;
+      z-index: 1000; padding: 24px 12px; overflow-y: auto;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #fff; border-radius: 12px; width: 100%; max-width: 720px;
+      box-shadow: 0 12px 40px rgba(0,0,0,.3); overflow: hidden;
+      border-top: 6px solid var(--nagaken-primary);
+    }
+    .modal-head {
+      display: flex; align-items: center; gap: 8px; padding: 14px 18px;
+      border-bottom: 1px solid var(--nagaken-border);
+    }
+    .modal-head h3 { margin: 0; font-size: 16px; color: var(--nagaken-primary-dark); }
+    .modal-head .x { margin-left: auto; cursor: pointer; font-size: 22px; color: #888; background: none; border: none; }
+    .modal-body { padding: 16px 18px; max-height: 65vh; overflow-y: auto; }
+    .modal-foot {
+      display: flex; gap: 10px; justify-content: flex-end; padding: 12px 18px;
+      border-top: 1px solid var(--nagaken-border); background: var(--nagaken-bg);
+    }
+    .ocr-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px 14px; }
+    .ocr-grid .full { grid-column: 1 / -1; }
+    .ocr-field label {
+      display: block; font-size: 11px; font-weight: 600; color: #5a6a5c; margin-bottom: 3px;
+    }
+    .ocr-field input, .ocr-field select {
+      width: 100%; box-sizing: border-box; padding: 7px 9px; font-size: 13px;
+      border: 1px solid var(--nagaken-border); border-radius: 6px; color: #111827;
+      background: #fff;
+    }
+    .ocr-conf {
+      font-size: 10px; font-weight: 700; border-radius: 999px; padding: 1px 6px; margin-left: 4px;
+    }
+    .conf-high { background:#e6f4ea; color:#155724; }
+    .conf-mid  { background:#fff7e0; color:#8d6e00; }
+    .conf-low  { background:#fde8e8; color:#9b1c1c; }
+    .conf-fail { background:#eee; color:#777; }
+    .modal-note {
+      font-size: 12px; color: #5a6a5c; background: var(--nagaken-bg);
+      border: 1px solid var(--nagaken-border); border-radius: 8px;
+      padding: 10px 12px; margin-bottom: 14px;
+    }
+    .modal-thumbs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+    .modal-thumbs .t {
+      width: 84px; height: 84px; border-radius: 8px; overflow: hidden;
+      border: 1px solid var(--nagaken-border); background: #fafafa;
+      display: flex; align-items: center; justify-content: center; flex-direction: column;
+    }
+    .modal-thumbs .t img { width: 100%; height: 100%; object-fit: cover; }
+    .modal-thumbs .t .lbl { font-size: 10px; color: #888; }
   </style>
 </head>
 <body>
   <!-- 本体と同じ .nav バー -->
   <div class="nav">
-    <h3>現場ダッシュボード</h3>
+    <h3>本社ダッシュボード</h3>
     <a href="./">メニュー</a>
   </div>
 
   <div class="wrap-dash">
-    <!-- 共通ナビバー（仮登録フロー4画面のジャンプ用・このダッシュボード本体ではパンくず非表示） -->
+    <!-- 共通ナビバー -->
     <div class="prov-nav">
       <a class="prov-nav-btn" href="./">← メニューへ戻る</a>
       <span class="prov-nav-spacer"></span>
-      <span class="prov-nav-hint">仮入場者リストは所属現場のみ表示されます</span>
+      <span class="prov-nav-hint">選択中テナント（clientID）の全現場を横断して表示します</span>
     </div>
 
-    <!-- 本体と同じ dash-head：タイトル＋日付＋現場名（プルダウン）＋更新ボタン -->
+    <!-- dash-head：タイトル＋日付＋テナント切替＋更新ボタン -->
     <div class="dash-head">
-      <h1>📊 現場ダッシュボード</h1>
+      <h1>🏢 本社ダッシュボード</h1>
       <span class="today" id="todayLabel"></span>
-      <span class="onsite" id="onsiteLabel"></span>
-      <select class="site-picker" id="sitePicker" style="display:none;"></select>
       <span style="flex:1 1 30px;"></span>
-      <a href="provisional-entry.html" class="cta-camera">📷 仮登録（5点撮影）</a>
-      <span class="user-chip" id="provHeaderUser">
-        <span class="user-icon">👤</span><span class="user-name">読込中…</span>
+      <span class="tenant-picker">
+        🏢 テナント
+        <select class="tenant-select" id="tenantSelect" aria-label="テナント（clientID）切替"></select>
       </span>
       <button type="button" class="btn refresh-btn" id="refreshBtn">🔄 更新</button>
     </div>
 
-    <!-- 本体3カード（今日の新規入場者／今日の入場者／今日のKY活動）はそのまま維持 -->
+    <!-- 上部 KPI 3カード -->
     <div class="dash-grid">
-      <a href="#" class="stat-card new-entry" id="card-newEntries">
+      <!-- ① 仮登録者数（本登録したら減る） -->
+      <a href="#" class="stat-card prov" id="card-prov">
         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-          <div class="label">🆕 今日の新規入場者</div>
+          <div class="label">⏳ 仮登録者数</div>
           <div class="icon">🪪</div>
         </div>
-        <div><span class="num" id="n-newEntries">0</span><span class="unit">名</span></div>
+        <div><span class="num" id="n-prov">0</span><span class="unit">名</span></div>
         <div class="more">明細を見る →</div>
       </a>
-      <a href="#" class="stat-card entry" id="card-entries">
+      <!-- ② 今日の入場者数（退場したら減る・clientID全数） -->
+      <a href="#" class="stat-card entry" id="card-entry">
         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-          <div class="label">🚪 今日の入場者</div>
+          <div class="label">🚪 今日の入場者数</div>
           <div class="icon">👷</div>
         </div>
-        <div><span class="num" id="n-entries">0</span><span class="unit">名</span></div>
+        <div><span class="num" id="n-entry">0</span><span class="unit">名</span></div>
         <div class="more">明細を見る →</div>
+        <span class="dummy-tag">ダミー値</span>
       </a>
-      <a href="#" class="stat-card ky" id="card-ky">
+      <!-- ③ 今日の退場者（退場したら増える・clientID全数） -->
+      <a href="#" class="stat-card exit" id="card-exit">
         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-          <div class="label">⚠ 今日のKY活動</div>
-          <div class="icon">📋</div>
+          <div class="label">🏁 今日の退場者</div>
+          <div class="icon">🚶</div>
         </div>
-        <div><span class="num" id="n-ky">0</span><span class="unit">件</span></div>
-        <div class="more">KY帳票ビュー →</div>
+        <div><span class="num" id="n-exit">0</span><span class="unit">名</span></div>
+        <div class="more">退場明細を見る →</div>
+        <span class="dummy-tag">ダミー値</span>
       </a>
     </div>
 
-    <!-- 新規追加：仮入場者リスト（所属現場フィルタ済み） -->
-    <div class="section-card">
+    <!-- 仮入場者リスト（OCR登録前）：選択中テナント（clientID）の全現場横断 -->
+    <div class="section-card" id="provSection">
       <h2>
-        ⏳ 仮入場者リスト
+        ⏳ 仮入場者リスト（OCR登録前）
         <span class="count" id="provCount">（0件）</span>
-        <span class="muted" style="font-size:12px; font-weight:400;">自分の所属現場のみ表示</span>
+        <span class="muted" style="font-size:12px; font-weight:400;">選択中テナントの全現場・本登録前の作業員</span>
       </h2>
-
-      <div class="filter-bar">
-        <input type="text" id="filterText" placeholder="🔍 電話／監督で絞り込み">
-        <select id="filterStatus">
-          <option value="">全ステータス</option>
-          <option value="PROVISIONAL_DRAFT">🔴 仮登録（OCR待ち）</option>
-          <option value="OCR_REVIEWING">🟡 レビュー待ち</option>
-          <option value="ACTIVE">🟢 正式登録済み</option>
-        </select>
-        <select id="filterSort">
-          <option value="newest">新しい順</option>
-          <option value="oldest">古い順</option>
-          <option value="status">ステータス順</option>
-        </select>
-      </div>
 
       <div class="table-scroll-x">
         <table class="mini" id="provTable">
@@ -232,8 +248,6 @@
             <tr>
               <th>ステータス</th>
               <th>電話番号</th>
-              <th>担当監督</th>
-              <th>現場</th>
               <th>撮影点数</th>
               <th>仮登録日時</th>
               <th>操作</th>
@@ -244,23 +258,14 @@
       </div>
     </div>
 
-    <!-- 未退場者リスト（本体機能そのまま：17:30以降に表示） -->
-    <div class="section-card">
-      <h2>⏳ 未退場者リスト <span class="muted" style="font-size:12px; font-weight:400;">（17:30以降に表示）</span></h2>
+    <!-- 未退場者リスト（本社は参照のみ・clientID全現場・17:30以降に表示） -->
+    <div class="section-card" id="unexitedSection">
+      <h2>
+        ⏳ 未退場者リスト
+        <span class="count" id="unexitedCount"></span>
+        <span class="muted" style="font-size:12px; font-weight:400;">選択中テナントの全現場・参照のみ（強制退場は現場側で操作）・17:30以降に表示</span>
+      </h2>
       <div id="unexitedBody" class="unexited-locked">読込中…</div>
-    </div>
-
-    <!-- 社員メニュー：Coming Soon プレースホルダー -->
-    <h2 style="margin-top:24px; font-size:16px; color:var(--nagaken-primary-dark); border-bottom:1px solid var(--nagaken-border); padding-bottom:6px;">🧑‍💼 社員メニュー</h2>
-    <div class="coming-soon">
-      <div class="cs-icon">🚧</div>
-      <div class="cs-title">Coming Soon</div>
-      <div class="cs-desc">社員向けメニュー（施工体制図／管理画面／KY裏面エディタ等）は順次開放予定です</div>
-      <div class="cs-items">
-        <span>Ⓔ 施工体制図作成</span>
-        <span>Ⓓ 管理画面</span>
-        <span>Ⓒ KY裏面エディタ</span>
-      </div>
     </div>
 
     <p class="muted" style="text-align:center; margin-top:24px; font-size:12px;">
@@ -268,15 +273,38 @@
     </p>
   </div>
 
+  <!-- OCR本登録モーダル（OCR結果 → OCR登録 → 既存テーブルへ昇格） -->
+  <div class="modal-overlay" id="ocrModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="ocrModalTitle">
+      <div class="modal-head">
+        <h3 id="ocrModalTitle">🧾 OCR結果の確認 → 本登録</h3>
+        <button type="button" class="x" id="ocrModalClose" aria-label="閉じる">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-note">
+          仮登録（新規テーブル）の撮影画像をOCRした結果です。内容を確認・補正し、所属現場を割当てて
+          「<strong>OCR登録（本登録）</strong>」を押すと、<strong>既存テーブル（本登録済み作業員）</strong>へ昇格します。
+          昇格した人はこの仮入場者リストから外れます。<br>
+          <span style="font-size:11px;">※ モックのためOCR結果はダミー値です。</span>
+        </div>
+        <div class="modal-thumbs" id="ocrModalThumbs"></div>
+        <div class="ocr-grid" id="ocrModalGrid"></div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn btn-ghost" id="ocrModalCancel">キャンセル</button>
+        <button type="button" class="btn" id="ocrModalConfirm">✔ OCR登録（本登録）</button>
+      </div>
+    </div>
+  </div>
+
 <script>
   const esc = (s) => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
 
   const qs = new URLSearchParams(location.search);
   const FORCE_UNEXITED = qs.get("force") === "1"; // ?force=1 で17:30制約バイパス（動作確認）
-  const FORCE_AFTER_HOURS = qs.get("after") === "1"; // ?after=1 で未退場者リストにダミー1件
 
   function isAfter1730() {
-    if (FORCE_UNEXITED || FORCE_AFTER_HOURS) return true;
+    if (FORCE_UNEXITED) return true;
     const now = new Date();
     return now.getHours() > 17 || (now.getHours() === 17 && now.getMinutes() >= 30);
   }
@@ -292,82 +320,147 @@
   }
 
   function actionBtn(item) {
+    // ステータス連動：
+    //  仮登録（DRAFT）   → OCR実行→レビュー
+    //  レビュー待ち       → レビュー
+    //  正式登録済み(ACTIVE) → 閲覧
+    // ※REGISTERED（本登録完了）はそもそも一覧に出さない
     if (item.status === "PROVISIONAL_DRAFT") {
-      return `<a href="provisional-review.html?id=${encodeURIComponent(item.id)}" class="btn btn-accent" style="padding:6px 12px; min-height:32px; font-size:12px;">OCR実行→レビュー</a>`;
+      return `<button type="button" class="btn btn-accent ocr-register-btn" data-id="${esc(item.id)}" style="padding:6px 12px; min-height:32px; font-size:12px;">OCR実行→レビュー</button>`;
     }
     if (item.status === "OCR_REVIEWING") {
-      return `<a href="provisional-review.html?id=${encodeURIComponent(item.id)}" class="btn" style="padding:6px 12px; min-height:32px; font-size:12px;">レビュー</a>`;
+      return `<button type="button" class="btn ocr-register-btn" data-id="${esc(item.id)}" style="padding:6px 12px; min-height:32px; font-size:12px;">レビュー</button>`;
     }
-    return `<a href="provisional-data-entry.html?id=${encodeURIComponent(item.id)}" class="btn btn-ghost" style="padding:6px 12px; min-height:32px; font-size:12px;">閲覧</a>`;
+    return `<button type="button" class="btn btn-ghost ocr-register-btn" data-id="${esc(item.id)}" style="padding:6px 12px; min-height:32px; font-size:12px;">閲覧</button>`;
   }
 
-  // 現場フィルタ：選択中現場 or ログインUser所属現場（複数可）に該当する仮入場者だけ返す
-  function filterBySite(all) {
-    const userSites = ProvStore.getUserSites() || [];
-    if (userSites.length === 0) return all; // フォールバック：全件
-    const picker = document.getElementById("sitePicker");
-    const selected = picker && picker.value ? Number(picker.value) : null;
-    const allowedIds = selected ? [selected] : userSites.map(s => s.onsiteId);
-    return all.filter(x => allowedIds.includes(x.onsiteId));
+  // ===== テナント（clientID）解決 =====
+  // sites-mock.json の sites を clientId でユニーク化してプルダウンを作る。
+  // onsiteId → clientId のマップも作り、仮入場者を clientId でフィルタする土台にする。
+  let SITES_CACHE = [];                 // [{onsiteId,name,clientId,clientName}]
+  let ONSITE_TO_CLIENT = {};            // { onsiteId: clientId }
+  let TENANTS = [];                     // [{clientId, clientName}]
+  let currentClientId = null;           // 選択中テナント（clientID）
+
+  async function ensureSites() {
+    if (SITES_CACHE.length) return SITES_CACHE;
+    try {
+      const j = await (await fetch("data/sites-mock.json")).json();
+      SITES_CACHE = j.sites || [];
+    } catch (e) { console.warn("sites-mock.json 読み込み失敗", e); }
+    ONSITE_TO_CLIENT = {};
+    const seen = new Map();
+    SITES_CACHE.forEach(s => {
+      ONSITE_TO_CLIENT[Number(s.onsiteId)] = Number(s.clientId);
+      if (!seen.has(Number(s.clientId))) seen.set(Number(s.clientId), s.clientName || `clientID ${s.clientId}`);
+    });
+    // 当面はモックなので 1/4 の2択で可。sites に出てこないテナントも 1/4 は最低限出す。
+    [[1, "本社（永賢組）"], [4, "九州支社"]].forEach(([cid, cname]) => {
+      if (!seen.has(cid)) seen.set(cid, cname);
+    });
+    TENANTS = [...seen.entries()]
+      .map(([clientId, clientName]) => ({ clientId, clientName }))
+      .sort((a, b) => a.clientId - b.clientId);
+    return SITES_CACHE;
   }
 
+  function renderTenantPicker() {
+    const sel = document.getElementById("tenantSelect");
+    sel.innerHTML = TENANTS.map(t =>
+      `<option value="${t.clientId}">clientID ${t.clientId}：${esc(t.clientName)}</option>`
+    ).join("");
+    if (currentClientId == null) currentClientId = TENANTS[0]?.clientId ?? 1;
+    sel.value = String(currentClientId);
+  }
+
+  // 選択中テナントの現場（onsiteId）集合
+  function clientOnsiteIds() {
+    return new Set(
+      Object.entries(ONSITE_TO_CLIENT)
+        .filter(([, cid]) => Number(cid) === Number(currentClientId))
+        .map(([oid]) => Number(oid))
+    );
+  }
+
+  // 仮入場者を選択中テナント（clientID）で絞る。
+  // onsiteId から clientId を引く。引けない（onsite未割当）場合は全テナントで表示。
+  function belongsToClient(item) {
+    const oid = Number(item.onsiteId);
+    if (!oid || !(oid in ONSITE_TO_CLIENT)) return true; // 現場未割当の仮登録は全テナントで拾う
+    return Number(ONSITE_TO_CLIENT[oid]) === Number(currentClientId);
+  }
+
+  // ===== KPI =====
+  // ① 仮登録者数：選択中テナントの本登録前（DRAFT + REVIEWING）＝本登録したら減る（実集計）
+  // ② 今日の入場者数：退場したら減る・clientID全数 → 実データ無し＝テナント別ダミー
+  // ③ 今日の退場者：退場したら増える・clientID全数 → 実データ無し＝テナント別ダミー
+  const DUMMY_ENTRIES_BY_CLIENT = { 1: 27, 4: 11 };   // 今日の入場者数（ダミー）
+  const DUMMY_EXITS_BY_CLIENT   = { 1: 6,  4: 2 };    // 今日の退場者（ダミー）
+
+  function renderKpi() {
+    const provCount = ProvStore.list().filter(x =>
+      (x.status === "PROVISIONAL_DRAFT" || x.status === "OCR_REVIEWING") && belongsToClient(x)
+    ).length;
+    document.getElementById("n-prov").textContent = provCount;
+    document.getElementById("n-entry").textContent = DUMMY_ENTRIES_BY_CLIENT[currentClientId] ?? 0;
+    document.getElementById("n-exit").textContent  = DUMMY_EXITS_BY_CLIENT[currentClientId] ?? 0;
+  }
+
+  // ===== 仮入場者リスト（選択中テナントの全現場横断・本登録前のみ） =====
+  // 本登録（REGISTERED）された人は既存テーブルへ移ったので、ここには出さない。
   function renderProvList() {
-    const all = ProvStore.list();
-    const mine = filterBySite(all);
-
-    const kw = document.getElementById("filterText").value.trim();
-    const st = document.getElementById("filterStatus").value;
-    const sort = document.getElementById("filterSort").value;
-
-    let rows = mine;
-    if (kw) {
-      rows = rows.filter(x =>
-        (x.phone || "").includes(kw) ||
-        (x.supervisorName || "").includes(kw)
-      );
-    }
-    if (st) rows = rows.filter(x => x.status === st);
-
-    const order = { PROVISIONAL_DRAFT: 0, OCR_REVIEWING: 1, ACTIVE: 2 };
-    if (sort === "newest") rows.sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
-    else if (sort === "oldest") rows.sort((a, b) => (a.createdAt || "").localeCompare(b.createdAt || ""));
-    else if (sort === "status") rows.sort((a, b) => (order[a.status] ?? 9) - (order[b.status] ?? 9));
+    const rows = ProvStore.list()
+      .filter(x => x.status !== "REGISTERED")
+      .filter(belongsToClient)
+      .sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
 
     const tbody = document.querySelector("#provTable tbody");
     if (!rows.length) {
-      tbody.innerHTML = `<tr><td colspan="7"><div class="empty-cell">該当する仮入場者はいません</div></td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="5"><div class="empty-cell">本登録待ちの仮入場者はいません</div></td></tr>`;
     } else {
       tbody.innerHTML = rows.map(item => `
         <tr class="${statusRowClass(item.status)}" data-id="${esc(item.id)}">
           <td>${ProvStore.statusBadge(item.status)}</td>
           <td>${esc(item.phone)}</td>
-          <td>${esc(item.supervisorName)}</td>
-          <td>${esc(item.onsiteName)}</td>
           <td>${esc(shotCount(item))}</td>
           <td>${ProvStore.fmtDateTime(item.createdAt)}</td>
           <td>${actionBtn(item)}</td>
         </tr>`).join("");
 
-      tbody.querySelectorAll("tr").forEach(tr => {
-        tr.addEventListener("click", (e) => {
-          if (e.target.closest("a")) return;
-          const id = tr.dataset.id;
-          const item = ProvStore.getById(id);
-          if (!item) return;
-          location.href = (item.status === "ACTIVE" ? "provisional-data-entry.html" : "provisional-review.html") + "?id=" + encodeURIComponent(id);
+      // 操作ボタン（DRAFT/REVIEWING→OCR本登録モーダル / ACTIVE→閲覧モーダル）
+      tbody.querySelectorAll(".ocr-register-btn").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          openOcrModal(btn.dataset.id);
         });
       });
     }
 
-    // 件数表示
-    document.getElementById("provCount").textContent = `（${mine.length}件 / 表示 ${rows.length}件）`;
+    document.getElementById("provCount").textContent = `（本登録待ち ${rows.length}件）`;
   }
 
-  // 未退場者リスト：本体仕様そのまま（モックなのでAPIは叩かず時刻判定だけ再現）
+  // ===== 未退場者リスト（本社は参照のみ・clientID全現場・17:30以降に表示） =====
+  // モックなので緊急連絡先まで含むダミーをテナント別に持つ（実運用は入退場ログ＋PersonalInformation）。
+  const DUMMY_UNEXITED = {
+    1: [
+      { name: "高橋 健一", company: "丸八建設", occupation: "鳶工",   onsiteName: "栄三丁目PJ",
+        phone: "090-1111-2222", emName: "高橋 由美", emRel: "妻",   emPhone: "090-3333-4444" },
+      { name: "渡辺 茂",   company: "西区工業", occupation: "電工",   onsiteName: "丸八西区改修",
+        phone: "080-5555-6666", emName: "渡辺 京子", emRel: "母",   emPhone: "080-7777-8888" },
+    ],
+    4: [
+      { name: "森田 大輔", company: "博多重機", occupation: "重機オペ", onsiteName: "九州 博多PJ",
+        phone: "090-9999-0000", emName: "森田 彩",   emRel: "妻",   emPhone: "090-2222-1111" },
+    ],
+  };
+
   function renderUnexited() {
     const box = document.getElementById("unexitedBody");
+    const cnt = document.getElementById("unexitedCount");
+
     if (!isAfter1730()) {
       box.className = "unexited-locked";
+      cnt.textContent = "";
       box.innerHTML = `
         <div style="font-size:32px; margin-bottom:6px;">🔒</div>
         <strong>17:30 以降に表示されます</strong><br>
@@ -376,87 +469,231 @@
       `;
       return;
     }
+
+    const rows = DUMMY_UNEXITED[currentClientId] || [];
     box.className = "";
-    box.innerHTML = `<div class="alert alert-success" style="padding:10px;">✅ 未退場者はいません（モック環境のためダミー表示）</div>`;
+    cnt.textContent = `（${rows.length}名）`;
+    if (!rows.length) {
+      box.innerHTML = `<div class="alert alert-success" style="padding:10px;">✅ 未退場者はいません（選択中テナント）。</div>`;
+      return;
+    }
+    box.innerHTML = `
+      <div class="table-scroll-x">
+        <table class="mini">
+          <thead>
+            <tr>
+              <th>氏名</th><th>業者名</th><th>職種</th><th>現場名</th>
+              <th>本人電話</th><th>緊急連絡先氏名</th><th>続柄</th><th>緊急連絡先電話番号</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(r => `
+              <tr>
+                <td>${esc(r.name)}</td>
+                <td>${esc(r.company)}</td>
+                <td>${esc(r.occupation)}</td>
+                <td>${esc(r.onsiteName)}</td>
+                <td>${esc(r.phone)}</td>
+                <td>${esc(r.emName)}</td>
+                <td>${esc(r.emRel)}</td>
+                <td>${esc(r.emPhone)}</td>
+              </tr>`).join("")}
+          </tbody>
+        </table>
+      </div>
+      <p class="muted" style="font-size:11px; margin:10px 2px 0;">※ 本社ダッシュボードは参照のみ。強制退場などの処理は現場ダッシュボードで行います。（モックのためダミーデータ）</p>
+    `;
   }
 
-  // 現場ラベル＆プルダウン（複数現場ユーザーの場合プルダウン出現）
-  function renderSitePicker(sites) {
-    const label = document.getElementById("onsiteLabel");
-    const picker = document.getElementById("sitePicker");
-    if (!sites || sites.length === 0) {
-      label.textContent = "🏗 (現場未割当)";
-      picker.style.display = "none";
-      return;
-    }
-    if (sites.length === 1) {
-      label.textContent = `🏗 ${sites[0].name}`;
-      picker.style.display = "none";
-      return;
-    }
-    // 複数現場：プルダウン
-    label.textContent = "🏗";
-    picker.style.display = "";
-    picker.innerHTML = `<option value="">全所属現場（${sites.length}件）</option>` +
-      sites.map(s => `<option value="${s.onsiteId}">${esc(s.name)}</option>`).join("");
+  // ===== OCR本登録モーダル =====
+  let OCR_MOCK = null;          // ocr-mocks.json defaultResult
+  let currentModalProvId = null;
+
+  async function ensureOcrMock() {
+    if (OCR_MOCK) return OCR_MOCK;
+    try {
+      const j = await (await fetch("data/ocr-mocks.json")).json();
+      OCR_MOCK = j.defaultResult || {};
+    } catch (e) { console.warn("ocr-mocks.json 読み込み失敗", e); OCR_MOCK = {}; }
+    return OCR_MOCK;
+  }
+
+  // ドラフトの ocrResult（実OCR済なら）か、なければモックOCR結果から確認フィールドを組む
+  function buildOcrFields(item, mock) {
+    const src = (item.ocrResult && (item.ocrResult.licence || item.ocrResult.paper)) ? item.ocrResult : mock;
+    const lic = src.licence || {};
+    const pap = src.paper || {};
+    const v = (o, k) => (o && o[k] && typeof o[k] === "object") ? (o[k].value || "") : (o && o[k]) || "";
+    const c = (o, k) => (o && o[k] && typeof o[k] === "object") ? (o[k].confidence || "") : "";
+    const certs = (src.certs || []).map(ct => ct.kind).filter(Boolean);
+    return {
+      name:       { value: v(lic, "name") || v(pap, "name"), conf: c(lic, "name") || c(pap, "name") },
+      nameKana:   { value: v(lic, "nameKana") || v(pap, "nameKana"), conf: c(pap, "nameKana") },
+      birthday:   { value: v(lic, "birthday") || v(pap, "birthday"), conf: c(lic, "birthday") },
+      company:    { value: v(pap, "partnerName"), conf: c(pap, "partnerName") },
+      occupation: { value: v(pap, "occupation"), conf: c(pap, "occupation") },
+      bloodType:  { value: v(pap, "bloodType"), conf: c(pap, "bloodType") },
+      _certs: certs,
+    };
+  }
+
+  function confTag(conf) {
+    if (!conf) return "";
+    const map = { high: "高", mid: "中", low: "低", fail: "失敗" };
+    return `<span class="ocr-conf conf-${conf}">OCR ${map[conf] || conf}</span>`;
+  }
+
+  async function openOcrModal(provId) {
+    const item = ProvStore.getById(provId);
+    if (!item) return;
+    currentModalProvId = provId;
+    const readonly = item.status === "ACTIVE"; // 正式登録済みは閲覧のみ
+    const [, mock] = await Promise.all([ensureSites(), ensureOcrMock()]);
+    const f = buildOcrFields(item, mock);
+
+    document.getElementById("ocrModalTitle").textContent = readonly ? "🔎 仮登録内容の閲覧" : "🧾 OCR結果の確認 → 本登録";
+
+    // サムネ
+    const s = item.shots || {};
+    const thumbs = [
+      ["顔写真", s.face && s.face.thumb],
+      ["入場票", s.paper && s.paper.thumb],
+      ["免許", s.licence && s.licence.thumb],
+    ];
+    document.getElementById("ocrModalThumbs").innerHTML = thumbs.map(([lbl, url]) =>
+      `<div class="t">${url ? `<img src="${url}" alt="${lbl}">` : `<span class="lbl">${lbl}<br>なし</span>`}</div>`
+    ).join("");
+
+    const siteOpts = SITES_CACHE.map(st =>
+      `<option value="${st.onsiteId}"${Number(st.onsiteId) === Number(item.onsiteId) ? " selected" : ""}>${esc(st.name)}（${esc(st.clientName)}）</option>`
+    ).join("");
+
+    const ro = readonly ? " disabled style=\"background:#f3f4f6;color:#666;\"" : "";
+    const field = (key, label, val, conf) => `
+      <div class="ocr-field">
+        <label>${label} ${confTag(conf)}</label>
+        <input type="text" data-key="${key}" value="${esc(val)}"${ro}>
+      </div>`;
+
+    document.getElementById("ocrModalGrid").innerHTML = `
+      ${field("name", "氏名", f.name.value, f.name.conf)}
+      ${field("nameKana", "フリガナ", f.nameKana.value, f.nameKana.conf)}
+      ${field("company", "所属会社（協力会社）", f.company.value, f.company.conf)}
+      ${field("occupation", "職種", f.occupation.value, f.occupation.conf)}
+      ${field("birthday", "生年月日", f.birthday.value, f.birthday.conf)}
+      ${field("bloodType", "血液型", f.bloodType.value, f.bloodType.conf)}
+      <div class="ocr-field full">
+        <label>保有資格（OCR検出・カンマ区切りで編集可）</label>
+        <input type="text" data-key="certs" value="${esc((f._certs || []).join(", "))}"${ro}>
+      </div>
+      <div class="ocr-field full">
+        <label>所属現場を割当て（本社で決定）<span style="color:#991b1b">*</span></label>
+        <select data-key="onsiteId"${ro}>${siteOpts}</select>
+      </div>
+      <div class="ocr-field full">
+        <label>電話番号（本人入力・OCR対象外）</label>
+        <input type="text" value="${esc(item.phone || "")}" disabled style="background:#f3f4f6;color:#666;">
+      </div>
+    `;
+
+    // 閲覧モードは確定ボタンを隠す
+    document.getElementById("ocrModalConfirm").style.display = readonly ? "none" : "";
+
+    const ov = document.getElementById("ocrModal");
+    ov.classList.add("open");
+    ov.setAttribute("aria-hidden", "false");
+  }
+
+  function closeOcrModal() {
+    const ov = document.getElementById("ocrModal");
+    ov.classList.remove("open");
+    ov.setAttribute("aria-hidden", "true");
+    currentModalProvId = null;
+  }
+
+  function confirmOcrRegister() {
+    if (!currentModalProvId) return;
+    const item = ProvStore.getById(currentModalProvId);
+    if (!item) { closeOcrModal(); return; }
+
+    const grid = document.getElementById("ocrModalGrid");
+    const getVal = (k) => grid.querySelector(`[data-key="${k}"]`)?.value.trim() || "";
+    const name = getVal("name");
+    if (!name) { alert("氏名を入力してください（OCR結果を確認・補正）。"); return; }
+
+    const onsiteId = Number(getVal("onsiteId"));
+    const site = SITES_CACHE.find(s => Number(s.onsiteId) === onsiteId) || null;
+    const certs = getVal("certs").split(",").map(c => c.trim()).filter(Boolean);
+
+    const fields = {
+      name,
+      nameKana: getVal("nameKana"),
+      company: getVal("company"),
+      occupation: getVal("occupation"),
+      birthday: getVal("birthday"),
+      bloodType: getVal("bloodType"),
+      certs,
+    };
+
+    // 既存テーブル（本登録済み作業員）へ昇格
+    const worker = WorkerStore.promote(item, fields, site);
+    // 仮登録ストア側は REGISTERED にして仮入場者リストから外す（トレース用に残す）
+    ProvStore.setStatus(item.id, "REGISTERED");
+
+    closeOcrModal();
+    reload();
+    alert(`✅ ${worker.name} さんを本登録しました。\n割当現場：${site ? site.name : "（未割当）"}\n既存テーブル（本登録済み作業員）へ昇格しました。\n仮入場者リストから外れます。`);
   }
 
   function reload() {
+    renderKpi();
     renderProvList();
     renderUnexited();
     document.getElementById("lastUpdated").textContent = new Date().toLocaleTimeString("ja-JP");
   }
 
   document.addEventListener("DOMContentLoaded", async () => {
-    // 日付ラベル（本体と同形式）
     document.getElementById("todayLabel").textContent = new Date().toLocaleDateString("ja-JP", { year:"numeric", month:"long", day:"numeric", weekday:"short" });
 
     await ProvStore.ensureSeed();
-    const ctx = await ProvStore.ensureLoginContext();
-    const u = ctx.user;
-    const userBox = document.getElementById("provHeaderUser");
-    if (userBox) {
-      userBox.innerHTML = `<span class="user-icon">👤</span><span class="user-name">${esc(u?.displayName || "(未ログイン)")}</span>`;
-    }
-    renderSitePicker(ctx.sites || []);
-
+    await ensureSites();
+    renderTenantPicker();
     reload();
 
-    document.getElementById("sitePicker").addEventListener("change", renderProvList);
-    ["filterText", "filterStatus", "filterSort"].forEach(id => {
-      document.getElementById(id).addEventListener("input", renderProvList);
-      document.getElementById(id).addEventListener("change", renderProvList);
+    // テナント（clientID）切替
+    document.getElementById("tenantSelect").addEventListener("change", (e) => {
+      currentClientId = Number(e.target.value);
+      reload();
     });
 
-    // 本体3カードクリックでステータス絞り込み連動（仮入場リスト側に反映）
-    // ※「今日の新規入場者」→ DRAFT寄せ、「今日の入場者」→ ACTIVE寄せ、「KY」→ そのまま遷移先なし（モック）
-    const cardToStatus = {
-      "card-newEntries": "PROVISIONAL_DRAFT",
-      "card-entries": "ACTIVE",
-    };
-    Object.entries(cardToStatus).forEach(([cardId, status]) => {
-      const el = document.getElementById(cardId);
-      if (!el) return;
-      el.addEventListener("click", (e) => {
-        e.preventDefault();
-        const sel = document.getElementById("filterStatus");
-        sel.value = (sel.value === status) ? "" : status;
-        renderProvList();
-        document.querySelector(".section-card")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
+    // KPIカードクリック
+    document.getElementById("card-prov").addEventListener("click", (e) => {
+      e.preventDefault();
+      document.getElementById("provSection")?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
-    // KYカードは別画面リンクのまま（モックなのでアラート）
-    const kyCard = document.getElementById("card-ky");
-    if (kyCard) {
-      kyCard.addEventListener("click", (e) => {
-        e.preventDefault();
-        alert("KY帳票ビューはモック対象外です。本体ダッシュボードの ky-sheet.html を参照してください。");
-      });
-    }
+    document.getElementById("card-exit").addEventListener("click", (e) => {
+      e.preventDefault();
+      document.getElementById("unexitedSection")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    // 入場者数カードはダミーなので案内
+    document.getElementById("card-entry").addEventListener("click", (e) => {
+      e.preventDefault();
+      alert("この指標はモックのダミー値です（実入退場データ連携は未実装）。");
+    });
 
     document.getElementById("refreshBtn").onclick = reload;
-    // 5分自動更新
     setInterval(reload, 5 * 60 * 1000);
+
+    // OCR本登録モーダル
+    document.getElementById("ocrModalClose").onclick = closeOcrModal;
+    document.getElementById("ocrModalCancel").onclick = closeOcrModal;
+    document.getElementById("ocrModalConfirm").onclick = confirmOcrRegister;
+    document.getElementById("ocrModal").addEventListener("click", (e) => {
+      if (e.target.id === "ocrModal") closeOcrModal();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && document.getElementById("ocrModal").classList.contains("open")) closeOcrModal();
+    });
   });
 </script>
 </body>
