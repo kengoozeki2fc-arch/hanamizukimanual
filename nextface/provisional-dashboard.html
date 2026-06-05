@@ -30,7 +30,7 @@
     .dash-head .tenant-logo {
       display: inline-flex; align-items: center; min-height: 40px;
     }
-    .dash-head .tenant-logo img { height: 40px; width: auto; display: block; }
+    .dash-head .tenant-logo img { height: 40px; width: auto; max-width: 280px; object-fit: contain; display: block; }
     /* ロゴ未設定テナントのフォールバック（テキスト表示） */
     .dash-head .tenant-logo .logo-fallback {
       display: inline-flex; align-items: center; gap: 6px;
@@ -395,7 +395,7 @@
   // ===== テナントロゴ（契約先マスタの添付ロゴ）=====
   // モック：clientID → ロゴ画像パスを固定マップ。
   // 本番：契約先マスタの添付ロゴURL（ClientMaster.LogoUrl 等）に置き換える。
-  const TENANT_LOGOS = { 1: "img/logo-client1.svg", 4: "img/logo-client4.svg" };
+  const TENANT_LOGOS = { 1: "img/logo-client1.png", 4: "img/logo-client4.svg" };
   function renderTenantLogo() {
     const box = document.getElementById("tenantLogo");
     if (!box) return;

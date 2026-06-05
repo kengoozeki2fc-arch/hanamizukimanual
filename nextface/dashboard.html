@@ -24,7 +24,7 @@
     }
     /* テナントロゴ表示エリア（契約先マスタの添付ロゴ。onsiteId→clientId 逆引きで表示） */
     .dash-head .tenant-logo { display: inline-flex; align-items: center; min-height: 40px; }
-    .dash-head .tenant-logo img { height: 40px; width: auto; display: block; }
+    .dash-head .tenant-logo img { height: 40px; width: auto; max-width: 280px; object-fit: contain; display: block; }
     .dash-head .tenant-logo .logo-fallback {
       display: inline-flex; align-items: center; gap: 6px;
       height: 40px; padding: 0 12px; border-radius: 8px;
@@ -235,7 +235,7 @@
   // ===== テナントロゴ（契約先マスタの添付ロゴ）=====
   // 現場ダッシュボードは onsiteId → clientId を逆引きしてロゴを出す。
   // モック：clientID → ロゴ画像パスの固定マップ。本番は契約先マスタ添付ロゴURLに置換。
-  const TENANT_LOGOS = { 1: "img/logo-client1.svg", 4: "img/logo-client4.svg" };
+  const TENANT_LOGOS = { 1: "img/logo-client1.png", 4: "img/logo-client4.svg" };
   let ONSITE_TO_CLIENT = null;
   async function resolveClientId(oid) {
     if (!ONSITE_TO_CLIENT) {
