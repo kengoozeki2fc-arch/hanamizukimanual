@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1級施工管技 社内対策講座｜ネットワーク工程表 演習（R6/R4/R2）｜大石建設</title>
+<style>
+  :root {
+    --primary: #1a3a5c;
+    --accent:  #e05a00;
+    --correct: #1a7a3a;
+    --wrong:   #b00020;
+    --bg:      #f5f7fa;
+    --card:    #ffffff;
+    --border:  #d0d8e4;
+    --text:    #1e2a38;
+    --muted:   #6b7c93;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Hiragino Sans","Meiryo",sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.75;
+    font-size: 15px;
+  }
+  header {
+    background: var(--primary);
+    color: #fff;
+    padding: 20px 24px;
+    border-bottom: 4px solid var(--accent);
+  }
+  header h1 { font-size: 1.2rem; font-weight: 700; }
+  header p  { font-size: 0.82rem; color: #aac4e0; margin-top: 4px; }
+  .banner-note {
+    background: #fff8ec;
+    border-bottom: 1px solid #f0d9a8;
+    color: #6e4b00;
+    font-size: .82rem;
+    padding: 10px 24px;
+    line-height: 1.7;
+  }
+  nav {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    padding: 10px 24px;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 0.82rem;
+  }
+  nav a { color: var(--primary); text-decoration: none; font-weight: 600; }
+  nav a:hover { text-decoration: underline; }
+  main { max-width: 900px; margin: 0 auto; padding: 28px 16px 80px; }
+  .section-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--primary);
+    background: #eaf0f8;
+    border-left: 5px solid var(--primary);
+    padding: 10px 16px;
+    margin: 36px 0 18px;
+    border-radius: 0 6px 6px 0;
+    scroll-margin-top: 12px;
+  }
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  }
+  .q-number {
+    display: inline-block;
+    background: var(--primary);
+    color: #fff;
+    font-size: .75rem;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    letter-spacing: .05em;
+  }
+  .q-text { font-weight: 600; margin-bottom: 14px; line-height: 1.8; }
+  .answer-textarea {
+    width: 100%;
+    min-height: 110px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.75;
+    resize: vertical;
+    outline: none;
+    transition: border .15s;
+  }
+  .answer-textarea:focus { border-color: var(--primary); }
+  .answer-textarea.tall  { min-height: 200px; }
+  .essay-field { margin-bottom: 16px; }
+  .essay-label {
+    font-weight: 600;
+    font-size: .88rem;
+    color: var(--primary);
+    margin-bottom: 6px;
+    display: block;
+  }
+  .network-info {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    font-size: .88rem;
+    line-height: 1.9;
+    margin-bottom: 12px;
+    white-space: pre-wrap;
+  }
+  .network-img-wrap {
+    text-align: center;
+    margin: 12px 0 16px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px;
+  }
+  .network-img-wrap img {
+    max-width: 100%;
+    height: auto;
+    display: inline-block;
+  }
+  .network-img-caption {
+    font-size: .78rem;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+  .btn-row { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    padding: 9px 22px;
+    border: none;
+    border-radius: 6px;
+    font-size: .9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity .15s;
+  }
+  .btn:hover { opacity: .85; }
+  .btn-primary   { background: var(--accent); color: #fff; }
+  .btn-secondary { background: var(--primary); color: #fff; }
+  .btn-copilot   { background: #0078d4; color: #fff; }
+  .explanation {
+    display: none;
+    margin-top: 16px;
+    background: #f0f8ff;
+    border: 1px solid #b3d4f0;
+    border-radius: 8px;
+    padding: 16px 18px;
+  }
+  .explanation.show { display: block; }
+  .explanation-title {
+    font-size: .78rem;
+    font-weight: 700;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 8px;
+  }
+  .model-answer {
+    background: #fff8ec;
+    border-left: 4px solid var(--accent);
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    white-space: pre-wrap;
+    font-size: .9rem;
+    line-height: 1.8;
+    margin-bottom: 12px;
+  }
+  .model-values {
+    background: #fff8ec;
+    border-left: 4px solid var(--accent);
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    font-size: .9rem;
+    line-height: 1.85;
+    margin-bottom: 12px;
+    white-space: pre-wrap;
+  }
+  .model-values .cp-line { color: #c9302c; font-weight: 700; }
+  .model-supplement {
+    background: #f4f8fc;
+    border-left: 4px solid var(--primary);
+    padding: 10px 14px;
+    border-radius: 0 6px 6px 0;
+    font-size: .85rem;
+    color: var(--muted);
+    line-height: 1.75;
+    margin-top: 10px;
+    white-space: pre-wrap;
+  }
+  .model-caution {
+    background: #fff4f4;
+    border: 1.5px solid #d9534f;
+    border-left: 5px solid #c9302c;
+    padding: 11px 15px;
+    border-radius: 6px;
+    font-size: .84rem;
+    color: #a72824;
+    line-height: 1.7;
+    margin: 12px 0;
+    font-weight: 600;
+  }
+  .model-caution .caution-mark { font-weight: 700; }
+  .ans-fig-label {
+    font-weight: 700;
+    color: var(--primary);
+    font-size: .9rem;
+    margin: 14px 0 6px;
+  }
+  .copilot-result {
+    display: none;
+    margin-top: 12px;
+    background: #f0f7ff;
+    border: 1px dashed #0078d4;
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: .88rem;
+  }
+  .copilot-result.show { display: block; }
+  .copilot-label { font-size: .78rem; color: #0078d4; font-weight: 700; margin-bottom: 6px; }
+  .copilot-body { white-space: pre-wrap; line-height: 1.8; }
+  .copilot-body a { color: #0078d4; text-decoration: underline; word-break: break-all; }
+  .copilot-result.error { background:#fff4f4; border-color:#c00; }
+  .copilot-result.error .copilot-label { color:#c00; }
+  .copilot-loading { display:flex; align-items:center; gap:10px; color:#0078d4; font-size:.85rem; }
+  .copilot-spinner {
+    width: 16px; height: 16px;
+    border: 2px solid #cfe3f7;
+    border-top-color: #0078d4;
+    border-radius: 50%;
+    animation: copilot-spin 0.8s linear infinite;
+  }
+  @keyframes copilot-spin { to { transform: rotate(360deg); } }
+  .copilot-retry {
+    margin-top: 10px;
+    background: #fff;
+    border: 1px solid #c00;
+    color: #c00;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: .82rem;
+    cursor: pointer;
+  }
+  .copilot-retry:hover { background:#c00; color:#fff; }
+  .btn-copilot[disabled] { opacity:.6; cursor: progress; }
+  footer {
+    text-align: center;
+    font-size: .78rem;
+    color: var(--muted);
+    padding: 20px;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+    line-height: 1.8;
+  }
+  @media (max-width:600px) {
+    header h1 { font-size: 1rem; }
+    .q-card    { padding: 16px; }
+    .btn       { padding: 8px 14px; font-size: .85rem; }
+    nav        { gap: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>1級建築施工管理 第二次検定 社内対策講座｜ネットワーク工程表 演習（R6・R4・R2）</h1>
+  <p>工程管理（問題3）過去問演習 ／ 講師：林副部長・大関（けんけん） ／ 出典：CIC出版「1級建築施工管理技士 第二次検定 過去問題と解説」</p>
+</header>
+
+<div class="banner-note">
+  ※ これは<strong>1級建築施工管理技術検定 第二次検定 問題3（工程管理／ネットワーク工程表）</strong>の過去問題に基づく社内勉強会用演習です。<strong>令和6年度・令和4年度・令和2年度</strong>の3年分を収録しています。<br>
+  ※ 問題文・工程表・作業内容表・施工条件・模範解答は、CIC出版「1級建築施工管理技士 過去問題と解説」を逐語ベースで掲載しています。<br>
+  ※ 各設問は<strong>記述式</strong>です。自分の計算（ネットワークのEST/LST順算・逆算、クリティカルパスの抽出）を記入したうえで「解答・解説を表示」で答え合わせし、必要に応じて「Copilotに採点させる」でAI添削を受けてください。
+</div>
+
+<nav>
+  <a href="#r6">令和6年度</a>
+  <a href="#r4">令和4年度</a>
+  <a href="#r2">令和2年度</a>
+</nav>
+
+<main>
+
+<!-- ========================================================
+     令和6年度 問題3
+======================================================== -->
+<div class="section-title" id="r6">令和6年度｜問題3（事務所ビル内装工事）</div>
+
+<div class="q-card">
+  <span class="q-number">R6 問3</span>
+  <p class="q-text">
+    市街地での事務所ビル新築工事において、右の工事概要に示す事務所部分の内装工事に関する作業工程について、次の1.から4.の問いに答えなさい。<br>
+    工程表は計画時点におけるもので、対応する作業内容と所要日数、施工条件を合わせて示しているが、作業⑤及び作業⑧については作業内容を記載していない。<br>
+    また、作業⑦のフリーアクセスフロア敷設作業は、作業ⓓ及び作業ⓔとの関係を示すために作業⑦-1、作業⑦-2に分けて工程表及び作業内容と所要日数に示している。<br>
+    工程の設備工事は電気設備（照明、コンセント）、通信設備、警報設備、空調設備とする。<br>
+    なお、各作業は一般的な手順に従って施工されるものとし、施工中に必要な試験や検査については記載を省略している。
+  </p>
+
+  <div class="network-info">【工事概要】
+　用途：事務所
+　構造、規模：鉄筋コンクリート構造、地上6階、基準階における事務室部分の床面積 325㎡
+　事務室仕上げ：床はフリーアクセスフロア下地、タイルカーペット仕上げ
+　　　　　　　　壁は軽量鉄骨下地、せっこうボード張り、塗装仕上げ（壁の軽量鉄骨下地、せっこうボード張り共に天井軽量鉄骨下地高さまでとする）
+　　　　　　　　天井は軽量鉄骨下地、せっこうボード張り、ロックウール化粧吸音板仕上げ</div>
+
+  <div class="network-img-wrap">
+    <img src="img/r6_kotei.png" alt="令和6年度 問題3 工程表・作業内容と所要日数・施工条件">
+    <div class="network-img-caption">※ 工程表／作業内容と所要日数／施工条件（出典：CIC出版「1級建築施工管理技士 過去問題と解説」令和6年度 問題3）</div>
+  </div>
+
+  <div class="essay-field">
+    <span class="essay-label">設問1：作業⑤及び作業⑧の作業内容を記述しなさい。</span>
+    <textarea class="answer-textarea" id="ans-r6" style="min-height:60px" placeholder="作業⑤：&#10;作業⑧："></textarea>
+  </div>
+  <div class="essay-field">
+    <span class="essay-label">設問2：内装工事における建築工事と設備工事の一般的な施工手順と、作業内容と所要日数、施工条件に記載してある条件を読み取り、（始）から（終）までの総所要日数を記入しなさい。</span>
+    <textarea class="answer-textarea" id="ans-r6-2" style="min-height:50px" placeholder="例） ○日"></textarea>
+  </div>
+  <div class="essay-field">
+    <span class="essay-label">設問3：作業④のフリーフロート及び作業⑦のトータルフロートを記入しなさい。</span>
+    <textarea class="answer-textarea" id="ans-r6-3" style="min-height:60px" placeholder="作業④FF：　○日&#10;作業⑦TF：　○日"></textarea>
+  </div>
+  <div class="essay-field">
+    <span class="essay-label">設問4：作業⑦の着手に必要な支持脚（ペデスタル）の墨出しに係る工程を見込んでおらず、作業⑦の所要日数に1日を追加しなければならないことが判明した。工程追加後の（始）から（終）までの総所要日数を記入しなさい。</span>
+    <textarea class="answer-textarea" id="ans-r6-4" style="min-height:50px" placeholder="例） ○日"></textarea>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="showMultiModel('exp-r6',['ans-r6','ans-r6-2','ans-r6-3','ans-r6-4'])">解答・解説を表示</button>
+    <button class="btn btn-copilot" onclick="showCopilot('copilot-r6')">Copilotに採点させる</button>
+  </div>
+
+  <div class="explanation" id="exp-r6">
+    <div class="explanation-title">解答・補足解説（CIC出版）</div>
+    <div class="model-values">設問1　作業⑤＝<strong>天井足場解体</strong>　／　作業⑧＝<strong>タイルカーペット張り</strong>
+
+設問2　総所要日数 ＝ <strong>28日</strong>
+
+設問3　作業④のフリーフロート ＝ <strong>2日</strong>　／　作業⑦のトータルフロート ＝ <strong>1日</strong>
+
+設問4　工程追加後の総所要日数 ＝ <strong>28日</strong>
+
+<span class="cp-line">クリティカルパス（設問2）：（始）→ⓐ→②→③→ⓑ→ⓒ→⑤→⑥→④→⑦-2→⑧→⑨→（終）</span>
+<span class="cp-line">総所要日数 ＝ 1＋3＋1＋(2+2)＋(3+3)＋1＋4＋(1+2)＋2＋2＋1 ＝ 28日</span></div>
+    <div class="model-supplement">【補足解説（CIC出版）】
+1. 設問1：設問の作業内容に「天井足場架設」とあり、天井工事終了後にはこの足場を解体する必要があるが、その記述がないことから、作業⑤の内容は「天井足場解体」。床仕上げの下地であるフリーアクセスフロア敷設後に行われる作業⑧の内容は、床の表面仕上げである「タイルカーペット張り」。
+
+2. 設問2：各作業の最早開始時刻（EST）を求め、その中で最も時間のかかる経路（クリティカルパス）の作業日数を足し合わせる。ポイントは、作業ⓑは作業③の開始2日後（所要日数＝2+2）に、作業ⓒは作業④の開始3日後（3+3）に、作業④は作業⑥の完了後1日の養生日を置き（1+2）、それぞれ着手されること。クリティカルパスは（始）→ⓐ→②→③→ⓑ→ⓒ→⑤→⑥→④→⑦-2→⑧→⑨→（終）で、総所要日数＝28日。
+
+3. 設問3：作業④のフリーフロート＝後続作業⑤のEST(15)−作業④のEST(9)−作業④の所要日数(4)＝15−(9+4)＝2日。作業⑦のトータルフロート＝最遅終了時刻(LFT=25)−最早終了時刻(EFT=20+4)＝25−24＝1日。
+
+4. 設問4：作業⑦に1日追加すると作業⑦-1の所要日数が3日（＝2+1）となり、クリティカルパスは（始）→ⓐ→②→③→ⓑ→ⓒ→⑤→⑥→⑦-1→⑦-2→⑧→⑨→（終）に変わる。よって工程追加後の総所要日数は28日（変わらず）。</div>
+    <div class="ans-fig-label">▼ 模範解答図（最早開始時刻記入・クリティカルパス）</div>
+    <div class="network-img-wrap">
+      <img src="img/r6_ans1.png" alt="令和6年度 問題3 解答図 EST・クリティカルパス・フロート">
+      <div class="network-img-caption">※ 出典：CIC出版「1級建築施工管理技士 過去問題と解説」令和6年度 問題3 解答・補足解説</div>
+    </div>
+    <div class="network-img-wrap">
+      <img src="img/r6_ans2.png" alt="令和6年度 問題3 解答図 トータルフロート・工程追加後">
+      <div class="network-img-caption">※ 作業⑦のトータルフロート（図表R6-3）／工程追加後のネットワーク（図表R6-4）</div>
+    </div>
+  </div>
+
+  <div class="copilot-result" id="copilot-r6"><div class="copilot-label">Copilot 採点結果</div><div class="copilot-body"></div></div>
+</div>
+
+
+<!-- ========================================================
+     令和4年度 問題3
+======================================================== -->
+<div class="section-title" id="r4">令和4年度｜問題3（A・B工区分け内装工事）</div>
+
+<div class="q-card">
+  <span class="q-number">R4 問3</span>
+  <p class="q-text">
+    市街地での事務所ビル新築工事において、同一フロアをA、Bの2工区に分けて施工を行うとき、右の内装工事工程表（3階）に関し、次の1.から4.の問いに答えなさい。<br>
+    工程表は計画時点のもので、検査や設備関係の作業については省略している。<br>
+    各作業日数と作業内容は工程表及び作業内容表に記載のとおりであり、Aで始まる作業名はA工区の作業を、Bで始まる作業名はB工区の作業を、Cで始まる作業名は両工区を同時に行う作業を示すが、作業A1、B1及び作業A6、B6については作業内容を記載していない。<br>
+    各作業班は、それぞれ当該作業のみを行い、各作業内容共、A工区の作業が完了してからB工区の作業を行う。また、A工区における作業A2と作業C2以外は、工区内で複数の作業を同時に行わず、各作業は先行する作業が完了してから開始するものとする。<br>
+    なお、各作業は一般的な手順に従って施工されるものとする。
+  </p>
+
+  <div class="network-info">【工事概要】
+　用途：事務所
+　構造・規模：鉄筋コンクリート造、地上6階、塔屋1階、延べ面積 2,800㎡
+　仕上げ：床は、フリーアクセスフロア下地、タイルカーペット仕上げ
+　　　　　壁は、軽量鉄骨下地、せっこうボード張り、ビニルクロス仕上げ
+　　　　　天井は、システム天井下地、ロックウール化粧吸音板仕上げ
+　　　　　A工区の会議室に可動間仕切設置</div>
+
+  <div class="network-img-wrap">
+    <img src="img/r4_kotei.png" alt="令和4年度 問題3 内装工事工程表（3階）・作業内容表">
+    <div class="network-img-caption">※ 内装工事工程表（3階）／作業内容表（出典：CIC出版「1級建築施工管理技士 過去問題と解説」令和4年度 問題3）</div>
+  </div>
+
+  <div class="essay-field">
+    <span class="essay-label">設問1：作業A1、B1及び作業A6、B6の作業内容を記述しなさい。</span>
+    <textarea class="answer-textarea" id="ans-r4" style="min-height:60px" placeholder="作業A1、B1：&#10;作業A6、B6："></textarea>
+  </div>
+  <div class="essay-field">
+    <span class="essay-label">設問2：（始）から（終）までの総所要日数を記入しなさい。</span>
+    <textarea class="answer-textarea" id="ans-r4-2" style="min-height:50px" placeholder="例） ○日"></textarea>
+  </div>
+  <div class="essay-field">
+    <span class="essay-label">設問3：作業A4のフリーフロートを記入しなさい。</span>
+    <textarea class="answer-textarea" id="ans-r4-3" style="min-height:50px" placeholder="作業A4 FF：　○日"></textarea>
+  </div>
+  <div class="essay-field">
+    <span class="essay-label">設問4：建具枠納入予定日の前日に、A工区分の納入が遅れることが判明したため、B工区の建具枠取付けを先行し、その後の作業もB工区の作業が完了してからA工区の作業を行うこととした。なお、変更後のB工区の建具枠取付けの所要日数は2日で、納入の遅れたA工区の建具枠は、B工区の壁せっこうボード張り完了までに取り付けられることが判った。このとき、当初クリティカルパスではなかった作業【あ】から作業A8までがクリティカルパスとなり、（始）から（終）までの総所要日数は【い】日となる。【あ】【い】に当てはまる作業名と数値をそれぞれ記入しなさい。</span>
+    <textarea class="answer-textarea" id="ans-r4-4" style="min-height:60px" placeholder="あ（作業名）：&#10;い（総所要日数）：　○日"></textarea>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="showMultiModel('exp-r4',['ans-r4','ans-r4-2','ans-r4-3','ans-r4-4'])">解答・解説を表示</button>
+    <button class="btn btn-copilot" onclick="showCopilot('copilot-r4')">Copilotに採点させる</button>
+  </div>
+
+  <div class="explanation" id="exp-r4">
+    <div class="explanation-title">解答・補足解説（CIC出版）</div>
+    <div class="model-values">設問1　作業A1、B1 ＝ <strong>壁軽量鉄骨下地組み</strong>　／　作業A6、B6 ＝ <strong>フリーアクセスフロア敷設</strong>
+
+設問2　総所要日数 ＝ <strong>25日</strong>
+
+設問3　作業A4のフリーフロート ＝ <strong>0日</strong>
+
+設問4　あ ＝ <strong>（作業）A5</strong>　／　い ＝ <strong>27日</strong>
+
+<span class="cp-line">注意：作業A3のEST＝8（7ではない）、作業C3のEST＝23。</span></div>
+    <div class="model-supplement">【補足解説（CIC出版）】
+1. 設問1：室内の仕上げ工事の一般的手順は、天井・壁仕上げ→最後に床仕上げ。工程表は「A3、B3 壁せっこうボード張り」の後に「A4、B4 システム天井組立て」とあり、先に壁の施工が行われている。工事概要の仕上げに「壁は、軽量鉄骨下地、せっこうボード張り、ビニルクロス仕上げ」とあるが、作業内容表には軽量鉄骨下地工事の内容がない→作業A1、B1の作業内容は「壁軽量鉄骨下地組み」。同様に床のフリーアクセスフロア下地工事の内容がない→作業A6、B6は「フリーアクセスフロア敷設」。
+
+2. 設問2：各イベントの最早開始時刻（EST）を記入し（終）のESTを求める＝総所要日数25日。作業A3のESTは7ではなく8、作業C3のESTは21ではなく23となることに注意。
+
+3. 設問3：フリーフロート＝後続作業のEST−先行作業のEST−所要日数。作業A4のFF＝12−(10+2)＝0日。
+
+4. 設問4：A工区の建具枠取付けをC2A、B工区をC2Bとすると、C2B以降はB工区の作業が先行するのでダミーアローが追加される。これにより当初クリティカルパスではなかった作業A5から作業A8までがクリティカルパスとなり、総所要日数は27日となる。</div>
+    <div class="ans-fig-label">▼ 模範解答図（EST記入・変更後ネットワーク）</div>
+    <div class="network-img-wrap">
+      <img src="img/r4_ans1.png" alt="令和4年度 問題3 解答図 EST記入（図表R4-1）">
+      <div class="network-img-caption">※ 図表R4-1：各イベントの最早開始時刻（EST）を記入した工程表</div>
+    </div>
+    <div class="network-img-wrap">
+      <img src="img/r4_ans2.png" alt="令和4年度 問題3 解答図 変更後ネットワーク（図表R4-2）">
+      <div class="network-img-caption">※ 図表R4-2：建具枠取付けをC2A・C2Bとした変更後の工程表（ダミーアロー追加）</div>
+    </div>
+    <div class="network-img-wrap">
+      <img src="img/r4_ans3.png" alt="令和4年度 問題3 解答表・補足解説">
+      <div class="network-img-caption">※ 解答表／補足解説（出典：CIC出版「1級建築施工管理技士 過去問題と解説」令和4年度 問題3）</div>
+    </div>
+  </div>
+
+  <div class="copilot-result" id="copilot-r4"><div class="copilot-label">Copilot 採点結果</div><div class="copilot-body"></div></div>
+</div>
+
+
+<!-- ========================================================
+     令和2年度 問題5
+======================================================== -->
+<div class="section-title" id="r2">令和2年度｜問題5（A・B工区分け内装仕上げ工事）</div>
+
+<div class="q-card">
+  <span class="q-number">R2 問5</span>
+  <p class="q-text">
+    市街地での事務所ビルの内装工事において、各階を施工量の異なるA工区とB工区に分けて工事を行うとき、右の内装仕上げ工事工程表（3階）に関し、次の1.から4.の問いに答えなさい。<br>
+    工程表は計画時点のもので、検査や設備関係の作業については省略している。<br>
+    各作業班の作業内容及び各作業に必要な作業員数は作業内容表のとおりであり、Aで始まる作業名はA工区の作業を、Bで始まる作業名はB工区の作業を、Cで始まる作業名は両工区同時に行う作業を示すが、作業A4及び作業B4については作業内容を記載していない。<br>
+    各作業班は、それぞれ当該作業のみを行い、各作業内容共、A工区の作業が完了してからB工区の作業を行うものとする。また、工区内では複数の作業を同時に行わず、各作業は先行する作業が完了してから開始するものとする。なお、各作業は一般的な手順に従って施工されるものとする。
+  </p>
+
+  <div class="network-info">【工事概要】
+　用途：事務所
+　構造・規模：鉄筋コンクリート造、地上6階、塔屋1階、延べ面積 2,800㎡
+　仕上げ：床は、フリーアクセスフロア下地、タイルカーペット仕上げ
+　　　　　間仕切り壁は、軽量鉄骨下地せっこうボード張り、ビニルクロス仕上げ
+　　　　　天井は、システム天井下地、ロックウール化粧吸音板取付け
+　なお、3階の仕上げ工事部分床面積は455㎡（A工区：273㎡、B工区182㎡）である。</div>
+
+  <div class="network-img-wrap">
+    <img src="img/r2_kotei.png" alt="令和2年度 問題5 内装仕上げ工事工程表（3階）・作業内容表">
+    <div class="network-img-caption">※ 内装仕上げ工事工程表（3階）／作業内容表（出典：CIC出版「1級建築施工管理技士 過去問題と解説」令和2年度 問題5）</div>
+  </div>
+
+  <div class="essay-field">
+    <span class="essay-label">設問1：作業A4及び作業B4の作業内容を記述しなさい。</span>
+    <textarea class="answer-textarea" id="ans-r2" style="min-height:50px" placeholder="作業A4、B4："></textarea>
+  </div>
+  <div class="essay-field">
+    <span class="essay-label">設問2：作業B2のフリーフロートを記入しなさい。</span>
+    <textarea class="answer-textarea" id="ans-r2-2" style="min-height:50px" placeholder="作業B2 FF：　○日"></textarea>
+  </div>
+  <div class="essay-field">
+    <span class="essay-label">設問3：（始）から（終）までの総所要日数と、工事を令和3年2月8日（月曜日）より開始するときの工事完了日を記入しなさい。ただし、作業休止日は土曜日、日曜日及び祝日とする。なお、2月8日以降3月末までの祝日は、建国記念の日（2月11日）、天皇誕生日（2月23日）、春分の日（3月20日）である。</span>
+    <textarea class="answer-textarea" id="ans-r2-3" style="min-height:60px" placeholder="総所要日数：　○日&#10;工事完了日：　令和○年○月○日"></textarea>
+  </div>
+  <div class="essay-field">
+    <span class="essay-label">設問4：総所要日数を変えずに、作業B2及び作業B4の1日当たりの作業員の人数をできるだけ少なくする場合、作業B2の人数は【あ】人に、作業B4の人数は【い】人となる。ただし、各作業に必要な作業員の総人数は変わらないものとする。【あ】【い】に当てはまる数値を記入しなさい。</span>
+    <textarea class="answer-textarea" id="ans-r2-4" style="min-height:60px" placeholder="あ（作業B2の人数）：　○人&#10;い（作業B4の人数）：　○人"></textarea>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="showMultiModel('exp-r2',['ans-r2','ans-r2-2','ans-r2-3','ans-r2-4'])">解答・解説を表示</button>
+    <button class="btn btn-copilot" onclick="showCopilot('copilot-r2')">Copilotに採点させる</button>
+  </div>
+
+  <div class="explanation" id="exp-r2">
+    <div class="explanation-title">解答・補足解説（CIC出版）</div>
+    <div class="model-values">設問1　作業A4、B4 ＝ <strong>壁ビニルクロス張り</strong>
+
+設問2　作業B2のフリーフロート ＝ <strong>2日</strong>
+
+設問3　総所要日数 ＝ <strong>24日</strong>　／　工事完了日 ＝ <strong>令和3年3月15日（月）</strong>
+
+設問4　あ（作業B2の人数）＝ <strong>3人</strong>　／　い（作業B4の人数）＝ <strong>2人</strong></div>
+    <div class="model-supplement">【補足解説（CIC出版）】
+1. 設問1：室内の仕上げ工事の一般的手順は、天井・壁仕上げ→最後に床仕上げ。天井は「A3、B3 システム天井組立て」、床は「A5、B5 フリーアクセスフロア敷設」「A6、B6 タイルカーペット敷設、幅木張付け」で仕上げ工事まで行われている。しかし壁は「A1、B1 壁軽量鉄骨下地組立て」「A2、B2 壁せっこうボード張り」で下地工事までしか終わっていない。工事概要の仕上げに「間仕切り壁は…ビニルクロス仕上げ」とあるので、壁ビニルクロス張りの工事が必要→作業A4、B4の作業内容は「壁ビニルクロス張り」。
+
+2. 設問2：フリーフロート＝後続作業のEST−先行作業のEST−所要日数。「A工区完了後にB工区」のダミーアローを追加して計算すると、作業B2のFF＝11−(6+3)＝2日。
+
+3. 設問3：（始）から（終）までの総所要日数は24日。工事開始日の2月8日（月）から、土・日・祝（2/11、2/23、3/20）を除いて24日分の作業可能日を数えると、工事完了日は令和3年3月15日（月）。
+
+4. 設問4：総所要日数を変えずに人数を減らすには、フリーフロートを活用する。B2のFF＝2日（B2を3+2=5日に延ばせる）、B4のFF＝2日（B4を2+2=4日に延ばせる）。作業B2は1日5人×3日＝延べ15人を5日で行う→15÷5＝3人。作業B4は1日4人×2日＝延べ8人を4日で行う→8÷4＝2人。</div>
+    <div class="ans-fig-label">▼ 模範解答図（EST記入・カレンダー）</div>
+    <div class="network-img-wrap">
+      <img src="img/r2_ans1.png" alt="令和2年度 問題5 解答図 EST記入（図表R2-1）">
+      <div class="network-img-caption">※ 図表R2-1：各イベントの最早開始時刻（EST）を記入した工程表（ダミーアロー追加）</div>
+    </div>
+    <div class="network-img-wrap">
+      <img src="img/r2_ans2.png" alt="令和2年度 問題5 解答 カレンダー・人数計算（図表R2-2）">
+      <div class="network-img-caption">※ 図表R2-2：工事完了日を求めるカレンダー／作業員数の計算（出典：CIC出版「1級建築施工管理技士 過去問題と解説」令和2年度 問題5）</div>
+    </div>
+  </div>
+
+  <div class="copilot-result" id="copilot-r2"><div class="copilot-label">Copilot 採点結果</div><div class="copilot-body"></div></div>
+</div>
+
+</main>
+
+<footer>
+  大石建設 1級施工管技 社内対策講座 ／ ネットワーク工程表 演習<br>
+  出典：CIC出版「1級建築施工管理技士 第二次検定 過去問題と解説」（令和6年度・令和4年度・令和2年度 問題3／問題5）
+</footer>
+
+<script>
+// ================================================
+// 解答・解説トグル
+// ================================================
+function showMultiModel(expId, fieldIds) {
+  const hasEmpty = fieldIds.some(id => {
+    const el = document.getElementById(id);
+    return !el || !el.value.trim();
+  });
+  if (hasEmpty) {
+    if (!confirm('未入力の設問があります。解答・解説を表示しますか？')) return;
+  }
+  document.getElementById(expId).classList.add('show');
+}
+
+// ================================================
+// Copilot 採点 (grade-skk1 と同一API・questionOverride方式)
+// このページは manual.kensetsu-total.support 自身（同一オリジン）なので相対URL＋application/json でOK。
+// ================================================
+const COPILOT_API_URL = '/api/grade-skk1';
+const COPILOT_POLL_API_URL = '/api/grade-skk1-poll';
+
+// 年度ごとのネットワーク工程表問題マスタ。questionOverride でサーバーに渡す。
+const NETWORK_QUESTIONS = {
+  'r6': {
+    title: '令和6年度 問題3：工程管理（ネットワーク工程表・事務所ビル内装工事）',
+    body:
+      '【工事概要】用途：事務所／鉄筋コンクリート構造、地上6階、基準階の事務室部分床面積325㎡。' +
+      '床＝フリーアクセスフロア下地＋タイルカーペット仕上げ、壁＝軽量鉄骨下地＋せっこうボード張り＋塗装、天井＝軽量鉄骨下地＋せっこうボード張り＋ロックウール化粧吸音板。\n' +
+      '工程表・作業内容と所要日数・施工条件を読み取り次に答える。作業⑤・⑧は作業内容が空欄。作業⑦は⑦-1・⑦-2に分割。\n' +
+      '【設問1】作業⑤及び作業⑧の作業内容を記述。\n' +
+      '【設問2】（始）から（終）までの総所要日数。\n' +
+      '【設問3】作業④のフリーフロート及び作業⑦のトータルフロート。\n' +
+      '【設問4】作業⑦の所要日数に1日を追加した場合の総所要日数。\n' +
+      '【参考正答】設問1＝⑤天井足場解体／⑧タイルカーペット張り。設問2＝28日。設問3＝作業④FF=2日／作業⑦TF=1日。設問4＝28日。クリティカルパス＝始→ⓐ→②→③→ⓑ→ⓒ→⑤→⑥→④→⑦-2→⑧→⑨→終。',
+  },
+  'r4': {
+    title: '令和4年度 問題3：工程管理（ネットワーク工程表・A/B工区分け内装工事）',
+    body:
+      '【工事概要】用途：事務所／鉄筋コンクリート造、地上6階、塔屋1階、延べ面積2,800㎡。同一フロアをA・B2工区に分けて施工。' +
+      '床＝フリーアクセスフロア下地＋タイルカーペット、壁＝軽量鉄骨下地＋せっこうボード張り＋ビニルクロス、天井＝システム天井下地＋ロックウール化粧吸音板。A工区会議室に可動間仕切設置。\n' +
+      'A工区完了後にB工区。作業A1・B1、作業A6・B6は作業内容が空欄。\n' +
+      '【設問1】作業A1、B1及び作業A6、B6の作業内容を記述。\n' +
+      '【設問2】（始）から（終）までの総所要日数。\n' +
+      '【設問3】作業A4のフリーフロート。\n' +
+      '【設問4】建具枠A工区納入遅れでB工区先行に変更したとき、クリティカルパスとなる作業【あ】と総所要日数【い】。\n' +
+      '【参考正答】設問1＝A1・B1壁軽量鉄骨下地組み／A6・B6フリーアクセスフロア敷設。設問2＝25日。設問3＝A4のFF=0日。設問4＝あ=作業A5／い=27日。',
+  },
+  'r2': {
+    title: '令和2年度 問題5：工程管理（ネットワーク工程表・A/B工区分け内装仕上げ工事）',
+    body:
+      '【工事概要】用途：事務所／鉄筋コンクリート造、地上6階、塔屋1階、延べ面積2,800㎡。各階をA・B2工区に分けて施工。' +
+      '床＝フリーアクセスフロア下地＋タイルカーペット、間仕切り壁＝軽量鉄骨下地せっこうボード張り＋ビニルクロス、天井＝システム天井下地＋ロックウール化粧吸音板取付け。3階仕上げ床面積455㎡（A工区273㎡、B工区182㎡）。\n' +
+      'A工区完了後にB工区。作業A4・B4は作業内容が空欄。\n' +
+      '【設問1】作業A4及び作業B4の作業内容を記述。\n' +
+      '【設問2】作業B2のフリーフロート。\n' +
+      '【設問3】（始）から（終）までの総所要日数と、令和3年2月8日（月）開始時の工事完了日（作業休止日＝土日祝。祝日＝2/11、2/23、3/20）。\n' +
+      '【設問4】総所要日数を変えず作業B2・B4の1日当たり人数を最少にする場合の人数【あ】【い】。\n' +
+      '【参考正答】設問1＝A4・B4壁ビニルクロス張り。設問2＝B2のFF=2日。設問3＝24日／令和3年3月15日（月）。設問4＝あ=3人／い=2人。',
+  },
+};
+
+const COPILOT_TOTAL_TIMEOUT_SEC = 240;
+const COPILOT_POLL_INTERVAL_MS = 1500;
+
+// 年度ごとの全設問textarea ID（採点時にまとめて送る）
+const YEAR_FIELDS = {
+  'r6': ['ans-r6', 'ans-r6-2', 'ans-r6-3', 'ans-r6-4'],
+  'r4': ['ans-r4', 'ans-r4-2', 'ans-r4-3', 'ans-r4-4'],
+  'r2': ['ans-r2', 'ans-r2-2', 'ans-r2-3', 'ans-r2-4'],
+};
+
+function _resultEl(resultId) { return document.getElementById(resultId); }
+function _bodyEl(resultId) { return _resultEl(resultId).querySelector('.copilot-body'); }
+
+function _setLoading(resultId) {
+  const root = _resultEl(resultId);
+  root.classList.remove('error');
+  root.classList.add('show');
+  const label = root.querySelector('.copilot-label');
+  if (label) label.textContent = 'Copilot 採点中…';
+  const body = _bodyEl(resultId);
+  body.innerHTML = '';
+  const wrap = document.createElement('div');
+  wrap.className = 'copilot-loading';
+  const sp = document.createElement('div');
+  sp.className = 'copilot-spinner';
+  const txt = document.createElement('span');
+  txt.textContent = '建設サポートに問い合わせ中（最大' + COPILOT_TOTAL_TIMEOUT_SEC + '秒）…';
+  wrap.appendChild(sp);
+  wrap.appendChild(txt);
+  body.appendChild(wrap);
+}
+
+function _renderText(body, text) {
+  body.innerHTML = '';
+  const urlRe = /(https?:\/\/[^\s<>"]+)/g;
+  let last = 0;
+  let m;
+  while ((m = urlRe.exec(text)) !== null) {
+    if (m.index > last) body.appendChild(document.createTextNode(text.slice(last, m.index)));
+    const a = document.createElement('a');
+    a.href = m[1];
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.textContent = m[1];
+    body.appendChild(a);
+    last = m.index + m[1].length;
+  }
+  if (last < text.length) body.appendChild(document.createTextNode(text.slice(last)));
+}
+
+function _setResult(resultId, text) {
+  const root = _resultEl(resultId);
+  root.classList.remove('error');
+  root.classList.add('show');
+  const label = root.querySelector('.copilot-label');
+  if (label) label.textContent = 'Copilot 採点結果';
+  _renderText(_bodyEl(resultId), text);
+}
+
+function _setError(resultId, message) {
+  const root = _resultEl(resultId);
+  root.classList.add('show');
+  root.classList.add('error');
+  const label = root.querySelector('.copilot-label');
+  if (label) label.textContent = 'Copilot 採点エラー';
+  const body = _bodyEl(resultId);
+  body.innerHTML = '';
+  const p = document.createElement('div');
+  p.textContent = message;
+  body.appendChild(p);
+  const retry = document.createElement('button');
+  retry.className = 'copilot-retry';
+  retry.type = 'button';
+  retry.textContent = '再試行';
+  retry.addEventListener('click', () => showCopilot(resultId));
+  body.appendChild(retry);
+}
+
+function _collectAnswerPayload(questionId) {
+  const fields = YEAR_FIELDS[questionId] || [];
+  const labels = ['設問1', '設問2', '設問3', '設問4'];
+  let combined = '';
+  fields.forEach((fid, i) => {
+    const el = document.getElementById(fid);
+    const v = el ? (el.value || '').trim() : '';
+    combined += (labels[i] || ('設問' + (i + 1))) + '：\n' + (v || '（未記入）') + '\n\n';
+  });
+  const payload = {
+    questionId,
+    answer: combined.trim(),
+  };
+  if (NETWORK_QUESTIONS[questionId]) {
+    payload.questionOverride = NETWORK_QUESTIONS[questionId];
+  }
+  return payload;
+}
+
+function _hasAnswer(questionId) {
+  const fields = YEAR_FIELDS[questionId] || [];
+  return fields.some(fid => {
+    const el = document.getElementById(fid);
+    return el && typeof el.value === 'string' && el.value.trim().length > 0;
+  });
+}
+
+async function showCopilot(resultId) {
+  const questionId = resultId.replace(/^copilot-/, '');
+  if (!_hasAnswer(questionId)) {
+    if (!confirm('解答が未記入です。空のまま採点を依頼しますか？\n（記入してから依頼することを推奨します）')) {
+      return;
+    }
+  }
+  const payload = _collectAnswerPayload(questionId);
+
+  const triggerBtn = document.querySelector(`button[onclick="showCopilot('${resultId}')"]`);
+  if (triggerBtn) triggerBtn.setAttribute('disabled', 'disabled');
+
+  _setLoading(resultId);
+
+  const overallStart = Date.now();
+  const overallDeadline = overallStart + COPILOT_TOTAL_TIMEOUT_SEC * 1000;
+
+  try {
+    const res = await fetch(COPILOT_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (res.status >= 400) {
+      let msg = `エラー (HTTP ${res.status})`;
+      try { const j = await res.json(); if (j && j.error) msg = j.error; } catch (_) {}
+      _setError(resultId, msg);
+      return;
+    }
+    let j;
+    try { j = await res.json(); } catch (_) {
+      _setError(resultId, '採点APIの応答が不正でした。再試行してください。');
+      return;
+    }
+
+    if (res.status === 200 && j && (j.verdict || j.raw)) {
+      const text = (j.verdict || j.raw || '').trim();
+      if (!text) { _setError(resultId, '採点結果が空でした。再試行してください。'); return; }
+      _setResult(resultId, text);
+      return;
+    }
+
+    const conversationId = j && j.conversationId;
+    let watermark = (j && j.watermark) || undefined;
+    if (!conversationId) {
+      _setError(resultId, '採点処理を開始できませんでした。再試行してください。');
+      return;
+    }
+
+    while (Date.now() < overallDeadline) {
+      await new Promise((r) => setTimeout(r, COPILOT_POLL_INTERVAL_MS));
+      if (Date.now() >= overallDeadline) break;
+
+      const pollRes = await fetch(COPILOT_POLL_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ questionId: payload.questionId, conversationId, watermark }),
+      });
+      if (pollRes.status >= 400 && pollRes.status !== 202) {
+        let msg = `採点取得エラー (HTTP ${pollRes.status})`;
+        try { const pj = await pollRes.json(); if (pj && pj.error) msg = pj.error; } catch (_) {}
+        _setError(resultId, msg);
+        return;
+      }
+      let pj;
+      try { pj = await pollRes.json(); } catch (_) { continue; }
+      if (pj && pj.watermark) watermark = pj.watermark;
+      if (pollRes.status === 200 && pj && (pj.verdict || pj.raw)) {
+        const text = (pj.verdict || pj.raw || '').trim();
+        if (!text) { _setError(resultId, '採点結果が空でした。再試行してください。'); return; }
+        _setResult(resultId, text);
+        return;
+      }
+    }
+
+    _setError(resultId, '採点処理が時間内に完了しませんでした。再試行してください。');
+  } catch (e) {
+    _setError(resultId, 'ネットワークエラーが発生しました。通信状況を確認のうえ再試行してください。');
+  } finally {
+    if (triggerBtn) triggerBtn.removeAttribute('disabled');
+  }
+}
+</script>
+
+</body>
+</html>
