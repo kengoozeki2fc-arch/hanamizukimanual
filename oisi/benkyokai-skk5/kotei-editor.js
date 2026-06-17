@@ -20,7 +20,9 @@
   var HEADER_HEIGHT = 36;
   var MARKER_RADIUS = 8;
   var HISTORY_LIMIT = 50;
-  var STORAGE_KEY = "kotei-skk5-q3";
+  // localStorage キーは root 要素の data-storage-key 属性から取得。
+  // 後方互換: 属性が無ければ従来の "kotei-skk5-q3" にフォールバック。
+  var DEFAULT_STORAGE_KEY = "kotei-skk5-q3";
 
   var COLOR_HEX = { black: "#1A1A1A", red: "#D32F2F", blue: "#1976D2" };
 
@@ -167,6 +169,7 @@
 
   function KoteiEditor(root) {
     this.root = root;
+    this.storageKey = (root && root.dataset && root.dataset.storageKey) || DEFAULT_STORAGE_KEY;
     this.color = "black";
     this.dragSourceId = null;
     this.pointer = null;
@@ -175,7 +178,7 @@
     this.history = { past: [], present: defaultState(), future: [] };
     // localStorage 復元
     try {
-      var raw = localStorage.getItem(STORAGE_KEY);
+      var raw = localStorage.getItem(this.storageKey);
       if (raw) this.history.present = normalizeState(JSON.parse(raw));
     } catch (e) { /* 破損時は既定 */ }
     this.buildDom();
@@ -221,7 +224,7 @@
   };
 
   KoteiEditor.prototype.persist = function () {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(this.history.present)); } catch (e) { /* quota等は無視 */ }
+    try { localStorage.setItem(this.storageKey, JSON.stringify(this.history.present)); } catch (e) { /* quota等は無視 */ }
   };
 
   /* ---------- 状態変更ヘルパ ---------- */
@@ -1010,10 +1013,21 @@
   // テスト/外部からの再利用のため公開（本番動作には影響なし）
   if (typeof window !== "undefined") window.KoteiEditor = KoteiEditor;
 
-  function init() {
-    var root = document.getElementById("kotei-editor-root");
+  function mountRoot(root) {
     if (!root) return;
+    if (root.dataset && root.dataset.koteiInited === "1") return;
+    if (root.dataset) root.dataset.koteiInited = "1";
     new KoteiEditor(root);
+  }
+
+  function init() {
+    // 後方互換: 従来の単一 #kotei-editor-root を最優先で拾う。
+    mountRoot(document.getElementById("kotei-editor-root"));
+    // 1ページに複数エディタを置く将来形のため class でも拾う（任意・無ければ no-op）。
+    if (typeof document.querySelectorAll === "function") {
+      var extra = document.querySelectorAll(".kotei-editor-root");
+      Array.prototype.forEach.call(extra, mountRoot);
+    }
   }
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
