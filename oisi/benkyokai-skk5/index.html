@@ -407,6 +407,154 @@
     .blank-row select { min-width: 160px; }
     .koji-gaiyou table th { width: 80px; }
   }
+
+  /* ===== 演習用 工程表メモ欄（kotei-editor.js） ===== */
+  .kotei-memo-wrap {
+    margin-top: 18px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #fbfcfe;
+    overflow: hidden;
+  }
+  .kotei-memo-head {
+    background: #eaf0f8;
+    border-bottom: 1px solid var(--border);
+    padding: 10px 14px;
+    font-weight: 700;
+    font-size: .9rem;
+    color: var(--primary);
+  }
+  .kotei-memo-desc {
+    padding: 10px 14px 0;
+    font-size: .82rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  .kotei-editor { padding: 10px 12px 12px; }
+  .kotei-note {
+    background: #fff8ec;
+    border: 1px solid #f0d9a8;
+    color: #6e4b00;
+    font-size: .8rem;
+    line-height: 1.6;
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+  }
+  .kotei-toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    font-size: .82rem;
+  }
+  .kotei-btn {
+    padding: 5px 11px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    background: #fff;
+    color: var(--text);
+    font-size: .8rem;
+    font-weight: 600;
+    cursor: pointer;
+    line-height: 1.4;
+  }
+  .kotei-btn:hover { background: #f1f5fb; }
+  .kotei-btn:disabled { opacity: .4; cursor: default; }
+  .kotei-btn-danger { color: var(--wrong); border-color: #e7b7bf; }
+  .kotei-btn-danger:hover { background: #fdeef0; }
+  .kotei-toollabel { color: var(--muted); margin-left: 6px; font-size: .78rem; }
+  .kotei-rowcount { font-family: monospace; width: 26px; text-align: center; font-weight: 700; }
+  .kotei-color {
+    width: 24px; height: 24px; border-radius: 50%;
+    border: 2px solid transparent; cursor: pointer; padding: 0;
+  }
+  .kotei-color-active { border-color: var(--accent); box-shadow: 0 0 0 1px #fff inset; }
+  .kotei-ym {
+    border: 1px solid var(--border); border-radius: 5px;
+    padding: 3px 6px; font-size: .78rem; font-family: inherit;
+  }
+  .kotei-spacer { flex: 1 1 auto; }
+  .kotei-scroll {
+    overflow: auto;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    max-height: 560px;
+    outline: none;
+  }
+  .kotei-inner { position: relative; min-width: 100%; }
+  .kotei-labels { position: absolute; left: 0; }
+  .kotei-label-cell {
+    border-bottom: 1px solid #E2E8F0;
+    display: flex; align-items: center; padding: 0 4px;
+  }
+  .kotei-label-input {
+    width: 100%; background: transparent; border: none;
+    font-size: 11px; font-family: inherit; outline: none;
+    color: var(--text); padding: 1px 3px; border-radius: 3px;
+  }
+  .kotei-label-input:focus { background: #fff; box-shadow: 0 0 0 1px #93b4d8; }
+  .kotei-footer {
+    margin-top: 8px; font-size: .76rem; color: var(--muted); line-height: 1.6;
+  }
+  .kotei-count { margin-left: 10px; white-space: nowrap; }
+  /* コンテキストメニュー */
+  .kotei-ctxmenu {
+    position: fixed; z-index: 9999; background: #fff;
+    border: 1px solid var(--border); border-radius: 6px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.18); padding: 4px 0;
+    font-size: .8rem; min-width: 130px;
+  }
+  .kotei-ctx-head { padding: 4px 12px; font-size: .72rem; color: var(--muted); border-bottom: 1px solid #eef2f7; }
+  .kotei-ctx-colors { padding: 6px 12px; display: flex; align-items: center; gap: 6px; }
+  .kotei-ctx-colors span { font-size: .72rem; color: var(--muted); }
+  .kotei-ctx-color { width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--border); cursor: pointer; padding: 0; }
+  .kotei-ctx-item { display: block; width: 100%; text-align: left; padding: 6px 12px; background: none; border: none; cursor: pointer; font-size: .8rem; }
+  .kotei-ctx-item:hover { background: #f1f5fb; }
+  .kotei-ctx-del { color: var(--wrong); }
+  .kotei-ctx-del:hover { background: #fdeef0; }
+  /* 休日設定モーダル */
+  .kotei-modal-overlay {
+    position: fixed; inset: 0; z-index: 9998; background: rgba(0,0,0,.3);
+    display: flex; align-items: center; justify-content: center; padding: 16px;
+  }
+  .kotei-modal {
+    background: #fff; border-radius: 10px; width: 100%; max-width: 420px;
+    box-shadow: 0 10px 40px rgba(0,0,0,.25); overflow: hidden;
+  }
+  .kotei-modal-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+  .kotei-modal-head h3 { font-size: .98rem; color: var(--primary); }
+  .kotei-modal-close { background: none; border: none; cursor: pointer; font-size: 1rem; color: var(--muted); }
+  .kotei-modal-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 9px; font-size: .85rem; }
+  .kotei-chk { display: flex; align-items: center; gap: 8px; }
+  .kotei-custom-title { font-weight: 700; color: var(--text); margin-top: 6px; padding-top: 8px; border-top: 1px solid #eef2f7; }
+  .kotei-custom-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; max-height: 150px; overflow: auto; }
+  .kotei-custom-empty { font-size: .78rem; color: var(--muted); }
+  .kotei-custom-item { display: flex; align-items: center; gap: 8px; background: #f5f7fa; border-radius: 5px; padding: 4px 8px; }
+  .kotei-cd-show-date { font-family: monospace; font-size: .76rem; }
+  .kotei-cd-show-label { flex: 1; font-size: .78rem; }
+  .kotei-cd-rm { color: var(--wrong); background: none; border: none; cursor: pointer; font-size: .78rem; }
+  .kotei-custom-add { display: flex; gap: 6px; align-items: center; }
+  .kotei-cd-date, .kotei-cd-label { border: 1px solid var(--border); border-radius: 5px; padding: 4px 7px; font-size: .78rem; font-family: inherit; }
+  .kotei-cd-label { flex: 1; }
+  .kotei-modal-foot { padding: 10px 16px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; }
+  @media (max-width: 768px) {
+    .kotei-note {
+      background: #fde8d4;
+      border: 2px solid var(--accent);
+      color: #7a3b00;
+      font-weight: 700;
+      font-size: .82rem;
+    }
+    .kotei-toolbar { font-size: .76rem; gap: 5px; }
+    .kotei-toollabel { margin-left: 2px; }
+  }
 </style>
 <script src="../_gate.js" defer></script>
 </head>
@@ -677,6 +825,16 @@
 ・設備ⓐは作業②柱配筋完了後に着手／設備ⓑは作業ⓐとは別に作業④壁配筋完了後に着手／設備ⓓは作業⑨スラブ配筋開始2日後に着手。
 ・所要日数：①1 ②2 ③4 ④3 ⑤2 ⑥6 ⑦4 ⑧2 ⑨3 ⑩1 ⑪1 ⑫1／ⓐ3 ⓑ1 ⓒ4 ⓓ2（単位：日）。
 ※ ネットワーク計算はダミーアローの向きを1本読み違えると数値が変わる。勉強会では各自の工程表（条件式の整理→経路の手追い）を持ち寄って突き合わせること。</div>
+  </div>
+
+  <!-- 演習用 工程表メモ欄（kotei-editor.js） -->
+  <div class="kotei-memo-wrap">
+    <div class="kotei-memo-head">📝 演習用メモ欄｜工程表エディタ</div>
+    <div class="kotei-memo-desc">
+      上の「解き方の手順」を見ながら、自分でネットワーク（イベント＝○、作業＝線）を描いて経路を手追いしてみましょう。
+      段（行）＝作業の系列、横方向＝日付として使えます。描いた図はこの端末に自動保存され、JSON／PNGで書き出して勉強会に持ち寄れます。
+    </div>
+    <div id="kotei-editor-root"></div>
   </div>
 </div>
 
@@ -1641,6 +1799,9 @@ async function showCopilot(resultId) {
   }
 }
 </script>
+
+<!-- 演習用 工程表メモ欄（問3） -->
+<script src="kotei-editor.js" defer></script>
 
 </body>
 </html>
