@@ -354,6 +354,30 @@
     color: #6e4b00;
     line-height: 1.8;
   }
+  .model-caution {
+    background: #fff4f4;
+    border: 1.5px solid #d9534f;
+    border-left: 5px solid #c9302c;
+    padding: 11px 15px;
+    border-radius: 6px;
+    font-size: .84rem;
+    color: #a72824;
+    line-height: 1.7;
+    margin: 12px 0;
+    font-weight: 600;
+  }
+  .model-caution .caution-mark { font-weight: 700; }
+  .model-values {
+    background: #fff8ec;
+    border-left: 4px solid var(--accent);
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    font-size: .9rem;
+    line-height: 1.85;
+    margin-bottom: 12px;
+    white-space: pre-wrap;
+  }
+  .model-values .cp-line { color: #c9302c; font-weight: 700; }
   .copilot-result {
     display: none;
     margin-top: 12px;
@@ -805,20 +829,26 @@
 
   <div class="explanation" id="exp-q3">
     <div class="explanation-title">解答・解説（社内勉強会用・林副部長検算）</div>
+    <div class="model-caution"><span class="caution-mark">※ 注意（必読）</span>　令和7年度第二次検定の記述式は<strong>公式正答が非公表</strong>のため、本数値は公表問題のネットワーク図・施工条件から算出した<strong>検算値</strong>です。勉強会で各自の計算と突合してください。</div>
     <div class="model-answer">設問1：
-　作業⑦＝梁配筋
+　作業⑦＝<strong>梁配筋</strong></div>
+    <div class="model-values">設問2　総所要日数 ＝ <strong>24日</strong>
 
-設問2・3・4：
-　ネットワークのダミーアロー結線（点線）を確定したうえで、各イベントのEST／LSTを順算・逆算して求める。
-　※ 数値解答（総所要日数・EST／LST・TF／FF）は、ダミー位置の読み取りで変わるため、必ず下記の手順で各自が工程表上で計算し、勉強会で答え合わせをすること。</div>
-    <div class="model-supplement">【解き方の手順（林副部長メソッド）】
-1. <strong>作業⑦＝梁配筋</strong>：RC躯体の基準階は「墨出し→柱・壁配筋→柱・壁型枠建込み→型枠返し→梁・スラブ型枠組立て→<strong>梁配筋</strong>→天井インサート・型枠締固め→スラブ配筋→…→コンクリート打込み」の順で進む。⑥梁・スラブ型枠組立て（6日）と⑧天井インサート・型枠締固め（2日）の間に入り、⑨スラブ配筋（3日）に先立つ作業⑦は<strong>梁配筋</strong>。
+設問3　作業③　EST ＝ <strong>2日</strong> ／ LST ＝ <strong>3日</strong>（TF＝1日）
 
-2. <strong>総所要日数（設問2）</strong>：建築工事①〜⑫と設備工事ⓐ〜ⓓの結合関係（施工条件のダミー）を含めてネットワークを完成させ、（始）から各イベントのESTを順算（先行作業のEST＋所要日数の最大値）して（終）のESTを求める。これが総所要日数。
+設問4　作業④　TF ＝ <strong>0日</strong>（クリティカル）
+　　　　作業⑧　FF ＝ <strong>2日</strong>
 
-3. <strong>作業③のEST／LST（設問3）</strong>：ESTは（始）から作業③開始イベントまでの最長経路。LSTは（終）から逆算したLFTから作業③の所要日数を差し引く。クリティカルパス上の作業はEST＝LST（フロート0）。
+<span class="cp-line">クリティカルパス：①→②→④→ⓑ→⑤→⑥→⑦→⑨→⑪→⑫ ＝ 24日</span></div>
+    <div class="model-supplement">【解き方の手順（林副部長メソッド）／検算根拠】
+1. <strong>作業⑦＝梁配筋（設問1）</strong>：RC躯体の基準階は「墨出し→柱・壁配筋→柱・壁型枠建込み→型枠返し→梁・スラブ型枠組立て→<strong>梁配筋</strong>→天井インサート・型枠締固め→スラブ配筋→…→コンクリート打込み」の順で進む。⑥梁・スラブ型枠組立て（6日）と⑧天井インサート・型枠締固め（2日）の間に入り、⑨スラブ配筋（3日）に先立つ作業⑦は<strong>梁配筋</strong>。
 
-4. <strong>TF・FF（設問4）</strong>：トータルフロート TF＝当該作業のLST−EST（＝後続のLFT−EST−所要日数）。フリーフロート FF＝後続作業のEST−当該作業のEST−所要日数。作業④（壁配筋3日）のTF、作業⑧（天井インサート・型枠締固め2日）のFFを上式で算出する。
+2. <strong>総所要日数＝24日（設問2）</strong>：建築工事①〜⑫と設備工事ⓐ〜ⓓの結合関係（施工条件のダミー）を含めてネットワークを完成させ、（始）から各イベントのESTを順算（先行作業のEST＋所要日数の最大値）して（終）のESTを求める。最長経路は①(1)→②(2)→④(3)→ⓑ(1)→⑤(2)→⑥(6)→⑦(4)→⑨(3)→⑪(1)→⑫(1)＝<strong>24日</strong>。
+　<strong>【誤読しやすいポイント】</strong>設備ⓓ経由のパス（…→⑨→ⓓ→⑫）を単純なパス和で足すと25日に見えるが、これは誤り。施工条件「設備ⓓは作業⑨スラブ配筋<u>開始2日後</u>に着手」＝⑨とⓓは<strong>SS+2の並行関係</strong>。⑨のEST＝14、開始2日後＝16からⓓ着手（EST=16）→ⓓ(2日)でEFT=18。一方⑨完了は14+3＝17、⑪⑫経由で（終）＝24。よってⓓは余裕内に収まり総所要は<strong>24日</strong>。「→」を全部直列に足すクセで25と取り違えやすいので注意。
+
+3. <strong>作業③のEST＝2／LST＝3（設問3）</strong>：作業③は「作業②柱配筋開始1日後に着手」＝②(EST=1)開始1日後でEST＝2。作業③(4日)はクリティカルパス上に乗らず後続に余裕があるため、LFTから逆算したLST＝3（TF＝LST−EST＝3−2＝<strong>1日</strong>）。
+
+4. <strong>作業④のTF＝0・作業⑧のFF＝2（設問4）</strong>：TF＝当該作業のLST−EST。作業④（壁配筋3日）はクリティカルパス上にあるためEST＝LST、<strong>TF＝0日</strong>。FF＝後続作業のEST−当該作業のEST−所要日数。作業⑧（天井インサート・型枠締固め2日）はEST後に後続⑨の着手まで余裕があり、<strong>FF＝2日</strong>。
 
 【施工条件（再掲）】
 ・作業③は作業②柱配筋開始1日後に着手／作業⑤は作業ⓑ壁の配管スリーブ取付完了後に着手／作業⑫は作業ⓓスラブ配管スリーブ取付完了後に着手。

@@ -158,11 +158,20 @@
   }
 
   /* ============ メインコントローラ ============ */
+  /* ---------- タッチ判定（スマホ＝2タップ結線） ---------- */
+  var IS_TOUCH = (typeof window !== "undefined") && (
+    (window.matchMedia && window.matchMedia("(pointer: coarse)").matches) ||
+    ("ontouchstart" in window) ||
+    (navigator && navigator.maxTouchPoints > 0)
+  );
+
   function KoteiEditor(root) {
     this.root = root;
     this.color = "black";
     this.dragSourceId = null;
     this.pointer = null;
+    this.isTouch = IS_TOUCH;
+    this.selectedMarkerId = null; // タッチ2タップ結線の選択中○
     this.history = { past: [], present: defaultState(), future: [] };
     // localStorage 復元
     try {
@@ -358,7 +367,11 @@
     // 注意書き（スマホ非推奨）
     var note = document.createElement("div");
     note.className = "kotei-note";
-    note.innerHTML = "⚠ この工程表メモ欄は横バーをドラッグで描く操作のため、<strong>PCでの利用を推奨</strong>します。スマートフォンでは作図・線の接続が正確に行えない場合があります（解答入力・解説閲覧はスマホでも可能です）。";
+    note.innerHTML =
+      "📝 工程表メモ欄の使い方：<strong>PC＝</strong>○をドラッグして別の○でドロップすると線が引けます。" +
+      "<strong>スマホ／タブレット＝</strong>○を1回タップ（青く選択）→もう一方の○をタップすると線が引けます（同じ○をもう一度タップで選択解除）。" +
+      "線を消すときは線をタップ（PCは右クリックで色変更・削除）。" +
+      "複雑な図はPC（マウス操作）の方が快適ですが、スマホでも作図・接続できます。";
     this.root.appendChild(note);
 
     // ツールバー
@@ -511,7 +524,11 @@
 
   KoteiEditor.prototype.renderFooter = function () {
     var s = this.state();
-    this.footer.innerHTML = "セルクリックで○配置 / ○をドラッグ→別の○でドロップして線接続 / 線クリック=ラベル / 右クリック=色変更・削除 / Ctrl+Z で戻す" +
+    var ops = this.isTouch
+      ? "セルタップで○配置 / ○をタップ→別の○をタップで線接続 / 線タップ=削除 / 同じ○を再タップで選択解除"
+      : "セルクリックで○配置 / ○をドラッグ→別の○でドロップして線接続（クリック選択でも可）/ 線クリック=ラベル / 右クリック=色変更・削除 / Ctrl+Z で戻す";
+    var sel = this.selectedMarkerId ? '<span class="kotei-count" style="color:#1976D2">○を選択中…もう一方の○をタップ</span>' : "";
+    this.footer.innerHTML = ops + sel +
       '<span class="kotei-count">○ ' + s.markers.length + " 個 / 線 " + s.lines.length + " 本</span>";
   };
 
@@ -589,6 +606,8 @@
           cell.style.cursor = self.dragSourceId ? "default" : "pointer";
           cell.addEventListener("click", function () {
             if (self.dragSourceId) return;
+            // タッチで○選択中に空き場所をタップ＝選択解除（マーカー設置はしない）
+            if (self.isTouch && self.selectedMarkerId !== null) { self.clearSelection(); return; }
             self.toggleMarker(ri, day);
           });
           self.svg.appendChild(cell);
@@ -602,9 +621,13 @@
       if (!f || !t) return;
       var d = linePath(f.x, f.y, t.x, t.y);
       var mid = lineMidpoint(f.x, f.y, t.x, t.y);
-      var hit = svgEl("path", { d: d, stroke: "transparent", "stroke-width": 14, fill: "none" });
+      var hit = svgEl("path", { d: d, stroke: "transparent", "stroke-width": self.isTouch ? 20 : 14, fill: "none" });
       hit.style.cursor = "pointer";
-      hit.addEventListener("click", function (e) { e.stopPropagation(); self.editLineLabel(l.id); });
+      hit.addEventListener("click", function (e) {
+        e.stopPropagation();
+        if (self.isTouch) { self.removeLine(l.id); }
+        else { self.editLineLabel(l.id); }
+      });
       hit.addEventListener("contextmenu", function (e) { self.openContextMenu("line", l.id, e); });
       self.svg.appendChild(hit);
       var path = svgEl("path", { d: d, stroke: COLOR_HEX[l.color], "stroke-width": 2.2, fill: "none" });
@@ -636,15 +659,28 @@
       var xy = self.markerXY(m.id);
       if (!xy) return;
       var isDragging = self.dragSourceId === m.id;
+      var isSelected = self.selectedMarkerId === m.id;
+      // タッチ2タップ結線：選択中○に目立つリングを描く
+      if (isSelected) {
+        var ring = svgEl("circle", {
+          cx: xy.x, cy: xy.y, r: MARKER_RADIUS + 5,
+          fill: "rgba(25,118,210,0.12)", stroke: "#1976D2", "stroke-width": 2.5
+        });
+        ring.style.pointerEvents = "none";
+        self.svg.appendChild(ring);
+      }
       var c = svgEl("circle", {
-        cx: xy.x, cy: xy.y, r: isDragging ? MARKER_RADIUS + 1.5 : MARKER_RADIUS,
-        fill: "#fff", stroke: COLOR_HEX[m.color], "stroke-width": isDragging ? 3 : 2.5
+        cx: xy.x, cy: xy.y, r: (isDragging || isSelected) ? MARKER_RADIUS + 1.5 : MARKER_RADIUS,
+        fill: "#fff", stroke: isSelected ? "#1976D2" : COLOR_HEX[m.color], "stroke-width": (isDragging || isSelected) ? 3 : 2.5
       });
       c.style.cursor = self.dragSourceId ? "crosshair" : "pointer";
-      c.addEventListener("mouseenter", function () { c.setAttribute("r", MARKER_RADIUS + 1.5); c.setAttribute("stroke-width", 3); });
-      c.addEventListener("mouseleave", function () { if (self.dragSourceId !== m.id) { c.setAttribute("r", MARKER_RADIUS); c.setAttribute("stroke-width", 2.5); } });
-      c.addEventListener("mousedown", function (e) { self.onMarkerDown(m.id, e); });
-      c.addEventListener("mouseup", function (e) { self.onMarkerUp(m.id, e); });
+      c.addEventListener("mouseenter", function () { if (!isSelected) { c.setAttribute("r", MARKER_RADIUS + 1.5); c.setAttribute("stroke-width", 3); } });
+      c.addEventListener("mouseleave", function () { if (self.dragSourceId !== m.id && !isSelected) { c.setAttribute("r", MARKER_RADIUS); c.setAttribute("stroke-width", 2.5); } });
+      if (!self.isTouch) {
+        // PC：従来のドラッグ結線を維持
+        c.addEventListener("mousedown", function (e) { self.onMarkerDown(m.id, e); });
+        c.addEventListener("mouseup", function (e) { self.onMarkerUp(m.id, e); });
+      }
       c.addEventListener("click", function (e) { self.onMarkerClick(m.id, e); });
       c.addEventListener("contextmenu", function (e) { self.openContextMenu("marker", m.id, e); });
       self.svg.appendChild(c);
@@ -707,8 +743,35 @@
   };
   KoteiEditor.prototype.onMarkerClick = function (id, e) {
     e.stopPropagation();
-    // ドラッグで線を引いた直後はremoveしない。dragSourceIdが既にnullなら純粋クリック=削除
+    if (this.isTouch) {
+      // タッチ＝2タップ結線
+      if (this.selectedMarkerId === null) {
+        // 1つ目を選択
+        this.selectedMarkerId = id;
+        this.render();
+      } else if (this.selectedMarkerId === id) {
+        // 同じ○を再タップ＝選択解除
+        this.selectedMarkerId = null;
+        this.render();
+      } else {
+        // 2つ目＝結線して選択解除
+        var fromId = this.selectedMarkerId;
+        this.selectedMarkerId = null;
+        this.addLine(fromId, id); // addLine内でcommit→render
+        this.render(); // selectedMarkerIdクリアの反映（addLineが重複等でcommitしない場合の保険）
+      }
+      return;
+    }
+    // PC：ドラッグで線を引いた直後はremoveしない。dragSourceIdが既にnullなら純粋クリック=削除
     if (!this.dragSourceId) this.removeMarker(id);
+  };
+
+  // 別の場所（空セル・SVG背景）タップで選択解除
+  KoteiEditor.prototype.clearSelection = function () {
+    if (this.selectedMarkerId !== null) {
+      this.selectedMarkerId = null;
+      this.render();
+    }
   };
   KoteiEditor.prototype.editLineLabel = function (id) {
     var line = this.state().lines.filter(function (l) { return l.id === id; })[0];
@@ -944,6 +1007,9 @@
   };
 
   /* ---------- 初期化 ---------- */
+  // テスト/外部からの再利用のため公開（本番動作には影響なし）
+  if (typeof window !== "undefined") window.KoteiEditor = KoteiEditor;
+
   function init() {
     var root = document.getElementById("kotei-editor-root");
     if (!root) return;
