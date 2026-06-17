@@ -368,10 +368,10 @@
     var note = document.createElement("div");
     note.className = "kotei-note";
     note.innerHTML =
-      "📝 工程表メモ欄の使い方：<strong>PC＝</strong>○をドラッグして別の○でドロップすると線が引けます。" +
-      "<strong>スマホ／タブレット＝</strong>○を1回タップ（青く選択）→もう一方の○をタップすると線が引けます（同じ○をもう一度タップで選択解除）。" +
-      "線を消すときは線をタップ（PCは右クリックで色変更・削除）。" +
-      "複雑な図はPC（マウス操作）の方が快適ですが、スマホでも作図・接続できます。";
+      "📝 工程表メモ欄の使い方：<strong>スマホ／タブレット＝</strong>線は引きにくいので、まずは○（マーカー）を置いていくだけでも工程の整理はできます。" +
+      "イベント（○）の位置や順番をどんどん置いて並べていきましょう。" +
+      "<strong>PC＝</strong>○をドラッグして別の○でドロップすると線が引けます。線を引きたいときはPC（マウス操作）での作図がおすすめです。" +
+      "線を消すときは線をタップ（PCは右クリックで色変更・削除）。";
     this.root.appendChild(note);
 
     // ツールバー
@@ -525,7 +525,7 @@
   KoteiEditor.prototype.renderFooter = function () {
     var s = this.state();
     var ops = this.isTouch
-      ? "セルタップで○配置 / ○をタップ→別の○をタップで線接続 / 線タップ=削除 / 同じ○を再タップで選択解除"
+      ? "セルタップで○配置（スマホは○を置いていくだけでOK・線はPCがおすすめ）/ 線タップ=削除"
       : "セルクリックで○配置 / ○をドラッグ→別の○でドロップして線接続（クリック選択でも可）/ 線クリック=ラベル / 右クリック=色変更・削除 / Ctrl+Z で戻す";
     var sel = this.selectedMarkerId ? '<span class="kotei-count" style="color:#1976D2">○を選択中…もう一方の○をタップ</span>' : "";
     this.footer.innerHTML = ops + sel +
