@@ -67,6 +67,7 @@ const {
   getCopilotBase,
   CopilotAuthError,
 } = require('./copilotAuth');
+const gradeStore = require('./gradeStore');
 
 const ALLOWED_ORIGIN = 'https://manual.kensetsu-total.support';
 const FALLBACK_ORIGIN = 'http://localhost:4280'; // SWA CLI emulator
@@ -225,8 +226,19 @@ async function createConversation(base, accessToken, log) {
  * 重要: AbortController で切ると Power Platform 側の bot 処理も中断されるため、
  *       deadline に到達した場合は abort せず race で先勝ちさせる方式にする。
  */
-function startSendMessage(base, accessToken, conversationId, text, log) {
+// opts:
+//   storeQuestionId?: string  指定すると send 完走時に採点本文を gradeStore へ
+//                             conversationId キーで保存する (案A の肝)。
+//                             この保存は send Promise とは独立した内部 await で
+//                             行うため、呼び出し側が send.promise を放置 (即 202
+//                             返却) しても、send fetch がイベントループに残って
+//                             いる限り完走→ストア書き込みまで到達する。
+function startSendMessage(base, accessToken, conversationId, text, log, opts) {
   const controller = new AbortController();
+  const storeQuestionId =
+    opts && typeof opts.storeQuestionId === 'string'
+      ? opts.storeQuestionId
+      : null;
   const promise = (async () => {
     try {
       const res = await fetch(
@@ -246,9 +258,45 @@ function startSendMessage(base, accessToken, conversationId, text, log) {
         log?.error?.(
           `Copilot send message failed: status=${res.status} body=${txt.slice(0, 300)}`,
         );
+        if (storeQuestionId !== null) {
+          await gradeStore
+            .putError(
+              conversationId,
+              storeQuestionId,
+              `send failed status=${res.status}`,
+              log,
+            )
+            .catch(() => {});
+        }
         return { ok: false, status: res.status };
       }
       const json = await res.json();
+      // 案A: send レスポンス本体に同期返却された採点本文をストアへ確実に保存。
+      if (storeQuestionId !== null) {
+        const msgs = extractBotMessages(json.activities);
+        if (msgs.length > 0) {
+          const verdict = msgs.join('\n\n').trim();
+          const wrote = await gradeStore
+            .putDone(conversationId, storeQuestionId, verdict, log)
+            .catch(() => false);
+          log?.(
+            `startSendMessage: store putDone conversationId=${conversationId} verdictLen=${verdict.length} wrote=${wrote}`,
+          );
+        } else {
+          // 完走したのに bot text が無い = 異常。error として残し poll を止める。
+          await gradeStore
+            .putError(
+              conversationId,
+              storeQuestionId,
+              'send completed but no bot text',
+              log,
+            )
+            .catch(() => {});
+          log?.warn?.(
+            `startSendMessage: send done but no bot text conversationId=${conversationId}`,
+          );
+        }
+      }
       return { ok: true, json };
     } catch (e) {
       if (e?.name === 'AbortError') {
@@ -258,6 +306,16 @@ function startSendMessage(base, accessToken, conversationId, text, log) {
         return { ok: false, aborted: true };
       }
       log?.error?.(`send-message unexpected: ${e?.stack || e}`);
+      if (storeQuestionId !== null) {
+        await gradeStore
+          .putError(
+            conversationId,
+            storeQuestionId,
+            `send unexpected: ${e?.message || e}`,
+            log,
+          )
+          .catch(() => {});
+      }
       return { ok: false, error: e };
     }
   })();
@@ -527,7 +585,6 @@ app.http('grade-skk1', {
     const { questionId, prompt, usedOverride } = v;
 
     const t0 = Date.now();
-    const deadline = t0 + ENDPOINT_BUDGET_MS;
     context.log?.(
       `grade-skk1: start questionId=${questionId} promptLen=${prompt.length} override=${usedOverride}`,
     );
@@ -562,88 +619,66 @@ app.http('grade-skk1', {
       );
     }
 
+    // 案A: ストアに pending レコードを先に作る。poll はこのレコードを
+    // conversationId キーで読む (インスタンスを跨いでも結果を拾える)。
+    await gradeStore
+      .putPending(conversationId, questionId, context.log?.bind(context))
+      .catch(() => {});
+
     // sendMessage を background で開始（abort せず最後まで走らせる）
     // Power Platform 側は HTTPコネクションが生きている間 bot 処理を継続するため、
     // クライアント (=Functions) 側で abort してしまうと処理が中断される実測。
+    // storeQuestionId を渡すことで、send 完走時 (46〜54秒後) に採点本文を
+    // gradeStore へ自動保存する。grade-skk1 が先に 202 を返しても、send fetch が
+    // イベントループに残っている限り完走→保存まで到達する。
     const send = startSendMessage(
       base,
       accessToken,
       conversationId,
       prompt,
       context,
+      { storeQuestionId: questionId },
     );
     // module-level レジストリに登録: /grade-skk1-poll が同一プロセス内で
-    // この Promise を await できるようにする (warm な間のみ有効)。
+    // この Promise を await できるようにする (warm な間のみ有効・ストアの fallback)。
     registerInflightSend(conversationId, send.promise, accessToken);
 
-    // どれが先に決着するか:
-    //  (a) sendMessage の HTTP レスポンス (activities含む) が返る  → 直接 verdict
-    //  (b) GET /activities polling が bot text を拾う          → 直接 verdict
-    //  (c) endpoint deadline が先に来る                          → 202 pending
+    // 案A: cr746_agent の send は 46〜54 秒の同期返却型で、SWA 45秒制限を必ず
+    // 超える。よって grade-skk1 は send 完走を待たず、ごく短い猶予 (速い完走を
+    // 拾うため) だけ様子を見て、間に合わなければ即 202 を返してクライアント poll に
+    // 移行する。send fetch はバックグラウンドで継続し、完走時に startSendMessage
+    // 内のフックが gradeStore へ verdict を保存する。
+    //   - GET /activities polling (pollActivitiesUntil) は cr746_agent では count=0 で
+    //     構造的に結果が取れないため grade-skk1 からは廃止した。
     let botMessages = [];
     let watermark = null;
 
-    const pollDeadline = deadline - 1000; // 1秒余裕を残す
-    const sendWrapped = send.promise.then((r) => ({ kind: 'send', value: r }));
-    const pollPromise = pollActivitiesUntil(
-      base,
-      accessToken,
-      conversationId,
-      null,
-      pollDeadline,
-      context,
-    ).then((r) => ({ kind: 'poll', value: r }));
-    const deadlinePromise = delay(Math.max(0, deadline - Date.now())).then(
-      () => ({ kind: 'deadline' }),
-    );
-
-    // 早い者勝ち。bot text を拾ったほうの結果を採用。
-    let timedOut = false;
-    while (!timedOut && botMessages.length === 0) {
-      const winner = await Promise.race([
-        sendWrapped,
-        pollPromise,
-        deadlinePromise,
-      ]);
-      if (winner.kind === 'deadline') {
-        timedOut = true;
-        break;
+    // 速い完走 (まれに数秒で返るケース) を拾うための短い猶予。
+    // ここを長くしても send は通常 ~50秒かかるので意味が薄い。フロント poll に
+    // 早く移行させた方がトータルが速い。
+    const EARLY_SETTLE_MS = 4000;
+    const early = await Promise.race([
+      send.promise.then((r) => ({ settled: true, value: r })),
+      delay(EARLY_SETTLE_MS).then(() => ({ settled: false })),
+    ]);
+    if (early.settled) {
+      const v = early.value;
+      const elapsed = Date.now() - t0;
+      if (v?.ok && v.json) {
+        context.log?.(
+          `grade-skk1: send settled early t+${elapsed}ms activities=${Array.isArray(v.json.activities) ? v.json.activities.length : 0}`,
+        );
+        botMessages = extractBotMessages(v.json.activities);
+        if (v.json.watermark) watermark = v.json.watermark;
+      } else {
+        context.log?.(
+          `grade-skk1: send settled early without bot text t+${elapsed}ms ok=${v?.ok}`,
+        );
       }
-      if (winner.kind === 'send') {
-        const v = winner.value;
-        const elapsed = Date.now() - t0;
-        if (v?.ok && v.json) {
-          const actCount = Array.isArray(v.json.activities)
-            ? v.json.activities.length
-            : 0;
-          context.log?.(
-            `grade-skk1: send ok t+${elapsed}ms activities=${actCount} action=${v.json.action || 'n/a'}`,
-          );
-          botMessages = extractBotMessages(v.json.activities);
-          if (v.json.watermark) watermark = v.json.watermark;
-          if (botMessages.length > 0) break;
-        } else {
-          context.log?.(
-            `grade-skk1: send returned without bot text t+${elapsed}ms ok=${v?.ok}`,
-          );
-        }
-        // send が空応答だった場合は pollPromise / deadline の決着を待つ
-        // ただし sendWrapped は完了済みなので race から外す → 単に poll/deadline を継続
-        const next = await Promise.race([pollPromise, deadlinePromise]);
-        if (next.kind === 'deadline') {
-          timedOut = true;
-          break;
-        }
-        // poll
-        botMessages = next.value.messages;
-        if (next.value.watermark) watermark = next.value.watermark;
-        break;
-      }
-      if (winner.kind === 'poll') {
-        botMessages = winner.value.messages;
-        if (winner.value.watermark) watermark = winner.value.watermark;
-        break;
-      }
+    } else {
+      context.log?.(
+        `grade-skk1: send still running after ${EARLY_SETTLE_MS}ms → 202 pending (store経由でpollが拾う)`,
+      );
     }
 
     if (botMessages.length > 0) {
@@ -665,11 +700,10 @@ app.http('grade-skk1', {
       );
     }
 
-    // deadline 到達: send / poll Promise は捨てて 202 pending 返却。
-    // クライアントは /api/grade-skk1-poll を繰り返す。
-    // send promise は abort しない (Power Platform 側の bot 処理を続行させる)
+    // 早期猶予内に決着せず: 202 pending 返却。send fetch はバックグラウンドで
+    // 継続し、完走時に gradeStore へ verdict が保存される。
+    // send promise は abort しない (Power Platform 側の bot 処理を続行させる)。
     send.promise.catch(() => {});
-    pollPromise.catch(() => {});
     context.log?.(
       `grade-skk1: pending t+${Date.now() - t0}ms conversationId=${conversationId}`,
     );
@@ -743,87 +777,90 @@ app.http('grade-skk1-poll', {
     }
 
     const base = getCopilotBase();
-    const deadline = Math.min(
-      t0 + POLL_TOTAL_BUDGET_MS,
-      t0 + (SWA_HARD_LIMIT_MS - 5000),
-    );
-
-    // 同一 Functions プロセス内に走っている send Promise があれば、それも race に
-    // 組み込む。送信完走時の sendResponse.activities にbot text が入っているケースを
-    // 拾えるようにする。
-    const inflight = getInflightSend(conversationId);
     let botMessages = [];
     let watermark = inWatermark || null;
 
-    if (inflight) {
+    // ========================================================================
+    // 案A 主経路: gradeStore を conversationId キーで読む。
+    // send 完走時 (startSendMessage 内) に done+verdict が書かれているので、
+    // grade-skk1 と grade-skk1-poll が別インスタンスでも結果を拾える。
+    // この poll 呼び出し自体は GET /activities を一切叩かず、ストアを1回読むだけ
+    // なので 1〜2秒で完結する (SWA 45秒制限に触れない / フロントが 1.5秒間隔で
+    // 繰り返す)。
+    // ========================================================================
+    const stored = await gradeStore.get(
+      conversationId,
+      context.log?.bind(context),
+    );
+    if (stored) {
       context.log?.(
-        `grade-skk1-poll: inflight send found (startedAt=t-${Date.now() - inflight.startedAt}ms)`,
+        `grade-skk1-poll: store hit status=${stored.status} verdictLen=${(stored.verdict || '').length} ageMs=${stored.ageMs}`,
       );
-      const sendWrapped = inflight.promise.then((r) => ({
-        kind: 'send',
-        value: r,
-      }));
-      const pollWrapped = pollActivitiesUntil(
-        base,
-        accessToken,
-        conversationId,
-        watermark,
-        deadline,
-        context,
-      ).then((r) => ({ kind: 'poll', value: r }));
-      const deadlineWrapped = delay(Math.max(0, deadline - Date.now())).then(
-        () => ({ kind: 'deadline' }),
+      if (stored.status === 'done' && stored.verdict) {
+        const text = stored.verdict.trim();
+        return jsonResponse(
+          200,
+          {
+            questionId: questionId || stored.questionId || undefined,
+            verdict: text,
+            raw: text,
+            conversationId,
+            watermark: watermark || undefined,
+          },
+          origin,
+        );
+      }
+      if (stored.status === 'error') {
+        return jsonResponse(
+          502,
+          {
+            questionId: questionId || stored.questionId || undefined,
+            conversationId,
+            error: '採点処理でエラーが発生しました。再試行してください。',
+          },
+          origin,
+        );
+      }
+      // status=pending → そのまま 202 で返す (下の共通 return)
+    } else {
+      context.log?.(
+        `grade-skk1-poll: store miss (未登録 or ストア無効) → inflight fallback`,
       );
-      // 順次先勝ち取り
-      while (Date.now() < deadline && botMessages.length === 0) {
-        const winner = await Promise.race([
-          sendWrapped,
-          pollWrapped,
-          deadlineWrapped,
+    }
+
+    // ========================================================================
+    // fallback: ストアが無効 (接続文字列が無い環境) or まだ pending の場合に、
+    // 同一プロセス内に走っている send Promise が「完走済み」なら、その同期返却
+    // 本文を即拾う。ストア有効時の主経路ではないが、ストア未設定環境でも動く保険。
+    // ※ GET /activities polling (pollActivitiesUntil) は cr746_agent では構造的に
+    //   結果が取れない (count=0) ため廃止した。
+    // ========================================================================
+    if (botMessages.length === 0) {
+      const inflight = getInflightSend(conversationId);
+      if (inflight) {
+        // send が「もう完走しているか」だけを非ブロッキングで確認する。
+        // ここで send を await し続けると 46〜54 秒かかり SWA 45秒制限に当たるので、
+        // 短い猶予 (最大 3 秒) だけ待って、間に合えば拾う。間に合わなければ 202。
+        const SETTLE_GRACE_MS = 3000;
+        const raceResult = await Promise.race([
+          inflight.promise.then((r) => ({ settled: true, value: r })),
+          delay(SETTLE_GRACE_MS).then(() => ({ settled: false })),
         ]);
-        if (winner.kind === 'deadline') break;
-        if (winner.kind === 'send') {
-          const v = winner.value;
+        if (raceResult.settled) {
+          const v = raceResult.value;
           if (v?.ok && v.json) {
             botMessages = extractBotMessages(v.json.activities);
             if (v.json.watermark) watermark = v.json.watermark;
-            context.log?.(
-              `grade-skk1-poll: send completed in poll-handler activities=${(v.json.activities || []).length} bot-text=${botMessages.length}`,
-            );
-            if (botMessages.length > 0) break;
-          } else {
-            context.log?.(
-              `grade-skk1-poll: send completed but no bot text ok=${v?.ok}`,
-            );
           }
-          // send 完走したが bot text 無し → poll 待ちで継続
-          const next = await Promise.race([pollWrapped, deadlineWrapped]);
-          if (next.kind === 'deadline') break;
-          botMessages = next.value.messages;
-          if (next.value.watermark) watermark = next.value.watermark;
-          break;
-        }
-        if (winner.kind === 'poll') {
-          botMessages = winner.value.messages;
-          if (winner.value.watermark) watermark = winner.value.watermark;
-          break;
+          context.log?.(
+            `grade-skk1-poll: inflight send settled bot-text=${botMessages.length}`,
+          );
+        } else {
+          context.log?.(
+            `grade-skk1-poll: inflight send still running → 202 pending`,
+          );
         }
       }
-    } else {
-      // inflight なし: 通常の polling のみ
-      context.log?.(
-        `grade-skk1-poll: no inflight send (cold-start可能性あり)・polling only`,
-      );
-      const result = await pollActivitiesUntil(
-        base,
-        accessToken,
-        conversationId,
-        watermark,
-        deadline,
-        context,
-      );
-      botMessages = result.messages;
-      if (result.watermark) watermark = result.watermark;
     }
 
     const elapsed = Date.now() - t0;

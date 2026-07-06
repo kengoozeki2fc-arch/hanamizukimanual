@@ -1747,6 +1747,38 @@ function _hasAnswer(payload) {
   return typeof payload.answer === 'string' && payload.answer.trim().length > 0;
 }
 
+// ----------------------------------------------------------------------------
+// デバッグログ（SSK5 Copilot採点 待ち処理の挙動可視化）
+//   ?copilotDebug=1 でも常時でも出るよう、既定 ON。本番でうるさければ
+//   URL に ?copilotDebug=0 を付けると抑止できる。
+//   ※セコカンAI本体(grade-skk1 バックエンド)は触らず、ここ(SSK5フロント)だけに仕込む。
+// ----------------------------------------------------------------------------
+const COPILOT_DEBUG = (() => {
+  try {
+    const v = new URLSearchParams(location.search).get('copilotDebug');
+    return v !== '0';
+  } catch (_) { return true; }
+})();
+function _clog(startMs, ...args) {
+  if (!COPILOT_DEBUG) return;
+  const sec = ((Date.now() - startMs) / 1000).toFixed(1);
+  // eslint-disable-next-line no-console
+  console.log(`[SSK5-COPILOT +${sec}s]`, ...args);
+}
+function _summarizeBody(obj) {
+  if (!obj || typeof obj !== 'object') return String(obj);
+  const verdict = obj.verdict || obj.raw || '';
+  return {
+    status: obj.status,
+    conversationId: obj.conversationId,
+    watermark: obj.watermark,
+    hasVerdict: !!verdict,
+    verdictLen: typeof verdict === 'string' ? verdict.length : 0,
+    error: obj.error,
+    message: obj.message,
+  };
+}
+
 async function showCopilot(resultId) {
   const questionId = resultId.replace(/^copilot-/, '');
   const payload = _collectAnswerPayload(questionId);
@@ -1764,27 +1796,36 @@ async function showCopilot(resultId) {
   const overallStart = Date.now();
   const overallDeadline = overallStart + COPILOT_TOTAL_TIMEOUT_SEC * 1000;
 
+  _clog(overallStart, `START questionId=${questionId} url=${COPILOT_API_URL} totalTimeout=${COPILOT_TOTAL_TIMEOUT_SEC}s pollInterval=${COPILOT_POLL_INTERVAL_MS}ms`);
+
   try {
+    const reqStart = Date.now();
+    _clog(overallStart, `POST grade-skk1 送信 …`);
     const res = await fetch(COPILOT_API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
+    _clog(overallStart, `POST grade-skk1 応答 HTTP=${res.status} reqElapsed=${((Date.now() - reqStart) / 1000).toFixed(1)}s`);
     if (res.status >= 400) {
       let msg = `エラー (HTTP ${res.status})`;
       try { const j = await res.json(); if (j && j.error) msg = j.error; } catch (_) {}
+      _clog(overallStart, `ERROR(初回POST) HTTP=${res.status} msg=${msg}`);
       _setError(resultId, msg);
       return;
     }
     let j;
     try { j = await res.json(); } catch (_) {
+      _clog(overallStart, `ERROR 初回POST JSONパース失敗`);
       _setError(resultId, '採点APIの応答が不正でした。再試行してください。');
       return;
     }
+    _clog(overallStart, `初回POST body=`, _summarizeBody(j));
 
     if (res.status === 200 && j && (j.verdict || j.raw)) {
       const text = (j.verdict || j.raw || '').trim();
-      if (!text) { _setError(resultId, '採点結果が空でした。再試行してください。'); return; }
+      if (!text) { _clog(overallStart, `ERROR 200だがverdict空`); _setError(resultId, '採点結果が空でした。再試行してください。'); return; }
+      _clog(overallStart, `DONE 初回POSTで200即返却 verdictLen=${text.length}`);
       _setResult(resultId, text);
       return;
     }
@@ -1792,38 +1833,64 @@ async function showCopilot(resultId) {
     const conversationId = j && j.conversationId;
     let watermark = (j && j.watermark) || undefined;
     if (!conversationId) {
+      _clog(overallStart, `ERROR conversationId無し → 採点開始失敗`);
       _setError(resultId, '採点処理を開始できませんでした。再試行してください。');
       return;
     }
+    _clog(overallStart, `pending受領 → polling開始 conversationId=${conversationId} watermark=${watermark || 'none'}`);
 
+    let pollCount = 0;
     while (Date.now() < overallDeadline) {
-      await new Promise((r) => setTimeout(r, COPILOT_POLL_INTERVAL_MS));
-      if (Date.now() >= overallDeadline) break;
+      // 1回目だけは間隔待機を入れず即 poll を投げる。
+      // このbot(cr746_agent)は send レスポンスに同期で結果を返す型で、
+      // send 自体が 46〜54 秒かかる実測。初回 grade-skk1 が 40 秒 deadline で
+      // 202 を返した直後は send がまだ完走前なので、poll(=送信中のsend Promise
+      // 完走待ち)へ無駄な 1.5 秒を挟まずすぐ移行して取りこぼしを減らす。
+      if (pollCount > 0) {
+        await new Promise((r) => setTimeout(r, COPILOT_POLL_INTERVAL_MS));
+      }
+      if (Date.now() >= overallDeadline) {
+        _clog(overallStart, `インターバル待機後に締切超過 → ループ離脱`);
+        break;
+      }
 
+      pollCount += 1;
+      const pollStart = Date.now();
+      const remainSec = ((overallDeadline - Date.now()) / 1000).toFixed(1);
+      _clog(overallStart, `poll#${pollCount} 送信 … (締切まで残り${remainSec}s) watermark=${watermark || 'none'}`);
       const pollRes = await fetch(COPILOT_POLL_API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ questionId: payload.questionId, conversationId, watermark }),
       });
+      _clog(overallStart, `poll#${pollCount} 応答 HTTP=${pollRes.status} fetchElapsed=${((Date.now() - pollStart) / 1000).toFixed(1)}s`);
       if (pollRes.status >= 400 && pollRes.status !== 202) {
         let msg = `採点取得エラー (HTTP ${pollRes.status})`;
         try { const pj = await pollRes.json(); if (pj && pj.error) msg = pj.error; } catch (_) {}
+        _clog(overallStart, `ERROR poll#${pollCount} HTTP=${pollRes.status} msg=${msg}`);
         _setError(resultId, msg);
         return;
       }
       let pj;
-      try { pj = await pollRes.json(); } catch (_) { continue; }
+      try { pj = await pollRes.json(); } catch (_) {
+        _clog(overallStart, `poll#${pollCount} JSONパース失敗 → 継続`);
+        continue;
+      }
+      _clog(overallStart, `poll#${pollCount} body=`, _summarizeBody(pj));
       if (pj && pj.watermark) watermark = pj.watermark;
       if (pollRes.status === 200 && pj && (pj.verdict || pj.raw)) {
         const text = (pj.verdict || pj.raw || '').trim();
-        if (!text) { _setError(resultId, '採点結果が空でした。再試行してください。'); return; }
+        if (!text) { _clog(overallStart, `ERROR poll#${pollCount} 200だがverdict空`); _setError(resultId, '採点結果が空でした。再試行してください。'); return; }
+        _clog(overallStart, `DONE poll#${pollCount}で200取得 verdictLen=${text.length}`);
         _setResult(resultId, text);
         return;
       }
     }
 
+    _clog(overallStart, `TIMEOUT 締切到達。pollCount=${pollCount} 経過=${((Date.now() - overallStart) / 1000).toFixed(1)}s → ユーザーにタイムアウト表示`);
     _setError(resultId, '採点処理が時間内に完了しませんでした。再試行してください。');
   } catch (e) {
+    _clog(overallStart, `EXCEPTION`, (e && (e.stack || e.message)) || e);
     _setError(resultId, 'ネットワークエラーが発生しました。通信状況を確認のうえ再試行してください。');
   } finally {
     if (triggerBtn) triggerBtn.removeAttribute('disabled');
