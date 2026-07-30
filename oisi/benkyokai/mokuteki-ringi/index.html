@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>受験目的の明確化と稟議の書き方｜1級建築施工管理技士 二次検定 勉強会</title>
+<style>
+  :root{
+    --navy:#1F3A5F; --accent:#C0392B; --gray:#595959;
+    --light:#EAF0F6; --pink:#FBEEEC; --line:#d8dee6; --bg:#f4f6f9;
+    --gold:#8a6d1f; --goldbg:#FDF6E3;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg);
+    font-family:"Yu Gothic","游ゴシック体",YuGothic,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    color:#1a1a1a; line-height:1.8; font-size:15.5px;
+  }
+  .wrap{max-width:900px; margin:0 auto; padding:32px 20px 80px;}
+
+  /* cover */
+  .cover{
+    background:linear-gradient(135deg,var(--navy),#33567f);
+    color:#fff; border-radius:16px; padding:52px 40px; text-align:center;
+    box-shadow:0 8px 24px rgba(31,58,95,.25); margin-bottom:36px;
+  }
+  .cover .kicker{font-size:15px; letter-spacing:.08em; opacity:.85;}
+  .cover h1{font-size:36px; margin:14px 0 10px; letter-spacing:.02em;}
+  .cover .sub{color:#ffd9d3; font-size:17px; margin-bottom:22px;}
+  .cover .badge{display:inline-block; border:1px solid rgba(255,255,255,.5);
+    border-radius:999px; padding:6px 18px; font-size:14px; margin:4px;}
+  .countdown{display:flex; justify-content:center; gap:14px; flex-wrap:wrap; margin-top:26px;}
+  .countdown .cd{background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.28);
+    border-radius:10px; padding:12px 20px; min-width:110px;}
+  .countdown .cd .n{font-size:30px; font-weight:700; line-height:1.2;}
+  .countdown .cd .l{font-size:12px; opacity:.85;}
+
+  section{
+    background:#fff; border-radius:14px; padding:28px 30px; margin-bottom:26px;
+    box-shadow:0 2px 10px rgba(0,0,0,.05);
+  }
+  h2.sec{
+    font-size:23px; color:var(--navy); margin:0 0 18px;
+    padding-bottom:10px; border-bottom:3px solid var(--navy);
+  }
+  h2.sec .num{color:var(--accent);}
+  h3{font-size:18px; color:var(--accent); margin:26px 0 10px;}
+  h4{font-size:16px; color:var(--navy); margin:18px 0 8px;}
+  p{margin:8px 0;}
+  .lead{font-weight:700;}
+  .note{color:var(--gray); font-size:13.5px; font-style:italic;}
+
+  ul.clean{margin:8px 0; padding-left:0; list-style:none;}
+  ul.clean li{position:relative; padding-left:22px; margin:7px 0;}
+  ul.clean li::before{content:"▪"; color:var(--accent); position:absolute; left:4px; top:0;}
+  ol.step{margin:8px 0 8px 20px; padding:0;}
+  ol.step li{margin:7px 0;}
+
+  .tbl-scroll{overflow-x:auto; -webkit-overflow-scrolling:touch;}
+  table{width:100%; border-collapse:collapse; margin:14px 0; font-size:14px;}
+  th{background:var(--navy); color:#fff; padding:10px 12px; text-align:left;}
+  td{padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top;}
+  tr:nth-child(even) td{background:var(--light);}
+  .rowhi td{background:#dde7f2 !important; font-weight:700;}
+  .rowpick td{background:var(--goldbg) !important;}
+  td.ctr{text-align:center;} td.num{text-align:right; white-space:nowrap;}
+
+  /* type box */
+  .typebox{border:1px solid var(--line); border-radius:10px; overflow:hidden; margin:14px 0;}
+  .typebox .row{display:grid; grid-template-columns:190px 1fr; border-top:1px solid var(--line);}
+  .typebox .row:first-child{border-top:none;}
+  .typebox .k{background:var(--light); font-weight:700; padding:12px 14px; color:var(--navy);}
+  .typebox .v{padding:12px 14px;}
+
+  /* NG/OK */
+  .cmp{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:14px 0;}
+  .cmp .card{border-radius:10px; padding:14px 16px; font-size:14px;}
+  .cmp .ng{background:var(--pink); border:1px solid #e5b8b1;}
+  .cmp .ok{background:var(--light); border:1px solid #b9cbe0;}
+  .cmp .tag{display:block; font-weight:700; margin-bottom:8px;}
+  .cmp .ng .tag{color:var(--accent);} .cmp .ok .tag{color:var(--navy);}
+
+  /* example */
+  .ex{border-left:4px solid var(--navy); background:#fafcfe; border-radius:0 8px 8px 0;
+    padding:12px 16px; margin:12px 0;}
+  .ex .t{font-weight:700; color:var(--navy); margin-bottom:6px;}
+  .ex .field{margin:5px 0;}
+  .ex .field b{color:var(--accent);}
+
+  .prio{background:var(--light); border-radius:8px; padding:12px 16px; margin:12px 0; font-weight:700;}
+  .warn{background:var(--pink); border:1px solid #e5b8b1; border-radius:8px;
+    padding:12px 16px; margin:14px 0; font-size:14.5px;}
+  .warn b{color:var(--accent);}
+  .gold{background:var(--goldbg); border:1px solid #e3d5a8; border-radius:8px;
+    padding:14px 18px; margin:14px 0;}
+  .gold .t{font-weight:700; color:var(--gold); margin-bottom:6px;}
+  .metric{display:flex; gap:12px; flex-wrap:wrap; margin:14px 0;}
+  .metric .m{flex:1; min-width:150px; background:var(--light); border-radius:10px;
+    padding:14px; text-align:center;}
+  .metric .m .n{font-size:26px; font-weight:700; color:var(--navy); line-height:1.25;}
+  .metric .m .l{font-size:12.5px; color:var(--gray);}
+  .closing{text-align:center; color:var(--navy); font-style:italic; font-size:17px; margin-top:24px;}
+  .src{font-size:12.5px; color:var(--gray); margin-top:10px;}
+
+  @media(max-width:640px){
+    .cmp{grid-template-columns:1fr;} .typebox .row{grid-template-columns:1fr;}
+    .cover h1{font-size:26px;} .cover{padding:36px 22px;}
+    .wrap{padding:20px 14px 60px;} section{padding:20px 18px;}
+  }
+  @media print{
+    body{background:#fff;} .wrap{max-width:100%; padding:0;}
+    section{box-shadow:none; border:1px solid var(--line); page-break-inside:avoid;}
+    .cover{box-shadow:none;}
+  }
+</style>
+<script src="../../_gate.js" defer></script>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="cover">
+    <div class="kicker">一級建築施工管理技士 第二次検定</div>
+    <h1>受験目的の明確化と「稟議」の書き方</h1>
+    <div class="sub">― 外部講座を受けるにあたって、まず自分の言葉にする ―</div>
+    <div class="badge">2026-07-30（木）18:00〜20:00</div>
+    <div class="badge">意思決定と宣言の回</div>
+    <div class="countdown">
+      <div class="cd"><div class="n">80</div><div class="l">本試験 10/18 まで（日）</div></div>
+      <div class="cd"><div class="n">12</div><div class="l">残りの木曜（今日含む）</div></div>
+      <div class="cd"><div class="n">42</div><div class="l">添削原稿 9/10 必着まで（日）</div></div>
+    </div>
+  </div>
+
+  <!-- 0 -->
+  <section>
+    <h2 class="sec"><span class="num">0.</span> 今日は「勉強する回」ではありません</h2>
+    <p class="lead">今日やるのは、①自分がなぜ受けるのかを言葉にする ②残り80日の時間の物差しを決める ③受講料の稟議を自分で書く ── この3つです。</p>
+    <p>過去問演習は令和2〜7年度まで一巡しました。ここから先は「知識を増やす」より「決めて、書いて、続ける」ほうが効きます。とくに今日を外すと <b>9月2日（CIC申込）・9月10日（添削原稿必着）</b> が間に合わなくなり、後ろが全部詰みます。</p>
+    <div class="prio">今日の到達点：帰るときに「週◯時間やる」「受講料◯円をこう申請する」の2つが自分の言葉で言えている状態。</div>
+
+    <h4>本日の進行（120分）</h4>
+    <div class="tbl-scroll">
+    <table>
+      <tr><th style="width:90px">時間</th><th>内容</th></tr>
+      <tr><td>18:00-18:15</td><td>残り80日の現状共有・今日のゴール確認（本セクション）</td></tr>
+      <tr><td>18:15-18:35</td><td><b>勉強時間の物差しを決める</b>（§1）＝週の目標時間を各自その場で確定</td></tr>
+      <tr><td>18:35-18:55</td><td>外部講座はこれで行く（§2）＝CIC＋日建模試の中身と逆算スケジュール</td></tr>
+      <tr><td>18:55-19:15</td><td><b>稟議＝経験記述と同じ型</b>（§3）＝今日の主教材</td></tr>
+      <tr><td>19:15-19:50</td><td><b>稟議を書く演習</b>（§4・§5）＝テンプレに沿って各自下書き</td></tr>
+      <tr><td>19:50-20:00</td><td>宿題確認（§6）＝トラッカーの新フォームに入力</td></tr>
+    </table>
+    </div>
+  </section>
+
+  <!-- 1 -->
+  <section>
+    <h2 class="sec"><span class="num">1.</span> 勉強時間の物差し ― 週13.5時間</h2>
+    <p>「どれくらいやれば足りるのか」が分からないまま走ると、やった気になるか、逆に絶望します。まず数字の物差しを置きます。</p>
+
+    <h3>世の中の目安</h3>
+    <ul class="clean">
+      <li>1級建築施工管理技士の学習時間は <b>合計100〜400時間</b>。1日2時間換算で、初心者=約400h(約6.6ヶ月)／中級者=約200〜300h(約3.3〜5ヶ月)／上級者=約100h(約1.6ヶ月)</li>
+      <li>合格率は 一次 約35〜50%、二次 約40〜50%。<b>二次のほうが難しい</b></li>
+      <li>そして重要なのがこれ ──「学習計画では <b>二次対策に一次より多くの時間を確保</b>するとよい」。一次で燃え尽きる前提が間違いということです</li>
+    </ul>
+
+    <h3>私たちの持ち時間を実測すると、実は足りている</h3>
+    <p>社会人が現実に積める時間のモデルはこうです。</p>
+    <div class="tbl-scroll">
+    <table>
+      <tr><th>区分</th><th>内訳</th><th class="ctr">1日</th></tr>
+      <tr><td>平日</td><td>出勤前20分（用語暗記）＋通勤40分（過去問アプリ・テキスト）＋昼休み15〜30分（問題集）＋帰宅後60分（経験記述）</td><td class="ctr"><b>2.25〜2.5h</b></td></tr>
+      <tr><td>休日</td><td>午前3時間（過去問・模擬）＋午後2時間（復習・弱点補強）</td><td class="ctr"><b>5h</b></td></tr>
+    </table>
+    </div>
+    <p>これをフルで回すと <b>週21〜22.5時間</b>。残り11.4週で <b>240時間超</b> 積めます。中級者レンジ（200〜300h）を二次だけで埋められる計算です。</p>
+    <p class="note">つまり問題は「時間が足りない」ではなく「配分」と「続くかどうか」です。</p>
+
+    <h3>だから今日、自分の行くプランを1つ選んでください</h3>
+    <div class="tbl-scroll">
+    <table>
+      <tr><th>プラン</th><th class="ctr">平日</th><th class="ctr">休日</th><th class="ctr">週合計</th><th class="ctr">11.4週で</th><th>コメント</th></tr>
+      <tr><td>フル（上記モデルのまま）</td><td class="ctr">2.25h</td><td class="ctr">5h</td><td class="ctr">21h</td><td class="ctr">242h</td><td>理想だが3ヶ月維持は相当きつい</td></tr>
+      <tr class="rowpick"><td><b>標準（推奨）</b></td><td class="ctr"><b>1.5h</b></td><td class="ctr"><b>3h</b></td><td class="ctr"><b>13.5h</b></td><td class="ctr"><b>154h</b></td><td><b>現実的かつ十分。これを基準線にします</b></td></tr>
+      <tr><td>最低ライン</td><td class="ctr">1h</td><td class="ctr">2h</td><td class="ctr">9h</td><td class="ctr">103h</td><td>下回ると経験記述の仕上げが間に合わない</td></tr>
+    </table>
+    </div>
+    <div class="gold">
+      <div class="t">物差しは進捗トラッカーに入ります</div>
+      毎週アンケートの「今週の勉強時間」に対して <b>週13.5時間の目標線</b> をグラフに引きます。線の上か下かだけ見れば、自分の状態が一目で分かります。ごまかす相手は林副部長でも大関でもなく、10月18日の自分です。
+    </div>
+    <p class="src">出典：アガルート「1級建築施工管理技士の勉強時間は？独学の勉強方法3ステップ」／日建学院「1級建築施工管理技士の第二次検定とは？」ほか。残日数は2026-07-30起点。</p>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <h2 class="sec"><span class="num">2.</span> 外部講座はこれで行きます</h2>
+    <p>社内講座では、過去問演習（令和2〜7年度）・ネットワーク工程表の作図演習・経験記述の型と例文集・AI採点・進捗トラッカーまで揃えました。<b>足りていないのは2つだけ</b>です。</p>
+    <ul class="clean">
+      <li><b>プロによる経験記述の添削</b> ── 社内の相互レビューとAI採点はあるが、「採点者の目線で赤を入れてもらう」経験がない</li>
+      <li><b>会場で3時間通す本番シミュレーション</b> ── 自宅では、あの緊張感と時間配分は作れない</li>
+    </ul>
+    <p>そこで「講義を買う」のではなく <b>「添削と本番模試を買う」</b> という選び方をしました。講義は社内講座と重複するので払う意味が薄いからです。</p>
+
+    <div class="tbl-scroll">
+    <table>
+      <tr><th>講座</th><th class="ctr">価格(税込)</th><th class="ctr">経験記述添削</th><th class="ctr">模擬試験</th><th>判断</th></tr>
+      <tr><td>KGKC インターネット講座</td><td class="num">14,960</td><td class="ctr">なし</td><td class="ctr">なし</td><td>最安だが添削なし＋教材別途</td></tr>
+      <tr class="rowpick"><td><b>CIC Web講座</b></td><td class="num"><b>34,100</b></td><td class="ctr"><b>あり（教材込）</b></td><td class="ctr">なし</td><td><b>採用</b>／使っている解説本と系統が揃う</td></tr>
+      <tr class="rowpick"><td><b>日建学院 二次公開模擬試験</b></td><td class="num"><b>5,500</b></td><td class="ctr">自己採点</td><td class="ctr"><b>10/11 会場</b></td><td><b>採用</b>／本試験1週間前・3時間通し</td></tr>
+      <tr><td>日建学院 二次集中ゼミ</td><td class="num">55,000</td><td class="ctr">なし</td><td class="ctr">あり</td><td>模試込みだが添削なしで最重要ニーズを外す</td></tr>
+      <tr><td>日建学院 二次コース（全16回）</td><td class="num">198,000</td><td class="ctr">あり 5回</td><td class="ctr">あり</td><td>社内講座と全面重複</td></tr>
+      <tr><td>総合資格学院 二次対策コース</td><td class="num">418,000</td><td class="ctr">あり 20回</td><td class="ctr">あり</td><td>内容は最強だが過大</td></tr>
+    </table>
+    </div>
+    <div class="prio">結論：CIC Web 34,100円 ＋ 日建 二次公開模擬試験 5,500円 ＝ <b>1人あたり 39,600円</b></div>
+
+    <h3>9月10日が、私たちのペースメーカーです</h3>
+    <p>CICの添削は <b>申込 9/2（水）／原稿 9/10（木）必着</b>。ここから逆算すると、やることの順番が自動的に決まります。</p>
+    <div class="tbl-scroll">
+    <table>
+      <tr><th style="width:150px">期間</th><th>やること</th></tr>
+      <tr><td>第1〜2週<br>7/30〜8/12</td><td><b>工事概要を確定</b>（自分の実工事から選ぶ）＋テーマ1「品質管理」を書き切る</td></tr>
+      <tr><td>第3〜4週<br>8/13〜8/26</td><td>テーマ2「工程管理」＋テーマ3「安全管理」を書き切る</td></tr>
+      <tr class="rowhi"><td>第5週<br>8/27〜9/2</td><td>3本を通しで見直し ／ <b>9/2 CIC申込</b></td></tr>
+      <tr class="rowhi"><td>第6週<br>9/3〜9/10</td><td><b>手書きで清書</b> → <b>9/10 投函（必着）</b></td></tr>
+      <tr><td>9月下旬</td><td>返ってきた添削を教材に、勉強会で相互レビュー（<b>いちばん効く回</b>）</td></tr>
+      <tr class="rowhi"><td>10/11（日）</td><td>日建学院で <b>本番3時間の公開模擬試験</b>（会場）</td></tr>
+      <tr class="rowhi"><td>10/18（日）</td><td><b>第二次検定 本試験</b></td></tr>
+    </table>
+    </div>
+    <div class="warn">
+      <b>添削は郵送＝手書き原稿です。</b>つまり第6週の清書で、手書きのスピードと文字数感覚が強制的に鍛えられます。本試験も手書きです。トラッカーの「手書き練習した？」がここで意味を持ちます。
+    </div>
+    <p class="note">締切があると、人は書きます。逆に締切がないと3ヶ月あっても書きません。この強制力が受講料以上の価値です。</p>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <h2 class="sec"><span class="num">3.</span> 【今日の主教材】稟議書と施工経験記述は、同じ型です</h2>
+    <p class="lead">受講料39,600円は、会社に出してもらいます。ただし <b>稟議は自分で書いてください</b>。代筆しません。理由は、これが二次検定の練習そのものだからです。</p>
+
+    <h3>並べると一致します</h3>
+    <div class="tbl-scroll">
+    <table>
+      <tr><th style="width:50%">稟議書</th><th>施工経験記述（第二次検定 問題1）</th></tr>
+      <tr><td>① 背景・現状（いま何をしていて、どういう状況か）</td><td>① 工事概要（工事名・規模・自分の立場）</td></tr>
+      <tr><td>② 課題（何が足りない・何が問題か）</td><td>② 課題・問題点</td></tr>
+      <tr class="rowhi"><td>③ 対策案と比較検討（<b>なぜこれで、なぜ他ではないのか</b>）</td><td>③ 検討した内容と、そうした理由</td></tr>
+      <tr><td>④ 実施内容・費用（いつ・いくら・どうやる）</td><td>④ 実際に行った対策（数値付き）</td></tr>
+      <tr><td>⑤ 効果・結論（何が良くなるか・だから承認を）</td><td>⑤ 結果・評価</td></tr>
+    </table>
+    </div>
+
+    <h3>落ちる稟議と落ちる経験記述は、同じ欠陥を持っています</h3>
+    <div class="cmp">
+      <div class="card ng">
+        <span class="tag">✕ 通らない稟議</span>
+        「合格したいので、外部の講座を受けたいです。費用の負担をお願いします。よろしくお願いします。」
+        <p style="margin-top:8px">→ 背景も比較も効果もない。決裁する側に<b>判断材料がゼロ</b>なので、承認しようがない。</p>
+      </div>
+      <div class="card ng">
+        <span class="tag">✕ 点が入らない経験記述</span>
+        「工期が厳しかったので、工程をしっかり管理した。」
+        <p style="margin-top:8px">→ <b>数値がない・検討した他案がない・自分が何をしたのか分からない</b>。採点者に判断材料がゼロ。</p>
+      </div>
+    </div>
+    <div class="gold">
+      <div class="t">欠陥が完全に同じ ── ①数値がない ②他案を比較していない ③自分の判断が書かれていない</div>
+      逆に言えば、稟議でこの3つを埋める訓練をすれば、経験記述の③④が自動的に強くなります。今日これをやる意味はそこにあります。
+    </div>
+
+    <h3>とくに ③「なぜ他案でないのか」が得点源です</h3>
+    <p>経験記述で差がつくのは <b>「検討した内容とその理由」</b>。ここで「他の方法もあったが、○○という理由でこちらを選んだ」と書けている答案は強い。単に「やったこと」を並べた答案は弱い。</p>
+    <p>そして今回、皆さんの手元には <b>§2の外部講座比較表</b> があります。KGKCは安いが添削がない、日建二次コースは充実だが社内講座と重複して過大 ── <b>他案を蹴った理由を書く材料がすでに揃っている</b>。これほど都合のいい練習台はありません。</p>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <h2 class="sec"><span class="num">4.</span> 書き方 ― 6項目テンプレート</h2>
+    <p>この順で埋めるだけです。各項目2〜4行で十分。長さより、<b>数値と理由</b>が入っているかを見ます。</p>
+    <div class="typebox">
+      <div class="row"><div class="k">① 背景・現状</div><div class="v">自分が何を受験し、いま何をしているか。社内講座への参加状況・過去問の消化状況を<b>具体的な数字で</b>。</div></div>
+      <div class="row"><div class="k">② 課題</div><div class="v">何が足りていないか。「不安です」ではなく<b>足りていない機能を特定する</b>（例：第三者の添削を受けていない／本番条件で通したことがない）。</div></div>
+      <div class="row"><div class="k">③ 対策案と比較検討</div><div class="v"><b>ここが本番。</b>選んだ案と、蹴った案とその理由を必ず両方書く。金額を添える。</div></div>
+      <div class="row"><div class="k">④ 実施内容・費用</div><div class="v">いくら・いつまでに・何をするか。<b>期限（9/2申込・9/10必着・10/11模試）を明記</b>すると決裁者は安心する。</div></div>
+      <div class="row"><div class="k">⑤ 効果</div><div class="v">合格すると<b>会社にとって</b>何が良いのか。自分のためだけの理由では稟議は弱い。</div></div>
+      <div class="row"><div class="k">⑥ 結論</div><div class="v">「以上により、○円の負担をお願いしたい」と1行で締める。</div></div>
+    </div>
+
+    <h3>記入例（そのまま真似して、中身を自分のものに差し替えてください）</h3>
+    <div class="ex">
+      <div class="t">件名：1級建築施工管理技士 第二次検定 外部講座受講料の申請</div>
+      <div class="field"><b>① 背景・現状</b>／令和8年度 1級建築施工管理技士 第二次検定を10月18日に受験する。2月開講の社内対策講座（毎週木曜18:00〜20:00）に参加し、令和2年度〜令和7年度の過去問演習を一巡した。施工経験記述についても型と例文集を用いて骨子を作成済みである。</div>
+      <div class="field"><b>② 課題</b>／一方で、施工経験記述は社内の相互レビューとAI採点にとどまり、<b>検定の採点者視点による第三者添削を受けていない</b>。また、本番と同条件（会場・3時間通し）での受験を経験していない。この2点が現時点で最大の不確実要素である。</div>
+      <div class="field"><b>③ 対策案と比較検討</b>／外部講座5案を比較した。KGKC インターネット講座（14,960円）は最安だが添削がなく教材も別途。日建学院 二次集中ゼミ（55,000円）は模擬試験を含むが添削がない。日建学院 二次コース（198,000円）および総合資格学院 二次対策コース（418,000円）は添削・模試とも充実するが、講義内容が社内講座と重複し費用が過大である。<b>よって、不足している2点のみを補える CIC Web講座（34,100円・経験記述添削および教材を含む）と、日建学院 二次公開模擬試験（5,500円・10月11日 会場3時間）の組合せを最小コストの解と判断した。</b></div>
+      <div class="field"><b>④ 実施内容・費用</b>／合計 39,600円（税込）。CIC Web講座 34,100円＋日建学院 公開模擬試験 5,500円。9月2日までに申込、9月10日必着で添削原稿を提出、10月11日に会場模試を受験する。</div>
+      <div class="field"><b>⑤ 効果</b>／添削により減点要因を本試験前に是正でき、会場模試により時間配分を確定できる。合格後は監理技術者としての現場配置が可能となり、当社の受注可能範囲の拡大に寄与する。</div>
+      <div class="field"><b>⑥ 結論</b>／以上により、受講料 39,600円のご負担をお願いしたい。</div>
+    </div>
+    <p class="note">③の下線部が、経験記述の「検討した内容とその理由」に相当します。声に出して読んで、型を体に入れてください。</p>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <h2 class="sec"><span class="num">5.</span> その前に ― なぜ受けるのかを、自分の言葉で</h2>
+    <p class="lead">①②⑤が書けない人は、たいてい「なぜ取るのか」が言葉になっていません。先にここを埋めます。</p>
+    <div class="tbl-scroll">
+    <table>
+      <tr><th style="width:210px">問い</th><th>ヒント</th></tr>
+      <tr><td>なぜこの資格を取るのか</td><td>現場で必要／キャリアのため／処遇のため／会社の期待／自分への挑戦 ── <b>複数あって構いません。順位をつけてください</b></td></tr>
+      <tr><td>取ったあと、どうなりたいか</td><td>「どんな現場を任されたいか」まで具体的に。ここが稟議⑤の材料になります</td></tr>
+      <tr><td>受からなかったら、どうなるか</td><td>目を背けたい問いですが、ここが一番の燃料になります</td></tr>
+      <tr><td>10月18日、どんな顔で会場を出たいか</td><td>1行でいい。それを机の前に貼ってください</td></tr>
+    </table>
+    </div>
+    <div class="prio">この講座の合言葉は最初から変わっていません ──「10月18日、全員で笑って終える」。</div>
+  </section>
+
+  <!-- 6 -->
+  <section>
+    <h2 class="sec"><span class="num">6.</span> 今日の宿題</h2>
+    <ol class="step">
+      <li><b>進捗トラッカーの新フォーム「受験目的・意気込み・稟議」に入力する</b>（1人1回・あとから書き直せます）。§4の6項目と§5の4つの問いがそのままフォームになっています。</li>
+      <li><b>週の目標勉強時間を確定する</b>（推奨は週13.5時間）。毎週アンケートの実績と並べてグラフに出ます。</li>
+      <li><b>工事概要に使う自分の工事を1つ決める</b>（第1〜2週の課題。ここが決まらないと経験記述が1行も進みません）。</li>
+    </ol>
+    <div class="warn">
+      提出された稟議は、林副部長・大関に通知されます。<b>そのまま実際の稟議として起案します</b>ので、練習ではなく本番として書いてください。書いた文章で39,600円が動きます。
+    </div>
+    <p class="closing">締切がある文章は、必ず書き上がる。<br>その1本目が、10月18日の答案です。</p>
+  </section>
+
+</div>
+</body>
+</html>
