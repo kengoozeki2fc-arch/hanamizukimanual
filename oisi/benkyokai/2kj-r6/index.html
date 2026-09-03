@@ -248,6 +248,11 @@
   }
 
   /* ---- 2kj-r6 追加スタイル ---- */
+  .network-img-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  @media (max-width:600px) {
+    /* 縮小すると工程表の文字が潰れるため、原寸のまま横スクロールで読ませる */
+    .network-img-wrap img { max-width: none; width: 900px; }
+  }
   .law-text { background:#f7f9fc; border:1px solid var(--border); border-radius:6px; padding:12px 14px; margin:10px 0 14px; line-height:1.9; font-size:.94rem; }
   .model-pattern-title { font-weight:700; color:var(--primary); margin:16px 0 6px; padding-left:8px; border-left:4px solid var(--accent); }
   .blank-kaisetsu { display:none; background:#fffdf4; border:1px solid #ecd9a5; border-radius:6px; padding:10px 12px; margin:8px 0 14px; font-size:.9rem; line-height:1.8; }
@@ -767,8 +772,11 @@ c. 施工中又は施工後の養生の方法
   </div>
 
   <div class="network-img-wrap">
-    <img src="q3_kotei_r6.png" alt="令和6年度 2級建築施工管理 第二次検定 問題3 工程表（バーチャート・予定出来高曲線）">
-    <div class="network-img-caption">工程表（出典：建設業振興基金 公表問題 令和6年度 2級建築施工管理技術検定 第二次検定問題 p.9）</div>
+    <a href="q3_kotei_r6.png" target="_blank" rel="noopener">
+      <img src="q3_kotei_r6.png" alt="令和6年度 2級建築施工管理 第二次検定 問題3 工程表（バーチャート・予定出来高曲線）">
+    </a>
+    <div class="network-img-caption">工程表（出典：建設業振興基金 公表問題 令和6年度 2級建築施工管理技術検定 第二次検定問題 p.9）<br>
+    <strong>スマートフォンでは字が小さいため、画像をタップすると原寸で開きます。</strong></div>
   </div>
 
   <div class="dekidaka-wrap">
